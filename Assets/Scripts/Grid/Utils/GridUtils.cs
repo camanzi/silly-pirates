@@ -13,7 +13,7 @@ public static class GridUtils
      * 
      * returns HashMap with all the cells strictly inside the borders 
      */
-    public static HashSet<Vector3Int> FindInnerArea(Tilemap tilemap, Vector3Int startingPos)
+    public static HashSet<Vector3Int> FindInnerArea(Tilemap tilemap)
     {
         BoundsInt bounds = tilemap.cellBounds;
         bool[,] occupied = new bool[bounds.size.x, bounds.size.y];
@@ -41,7 +41,7 @@ public static class GridUtils
             }
         }
 
-        return FloodAlgorithm(startingPos, bounds, border);
+        return FloodAlgorithm(FindFirstFreeTileInBound(occupied, bounds), bounds, border);
     }
 
 
@@ -89,7 +89,7 @@ public static class GridUtils
         {
             Vector3Int current = queue.Dequeue();
 
-            foreach (var dir in directions)
+            foreach (Vector3Int dir in directions)
             {
                 Vector3Int neighbor = current + dir;
                 int nx = neighbor.x - bounds.x;
@@ -107,6 +107,25 @@ public static class GridUtils
         }
 
         return innerArea;
+    }
+
+    public static Vector3Int FindFirstFreeTileInBound(bool[,] occupied, BoundsInt bounds) 
+    {
+        for (int i = 0; i < occupied.GetLength(0); i++) 
+        {
+            for (int j = 0; j < occupied.GetLength(1); j++) 
+            {
+                if (!occupied[i, j]) 
+                {
+                    Debug.Log($"First tile found ({bounds.x + i}, {bounds.y + j})");
+                    return new Vector3Int(bounds.x + i, bounds.y + j, 0);
+                }
+            }
+        }
+
+        Debug.LogError("Cannot find any free tile");
+
+        return default(Vector3Int);
     }
 
     public static bool IsBound(BoundsInt bounds, Vector2Int tileCoord, bool[,] occupied) 

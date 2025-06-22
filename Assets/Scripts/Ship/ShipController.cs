@@ -65,7 +65,7 @@ public class ShipController : MonoBehaviour
         toBeFilled.ClearAllTiles();
         boundTileMap.CompressBounds();
 
-        HashSet<Vector3Int> innerArea = GridUtils.FindInnerArea(boundTileMap, new Vector3Int(0, 0 ,0));
+        HashSet<Vector3Int> innerArea = GridUtils.FindInnerArea(boundTileMap);
 
         foreach (Vector3Int inBoundPos in innerArea) 
         {
