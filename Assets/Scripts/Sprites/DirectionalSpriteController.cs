@@ -83,8 +83,8 @@ public class DirectionalSpriteController : MonoBehaviour
 
     private string GetSpriteName(string animation, int frame, EDirection direction)
     {
-        // Convezione: "idle_frame_0_dir_N", "walk_frame_2_dir_SE", ecc.
-        return $"{animation}_frame_{frame:D2}_dir_{direction.GetCode()}";
+        // Convezione: "idle_dir_N_0", "walk_dir_SE_0", ecc.
+        return $"{animation}_dir_{direction.GetCode()}_{frame}";
     }
     #endregion
 
@@ -178,14 +178,12 @@ public class DirectionalSpriteController : MonoBehaviour
 
     private void UpdateSprite()
     {
-        // Lookup ultra veloce: O(1) con la cache
         if (_spriteCache.ContainsKey(_currentAnimation))
         {
-            var animationSprites = _spriteCache[_currentAnimation];
+            Sprite[,] animationSprites = _spriteCache[_currentAnimation];
 
             // Bounds checking
-            if (_currentFrame < animationSprites.GetLength(0) &&
-                _currentDirection < animationSprites.GetLength(1))
+            if (_currentFrame < animationSprites.GetLength(0) && _currentDirection < animationSprites.GetLength(1))
             {
                 Sprite targetSprite = animationSprites[_currentFrame, _currentDirection];
 
