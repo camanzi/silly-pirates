@@ -11,10 +11,13 @@ public class CharacterTester : MonoBehaviour
     [SerializeField] private string secondAnim;
 
     [Header("Events channels")]
-    [SerializeField] private EnableTacticalViewEventChannel tacticalViewEventChannel;
+    [SerializeField] private EnableTacticalViewEventChannel enableTacticalViewEventChannel;
+    [SerializeField] private DisableTacticalViewEventChannel disableTacticalViewEventChannel;
 
     private DirectionalSpriteController _spriteController;
     private bool isPlayingNewAnimation = false;
+
+    private bool _isTacticalViewEnabled = false;
 
     private void Awake()
     {
@@ -30,7 +33,14 @@ public class CharacterTester : MonoBehaviour
 
     private void OnToggleTactical(InputAction.CallbackContext ctx) 
     {
-        tacticalViewEventChannel.RaiseEvent();
+        if (_isTacticalViewEnabled)
+        {
+            disableTacticalViewEventChannel.RaiseEvent();
+        } else 
+        {
+            enableTacticalViewEventChannel.RaiseEvent();
+        }
+        _isTacticalViewEnabled = !_isTacticalViewEnabled;
     }
 
     private void OnChangeAnimation(InputAction.CallbackContext ctx) 
