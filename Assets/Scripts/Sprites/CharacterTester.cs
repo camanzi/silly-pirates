@@ -10,42 +10,39 @@ public class CharacterTester : MonoBehaviour
     [SerializeField] private string firstAnim;
     [SerializeField] private string secondAnim;
 
-    [Header("Events channels")]
-    [SerializeField] private EnableTacticalViewEventChannel enableTacticalViewEventChannel;
-    [SerializeField] private DisableTacticalViewEventChannel disableTacticalViewEventChannel;
-
     private DirectionalSpriteController _spriteController;
     private bool isPlayingNewAnimation = false;
 
-    private bool _isTacticalViewEnabled = false;
+    private InputAction _changeAnimation;
 
     private void Awake()
     {
         _spriteController = GetComponent<DirectionalSpriteController>();
+        InputActionAsset inputActions = InputSystem.actions;
+        if (inputActions != null)
+        {
+            _changeAnimation = inputActions.FindAction("ChangeAnimation");
+        }
+        else
+        {
+            Debug.LogError("Project-Wide Actions non configurate! Vai in Project Settings -> Input System Package.");
+        }
     }
 
     private void OnEnable()
     {
-        _playerInput.FindActionMap("Test").Enable();
-        _playerInput.FindActionMap("Test").FindAction("ToggleTactical").performed += OnToggleTactical;
-        _playerInput.FindActionMap("Test").FindAction("ChangeAnimation").performed += OnChangeAnimation;
+        if (_changeAnimation != null)
+            _changeAnimation.performed += OnChangeAnimation;
     }
 
-    private void OnToggleTactical(InputAction.CallbackContext ctx) 
+    private void OnDisable()
     {
-        if (_isTacticalViewEnabled)
-        {
-            disableTacticalViewEventChannel.RaiseEvent();
-        } else 
-        {
-            enableTacticalViewEventChannel.RaiseEvent();
-        }
-        _isTacticalViewEnabled = !_isTacticalViewEnabled;
+        if (_changeAnimation != null)
+            _changeAnimation.performed -= OnChangeAnimation;
     }
 
     private void OnChangeAnimation(InputAction.CallbackContext ctx) 
     {
-
         _spriteController.PlayAnimation(isPlayingNewAnimation ? secondAnim : firstAnim);
         isPlayingNewAnimation = !isPlayingNewAnimation;
     }

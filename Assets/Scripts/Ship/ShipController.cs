@@ -21,7 +21,6 @@ public class ShipController : MonoBehaviour
     private Tilemap _floorMap;
     private Tilemap _collisionMap;
 
-
     private void Awake()
     {
         _shipGrid = GetComponentInChildren<Grid>();
@@ -44,15 +43,14 @@ public class ShipController : MonoBehaviour
             Physics.Raycast(mouseRay, out RaycastHit hit);
             Vector3Int renderingMapCell = _shipGrid.WorldToCell(hit.point);
 
-
-            if (_collisionMap.cellBounds.Contains(renderingMapCell) && !_collisionMap.HasTile(renderingMapCell))
-            {
-                Debug.Log($"Cella: ({renderingMapCell.x}, {renderingMapCell.y}, {renderingMapCell.z}) valida!");
-            }
-            else 
-            {
-                Debug.Log($"Cella: ({renderingMapCell.x}, {renderingMapCell.y}, {renderingMapCell.z}) fuori bordo");
-            }
+            //if (_collisionMap.cellBounds.Contains(renderingMapCell) && !_collisionMap.HasTile(renderingMapCell))
+            //{
+            //    Debug.Log($"Cella: ({renderingMapCell.x}, {renderingMapCell.y}, {renderingMapCell.z}) valida!");
+            //}
+            //else 
+            //{
+            //    Debug.Log($"Cella: ({renderingMapCell.x}, {renderingMapCell.y}, {renderingMapCell.z}) fuori bordo");
+            //}
 
             _modelsMap.SetTile(renderingMapCell, _hoveredTile);
 
