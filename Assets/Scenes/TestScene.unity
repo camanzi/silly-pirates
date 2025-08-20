@@ -1169,7 +1169,7 @@ MonoBehaviour:
         DecelTime: 0.2
     - Name: Look Orbit Y
       Owner: {fileID: 825212463}
-      Enabled: 1
+      Enabled: 0
       Input:
         InputAction: {fileID: 8335016941277353058, guid: 052faaac586de48259a63d0c4782560b, type: 3}
         Gain: -1
@@ -1243,8 +1243,8 @@ MonoBehaviour:
   Radius: 10
   Orbits:
     Top:
-      Radius: 5
-      Height: 4.5
+      Radius: 8
+      Height: 7
     Center:
       Radius: 6
       Height: 3
@@ -1307,7 +1307,7 @@ MonoBehaviour:
     LookAtTarget: {fileID: 1418207057}
     CustomLookAtTarget: 0
   Lens:
-    FieldOfView: 60
+    FieldOfView: 70
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -1334,8 +1334,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 825212459}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.35826376, y: -9.173681e-15, z: 5.8483153e-15, w: 0.93362045}
-  m_LocalPosition: {x: -4.24, y: 5.5, z: -9.3}
+  m_LocalRotation: {x: 0.35172668, y: 0.000000025630234, z: -0.000000009630179, w: 0.93610275}
+  m_LocalPosition: {x: -4.24, y: 8, z: -12.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1888,8 +1888,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1468386340}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3582638, y: -8.126062e-15, z: 3.1182629e-15, w: 0.93362045}
-  m_LocalPosition: {x: -4.24, y: 5.5, z: -9.3}
+  m_LocalRotation: {x: 0.70090926, y: 0.0000020982613, z: -0.0000020619555, w: 0.7132505}
+  m_LocalPosition: {x: -4.240001, y: 20.997715, z: -4.561786}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1926,7 +1926,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 6
   far clip plane: 5000
   field of view: 60
   orthographic: 0
@@ -2570,7 +2570,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2095840641}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
   m_Name: 
@@ -2614,8 +2614,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2095840641}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.700896, y: 0.004371715, z: -0.00429607, w: 0.71323717}
-  m_LocalPosition: {x: -4.243209, y: 20.997715, z: -4.56177}
+  m_LocalRotation: {x: 0.7009092, y: 0.0000020982486, z: -0.0000020619425, w: 0.7132506}
+  m_LocalPosition: {x: -4.240001, y: 20.997715, z: -4.561789}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
