@@ -1,21 +1,19 @@
+using System;
+using UnityEditor;
 using UnityEngine;
 
 // Esistenza momentanea diventerá poi un SO
 [System.Serializable]
 public class CharacterTurnData
 {
-    public string characterName;
-    public Sprite characterIcon;
-    public int currentHP;
-    public int maxHP;
-    public int initiative; // Per ordinamento turni
+    public Guid characterID;
+    public int actionValue;
+    public Sprite icon;
     
-    public CharacterTurnData(string name, Sprite icon, int hp, int maxHp, int init = 0)
+    public CharacterTurnData(int actionValue, Sprite icon)
     {
-        characterName = name;
-        characterIcon = icon;
-        currentHP = hp;
-        maxHP = maxHp;
-        initiative = init;
+        this.characterID = Guid.NewGuid();
+        this.actionValue = actionValue;
+        this.icon = icon;
     }
 }

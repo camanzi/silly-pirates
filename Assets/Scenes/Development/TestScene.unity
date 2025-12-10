@@ -1663,8 +1663,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47994e012e1ef2344a07308217da5dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnOrderController
-  initialTurnQueue: []
-  autoAdvanceTurns: 1
+  initialTurnQueue:
+  - actionValue: 0
+    icon: {fileID: 21300000, guid: c8ca21197e3293f41a281b40bb7249c7, type: 3}
+  - actionValue: 40
+    icon: {fileID: 649100349, guid: 73a4f7ccc4bf2614287d3b54dabae058, type: 3}
+  autoAdvanceTurns: 0
   turnDuration: 1
 --- !u!1 &922993195
 GameObject:
