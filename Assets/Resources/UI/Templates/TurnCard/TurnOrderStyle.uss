@@ -6,32 +6,18 @@
     --icon-size-waiting: 75px;
 }
 
-.turn-order-container {
-    background-color: rgba(20, 20, 30, 0.8);
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
-}
-
-.turn-list {
-    width: 100%;
-    background-color: transparent;
-    border-width: 0;
-}
-
-.turn-list > .unity-scroll-view {
-    background-color: transparent;
-}
-
-.turn-list .unity-list-view__item {
-    margin: 0;
-    padding: 0;
-    background-color: transparent;
-}
-
 .card-container {
+    margin-top: 10px;
+}
+
+.turn-card-wrapper {
+    justify-content: flex-end;
+}
+
+.turn-card-wrapper--active {
     overflow: visible;
-    justify-content: center;
+    width: 300px;
+    height: 150px;
 }
 
 .turn-card {
@@ -40,44 +26,49 @@
     border-color: var(--color-card-border-waiting);
     flex-direction: row;
     align-items: center;
-    flex-grow: 1;
-    flex-shrink: 0;
+    flex-grow: 0;
+    flex-shrink: 1;
 }
 
-.turn-card--active {
-    flex-shrink: 0;
-    overflow: visible;
-    max-height: 120px;
+.turn-card-wrapper--active .turn-card {
+    height: 75%;
 }
 
-.turn-card--waiting {
-    height: var(--card-height-waiting);
+.turn-card-wrapper--waiting {
     opacity: 0.9;
-    max-width: 225px;
-    max-height: 75px;
     flex-shrink: 0;
+    overflow: hidden;
+    width: 225px;
+    height: 75px;
+    margin: 5px 0;
+}
+
+.turn-card-wrapper--waiting .turn-card {
+    height: 100%;
 }
 
 .turn-card__icon-container {
-    width: var(--icon-size-waiting);
-    height: var(--icon-size-waiting);
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
-    position: absolute;
 }
 
-.turn-card--active .turn-card__icon-container {
+.turn-card-wrapper--active .turn-card__icon-container {
     left: 30px;
-    bottom: 0;
-    width: var(--icon-size-active);
-    height: var(--icon-size-active);
+    bottom: 25px;
 }
 
-.turn-card--waiting .turn-card__icon-container {
+.turn-card-wrapper--waiting .turn-card__icon-container {
     left: 15px;
     bottom: 0;
 }
 
 .turn-card__icon {
+    width: var(--icon-size-active);
+    height: var(--icon-size-active);
+}
+
+.turn-card-wrapper--waiting .turn-card__icon {
+    width: var(--icon-size-waiting);
+    height: var(--icon-size-waiting);
 }

@@ -6,14 +6,15 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class TurnCard : VisualElement
 {
-    private readonly string TEMPLATE_PATH = "UI/Templates/TurnCard/TurnCardTemplate";
+    private const string TEMPLATE_PATH = "UI/Templates/TurnCard/TurnCardTemplate";
 
     // Classi CSS per lo styling
     private const string USS_CLASS_CARD_CONTAINER = "card-container";
-    private const string USS_CLASS_ACTIVE = "turn-card--active";
-    private const string USS_CLASS_WAITING = "turn-card--waiting";
+    private const string USS_CLASS_ACTIVE = "turn-card-wrapper--active";
+    private const string USS_CLASS_WAITING = "turn-card-wrapper--waiting";
     
     // Elementi UI (cached per performance)
+    private VisualElement cardWrapper;
     private VisualElement card;
     private VisualElement iconContainer;
     private VisualElement characterIcon;
@@ -54,6 +55,7 @@ public partial class TurnCard : VisualElement
 
     private void CacheElements()
     {
+        cardWrapper = this.Q<VisualElement>("card-wrapper");
         card = this.Q<VisualElement>("card");
         iconContainer = this.Q<VisualElement>("icon-container");
         characterIcon = this.Q<VisualElement>("character-icon");
@@ -102,16 +104,16 @@ public partial class TurnCard : VisualElement
     /// </summary>
     private void UpdateActiveState()
     {
-        card.RemoveFromClassList(USS_CLASS_ACTIVE);
-        card.RemoveFromClassList(USS_CLASS_WAITING);
+        cardWrapper.RemoveFromClassList(USS_CLASS_ACTIVE);
+        cardWrapper.RemoveFromClassList(USS_CLASS_WAITING);
         
         if (_isActive)
         {
-            card.AddToClassList(USS_CLASS_ACTIVE);
+            cardWrapper.AddToClassList(USS_CLASS_ACTIVE);
         }
         else
         {
-            card.AddToClassList(USS_CLASS_WAITING);
+            cardWrapper.AddToClassList(USS_CLASS_WAITING);
         }
     }
 }

@@ -1,4 +1,4 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="TurnOrderUI" src="project://database/Assets/UI/TurnOrderUI.uxml?fileID=9197481963319205126&amp;guid=a297f7a2ace558847ba155922d158c5d&amp;type=3#TurnOrderUI" />
-    <ui:Instance template="TurnOrderUI" style="width: 15%; height: 70%; top: 0; left: 0; flex-shrink: 0; padding-left: 0; margin-left: 0; flex-grow: 0;" />
+    <ui:Instance template="TurnOrderUI" name="TemplateContainer" style="width: 310px; height: 70%; top: 10px; left: 10px; flex-shrink: 0; padding-left: 0; margin-left: 0; flex-grow: 0;" />
 </ui:UXML>
