@@ -1668,6 +1668,14 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: c8ca21197e3293f41a281b40bb7249c7, type: 3}
   - actionValue: 40
     icon: {fileID: 649100349, guid: 73a4f7ccc4bf2614287d3b54dabae058, type: 3}
+  - actionValue: 40
+    icon: {fileID: 649100349, guid: 73a4f7ccc4bf2614287d3b54dabae058, type: 3}
+  - actionValue: 40
+    icon: {fileID: 649100349, guid: 73a4f7ccc4bf2614287d3b54dabae058, type: 3}
+  - actionValue: 40
+    icon: {fileID: 649100349, guid: 73a4f7ccc4bf2614287d3b54dabae058, type: 3}
+  - actionValue: 40
+    icon: {fileID: 649100349, guid: 73a4f7ccc4bf2614287d3b54dabae058, type: 3}
   autoAdvanceTurns: 0
   turnDuration: 1
 --- !u!1 &922993195

@@ -132,7 +132,7 @@ public class TurnOrderController : MonoBehaviour
         if (turnQueue.Count == 0) return;
         
         // Prendi il primo (turno corrente)
-        var currentTurn = turnQueue[0];
+        CharacterTurnData currentTurn = turnQueue[0];
         
         // Rimuovilo dalla cima
         turnQueue.RemoveAt(0);
@@ -140,10 +140,6 @@ public class TurnOrderController : MonoBehaviour
         // Rimettilo in fondo
         turnQueue.Add(currentTurn);
         
-        // MAGIA DEL POOLING:
-        // RefreshItems() fa rebind di tutti gli elementi visibili
-        // Gli stessi VisualElement vengono riutilizzati, ma con nuovi dati
-        // Le transizioni CSS fanno l'animazione automaticamente!
         turnListView.RefreshItems();
     }
     

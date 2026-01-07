@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 
 // Esistenza momentanea diventerá poi un SO

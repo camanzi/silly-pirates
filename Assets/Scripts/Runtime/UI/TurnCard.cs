@@ -1,27 +1,22 @@
+using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-// Bisogna far si che l'UXML non venga creato a mano lato script, ma caricato come Resource esterno
 [UxmlElement]
 public partial class TurnCard : VisualElement
 {
+    private readonly string TEMPLATE_PATH = "UI/Templates/TurnCard/TurnCardTemplate";
+
     // Classi CSS per lo styling
-    private const string USS_CLASS = "turn-card";
     private const string USS_CLASS_CARD_CONTAINER = "card-container";
     private const string USS_CLASS_ACTIVE = "turn-card--active";
     private const string USS_CLASS_WAITING = "turn-card--waiting";
-    private const string USS_CLASS_ICON_CONTAINER = "turn-card__icon-container";
-    private const string USS_CLASS_ICON = "turn-card__icon";
-    private const string USS_CLASS_INFO = "turn-card__info";
-    private const string USS_CLASS_NAME = "turn-card__name";
-    private const string USS_CLASS_HP = "turn-card__hp";
     
     // Elementi UI (cached per performance)
-    private VisualElement cardContainer;
+    private VisualElement card;
     private VisualElement iconContainer;
     private VisualElement characterIcon;
-    private Label characterNameLabel;
-    private Label hpLabel;
     
     // Dati interni
     private CharacterTurnData _data;
@@ -31,73 +26,37 @@ public partial class TurnCard : VisualElement
     /// Costruttore - crea la struttura della card
     /// </summary>
     public TurnCard()
-    {
-        // Aggiungi classe base
-        AddToClassList(USS_CLASS_CARD_CONTAINER);
-        
-        // Costruisci la struttura interna
-        BuildStructure();
-        
+    {        
+        LoadTemplate();
+        CacheElements();
+        UpdateActiveState();
+
         // Stato iniziale
         IsActive = false;
     }
     
     /// <summary>
-    /// Costruisce la gerarchia di elementi
+    /// Carica il template UXML da Resources
     /// </summary>
-    private void BuildStructure()
+    private void LoadTemplate()
     {
-        // === CARD CONTAINER ====
-        cardContainer = new VisualElement
+        VisualTreeAsset template = Resources.Load<VisualTreeAsset>(TEMPLATE_PATH);
+        
+        if (template == null)
         {
-            name = "card-container"
-        };
-        cardContainer.AddToClassList(USS_CLASS);
+            Debug.LogError($"Template UXML non trovato in Resources/{TEMPLATE_PATH}");
+            throw new System.Exception($"Template UXML non trovato in Resources/{TEMPLATE_PATH}");
+        }
+        
+        template.CloneTree(this);        
+        AddToClassList(USS_CLASS_CARD_CONTAINER);
+    }
 
-        // === ICON CONTAINER ===
-        iconContainer = new VisualElement
-        {
-            name = "icon-container",
-        };
-        iconContainer.AddToClassList(USS_CLASS_ICON_CONTAINER);
-        cardContainer.Add(iconContainer);
-
-        // Icona del personaggio
-        characterIcon = new VisualElement
-        {
-            name = "character-icon"
-        };
-        characterIcon.AddToClassList(USS_CLASS_ICON);
-        iconContainer.Add(characterIcon);
-        
-        // === INFO CONTAINER ===
-        VisualElement infoContainer = new VisualElement
-        {
-            name = "info-container"
-        };
-        infoContainer.AddToClassList(USS_CLASS_INFO);
-        cardContainer.Add(infoContainer);
-        
-        // Nome
-        characterNameLabel = new Label
-        {
-            name = "character-name",
-            text = ""
-        };
-        characterNameLabel.AddToClassList(USS_CLASS_NAME);
-        
-        // HP
-        hpLabel = new Label
-        {
-            name = "character-hp",
-            text = ""
-        };
-        hpLabel.AddToClassList(USS_CLASS_HP);
-        
-        infoContainer.Add(characterNameLabel);
-        infoContainer.Add(hpLabel);
-        
-        Add(cardContainer);
+    private void CacheElements()
+    {
+        card = this.Q<VisualElement>("card");
+        iconContainer = this.Q<VisualElement>("icon-container");
+        characterIcon = this.Q<VisualElement>("character-icon");
     }
     
     /// <summary>
@@ -132,14 +91,6 @@ public partial class TurnCard : VisualElement
     /// </summary>
     private void UpdateDisplay()
     {
-        if (_data == null)
-        {
-            characterNameLabel.text = "";
-            hpLabel.text = "";
-            return;
-        }
-        
-        // Aggiorna icona
         if (_data.icon != null)
         {
             characterIcon.style.backgroundImage = new StyleBackground(_data.icon);
@@ -151,32 +102,16 @@ public partial class TurnCard : VisualElement
     /// </summary>
     private void UpdateActiveState()
     {
-        // IMPORTANTE: Rimuovi entrambe le classi prima
-        // (l'elemento potrebbe essere riciclato dal pooling)
-        RemoveFromClassList(USS_CLASS_ACTIVE);
-        RemoveFromClassList(USS_CLASS_WAITING);
+        card.RemoveFromClassList(USS_CLASS_ACTIVE);
+        card.RemoveFromClassList(USS_CLASS_WAITING);
         
-        // Aggiungi la classe corretta
         if (_isActive)
         {
-            AddToClassList(USS_CLASS_ACTIVE);
+            card.AddToClassList(USS_CLASS_ACTIVE);
         }
         else
         {
-            AddToClassList(USS_CLASS_WAITING);
+            card.AddToClassList(USS_CLASS_WAITING);
         }
-    }
-    
-    /// <summary>
-    /// Anima il danno ricevuto
-    /// </summary>
-    public void AnimateDamage()
-    {
-        // Applica classe per animazione shake
-        AddToClassList("turn-card--damaged");
-        
-        schedule.Execute(() => {
-            RemoveFromClassList("turn-card--damaged");
-        }).StartingIn(500);
     }
 }
