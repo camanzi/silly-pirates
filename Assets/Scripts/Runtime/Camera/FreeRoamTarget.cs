@@ -12,8 +12,8 @@ public class FreeRoamTarget : MonoBehaviour
     [SerializeField] private bool enableRotation = true;
 
     [Header("Events channels")]
-    [SerializeField] private EnableTacticalViewEventChannel enableTacticalViewEventChannel;
-    [SerializeField] private DisableTacticalViewEventChannel disableTacticalViewEventChannel;
+    [SerializeField] private VoidEventChannel enableTacticalViewEventChannel;
+    [SerializeField] private VoidEventChannel disableTacticalViewEventChannel;
 
     private Transform _cameraTransform;
     
