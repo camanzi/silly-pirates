@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
@@ -14,7 +14,9 @@ public class ShipController : MonoBehaviour
     [SerializeField] private string _collisionMapTag;
 
     [Header("Tiles")]
-    [SerializeField] private Tile _hoveredTile;
+    [SerializeField] private Tile _defaultFloorTile;
+    [SerializeField] private Tile _hoverFloorTile;
+    [SerializeField] private Tile _clickFloorTile;
     
     private Grid _shipGrid;
     private Tilemap _modelsMap;
@@ -32,31 +34,7 @@ public class ShipController : MonoBehaviour
 
     private void Start()
     {
-        InitializeFloor(_floorMap, _collisionMap, _hoveredTile);
-    }
-
-    private void Update()
-    {
-        if (Mouse.current.leftButton.wasPressedThisFrame) 
-        {
-            Ray mouseRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-            Physics.Raycast(mouseRay, out RaycastHit hit);
-            Vector3Int renderingMapCell = _shipGrid.WorldToCell(hit.point);
-
-            //if (_collisionMap.cellBounds.Contains(renderingMapCell) && !_collisionMap.HasTile(renderingMapCell))
-            //{
-            //    Debug.Log($"Cella: ({renderingMapCell.x}, {renderingMapCell.y}, {renderingMapCell.z}) valida!");
-            //}
-            //else 
-            //{
-            //    Debug.Log($"Cella: ({renderingMapCell.x}, {renderingMapCell.y}, {renderingMapCell.z}) fuori bordo");
-            //}
-
-            _modelsMap.SetTile(renderingMapCell, _hoveredTile);
-
-            RemoveTileAfterDelay(500, renderingMapCell, _modelsMap);
-        }
-
+        InitializeFloor(_floorMap, _collisionMap, _defaultFloorTile);
     }
 
     private void InitializeFloor(Tilemap toBeFilled, Tilemap boundTileMap, Tile tileToUse) 
@@ -72,12 +50,12 @@ public class ShipController : MonoBehaviour
         }
     }
 
-    private async void RemoveTileAfterDelay(int delay, Vector3Int tilePosition, Tilemap renderingMap) 
-        {
-            await Task.Delay(delay);
+    private async void ChangeTileAfterDelay(int delay, Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null) 
+    {
+        await Task.Delay(delay);
 
-            renderingMap.SetTile(tilePosition, null);
-        }
+        renderingMap.SetTile(tilePosition, newTile);
+    }
 
     private T FindChildByTag<T>(GameObject parent, string tag) 
     {
@@ -95,4 +73,24 @@ public class ShipController : MonoBehaviour
         return result;
     }
 
+    public void HandleCellClicked(Vector3Int cellPosition)
+    {
+        _floorMap.SetTile(cellPosition, _clickFloorTile);
+        ChangeTileAfterDelay(500, cellPosition, _floorMap, _defaultFloorTile);
+    }
+
+    public void HandleCellHovered(Vector3Int cellPosition)
+    {
+        ChangeTileAfterDelay(0, cellPosition, _floorMap, _hoverFloorTile);
+    }
+
+    public void HandleCellExited(Vector3Int cellPosition)
+    {
+        ChangeTileAfterDelay(0, cellPosition, _floorMap, _defaultFloorTile);
+    }
+
+    public void HandleTileMapExit()
+    {
+        Debug.Log("Ho lasciato la tilemap cliccabile");
+    }
 }
