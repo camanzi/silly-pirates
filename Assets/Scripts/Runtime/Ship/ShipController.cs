@@ -88,9 +88,4 @@ public class ShipController : MonoBehaviour
     {
         ChangeTileAfterDelay(0, cellPosition, _floorMap, _defaultFloorTile);
     }
-
-    public void HandleTileMapExit()
-    {
-        Debug.Log("Ho lasciato la tilemap cliccabile");
-    }
 }

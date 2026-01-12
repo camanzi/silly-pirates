@@ -1232,6 +1232,7 @@ GameObject:
   - component: {fileID: 783569603}
   - component: {fileID: 783569602}
   - component: {fileID: 783569604}
+  - component: {fileID: 783569605}
   m_Layer: 0
   m_Name: Ship
   m_TagString: Untagged
@@ -1271,9 +1272,9 @@ MonoBehaviour:
   _modelsMapTag: ModelsMap
   _floorMapTag: FloorMap
   _collisionMapTag: CollisionMap
-  _defaultFloorTile: {fileID: 11400000, guid: 99ef49bbb9560e945acc16d3bfc5e3b7, type: 2}
-  _hoverFloorTile: {fileID: 11400000, guid: 01a91d20c74a9744a87780e15a498d48, type: 2}
-  _clickFloorTile: {fileID: 0}
+  _defaultFloorTile: {fileID: 11400000, guid: b78f32011bcb6194d94e13cc89431554, type: 2}
+  _hoverFloorTile: {fileID: 11400000, guid: 99ef49bbb9560e945acc16d3bfc5e3b7, type: 2}
+  _clickFloorTile: {fileID: 11400000, guid: 01a91d20c74a9744a87780e15a498d48, type: 2}
 --- !u!114 &783569600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1294,6 +1295,7 @@ MonoBehaviour:
   OnCellClicked: {fileID: 11400000, guid: 1ce859b2ab4d7224da31a7c901587ed1, type: 2}
   OnCellHovered: {fileID: 11400000, guid: b5dded334b57b934399f55d785bfc9ce, type: 2}
   OnCellExited: {fileID: 11400000, guid: 508c9ee1fec077741aedf3d3e526471e, type: 2}
+  OnTileMapExit: {fileID: 11400000, guid: 994d80e2828b3c842a461c0da3198911, type: 2}
 --- !u!114 &783569602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1363,6 +1365,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Vector3IntChannelListener
   eventChannel: {fileID: 11400000, guid: 508c9ee1fec077741aedf3d3e526471e, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 783569599}
+        m_TargetAssemblyTypeName: ShipController, Assembly-CSharp
+        m_MethodName: HandleCellExited
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &783569605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783569597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebf352686c4c36647a99c4f3ed741822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Vector3IntChannelListener
+  eventChannel: {fileID: 11400000, guid: 994d80e2828b3c842a461c0da3198911, type: 2}
   response:
     m_PersistentCalls:
       m_Calls:

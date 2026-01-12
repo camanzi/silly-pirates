@@ -17,7 +17,7 @@ public class GridInputHandler : MonoBehaviour
     public Vector3IntEventChannel OnCellClicked;
     public Vector3IntEventChannel OnCellHovered;
     public Vector3IntEventChannel OnCellExited;
-    public VoidEventChannel OnTileMapExit;
+    public Vector3IntEventChannel OnTileMapExit;
     
     private Vector3Int? _lastHoveredCell;
     
@@ -43,11 +43,13 @@ public class GridInputHandler : MonoBehaviour
             {
                 OnCellExited.RaiseEvent(_lastHoveredCell.Value);
             }
+
             _lastHoveredCell = cellPosition;
             OnCellHovered.RaiseEvent(cellPosition);
-        } else
+        } else if (!hasFoundCell && _lastHoveredCell.HasValue)
         {
-            OnTileMapExit.RaiseEvent();
+            OnTileMapExit.RaiseEvent(_lastHoveredCell.Value);
+            _lastHoveredCell = null;
         }
     }
     

@@ -70,7 +70,7 @@ public static class GridUtils
 
         if (border[seedX, seedY])
         {
-            Debug.LogError("Seed position non valida: NON puó essere un bordo.");
+            Debug.LogError("Seed position non valida: NON puï¿½ essere un bordo.");
             return innerArea;
         }
 
@@ -117,7 +117,7 @@ public static class GridUtils
             {
                 if (!occupied[i, j]) 
                 {
-                    Debug.Log($"First tile found ({bounds.x + i}, {bounds.y + j})");
+                    // Debug.Log($"First tile found ({bounds.x + i}, {bounds.y + j})");
                     return new Vector3Int(bounds.x + i, bounds.y + j, 0);
                 }
             }
