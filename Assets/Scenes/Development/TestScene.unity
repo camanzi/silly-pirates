@@ -119,6 +119,166 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &352039
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 352040}
+  - component: {fileID: 352045}
+  - component: {fileID: 352044}
+  - component: {fileID: 352043}
+  - component: {fileID: 352042}
+  - component: {fileID: 352041}
+  m_Layer: 0
+  m_Name: TurnController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &352040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352039}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &352041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebf352686c4c36647a99c4f3ed741822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Vector3IntChannelListener
+  eventChannel: {fileID: 11400000, guid: 1ce859b2ab4d7224da31a7c901587ed1, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 352045}
+        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_MethodName: MoveToPosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &352042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebf352686c4c36647a99c4f3ed741822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Vector3IntChannelListener
+  eventChannel: {fileID: 11400000, guid: b5dded334b57b934399f55d785bfc9ce, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 352045}
+        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_MethodName: DrawPreviewPath
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &352043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd915b1ee90e46b40be81307b3874c05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterEventChannelListener
+  eventChannel: {fileID: 11400000, guid: 1e280750a4019e44ba9ee3f4a52877aa, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 352045}
+        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_MethodName: DisablePathPreview
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &352044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd915b1ee90e46b40be81307b3874c05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterEventChannelListener
+  eventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 352045}
+        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_MethodName: EnablePathPreview
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &352045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d34b9ffc41c799f41945463c8cfa86b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnController
 --- !u!1 &58088171
 GameObject:
   m_ObjectHideFlags: 0
@@ -2469,10 +2629,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultMask:
     serializedVersion: 2
-    m_Bits: 8119
+    m_Bits: 439
   tacticalMask:
     serializedVersion: 2
-    m_Bits: 8055
+    m_Bits: 375
 --- !u!114 &1468386349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2667,6 +2827,7 @@ GameObject:
   - component: {fileID: 1771885415}
   - component: {fileID: 1771885417}
   - component: {fileID: 1771885416}
+  - component: {fileID: 1771885418}
   m_Layer: 8
   m_Name: FloorMap
   m_TagString: FloorMap
@@ -2806,6 +2967,27 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!65 &1771885418
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1771885414}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 21, y: 0.1, z: 14.288614}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1906052223
 GameObject:
   m_ObjectHideFlags: 0
@@ -3206,6 +3388,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1631601946501581771, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _selectedCharacterEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 6aad7622ac663c0418505bc56323e6fb, type: 2}
+    - target: {fileID: 1631601946501581771, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _deselectedCharacterEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 4dc956298f6aaa04c98da23d7123bc4f, type: 2}
     - target: {fileID: 3290291399933896057, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.98
@@ -3253,8 +3443,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4094058086563390557, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4011923239041899522}
   m_SourcePrefab: {fileID: 100100000, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+--- !u!1 &4011923239041899512 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4094058086563390557, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+  m_PrefabInstance: {fileID: 4011923239041899511}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4011923239041899522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011923239041899512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8972e8147f529ac4d9d32c8134821006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridCharacter
+  floorGridLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _selectedGridElementEventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}
+  _deselectedCharacterEventChannel: {fileID: 11400000, guid: 1e280750a4019e44ba9ee3f4a52877aa, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3271,3 +3486,4 @@ SceneRoots:
   - {fileID: 900829258}
   - {fileID: 1906052226}
   - {fileID: 1045256479}
+  - {fileID: 352040}
