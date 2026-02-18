@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.cqf.urpoutline": "https://github.com/CristianQiu/Unity-URP-Outline.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.spriteshape": "12.0.1",
     "com.unity.2d.tilemap": "1.0.0",
