@@ -183,6 +183,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 352045}
+        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_MethodName: HidePath
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &352042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,6 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d34b9ffc41c799f41945463c8cfa86b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnController
+  highlightPathEventChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
 --- !u!1 &58088171
 GameObject:
   m_ObjectHideFlags: 0
@@ -1393,6 +1406,7 @@ GameObject:
   - component: {fileID: 783569602}
   - component: {fileID: 783569604}
   - component: {fileID: 783569605}
+  - component: {fileID: 783569606}
   m_Layer: 0
   m_Name: Ship
   m_TagString: Untagged
@@ -1559,6 +1573,34 @@ MonoBehaviour:
       - m_Target: {fileID: 783569599}
         m_TargetAssemblyTypeName: ShipController, Assembly-CSharp
         m_MethodName: HandleCellExited
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &783569606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783569597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d55c26c72aa072b4aba9c26e2c8de916, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Vector3IntListChannelListener
+  eventChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 783569599}
+        m_TargetAssemblyTypeName: ShipController, Assembly-CSharp
+        m_MethodName: HighlightPath
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

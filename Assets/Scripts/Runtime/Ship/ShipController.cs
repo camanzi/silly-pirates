@@ -23,8 +23,11 @@ public class ShipController : MonoBehaviour
     private Tilemap _floorMap;
     private Tilemap _collisionMap;
 
+    private List<Vector3Int> previousPath;
+
     private void Awake()
     {
+        previousPath = new List<Vector3Int>();
         _shipGrid = GetComponentInChildren<Grid>();
         
         _modelsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _modelsMapTag);
@@ -87,5 +90,18 @@ public class ShipController : MonoBehaviour
     public void HandleCellExited(Vector3Int cellPosition)
     {
         ChangeTileAfterDelay(0, cellPosition, _floorMap, _defaultFloorTile);
+    }
+
+    public void HighlightPath(List<Vector3Int> path)
+    {
+        foreach (Vector3Int node in previousPath)
+        {
+            ChangeTileAfterDelay(0, node, _floorMap, _defaultFloorTile);
+        }
+        foreach (Vector3Int node in path)
+        {
+            ChangeTileAfterDelay(0, node, _floorMap, _hoverFloorTile);
+        }
+        previousPath = path;
     }
 }
