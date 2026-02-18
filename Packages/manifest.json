@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.cqf.urpoutline": "https://github.com/CristianQiu/Unity-URP-Outline.git",
+    "com.kyrylokuzyk.primetween": "file:../Assets/Plugins/PrimeTween/internal/com.kyrylokuzyk.primetween.tgz",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.spriteshape": "12.0.1",
     "com.unity.2d.tilemap": "1.0.0",
