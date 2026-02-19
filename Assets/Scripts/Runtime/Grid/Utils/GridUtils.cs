@@ -9,7 +9,6 @@ public static class GridUtils
      * Find the inner area based on the cellBounds
      * 
      * param name="tilemap" the tilemap on wich calculate the inner area
-     * param name="startingPos" the starting position for flood fill algorithm
      * 
      * returns HashMap with all the cells strictly inside the borders 
      */
@@ -19,17 +18,15 @@ public static class GridUtils
         bool[,] occupied = new bool[bounds.size.x, bounds.size.y];
         bool[,] border = new bool[bounds.size.x, bounds.size.y];
 
-        // Initialize occupied matrix
         for (int x = 0; x < bounds.size.x; x++)
         {
             for (int y = 0; y < bounds.size.y; y++)
             {
                 Vector3Int pos = new Vector3Int(bounds.x + x, bounds.y + y, 0);
-                occupied[x, y] = tilemap.HasTile(pos);
+                occupied[x, y] = !tilemap.GetTile<TerrainTile>(pos).isWalkable;
             }
         }
 
-        // Initialize border matrix
         for (int x = 0; x < bounds.size.x; x++)
         {
             for (int y = 0; y < bounds.size.y; y++)
@@ -70,7 +67,7 @@ public static class GridUtils
 
         if (border[seedX, seedY])
         {
-            Debug.LogError("Seed position non valida: NON pu� essere un bordo.");
+            Debug.LogError("Seed position non valida: NON puó essere un bordo.");
             return innerArea;
         }
 
@@ -117,7 +114,6 @@ public static class GridUtils
             {
                 if (!occupied[i, j]) 
                 {
-                    // Debug.Log($"First tile found ({bounds.x + i}, {bounds.y + j})");
                     return new Vector3Int(bounds.x + i, bounds.y + j, 0);
                 }
             }

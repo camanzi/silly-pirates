@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public static class PathFindingUtils
 {
@@ -14,7 +15,11 @@ public static class PathFindingUtils
         new Vector3Int(0, -1, 0), new Vector3Int(-1, -1, 0), new Vector3Int(-1, 0, 0)
     };
 
-    public static List<Vector3Int> FindPath(Vector3Int startPos, Vector3Int endPos, Func<Vector3Int, bool> walkabilityCheck)
+    public static List<Vector3Int> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, TState state, Func<Vector3Int, TState, bool> walkabilityCheck)
+    {
+        return FindPath(startPos, endPos, false, state, walkabilityCheck);
+    }
+    public static List<Vector3Int> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, bool includeStartingPosition, TState state, Func<Vector3Int, TState, bool> walkabilityCheck)
     {
         List<Vector3Int> openSet = new List<Vector3Int> { startPos };
         HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
@@ -40,12 +45,12 @@ public static class PathFindingUtils
 
             if (currentPos == endPos)
             {
-                return RetracePath(allNodes, startPos, endPos);
+                return RetracePath(allNodes, startPos, endPos, includeStartingPosition);
             }
 
             foreach (Vector3Int neighborPos in GetNeighbors(currentPos))
             {
-                if (closedSet.Contains(neighborPos) || !walkabilityCheck(neighborPos))
+                if (closedSet.Contains(neighborPos) || !walkabilityCheck(neighborPos, state))
                     continue;
 
                 int newMovementCostToNeighbor = allNodes[currentPos].gCost + 10; // 10 è il costo base per ogni tile
@@ -98,7 +103,7 @@ public static class PathFindingUtils
         return new Vector3Int(q, r, -q - r);
     }
 
-    private static List<Vector3Int> RetracePath(Dictionary<Vector3Int, AStarNode> allNodes, Vector3Int start, Vector3Int end)
+    private static List<Vector3Int> RetracePath(Dictionary<Vector3Int, AStarNode> allNodes, Vector3Int start, Vector3Int end, bool includeStartingPosition)
     {
         List<Vector3Int> path = new List<Vector3Int>();
         Vector3Int? currentPos = end;
@@ -108,6 +113,12 @@ public static class PathFindingUtils
             path.Add(currentPos.Value);
             currentPos = allNodes[currentPos.Value].parentPosition;
         }
+
+        if (includeStartingPosition)
+        {
+            path.Add(start);
+        }
+
         path.Reverse();
         return path;
     }

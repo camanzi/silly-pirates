@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TurnController : MonoBehaviour
 {
@@ -23,7 +24,19 @@ public class TurnController : MonoBehaviour
     {
         if (_selectedGridElement == null) return;
 
-        List<Vector3Int> path = PathFindingUtils.FindPath(_selectedGridElement.gridPosition, endPosition, (pos) => true);        
+        Tilemap floorTilemap = _selectedGridElement.activeTilemap;
+
+        HashSet<Vector3Int> walkableCache = new HashSet<Vector3Int>();
+        foreach (Vector3Int pos in floorTilemap.cellBounds.allPositionsWithin)
+        {
+            TerrainTile tile = floorTilemap.GetTile<TerrainTile>(pos);
+            if (tile != null && tile.isWalkable)
+            {
+                walkableCache.Add(pos);
+            }
+        }
+        bool includeStartingPosition = true;
+        List<Vector3Int> path = PathFindingUtils.FindPath(_selectedGridElement.gridPosition, endPosition, includeStartingPosition, walkableCache, static (pos, cache) => cache.Contains(pos));        
         highlightPathEventChannel.RaiseEvent(path);
     }
 

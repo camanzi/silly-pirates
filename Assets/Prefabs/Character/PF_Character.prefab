@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 5858382254280980111}
   - component: {fileID: 1631601946501581771}
   - component: {fileID: 6654535783251052227}
+  - component: {fileID: 4197157872790995930}
   m_Layer: 0
   m_Name: PF_Character
   m_TagString: Untagged
@@ -436,3 +437,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.8414612, y: 1.9221627}
   m_EdgeRadius: 0
+--- !u!114 &4197157872790995930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4094058086563390557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8972e8147f529ac4d9d32c8134821006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridCharacter
+  floorGridLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _selectedGridElementEventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}
+  _deselectedCharacterEventChannel: {fileID: 11400000, guid: 1e280750a4019e44ba9ee3f4a52877aa, type: 2}

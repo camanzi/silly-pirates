@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: empty_sprite
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
-  m_Sprite: {fileID: 21300000, guid: 5771691c2d10a5a4f82f5c5362dd7559, type: 3}
+  m_Script: {fileID: 11500000, guid: 7cfab931c89df084e8125fe3c3379a0c, type: 3}
+  m_Name: Ground
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainTile
+  m_Sprite: {fileID: 21300000, guid: fcc3bd485692c6349914abda1cb48903, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
@@ -34,3 +34,4 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
+  _isWalkable: 1

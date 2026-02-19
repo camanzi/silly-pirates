@@ -10,6 +10,7 @@ public class GridElement : MonoBehaviour
 
     public Vector3Int gridPosition => _gridPosition;
     public Vector3 worldPosition => _floorTilemap.CellToWorld(_gridPosition);
+    public Tilemap activeTilemap =>_floorTilemap;
     protected Tilemap _floorTilemap;
     protected Vector3Int _gridPosition;
     
