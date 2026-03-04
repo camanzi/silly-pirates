@@ -12,7 +12,8 @@ public class ShipController : MonoBehaviour
 
     [Header("Tiles")]
     [SerializeField] private Tile _defaultFloorTile;
-    [SerializeField] private Tile _hoverFloorTile;
+    [SerializeField] private Tile _hoverFloorAllowTile;
+    [SerializeField] private Tile _hoverFloorNotAllowTile;
     [SerializeField] private Tile _clickFloorTile;
     
     private Grid _shipGrid;
@@ -22,11 +23,11 @@ public class ShipController : MonoBehaviour
 
     private Dictionary<Vector3Int, Tile> _previousTileSet = new Dictionary<Vector3Int, Tile>();
 
-    private List<Vector3Int> previousPath;
+    private ICollection<Vector3Int> previousHighlight;
 
     private void Awake()
     {
-        previousPath = new List<Vector3Int>();
+        previousHighlight = new List<Vector3Int>();
         _shipGrid = GetComponentInChildren<Grid>();
         
         _modelsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _modelsMapTag);
@@ -59,31 +60,24 @@ public class ShipController : MonoBehaviour
         _ = ChangeTileAfterDelay(500, cellPosition, _previewMap, RemoveCachedTile(cellPosition));
     }
 
-    public void HandleCellHovered(Vector3Int cellPosition)
-    {
-        CacheTile(cellPosition, _previewMap.GetTile<Tile>(cellPosition));
-
-        _ = ChangeTileAfterDelay(0, cellPosition, _previewMap, _hoverFloorTile);
-    }
-
     public void HandleCellExited(Vector3Int cellPosition)
     {
         _ = ChangeTileAfterDelay(0, cellPosition, _previewMap, RemoveCachedTile(cellPosition));
     }
 
-    public void HighlightPath(List<Vector3Int> path)
+    public void HighlightPath(HighlightCellsPayload payload)
     {
-        foreach (Vector3Int node in previousPath)
+        foreach (Vector3Int node in previousHighlight ?? new List<Vector3Int>())
         {
-            // Rimuovo la selezione precedente
             _ = ChangeTileAfterDelay(0, node, _previewMap, _defaultFloorTile);
         }
-        foreach (Vector3Int node in path)
+
+        foreach (Vector3Int node in payload.cells ?? new List<Vector3Int>())
         {
-            // Attivo la colorazione per i nodi
-            _ = ChangeTileAfterDelay(0, node, _previewMap, _hoverFloorTile);
+            _ = ChangeTileAfterDelay(0, node, _previewMap, payload.isValidHighlight ? _hoverFloorAllowTile : _hoverFloorNotAllowTile);
         }
-        previousPath = path;
+
+        previousHighlight = payload.cells;
     }
 
     private async Awaitable ChangeTileAfterDelay(int delay, Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null) 

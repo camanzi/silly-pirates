@@ -5,21 +5,36 @@ using UnityEngine;
 
 public class GridCharacter : InteractableGridElement, IMovable
 {
+    // Da spostare piú avanti in uno SO di stats
+    [Header("Grid Character configuration")]
+    public int maxMoveSpeed;
+    private DirectionalSpriteController _directionalSpriteController;
     private Tween _moveTween;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _directionalSpriteController = GetComponent<DirectionalSpriteController>();
+    }
 
     public async Awaitable MoveTo(IEnumerable<Vector3Int> path, CancellationToken token)
     {
         _moveTween.Stop();
     
+        _directionalSpriteController.PlayAnimation("human_walk");
+
         foreach (Vector3Int node in path)
         {
             if (token.IsCancellationRequested) break;
 
-            Vector3 worldPosition = _floorTilemap.GetCellCenterWorld(node);
+            Vector3 targetPosition = _floorTilemap.GetCellCenterWorld(node);
 
-            await Tween.Position(transform, worldPosition, duration: 0.5f, ease: Ease.Linear);
+            transform.LookAt(targetPosition);
+            await Tween.Position(transform, targetPosition, duration: 0.5f, ease: Ease.Linear);
             
             gridPosition = node;
         }
+
+        _directionalSpriteController.PlayAnimation("human_idle");
     }
 }

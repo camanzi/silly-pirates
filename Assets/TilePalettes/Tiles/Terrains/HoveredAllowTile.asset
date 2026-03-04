@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7cfab931c89df084e8125fe3c3379a0c, type: 3}
-  m_Name: HoveredTile
+  m_Name: HoveredAllowTile
   m_EditorClassIdentifier: Assembly-CSharp::TerrainTile
   m_Sprite: {fileID: -712631045867808456, guid: d4fba28d56ec32d40832b8203d7916fb, type: 3}
   m_Color: {r: 0.09463448, g: 0.4339623, b: 0, a: 1}

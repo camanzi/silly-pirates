@@ -354,7 +354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1d08add637b7fe4ca2c27846f860974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterController
-  _defaultMoveAbility: {fileID: 0}
+  _defaultMoveAbility: {fileID: 11400000, guid: 7f5ff6aad84bac1409e20ec2db56ca40, type: 2}
 --- !u!61 &6654535783251052227
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -418,3 +418,4 @@ MonoBehaviour:
     m_Bits: 256
   _defaultAbility: {fileID: 11400000, guid: 7f5ff6aad84bac1409e20ec2db56ca40, type: 2}
   _selectAbilityEventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}
+  maxMoveSpeed: 5

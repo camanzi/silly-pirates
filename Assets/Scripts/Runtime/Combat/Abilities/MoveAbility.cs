@@ -6,7 +6,8 @@ using UnityEngine.Tilemaps;
 public class MoveAbility : AbilityBase {
     public override bool CanExecute(GridElement caster, Vector3Int target)
     {
-        return true;
+        ICollection<Vector3Int> path = GetAffectedCells(target, caster);
+        return ((GridCharacter)caster).maxMoveSpeed >= path.Count;
     }
 
     public override ICommand CreateCommand(GridElement caster, Vector3Int target, List<GridElement> targetsInArea)
