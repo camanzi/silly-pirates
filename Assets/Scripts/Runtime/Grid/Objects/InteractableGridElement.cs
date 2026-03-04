@@ -56,13 +56,7 @@ public class InteractableGridElement : GridElement, IClickable
         }
     }
 
-    public virtual void ExecuteAction(IEnumerable<Vector3Int> calculatedPosition)
-    {
-        isSelected = false;
-        RemoveSelectionIndicator();
-    }
-
-    private void RemoveSelectionIndicator()
+    public void RemoveSelectionIndicator()
     {
         _outlinerHelper.RemoveFromOutline();
     }

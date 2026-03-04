@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class TurnController : MonoBehaviour
 {
@@ -35,7 +33,7 @@ public class TurnController : MonoBehaviour
         ICommand selectedAbilityCommand = _selectedAbility.Value.selectedAbility.CreateCommand(_selectedAbility.Value.caster, target, new List<GridElement>());
         AddCommand(selectedAbilityCommand);
 
-        // _highlightCellsEventChannel.RaiseEvent(new List<Vector3Int>());
+        _highlightCellsEventChannel.RaiseEvent(new List<Vector3Int>());
 
         // Per il momento faccio partire subito il ProcessQueueAsync, in futuro potrebbe essere da spostare
         _ = ProcessQueueAsync();

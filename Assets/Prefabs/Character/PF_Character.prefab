@@ -416,5 +416,5 @@ MonoBehaviour:
   floorGridLayer:
     serializedVersion: 2
     m_Bits: 256
-  _defaultAbility: {fileID: 0}
+  _defaultAbility: {fileID: 11400000, guid: 7f5ff6aad84bac1409e20ec2db56ca40, type: 2}
   _selectAbilityEventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}

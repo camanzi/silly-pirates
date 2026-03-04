@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -9,6 +8,7 @@ public class ShipController : MonoBehaviour
     [Header("Map Tags")]
     [SerializeField] private string _modelsMapTag;
     [SerializeField] private string _floorMapTag;
+    [SerializeField] private string _previewMapTag;
 
     [Header("Tiles")]
     [SerializeField] private Tile _defaultFloorTile;
@@ -18,6 +18,7 @@ public class ShipController : MonoBehaviour
     private Grid _shipGrid;
     private Tilemap _modelsMap;
     private Tilemap _floorMap;
+    private Tilemap _previewMap;
 
     private Dictionary<Vector3Int, Tile> _previousTileSet = new Dictionary<Vector3Int, Tile>();
 
@@ -30,6 +31,7 @@ public class ShipController : MonoBehaviour
         
         _modelsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _modelsMapTag);
         _floorMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _floorMapTag);
+        _previewMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _previewMapTag);
     }
 
     private T FindChildByTag<T>(GameObject parent, string tag) 
@@ -50,16 +52,23 @@ public class ShipController : MonoBehaviour
 
     public void HandleCellClicked(Vector3Int cellPosition)
     {
-        CacheTile(cellPosition, _floorMap.GetTile<Tile>(cellPosition));
+        CacheTile(cellPosition, _previewMap.GetTile<Tile>(cellPosition));
+
+         _previewMap.SetTile(cellPosition, _clickFloorTile);
+
+        _ = ChangeTileAfterDelay(500, cellPosition, _previewMap, RemoveCachedTile(cellPosition));
     }
 
     public void HandleCellHovered(Vector3Int cellPosition)
     {
-        CacheTile(cellPosition, _floorMap.GetTile<Tile>(cellPosition));
+        CacheTile(cellPosition, _previewMap.GetTile<Tile>(cellPosition));
+
+        _ = ChangeTileAfterDelay(0, cellPosition, _previewMap, _hoverFloorTile);
     }
 
     public void HandleCellExited(Vector3Int cellPosition)
     {
+        _ = ChangeTileAfterDelay(0, cellPosition, _previewMap, RemoveCachedTile(cellPosition));
     }
 
     public void HighlightPath(List<Vector3Int> path)
@@ -67,12 +76,25 @@ public class ShipController : MonoBehaviour
         foreach (Vector3Int node in previousPath)
         {
             // Rimuovo la selezione precedente
+            _ = ChangeTileAfterDelay(0, node, _previewMap, _defaultFloorTile);
         }
         foreach (Vector3Int node in path)
         {
             // Attivo la colorazione per i nodi
+            _ = ChangeTileAfterDelay(0, node, _previewMap, _hoverFloorTile);
         }
         previousPath = path;
+    }
+
+    private async Awaitable ChangeTileAfterDelay(int delay, Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null) 
+    {
+        if (delay > 0)
+        {
+            await Awaitable.WaitForSecondsAsync(delay);
+            
+        }
+
+        renderingMap.SetTile(tilePosition, newTile);
     }
 
     private void CacheTile(Vector3Int cellPosition, Tile tile)
