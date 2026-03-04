@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -6,49 +7,52 @@ using UnityEngine.Tilemaps;
 public class TurnController : MonoBehaviour
 {
     [Header("Event Channels")]
-    [SerializeField] private Vector3IntListEventChannel highlightPathEventChannel;
+    [SerializeField] private Vector3IntListEventChannel _highlightCellsEventChannel;
 
-    private InteractableGridElement _selectedGridElement;
+    private SelectedAbilityPayload? _selectedAbility;
 
-    public void DisablePathPreview(InteractableGridElement deselectedCharacter)
+    private Queue<ICommand> _commandQueue = new Queue<ICommand>();
+    private bool _isProcessing = false;
+
+    #region Path Preview
+    public void UpdateSelectedAbility(SelectedAbilityPayload? payload)
     {
-        _selectedGridElement = null;
+        _selectedAbility = payload;
     }
 
-    public void EnablePathPreview(InteractableGridElement selectedCharacter)
+    public void DrawPreview(Vector3Int endPosition)
     {
-        _selectedGridElement = selectedCharacter;
+        if (!_selectedAbility.HasValue) return;
+
+        List<Vector3Int> affectedCells = _selectedAbility.Value.selectedAbility.GetAffectedCells(endPosition, _selectedAbility.Value.caster);
+        _highlightCellsEventChannel.RaiseEvent(affectedCells);
+    } 
+
+    public void OnCellClicked(Vector3Int target)
+    {   
+        if (!_selectedAbility.HasValue) return;
+
+        ICommand selectedAbilityCommand = _selectedAbility.Value.selectedAbility.CreateCommand(_selectedAbility.Value.caster, target, new List<GridElement>());
+        AddCommand(selectedAbilityCommand);
+
+        // _highlightCellsEventChannel.RaiseEvent(new List<Vector3Int>());
+
+        // Per il momento faccio partire subito il ProcessQueueAsync, in futuro potrebbe essere da spostare
+        _ = ProcessQueueAsync();
     }
+    #endregion
 
-    public void DrawPreviewPath(Vector3Int endPosition)
-    {
-        if (_selectedGridElement == null) return;
+    public void AddCommand(ICommand command) => _commandQueue.Enqueue(command);
 
-        Tilemap floorTilemap = _selectedGridElement.activeTilemap;
+    public async Awaitable ProcessQueueAsync() {
+        if (_isProcessing) return;
+        _isProcessing = true;
 
-        HashSet<Vector3Int> walkableCache = new HashSet<Vector3Int>();
-        foreach (Vector3Int pos in floorTilemap.cellBounds.allPositionsWithin)
-        {
-            TerrainTile tile = floorTilemap.GetTile<TerrainTile>(pos);
-            if (tile != null && tile.isWalkable)
-            {
-                walkableCache.Add(pos);
-            }
+        while (_commandQueue.Count > 0) {
+            ICommand cmd = _commandQueue.Dequeue();
+            await cmd.ExecuteAsync(); 
         }
-        bool includeStartingPosition = true;
-        List<Vector3Int> path = PathFindingUtils.FindPath(_selectedGridElement.gridPosition, endPosition, includeStartingPosition, walkableCache, static (pos, cache) => cache.Contains(pos));        
-        highlightPathEventChannel.RaiseEvent(path);
-    }
 
-    public void HidePath()
-    {
-        highlightPathEventChannel.RaiseEvent(new List<Vector3Int>());
-    }
-
-    public void MoveToPosition(Vector3Int endPosition)
-    {
-        if (_selectedGridElement == null) return;
-
-        _selectedGridElement.ExecuteAction(endPosition);
+        _isProcessing = false;
     }
 }

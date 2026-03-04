@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CharacterEventChannelListener : GenericEventChannelListener<GridElementEventChannel, InteractableGridElement>
+public class AbilitySelectionEventChannelListener : GenericEventChannelListener<AbilitySelectionEventChannel, SelectedAbilityPayload?>
 {
     
 }

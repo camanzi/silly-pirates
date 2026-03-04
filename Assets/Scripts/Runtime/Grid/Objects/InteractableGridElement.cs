@@ -1,13 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Tilemaps;
 
 public class InteractableGridElement : GridElement, IClickable
 {
+    [Header("Abilities config")]
+    [SerializeField] private AbilityBase _defaultAbility;
 
     [Header("Event channels")]
-    [SerializeField] private GridElementEventChannel _selectedGridElementEventChannel;
-    [SerializeField] private GridElementEventChannel _deselectedCharacterEventChannel;
+    [SerializeField] private AbilitySelectionEventChannel _selectAbilityEventChannel;
 
     public bool isSelected { 
         get { return _isSelected; } 
@@ -16,10 +17,10 @@ public class InteractableGridElement : GridElement, IClickable
             _isSelected = value;
             if (_isSelected)
             {
-                _selectedGridElementEventChannel.RaiseEvent(this);
+                _selectAbilityEventChannel.RaiseEvent(new SelectedAbilityPayload(_defaultAbility, this));
             } else
             {
-                _deselectedCharacterEventChannel.RaiseEvent(this);
+                _selectAbilityEventChannel.RaiseEvent(null);
             }
         }
     }
@@ -55,7 +56,7 @@ public class InteractableGridElement : GridElement, IClickable
         }
     }
 
-    public virtual void ExecuteAction(Vector3Int targetPosition)
+    public virtual void ExecuteAction(IEnumerable<Vector3Int> calculatedPosition)
     {
         isSelected = false;
         RemoveSelectionIndicator();

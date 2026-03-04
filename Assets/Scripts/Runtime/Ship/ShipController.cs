@@ -32,13 +32,6 @@ public class ShipController : MonoBehaviour
         _floorMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _floorMapTag);
     }
 
-    private async void ChangeTileAfterDelay(int delay, Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null) 
-    {
-        await Task.Delay(delay);
-
-        renderingMap.SetTile(tilePosition, newTile);
-    }
-
     private T FindChildByTag<T>(GameObject parent, string tag) 
     {
         T result = default(T);
@@ -58,33 +51,26 @@ public class ShipController : MonoBehaviour
     public void HandleCellClicked(Vector3Int cellPosition)
     {
         CacheTile(cellPosition, _floorMap.GetTile<Tile>(cellPosition));
-
-        _floorMap.SetTile(cellPosition, _clickFloorTile);
-
-        ChangeTileAfterDelay(500, cellPosition, _floorMap, RemoveCachedTile(cellPosition));
     }
 
     public void HandleCellHovered(Vector3Int cellPosition)
     {
         CacheTile(cellPosition, _floorMap.GetTile<Tile>(cellPosition));
-
-        ChangeTileAfterDelay(0, cellPosition, _floorMap, _hoverFloorTile);
     }
 
     public void HandleCellExited(Vector3Int cellPosition)
     {
-        ChangeTileAfterDelay(0, cellPosition, _floorMap, RemoveCachedTile(cellPosition));
     }
 
     public void HighlightPath(List<Vector3Int> path)
     {
         foreach (Vector3Int node in previousPath)
         {
-            ChangeTileAfterDelay(0, node, _floorMap, _defaultFloorTile);
+            // Rimuovo la selezione precedente
         }
         foreach (Vector3Int node in path)
         {
-            ChangeTileAfterDelay(0, node, _floorMap, _hoverFloorTile);
+            // Attivo la colorazione per i nodi
         }
         previousPath = path;
     }
