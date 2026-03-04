@@ -1583,6 +1583,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Ship
       objectReference: {fileID: 0}
+    - target: {fileID: 5963020343186949371, guid: c754ea2c20159ac4f9603c45f0a39a3f, type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869709542948623968, guid: c754ea2c20159ac4f9603c45f0a39a3f, type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -51,20 +51,6 @@ public class ShipController : MonoBehaviour
         return result;
     }
 
-    public void HandleCellClicked(Vector3Int cellPosition)
-    {
-        CacheTile(cellPosition, _previewMap.GetTile<Tile>(cellPosition));
-
-         _previewMap.SetTile(cellPosition, _clickFloorTile);
-
-        _ = ChangeTileAfterDelay(500, cellPosition, _previewMap, RemoveCachedTile(cellPosition));
-    }
-
-    public void HandleCellExited(Vector3Int cellPosition)
-    {
-        _ = ChangeTileAfterDelay(0, cellPosition, _previewMap, RemoveCachedTile(cellPosition));
-    }
-
     public void HighlightPath(HighlightCellsPayload payload)
     {
         foreach (Vector3Int node in previousHighlight ?? new List<Vector3Int>())
@@ -85,21 +71,8 @@ public class ShipController : MonoBehaviour
         if (delay > 0)
         {
             await Awaitable.WaitForSecondsAsync(delay);
-            
         }
 
         renderingMap.SetTile(tilePosition, newTile);
-    }
-
-    private void CacheTile(Vector3Int cellPosition, Tile tile)
-    {
-        _previousTileSet.TryAdd(cellPosition, tile);
-    }
-
-    private Tile RemoveCachedTile(Vector3Int cellPosition)
-    {
-        _previousTileSet.Remove(cellPosition, out Tile removedTile);
-
-        return removedTile;
     }
 }
