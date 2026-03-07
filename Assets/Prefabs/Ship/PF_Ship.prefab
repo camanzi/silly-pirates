@@ -1428,19 +1428,7 @@ MonoBehaviour:
   eventChannel: {fileID: 11400000, guid: 508c9ee1fec077741aedf3d3e526471e, type: 2}
   response:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1450389051071591541}
-        m_TargetAssemblyTypeName: ShipController, Assembly-CSharp
-        m_MethodName: HandleCellExited
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &7869709542948623968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1456,19 +1444,7 @@ MonoBehaviour:
   eventChannel: {fileID: 11400000, guid: 994d80e2828b3c842a461c0da3198911, type: 2}
   response:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1450389051071591541}
-        m_TargetAssemblyTypeName: ShipController, Assembly-CSharp
-        m_MethodName: HandleCellExited
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1538545182024920381
 MonoBehaviour:
   m_ObjectHideFlags: 0

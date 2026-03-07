@@ -4,6 +4,9 @@ using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Move Ability", menuName = "Character/Abilities/Move Ability")]
 public class MoveAbility : AbilityBase {
+
+    [SerializeField] private GridStateDataSO _gridStateData;
+
     public override bool CanExecute(GridElement caster, Vector3Int target)
     {
         ICollection<Vector3Int> path = GetAffectedCells(target, caster);
@@ -17,12 +20,17 @@ public class MoveAbility : AbilityBase {
     }
 
     public override List<Vector3Int> GetAffectedCells(Vector3Int target, GridElement caster) {
+        if (_gridStateData.IsOccupied(target) && !_gridStateData.GetEntityAt(target).Contains(caster)) {
+            return new List<Vector3Int>(); 
+        }
+
         Tilemap floorTilemap = caster.activeTilemap;
 
         HashSet<Vector3Int> walkableCache = new HashSet<Vector3Int>();
         foreach (Vector3Int pos in floorTilemap.cellBounds.allPositionsWithin)
         {
             TerrainTile tile = floorTilemap.GetTile<TerrainTile>(pos);
+            
             if (tile != null && tile.isWalkable)
             {
                 walkableCache.Add(pos);

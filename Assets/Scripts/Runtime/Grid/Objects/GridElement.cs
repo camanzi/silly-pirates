@@ -7,11 +7,22 @@ public class GridElement : MonoBehaviour
 
     [Header("Configs")]
     [SerializeField] private LayerMask floorGridLayer;
+    [SerializeField] private GridStateDataSO _gridStateData;
 
-    public Vector3Int gridPosition { get; set; }
+    public Vector3Int gridPosition { 
+        get { return _gridPosition; }
+        set
+        {
+            _gridStateData.UnregisterOccupancy(_gridPosition, this);
+            _gridPosition = value;
+            _gridStateData.RegisterOccupancy(gridPosition, this);
+        }
+        }
     public Vector3 worldPosition => _floorTilemap.CellToWorld(gridPosition);
     public Tilemap activeTilemap =>_floorTilemap;
     protected Tilemap _floorTilemap;
+
+    private Vector3Int _gridPosition;
     
     protected virtual void Awake()
     {
