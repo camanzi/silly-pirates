@@ -9,6 +9,10 @@ public class MoveAbility : AbilityBase {
 
     public override bool CanExecute(GridElement caster, Vector3Int target)
     {
+        if (_gridStateData.IsOccupied(target) && !_gridStateData.GetEntityAt(target).Contains(caster)) {
+            return false;
+        }
+        
         ICollection<Vector3Int> path = GetAffectedCells(target, caster);
         return ((GridCharacter)caster).maxMoveSpeed >= path.Count;
     }
@@ -20,10 +24,6 @@ public class MoveAbility : AbilityBase {
     }
 
     public override List<Vector3Int> GetAffectedCells(Vector3Int target, GridElement caster) {
-        if (_gridStateData.IsOccupied(target) && !_gridStateData.GetEntityAt(target).Contains(caster)) {
-            return new List<Vector3Int>(); 
-        }
-
         Tilemap floorTilemap = caster.activeTilemap;
 
         HashSet<Vector3Int> walkableCache = new HashSet<Vector3Int>();
