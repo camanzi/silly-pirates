@@ -1365,6 +1365,9 @@ MonoBehaviour:
   _gridLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  _uiLayer:
+    serializedVersion: 2
+    m_Bits: 32
   OnCellClicked: {fileID: 11400000, guid: 1ce859b2ab4d7224da31a7c901587ed1, type: 2}
   OnCellHovered: {fileID: 11400000, guid: b5dded334b57b934399f55d785bfc9ce, type: 2}
   OnCellExited: {fileID: 11400000, guid: 508c9ee1fec077741aedf3d3e526471e, type: 2}

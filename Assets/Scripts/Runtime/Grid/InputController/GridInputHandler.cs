@@ -12,6 +12,7 @@ public class GridInputHandler : MonoBehaviour
     
     [Header("Settings")]
     [SerializeField] private LayerMask _gridLayerMask;
+    [SerializeField] private LayerMask _uiLayer;
     
     [Header("event Channels")]
     public Vector3IntEventChannel OnCellClicked;
@@ -69,10 +70,7 @@ public class GridInputHandler : MonoBehaviour
     {
         cellPosition = Vector3Int.zero;
         
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return false;
-        }
+       if (IsPointerOverUI()) return false;
 
         if (Mouse.current == null)
             return false;
@@ -100,4 +98,30 @@ public class GridInputHandler : MonoBehaviour
     {
         return _grid.GetCellCenterWorld(cellPosition);
     }
+
+    private bool IsPointerOverUI()
+{
+    if (EventSystem.current == null) return false;
+
+    if (!EventSystem.current.IsPointerOverGameObject()) return false;
+
+    GameObject currentObj = EventSystem.current.currentSelectedGameObject;
+    
+    if (currentObj == null)
+    {
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Mouse.current.position.ReadValue();
+        var results = new System.Collections.Generic.List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+        
+        foreach (var result in results)
+        {
+            if (result.gameObject.layer == _uiLayer) 
+                return true;
+        }
+        return false;
+    }
+
+    return currentObj.layer == _uiLayer;
+}
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AOEAbility : AbilityBase {
+public abstract class AOEAbility : CharacterAbilityBase {
     [SerializeField] private ShapeType shapeType;
     [SerializeField] private int radius;
 

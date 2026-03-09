@@ -4,11 +4,11 @@ using UnityEngine.EventSystems;
 
 public class InteractableGridElement : GridElement, IClickable
 {
-    [Header("Abilities config")]
-    [SerializeField] private AbilityBase _defaultAbility;
 
     [Header("Event channels")]
     [SerializeField] private AbilitySelectionEventChannel _selectAbilityEventChannel;
+
+    private AbilityController _abilityController;
 
     public bool isSelected { 
         get { return _isSelected; } 
@@ -17,7 +17,7 @@ public class InteractableGridElement : GridElement, IClickable
             _isSelected = value;
             if (_isSelected)
             {
-                _selectAbilityEventChannel.RaiseEvent(new SelectedAbilityPayload(_defaultAbility, this));
+                _selectAbilityEventChannel.RaiseEvent(new SelectedAbilityPayload(_abilityController.defaultAbility, this));
             } else
             {
                 _selectAbilityEventChannel.RaiseEvent(null);
@@ -31,6 +31,7 @@ public class InteractableGridElement : GridElement, IClickable
     protected override void Awake()
     {
         base.Awake();
+        _abilityController = GetComponent<AbilityController>();
         _outlinerHelper = GetComponent<OutlinerHelper>();
     }
 

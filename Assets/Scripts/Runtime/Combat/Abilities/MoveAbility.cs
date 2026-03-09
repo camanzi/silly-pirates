@@ -3,9 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Move Ability", menuName = "Character/Abilities/Move Ability")]
-public class MoveAbility : AbilityBase {
-
-    [SerializeField] private GridStateDataSO _gridStateData;
+public class MoveAbility : CharacterAbilityBase {
 
     public override bool CanExecute(GridElement caster, Vector3Int target)
     {
@@ -19,7 +17,6 @@ public class MoveAbility : AbilityBase {
 
     public override ICommand CreateCommand(GridElement caster, Vector3Int target, List<GridElement> targetsInArea)
     {
-        ((InteractableGridElement) caster).isSelected = false;
         return new MoveCommand((GridCharacter) caster, GetAffectedCells(target, caster));
     }
 
