@@ -6,6 +6,7 @@ public class TurnController : MonoBehaviour
 {
     [Header("Event Channels")]
     [SerializeField] private HighlightCellsEventChannel _highlightCellsEventChannel;
+    [SerializeField] private HighlightTargetsEventChannel _targetTransformEventChannel;
 
     private SelectedAbilityPayload? _selectedAbility;
 
@@ -22,17 +23,18 @@ public class TurnController : MonoBehaviour
     {
         if (!_selectedAbility.HasValue) return;
 
-        List<Vector3Int> affectedCells = ((CharacterAbilityBase) _selectedAbility.Value.selectedAbility).GetAffectedCells(endPosition, _selectedAbility.Value.caster);
-        bool canExecute = ((CharacterAbilityBase)_selectedAbility.Value.selectedAbility).CanExecute(_selectedAbility.Value.caster, endPosition);
+        AbilityPreviewData data = _selectedAbility.Value.selectedAbility.GetPreviewData(endPosition, _selectedAbility.Value.caster);
+        bool canExecute = _selectedAbility.Value.selectedAbility.CanExecute(_selectedAbility.Value.caster, endPosition);
 
-        _highlightCellsEventChannel.RaiseEvent(new HighlightCellsPayload(affectedCells, canExecute));
+        _highlightCellsEventChannel.RaiseEvent(new HighlightCellsPayload(data.affectedCells, canExecute));
+        _targetTransformEventChannel.RaiseEvent(new HighlightTargetsPayload(data.targets, canExecute));
     } 
 
     public void OnCellClicked(Vector3Int target)
     {   
-        if (!_selectedAbility.HasValue || !((CharacterAbilityBase)_selectedAbility.Value.selectedAbility).CanExecute(_selectedAbility.Value.caster, target)) return;
+        if (!_selectedAbility.HasValue || !_selectedAbility.Value.selectedAbility.CanExecute(_selectedAbility.Value.caster, target)) return;
 
-        ICommand selectedAbilityCommand = ((CharacterAbilityBase)_selectedAbility.Value.selectedAbility).CreateCommand(_selectedAbility.Value.caster, target, new List<GridElement>());
+        ICommand selectedAbilityCommand = _selectedAbility.Value.selectedAbility.CreateCommand(_selectedAbility.Value.caster, target, new List<GridElement>());
         AddCommand(selectedAbilityCommand);
 
         _highlightCellsEventChannel.RaiseEvent(new HighlightCellsPayload());

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AOEAbility : CharacterAbilityBase {
+public abstract class AOEAbility : AbilityBase {
     [SerializeField] private ShapeType shapeType;
     [SerializeField] private int radius;
 
@@ -15,8 +15,8 @@ public abstract class AOEAbility : CharacterAbilityBase {
         throw new System.NotImplementedException();
     }
 
-    public override List<Vector3Int> GetAffectedCells(Vector3Int target, GridElement caster) {
+    public override AbilityPreviewData GetPreviewData(Vector3Int target, GridElement caster) {
         IAreaShape shapeEvaluator = ShapeFactory.GetShape(shapeType);
-        return shapeEvaluator.GetCells(target, radius, caster.gridPosition);
+        return new AbilityPreviewData(shapeEvaluator.GetCells(target, radius, caster.gridPosition));
     }
 }

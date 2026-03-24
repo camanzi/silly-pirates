@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(OutlinerHelper))]
 public class InteractableGridElement : GridElement, IClickable
 {
 

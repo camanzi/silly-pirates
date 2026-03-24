@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Move Ability", menuName = "Character/Abilities/Move Ability")]
-public class MoveAbility : CharacterAbilityBase {
+public class MoveAbility : AbilityBase {
 
     public override bool CanExecute(GridElement caster, Vector3Int target)
     {
@@ -11,16 +11,16 @@ public class MoveAbility : CharacterAbilityBase {
             return false;
         }
         
-        ICollection<Vector3Int> path = GetAffectedCells(target, caster);
-        return ((GridCharacter)caster).maxMoveSpeed >= path.Count;
+        AbilityPreviewData previewData = GetPreviewData(target, caster);
+        return ((GridCharacter)caster).maxMoveSpeed >= previewData.affectedCells.Count;
     }
 
     public override ICommand CreateCommand(GridElement caster, Vector3Int target, List<GridElement> targetsInArea)
     {
-        return new MoveCommand((GridCharacter) caster, GetAffectedCells(target, caster));
+        return new MoveCommand((GridCharacter) caster, GetPreviewData(target, caster).affectedCells);
     }
 
-    public override List<Vector3Int> GetAffectedCells(Vector3Int target, GridElement caster) {
+    public override AbilityPreviewData GetPreviewData(Vector3Int target, GridElement caster) {
         Tilemap floorTilemap = caster.activeTilemap;
 
         HashSet<Vector3Int> walkableCache = new HashSet<Vector3Int>();
@@ -34,6 +34,7 @@ public class MoveAbility : CharacterAbilityBase {
             }
         }
 
-        return PathFindingUtils.FindPath(caster.gridPosition, target, walkableCache, static (pos, cache) => cache.Contains(pos));
+        List<Vector3Int> path = PathFindingUtils.FindPath(caster.gridPosition, target, walkableCache, static (pos, cache) => cache.Contains(pos));
+        return new AbilityPreviewData(path);
     }
 }
