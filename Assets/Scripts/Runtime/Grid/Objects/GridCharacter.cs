@@ -17,22 +17,22 @@ public class GridCharacter : InteractableGridElement, IMovable
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
     }
 
-    public async Awaitable MoveTo(IEnumerable<Vector3Int> path, CancellationToken token)
+    public async Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token)
     {
         _moveTween.Stop();
     
         _directionalSpriteController.PlayAnimation("human_walk");
 
-        foreach (Vector3Int node in path)
+        foreach (Vector3 node in path)
         {
             if (token.IsCancellationRequested) break;
 
-            Vector3 targetPosition = _floorTilemap.GetCellCenterWorld(node);
+            Vector3 targetPosition = _floorTilemap.GetCellCenterWorld(Vector3Int.FloorToInt(node));
 
             transform.LookAt(targetPosition);
             await Tween.Position(transform, targetPosition, duration: 0.5f, ease: Ease.Linear);
             
-            gridPosition = node;
+            gridPosition = Vector3Int.FloorToInt(node);
         }
 
         _directionalSpriteController.PlayAnimation("human_idle");

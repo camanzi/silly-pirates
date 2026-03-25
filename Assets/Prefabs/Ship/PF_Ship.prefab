@@ -1300,7 +1300,6 @@ GameObject:
   - component: {fileID: 3150874238114497636}
   - component: {fileID: 1450389051071591541}
   - component: {fileID: 3839102876060226769}
-  - component: {fileID: 4466226748619291910}
   - component: {fileID: 1538545182024920381}
   m_Layer: 0
   m_Name: PF_Ship
@@ -1368,34 +1367,6 @@ MonoBehaviour:
   _mouseMoveThreshold: 1
   _onPointerMoved: {fileID: 11400000, guid: 219bff90088745048890addef74f5d99, type: 2}
   _onPointerClicked: {fileID: 11400000, guid: 1c9e583d899c4a646b407b480d433ce4, type: 2}
---- !u!114 &4466226748619291910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5928166714952300585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebf352686c4c36647a99c4f3ed741822, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Vector3IntChannelListener
-  eventChannel: {fileID: 11400000, guid: 1ce859b2ab4d7224da31a7c901587ed1, type: 2}
-  response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1450389051071591541}
-        m_TargetAssemblyTypeName: ShipController, Assembly-CSharp
-        m_MethodName: HandleCellClicked
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1538545182024920381
 MonoBehaviour:
   m_ObjectHideFlags: 0

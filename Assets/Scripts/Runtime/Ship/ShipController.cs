@@ -14,20 +14,17 @@ public class ShipController : MonoBehaviour
     [SerializeField] private Tile _defaultFloorTile;
     [SerializeField] private Tile _hoverFloorAllowTile;
     [SerializeField] private Tile _hoverFloorNotAllowTile;
-    [SerializeField] private Tile _clickFloorTile;
     
     private Grid _shipGrid;
     private Tilemap _modelsMap;
     private Tilemap _floorMap;
     private Tilemap _previewMap;
 
-    private Dictionary<Vector3Int, Tile> _previousTileSet = new Dictionary<Vector3Int, Tile>();
-
-    private ICollection<Vector3Int> previousHighlight;
+    private ICollection<Vector3> previousHighlight;
 
     private void Awake()
     {
-        previousHighlight = new List<Vector3Int>();
+        previousHighlight = new List<Vector3>();
         _shipGrid = GetComponentInChildren<Grid>();
         
         _modelsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _modelsMapTag);
@@ -51,19 +48,19 @@ public class ShipController : MonoBehaviour
         return result;
     }
 
-    public void HighlightPath(HighlightCellsPayload payload)
+    public void HighlightPath(HighlightPayload payload)
     {
-        foreach (Vector3Int node in previousHighlight ?? new List<Vector3Int>())
+        foreach (Vector3 node in previousHighlight ?? new List<Vector3>())
         {
-            _ = ChangeTileAfterDelay(0, node, _previewMap, _defaultFloorTile);
+            _ = ChangeTileAfterDelay(0, Vector3Int.FloorToInt(node), _previewMap, _defaultFloorTile);
         }
 
-        foreach (Vector3Int node in payload.cells ?? new List<Vector3Int>())
+        foreach (Vector3 node in payload.targets ?? new List<Vector3>())
         {
-            _ = ChangeTileAfterDelay(0, node, _previewMap, payload.isValidHighlight ? _hoverFloorAllowTile : _hoverFloorNotAllowTile);
+            _ = ChangeTileAfterDelay(0, Vector3Int.FloorToInt(node), _previewMap, payload.isValidHighlight ? _hoverFloorAllowTile : _hoverFloorNotAllowTile);
         }
 
-        previousHighlight = payload.cells;
+        previousHighlight = payload.targets;
     }
 
     private async Awaitable ChangeTileAfterDelay(int delay, Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null) 

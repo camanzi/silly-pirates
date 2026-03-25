@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IMovable
 {
-    public Awaitable MoveTo(IEnumerable<Vector3Int> path, CancellationToken token);
+    public Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token);
 }

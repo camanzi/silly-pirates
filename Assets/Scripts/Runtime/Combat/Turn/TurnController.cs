@@ -5,8 +5,8 @@ using UnityEngine;
 public class TurnController : MonoBehaviour
 {
     [Header("Event Channels")]
-    [SerializeField] private HighlightCellsEventChannel _highlightCellsEventChannel;
-    [SerializeField] private HighlightTargetsEventChannel _targetTransformEventChannel;
+    [SerializeField] private HighlightEventChannel _highlightCellsEventChannel;
+    [SerializeField] private HighlightEventChannel _targetTransformEventChannel;
 
     private SelectedAbilityPayload? _selectedAbilityPayload;
 
@@ -53,8 +53,8 @@ public class TurnController : MonoBehaviour
 
     private void ClearPreview()
     {
-        _highlightCellsEventChannel.RaiseEvent(new HighlightCellsPayload());
-        _targetTransformEventChannel.RaiseEvent(new HighlightTargetsPayload());
+        _highlightCellsEventChannel.RaiseEvent(HighlightPayload.Empty);
+        _targetTransformEventChannel.RaiseEvent(HighlightPayload.Empty);
     }
 
     private void DrawPreview(TargetingData targetingData)
@@ -65,8 +65,8 @@ public class TurnController : MonoBehaviour
         AbilityPreviewData data = ability.GetPreviewData(ability.IsFreeAim ? targetingData.worldPosition : targetingData.cellPosition, caster);
         bool canExecute = ability.CanExecute(caster, ability.IsFreeAim ? targetingData.worldPosition : targetingData.cellPosition);
 
-        _highlightCellsEventChannel.RaiseEvent(new HighlightCellsPayload(data.affectedCells, canExecute));
-        _targetTransformEventChannel.RaiseEvent(new HighlightTargetsPayload(data.targets, canExecute));
+        _highlightCellsEventChannel.RaiseEvent(new HighlightPayload(data.affectedCells, canExecute));
+        _targetTransformEventChannel.RaiseEvent(new HighlightPayload(data.freeAimTargets, canExecute, caster.transform.position));
     } 
 
     public void AddCommand(ICommand command) => _commandQueue.Enqueue(command);

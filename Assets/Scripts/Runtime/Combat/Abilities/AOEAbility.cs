@@ -17,6 +17,6 @@ public abstract class AOEAbility : AbilityBase {
 
     public override AbilityPreviewData GetPreviewData(Vector3 target, GridElement caster) {
         IAreaShape shapeEvaluator = ShapeFactory.GetShape(shapeType);
-        return new AbilityPreviewData(shapeEvaluator.GetCells(Vector3Int.FloorToInt(target), radius, caster.gridPosition));
+        return new AbilityPreviewData(affectedCells: shapeEvaluator.GetCells(Vector3Int.FloorToInt(target), radius, caster.gridPosition), freeAimTargets: new());
     }
 }

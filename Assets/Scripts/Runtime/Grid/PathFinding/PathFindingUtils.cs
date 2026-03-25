@@ -15,15 +15,15 @@ public static class PathFindingUtils
         new Vector3Int(0, -1, 0), new Vector3Int(-1, -1, 0), new Vector3Int(-1, 0, 0)
     };
 
-    public static List<Vector3Int> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, TState state, Func<Vector3Int, TState, bool> walkabilityCheck)
+    public static List<Vector3> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, TState state, Func<Vector3Int, TState, bool> walkabilityCheck)
     {
         return FindPath(startPos, endPos, false, state, walkabilityCheck);
     }
-    public static List<Vector3Int> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, bool includeStartingPosition, TState state, Func<Vector3Int, TState, bool> walkabilityCheck)
+    public static List<Vector3> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, bool includeStartingPosition, TState state, Func<Vector3Int, TState, bool> walkabilityCheck)
     {
         List<Vector3Int> openSet = new List<Vector3Int> { startPos };
         HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
-        Dictionary<Vector3Int, AStarNode> allNodes = new Dictionary<Vector3Int, AStarNode>();
+        Dictionary<Vector3, AStarNode> allNodes = new Dictionary<Vector3, AStarNode>();
 
         allNodes[startPos] = new AStarNode(startPos, true, 0, GetDistance(startPos, endPos), null);
 
@@ -73,7 +73,7 @@ public static class PathFindingUtils
             }
         }
 
-        return new List<Vector3Int>();
+        return new List<Vector3>();
     }
 
     private static List<Vector3Int> GetNeighbors(Vector3Int pos)
@@ -103,10 +103,10 @@ public static class PathFindingUtils
         return new Vector3Int(q, r, -q - r);
     }
 
-    private static List<Vector3Int> RetracePath(Dictionary<Vector3Int, AStarNode> allNodes, Vector3Int start, Vector3Int end, bool includeStartingPosition)
+    private static List<Vector3> RetracePath(Dictionary<Vector3, AStarNode> allNodes, Vector3Int start, Vector3Int end, bool includeStartingPosition)
     {
-        List<Vector3Int> path = new List<Vector3Int>();
-        Vector3Int? currentPos = end;
+        List<Vector3> path = new List<Vector3>();
+        Vector3? currentPos = end;
 
         while (currentPos != null && currentPos != start)
         {

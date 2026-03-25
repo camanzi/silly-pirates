@@ -4,10 +4,10 @@ using UnityEngine;
 public class MoveCommand : ICommand
 {
     private readonly GridCharacter _caster;
-    private readonly List<Vector3Int> _path;
+    private readonly List<Vector3> _path;
     private Vector3Int _oldPosition;
 
-    public MoveCommand(GridCharacter caster, List<Vector3Int> path)
+    public MoveCommand(GridCharacter caster, List<Vector3> path)
     {
         _caster = caster;
         _path = path;

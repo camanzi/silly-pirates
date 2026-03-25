@@ -4,30 +4,17 @@ using UnityEngine.Tilemaps;
 
 public struct AbilityPreviewData
 {
-    public List<Vector3Int> affectedCells;    
-    public List<Vector3> targets;
+    public List<Vector3> affectedCells;    
+    public List<Vector3> freeAimTargets;
 
-    public AbilityPreviewData(List<Vector3Int> affectedCells, List<Vector3> targets)
+    public AbilityPreviewData(List<Vector3> affectedCells, List<Vector3> freeAimTargets)
     {
         this.affectedCells = affectedCells;
-        this.targets = targets;
-    }    
-
-    public AbilityPreviewData(List<Vector3Int> affectedCells)
-    {
-        this.affectedCells = affectedCells;
-        this.targets = new();
-    }    
-
-    public AbilityPreviewData(List<Vector3> targets)
-    {
-        this.affectedCells = new();
-        this.targets = targets;
-    }    
-
+        this.freeAimTargets = freeAimTargets;
+    }      
 
     public static AbilityPreviewData Empty => new AbilityPreviewData { 
         affectedCells = new (), 
-        targets = new () 
+        freeAimTargets = new () 
     };
 }

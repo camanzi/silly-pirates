@@ -35,7 +35,7 @@ public class MoveAbility : AbilityBase {
             }
         }
 
-        List<Vector3Int> path = PathFindingUtils.FindPath(caster.gridPosition, Vector3Int.FloorToInt(target), walkableCache, static (pos, cache) => cache.Contains(pos));
-        return new AbilityPreviewData(path);
+        List<Vector3> path = PathFindingUtils.FindPath(caster.gridPosition, Vector3Int.FloorToInt(target), walkableCache, static (pos, cache) => cache.Contains(pos));
+        return new AbilityPreviewData(affectedCells: path, freeAimTargets: new());
     }
 }

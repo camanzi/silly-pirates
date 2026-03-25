@@ -20,7 +20,7 @@ public class ShootWithEquipmentAbility : AbilityBase
         Debug.DrawRay(caster.worldPosition, target, Color.green, 0.5f);
 
         List<Vector3> targetObjs = new() { target };
-        return new AbilityPreviewData(targetObjs);
+        return new AbilityPreviewData(affectedCells: new(), freeAimTargets: targetObjs);
     
     }
 }

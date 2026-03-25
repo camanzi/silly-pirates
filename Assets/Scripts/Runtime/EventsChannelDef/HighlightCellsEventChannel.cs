@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Highlight Cells Event Channel", menuName = "Events/Highlighting/Highlight Cells Event Channel")]
-public class HighlightCellsEventChannel : GenericEventChannelSO<HighlightCellsPayload>
+[CreateAssetMenu(fileName = "Highlight Event Channel", menuName = "Events/Highlighting/Highlight Event Channel")]
+public class HighlightEventChannel : GenericEventChannelSO<HighlightPayload>
 {
     
 }
