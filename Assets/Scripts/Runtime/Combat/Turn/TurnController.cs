@@ -13,7 +13,6 @@ public class TurnController : MonoBehaviour
     private Queue<ICommand> _commandQueue = new Queue<ICommand>();
     private bool _isProcessing = false;
 
-    #region Path Preview
     public void UpdateSelectedAbility(SelectedAbilityPayload? payload)
     {
         _selectedAbility = payload;
@@ -42,7 +41,6 @@ public class TurnController : MonoBehaviour
         // Per il momento faccio partire subito il ProcessQueueAsync, in futuro potrebbe essere da spostare
         _ = ProcessQueueAsync();
     }
-    #endregion
 
     public void AddCommand(ICommand command) => _commandQueue.Enqueue(command);
 

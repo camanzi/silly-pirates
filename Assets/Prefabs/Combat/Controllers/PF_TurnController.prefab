@@ -132,3 +132,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnController
   _highlightCellsEventChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
+  _targetTransformEventChannel: {fileID: 11400000, guid: a6ef538692479194d8040fbd9080a302, type: 2}
