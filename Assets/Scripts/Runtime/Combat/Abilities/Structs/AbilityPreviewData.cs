@@ -5,9 +5,9 @@ using UnityEngine.Tilemaps;
 public struct AbilityPreviewData
 {
     public List<Vector3Int> affectedCells;    
-    public List<Transform> targets;
+    public List<Vector3> targets;
 
-    public AbilityPreviewData(List<Vector3Int> affectedCells, List<Transform> targets)
+    public AbilityPreviewData(List<Vector3Int> affectedCells, List<Vector3> targets)
     {
         this.affectedCells = affectedCells;
         this.targets = targets;
@@ -19,7 +19,7 @@ public struct AbilityPreviewData
         this.targets = new();
     }    
 
-    public AbilityPreviewData(List<Transform> targets)
+    public AbilityPreviewData(List<Vector3> targets)
     {
         this.affectedCells = new();
         this.targets = targets;

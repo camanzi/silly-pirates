@@ -1,11 +1,11 @@
 public struct SelectedAbilityPayload
 {
-    public SelectedAbilityPayload(AbilityBase selectedAbility, GridElement caster)
+    public SelectedAbilityPayload(AbilityBase ability, GridElement caster)
     {
-        this.selectedAbility = selectedAbility;
+        this.ability = ability;
         this.caster = caster;
     }
 
-    public AbilityBase selectedAbility;
+    public AbilityBase ability;
     public GridElement caster;
 }

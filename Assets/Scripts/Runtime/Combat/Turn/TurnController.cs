@@ -8,39 +8,66 @@ public class TurnController : MonoBehaviour
     [SerializeField] private HighlightCellsEventChannel _highlightCellsEventChannel;
     [SerializeField] private HighlightTargetsEventChannel _targetTransformEventChannel;
 
-    private SelectedAbilityPayload? _selectedAbility;
+    private SelectedAbilityPayload? _selectedAbilityPayload;
 
     private Queue<ICommand> _commandQueue = new Queue<ICommand>();
     private bool _isProcessing = false;
 
     public void UpdateSelectedAbility(SelectedAbilityPayload? payload)
     {
-        _selectedAbility = payload;
+        _selectedAbilityPayload = payload;
     }
 
-    public void DrawPreview(Vector3Int endPosition)
+    public void OnPointerMoved(TargetingData data)
     {
-        if (!_selectedAbility.HasValue) return;
+        if (!_selectedAbilityPayload.HasValue) return;
 
-        AbilityPreviewData data = _selectedAbility.Value.selectedAbility.GetPreviewData(endPosition, _selectedAbility.Value.caster);
-        bool canExecute = _selectedAbility.Value.selectedAbility.CanExecute(_selectedAbility.Value.caster, endPosition);
+        if (!data.isOverValidGrid && !_selectedAbilityPayload.Value.ability.IsFreeAim)
+        {
+            ClearPreview();
+            return;
+        }
+
+        DrawPreview(data);
+    }
+
+    public void OnPointerClicked(TargetingData targetingData)
+    {
+        if (!_selectedAbilityPayload.HasValue) return;
+
+        GridElement caster = _selectedAbilityPayload.Value.caster;
+        AbilityBase ability = _selectedAbilityPayload.Value.ability;
+        Vector3 target = ability.IsFreeAim ? targetingData.worldPosition : targetingData.cellPosition;
+
+        if (!ability.CanExecute(_selectedAbilityPayload.Value.caster, target)) return;
+
+        // I target in area ora sono vuoti... piú avanti capire come calcolari
+        ICommand selectedAbilityCommand = ability.CreateCommand(caster, target, new List<GridElement>());
+        AddCommand(selectedAbilityCommand);
+
+        ClearPreview();
+        
+        // Per il momento faccio partire subito il ProcessQueueAsync, in futuro potrebbe essere da spostare
+        _ = ProcessQueueAsync();
+    }
+
+    private void ClearPreview()
+    {
+        _highlightCellsEventChannel.RaiseEvent(new HighlightCellsPayload());
+        _targetTransformEventChannel.RaiseEvent(new HighlightTargetsPayload());
+    }
+
+    private void DrawPreview(TargetingData targetingData)
+    {
+        AbilityBase ability = _selectedAbilityPayload.Value.ability;
+        GridElement caster = _selectedAbilityPayload.Value.caster;
+
+        AbilityPreviewData data = ability.GetPreviewData(ability.IsFreeAim ? targetingData.worldPosition : targetingData.cellPosition, caster);
+        bool canExecute = ability.CanExecute(caster, ability.IsFreeAim ? targetingData.worldPosition : targetingData.cellPosition);
 
         _highlightCellsEventChannel.RaiseEvent(new HighlightCellsPayload(data.affectedCells, canExecute));
         _targetTransformEventChannel.RaiseEvent(new HighlightTargetsPayload(data.targets, canExecute));
     } 
-
-    public void OnCellClicked(Vector3Int target)
-    {   
-        if (!_selectedAbility.HasValue || !_selectedAbility.Value.selectedAbility.CanExecute(_selectedAbility.Value.caster, target)) return;
-
-        ICommand selectedAbilityCommand = _selectedAbility.Value.selectedAbility.CreateCommand(_selectedAbility.Value.caster, target, new List<GridElement>());
-        AddCommand(selectedAbilityCommand);
-
-        _highlightCellsEventChannel.RaiseEvent(new HighlightCellsPayload());
-
-        // Per il momento faccio partire subito il ProcessQueueAsync, in futuro potrebbe essere da spostare
-        _ = ProcessQueueAsync();
-    }
 
     public void AddCommand(ICommand command) => _commandQueue.Enqueue(command);
 

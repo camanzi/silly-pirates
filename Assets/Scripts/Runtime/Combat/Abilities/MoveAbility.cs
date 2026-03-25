@@ -5,9 +5,10 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "Move Ability", menuName = "Abilities/Character/Move Ability")]
 public class MoveAbility : AbilityBase {
 
-    public override bool CanExecute(GridElement caster, Vector3Int target)
+    public override bool CanExecute(GridElement caster, Vector3 target)
     {
-        if (_gridStateData.IsOccupied(target) && !_gridStateData.GetEntityAt(target).Contains(caster)) {
+        Vector3Int cellPosition = Vector3Int.FloorToInt(target);
+        if (_gridStateData.IsOccupied(cellPosition) && !_gridStateData.GetEntityAt(cellPosition).Contains(caster)) {
             return false;
         }
         
@@ -15,7 +16,7 @@ public class MoveAbility : AbilityBase {
         return ((GridCharacter)caster).maxMoveSpeed >= previewData.affectedCells.Count;
     }
 
-    public override ICommand CreateCommand(GridElement caster, Vector3Int target, List<GridElement> targetsInArea)
+    public override ICommand CreateCommand(GridElement caster, Vector3 target, List<GridElement> targetsInArea)
     {
         return new MoveCommand((GridCharacter) caster, GetPreviewData(target, caster).affectedCells);
     }

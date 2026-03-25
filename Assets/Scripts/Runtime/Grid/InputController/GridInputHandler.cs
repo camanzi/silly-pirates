@@ -14,13 +14,14 @@ public class GridInputHandler : MonoBehaviour
     [SerializeField] private LayerMask _gridLayerMask;
     [SerializeField] private LayerMask _uiLayer;
     
+    [Header("Movement Settings")]
+    [SerializeField] private float _mouseMoveThreshold = 1.0f;
+
     [Header("event Channels")]
-    public Vector3IntEventChannel OnCellClicked;
-    public Vector3IntEventChannel OnCellHovered;
-    public Vector3IntEventChannel OnCellExited;
-    public Vector3IntEventChannel OnTileMapExit;
-    
+    [SerializeField] private TargetingDataEventChannel _onPointerMoved;
+    [SerializeField] private TargetingDataEventChannel _onPointerClicked;    
     private Vector3Int? _lastHoveredCell;
+    private Vector2 _lastScreenPosition;
     
     private Camera _mainCamera;
     
@@ -31,97 +32,83 @@ public class GridInputHandler : MonoBehaviour
     
     private void Update()
     {
-        HandleHover();
-        HandleClick();
-    }
+        TargetingData data = GetTargetingData();
     
-    private void HandleHover()
-    {
-        bool hasFoundCell = TryGetCellAtMousePosition(out Vector3Int cellPosition); 
-        if (hasFoundCell && _lastHoveredCell != cellPosition)
+        if (HasPointerMoved() || data.cellPosition != _lastHoveredCell)
         {
-            if (_lastHoveredCell.HasValue)
-            {
-                OnCellExited.RaiseEvent(_lastHoveredCell.Value);
-            }
-
-            _lastHoveredCell = cellPosition;
-            OnCellHovered.RaiseEvent(cellPosition);
-        } else if (!hasFoundCell && _lastHoveredCell.HasValue)
-        {
-            OnTileMapExit.RaiseEvent(_lastHoveredCell.Value);
-            _lastHoveredCell = null;
+            _lastHoveredCell = data.cellPosition;
+            _onPointerMoved.RaiseEvent(data);
         }
-    }
-    
-    private void HandleClick()
-    {
-        // FIXME poi da capire come gestirlo se si usa un controller o comunque un altro dispositivo
+
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (TryGetCellAtMousePosition(out Vector3Int cellPosition))
-            {
-                OnCellClicked.RaiseEvent(cellPosition);
-            }
+            _onPointerClicked.RaiseEvent(data);
         }
     }
     
-    private bool TryGetCellAtMousePosition(out Vector3Int cellPosition)
+    private TargetingData GetTargetingData()
     {
-        cellPosition = Vector3Int.zero;
-        
-       if (IsPointerOverUI()) return false;
+        if (IsPointerOverUI() || Mouse.current == null) return TargetingData.Empty;
 
-        if (Mouse.current == null)
-            return false;
-        
         Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
         Ray ray = _mainCamera.ScreenPointToRay(mouseScreenPos);
-        
-        Plane gridPlane = new Plane(Vector3.up, new Vector3(0, _interactableTilemap.transform.position.y, 0));
-        
-        if (gridPlane.Raycast(ray, out float enter))
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
-            Vector3 hitPoint = ray.GetPoint(enter);
-            cellPosition = _grid.WorldToCell(hitPoint);
-            
-            if (_interactableTilemap.HasTile(cellPosition))
-            {
-                return true;
-            }
+            Vector3 worldPos = hit.point;
+            Vector3Int cellPos = _grid.WorldToCell(worldPos);
+            bool isValidCell = _interactableTilemap.HasTile(cellPos);
+
+            return new TargetingData(
+                worldPosition: worldPos, 
+                cellPosition: cellPos, 
+                isOverValidGrid: isValidCell
+            );
         }
-        
-        return false;
+
+        return TargetingData.Empty;
     }
-    
-    public Vector3 GetWorldPositionOfCell(Vector3Int cellPosition)
+
+    private bool HasPointerMoved()
     {
-        return _grid.GetCellCenterWorld(cellPosition);
+        if (Mouse.current == null) return false;
+
+        Vector2 currentScreenPos = Mouse.current.position.ReadValue();
+        
+        float distance = Vector2.Distance(currentScreenPos, _lastScreenPosition);
+
+        if (distance >= _mouseMoveThreshold)
+        {
+            _lastScreenPosition = currentScreenPos;
+            return true;
+        }
+
+        return false;
     }
 
     private bool IsPointerOverUI()
-{
-    if (EventSystem.current == null) return false;
-
-    if (!EventSystem.current.IsPointerOverGameObject()) return false;
-
-    GameObject currentObj = EventSystem.current.currentSelectedGameObject;
-    
-    if (currentObj == null)
     {
-        PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = Mouse.current.position.ReadValue();
-        var results = new System.Collections.Generic.List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, results);
-        
-        foreach (var result in results)
-        {
-            if (result.gameObject.layer == _uiLayer) 
-                return true;
-        }
-        return false;
-    }
+        if (EventSystem.current == null) return false;
 
-    return currentObj.layer == _uiLayer;
-}
+        if (!EventSystem.current.IsPointerOverGameObject()) return false;
+
+        GameObject currentObj = EventSystem.current.currentSelectedGameObject;
+        
+        if (currentObj == null)
+        {
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Mouse.current.position.ReadValue();
+            var results = new System.Collections.Generic.List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            
+            foreach (var result in results)
+            {
+                if (result.gameObject.layer == _uiLayer) 
+                    return true;
+            }
+            return false;
+        }
+
+        return currentObj.layer == _uiLayer;
+    }
 }

@@ -5,12 +5,12 @@ public abstract class AOEAbility : AbilityBase {
     [SerializeField] private ShapeType shapeType;
     [SerializeField] private int radius;
 
-    public override bool CanExecute(GridElement caster, Vector3Int target)
+    public override bool CanExecute(GridElement caster, Vector3 target)
     {
         throw new System.NotImplementedException();
     }
 
-    public override ICommand CreateCommand(GridElement caster, Vector3Int target, List<GridElement> targetsInArea)
+    public override ICommand CreateCommand(GridElement caster, Vector3 target, List<GridElement> targetsInArea)
     {
         throw new System.NotImplementedException();
     }

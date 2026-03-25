@@ -3,12 +3,12 @@ using UnityEngine;
 
 public struct HighlightTargetsPayload
 {
-    public HighlightTargetsPayload(ICollection<Transform> targets, bool isValidHighlight)
+    public HighlightTargetsPayload(ICollection<Vector3> targets, bool isValidHighlight)
     {
         this.targets = targets;
         this.isValidHighlight = isValidHighlight;
     }
 
-    public ICollection<Transform> targets;
+    public ICollection<Vector3> targets;
     public bool isValidHighlight;
 }
