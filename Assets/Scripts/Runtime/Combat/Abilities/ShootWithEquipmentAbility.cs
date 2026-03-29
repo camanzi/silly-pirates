@@ -16,8 +16,7 @@ public class ShootWithEquipmentAbility : AbilityBase
 
     public override AbilityPreviewData GetPreviewData(Vector3 target, GridElement caster)
     {
-        Debug.Log($"Sto mirando {target}");
-        Debug.DrawRay(caster.worldPosition, target, Color.green, 0.5f);
+        // Debug.DrawRay(caster.worldPosition, target, Color.green, 0.5f);
 
         List<Vector3> targetObjs = new() { target };
         return new AbilityPreviewData(affectedCells: new(), freeAimTargets: targetObjs);

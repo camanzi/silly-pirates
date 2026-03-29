@@ -859,78 +859,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 843761413}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &875176728 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3970896200464826270, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
-  m_PrefabInstance: {fileID: 6011743194702439395}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &875176729 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3365122536592145621, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
-  m_PrefabInstance: {fileID: 6011743194702439395}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 875176728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d34b9ffc41c799f41945463c8cfa86b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TurnController
---- !u!114 &875176734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 875176728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47d726ca307bcfd49a0e81347e821f6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TargetingDataChannelListener
-  eventChannel: {fileID: 11400000, guid: 1c9e583d899c4a646b407b480d433ce4, type: 2}
-  response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 875176729}
-        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
-        m_MethodName: OnPointerClicked
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &875176735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 875176728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47d726ca307bcfd49a0e81347e821f6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TargetingDataChannelListener
-  eventChannel: {fileID: 11400000, guid: 219bff90088745048890addef74f5d99, type: 2}
-  response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 875176729}
-        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
-        m_MethodName: OnPointerMoved
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &900829256
 GameObject:
   m_ObjectHideFlags: 0
@@ -2021,26 +1949,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3365122536592145621, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
-      propertyPath: _targetTransformEventChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: c8b4aaa8ffe0e8e449b1f092a61a0160, type: 2}
     - target: {fileID: 3970896200464826270, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
       propertyPath: m_Name
       value: PF_TurnController
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7879727613723519818, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
-    - {fileID: 8996381331623467711, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3970896200464826270, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 875176735}
-    - targetCorrespondingSourceObject: {fileID: 3970896200464826270, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 875176734}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
 --- !u!1001 &6134478278376400664
 PrefabInstance:

@@ -16,6 +16,7 @@ public class TurnController : MonoBehaviour
     public void UpdateSelectedAbility(SelectedAbilityPayload? payload)
     {
         _selectedAbilityPayload = payload;
+        ClearPreview();
     }
 
     public void OnPointerMoved(TargetingData data)

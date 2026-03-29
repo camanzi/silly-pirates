@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class FreeAimRenderer : MonoBehaviour
 {
+    [Header("Shared line configs")]
+    [SerializeField] private float _height = 5f;
+    [SerializeField] private int _resolution = 20;
+
     private LineRenderer _lineRenderer;
 
     private void Awake()
@@ -14,6 +18,8 @@ public class FreeAimRenderer : MonoBehaviour
         _lineRenderer.enabled = false;
     }
 
+    // FIXME later, attenzione PER OGNI target devo avere un line renderer dedicato per far partire piú lines.
+    // Questo vuol dire predisporre anche un pooler
     public void HighlightTargets(HighlightPayload payload)
     {
         if (payload.targets.Count == 0)
@@ -24,16 +30,33 @@ public class FreeAimRenderer : MonoBehaviour
 
         _lineRenderer.enabled = true;
         
-        _lineRenderer.positionCount = payload.targets.Count + 1;
-        _lineRenderer.SetPosition(0, payload.origin.Value);
-
-        for (int i = 0; i < payload.targets.Count; i++)
+        foreach (Vector3 target in payload.targets)
         {
-            _lineRenderer.SetPosition(i + 1, payload.targets[i]);
+            Color lineColor = payload.isValidHighlight ? Color.green : Color.red;
+            DrawLine(payload.origin.Value, target, lineColor);
+        }
+    }
+
+    private void DrawLine(Vector3 startPos, Vector3 endPos, Color lineColor)
+    {
+        // FIXME Pulla una nuova curva dal pooler e disegnala
+        _lineRenderer.positionCount = _resolution;
+        _lineRenderer.SetPosition(0, startPos);
+
+        Vector3 midPoint = (startPos + endPos) / 2;
+        Vector3 controlPoint = midPoint + Vector3.up * _height;
+
+        for (int i = 0; i < _resolution; i++) {
+            float t = i / (float)(_resolution - 1);
+            Vector3 pos = EvaluateBezierPoint(t, startPos, controlPoint, endPos);
+            _lineRenderer.SetPosition(i, pos);
         }
 
-        Color lineColor = payload.isValidHighlight ? Color.green : Color.red;
         _lineRenderer.startColor = lineColor;
         _lineRenderer.endColor = lineColor;
+    }
+
+    private Vector3 EvaluateBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2) {
+        return Mathf.Pow(1 - t, 2) * p0 + 2 * (1 - t) * t * p1 + Mathf.Pow(t, 2) * p2;
     }
 }
