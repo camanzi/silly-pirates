@@ -12,9 +12,6 @@ public class MoveCommand : ICommand
         _caster = caster;
         _path = path;
         _oldPosition = caster.gridPosition;
-
-        _caster.isSelected = false;
-        _caster.RemoveSelectionIndicator();
     }
 
     public async Awaitable ExecuteAsync()

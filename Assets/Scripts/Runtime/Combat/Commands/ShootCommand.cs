@@ -12,9 +12,6 @@ public class ShootCommand : ICommand
     {
         _equipment = equipment;
         _targets = targets;
-
-        equipment.isSelected = false;
-        equipment.RemoveSelectionIndicator();
     }
 
     public async Awaitable ExecuteAsync()

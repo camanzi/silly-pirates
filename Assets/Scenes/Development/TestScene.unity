@@ -279,6 +279,17 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &435965747 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3365122536592145621, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
+  m_PrefabInstance: {fileID: 6011743194702439395}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d34b9ffc41c799f41945463c8cfa86b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnController
 --- !u!1 &511849064
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,6 +452,111 @@ MonoBehaviour:
   enableRotation: 1
   enableTacticalViewEventChannel: {fileID: 11400000, guid: 9e7eec016bf71a649b66b2c0381ecaaa, type: 2}
   disableTacticalViewEventChannel: {fileID: 11400000, guid: fc780932b78f00c448d696a01aa1fbcb, type: 2}
+--- !u!1 &751298080
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 751298083}
+  - component: {fileID: 751298082}
+  - component: {fileID: 751298081}
+  - component: {fileID: 751298084}
+  m_Layer: 0
+  m_Name: PF_CombatStateManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &751298081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751298080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0739706f9a347b48a6531e69dbdbc46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableGridElementChannelListener
+  eventChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 751298082}
+        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_MethodName: OnElementClicked
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &751298082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751298080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538d9d099f0aa4d49af67dfaaa5b8474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatStateManager
+  _turnController: {fileID: 435965747}
+  _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  _initialState: {fileID: 11400000, guid: 479618e8b15bfd849afd6ee5b349a2a9, type: 2}
+--- !u!4 &751298083
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751298080}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &751298084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751298080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47d726ca307bcfd49a0e81347e821f6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetingDataChannelListener
+  eventChannel: {fileID: 11400000, guid: 219bff90088745048890addef74f5d99, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 751298082}
+        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_MethodName: OnPointerMoved
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &825212459
 GameObject:
   m_ObjectHideFlags: 0
@@ -1454,6 +1570,7 @@ GameObject:
   - component: {fileID: 1491160903}
   - component: {fileID: 1491160904}
   - component: {fileID: 1491160905}
+  - component: {fileID: 1491160906}
   m_Layer: 0
   m_Name: PF_Equipment
   m_TagString: Untagged
@@ -1508,7 +1625,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _selectionContext: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _selectAbilityEventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}
+  _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
 --- !u!65 &1491160904
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1543,6 +1662,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterAbilityController
   _defaultAbility: {fileID: 11400000, guid: 147837b5e015f104aae11e422168b2cf, type: 2}
+--- !u!114 &1491160906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491160900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ece5938f2f80a94a8b017f45b7f28df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoidChannelListener
+  eventChannel: {fileID: 11400000, guid: 09390d4986a250f40abf05741ea0ff76, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1491160903}
+        m_TargetAssemblyTypeName: InteractableGridElement, Assembly-CSharp
+        m_MethodName: UpdateOutlineStatus
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1906052223
 GameObject:
   m_ObjectHideFlags: 0
@@ -1953,7 +2100,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_TurnController
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7704906954441759604, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2035,3 +2183,4 @@ SceneRoots:
   - {fileID: 6011743194702439395}
   - {fileID: 1491160901}
   - {fileID: 3782858197976530919}
+  - {fileID: 751298083}

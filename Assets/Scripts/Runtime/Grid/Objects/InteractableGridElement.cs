@@ -4,28 +4,15 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(OutlinerHelper))]
 public class InteractableGridElement : GridElement, IClickable
 {
+    [Header("Dependencies")]
+    [SerializeField] private SelectionContextSO _selectionContext;
 
     [Header("Event channels")]
     [SerializeField] private AbilitySelectionEventChannel _selectAbilityEventChannel;
+    [SerializeField] private GridElementEventChannel _elementClickedChannel;
 
     private AbilityController _abilityController;
-
-    public bool isSelected { 
-        get { return _isSelected; } 
-        set
-        {
-            _isSelected = value;
-            if (_isSelected)
-            {
-                _selectAbilityEventChannel.RaiseEvent(new SelectedAbilityPayload(_abilityController.defaultAbility, this));
-            } else
-            {
-                _selectAbilityEventChannel.RaiseEvent(null);
-            }
-        }
-    }
-
-    protected bool _isSelected;
+    public AbilityBase defaultCharacterAbility => _abilityController.defaultAbility;
     protected OutlinerHelper _outlinerHelper;
 
     protected override void Awake()
@@ -40,25 +27,42 @@ public class InteractableGridElement : GridElement, IClickable
         base.OnEnable();
     }
 
+    public void SetVisualSelection(bool active)
+    {
+        if (active)
+        {
+            _outlinerHelper.AddToOutline();
+        }  else
+        {
+            _outlinerHelper.RemoveFromOutline();
+        } 
+    }
+
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
         _outlinerHelper.AddToOutline();
     }
     public virtual void OnPointerClick(PointerEventData eventData)
-    {
-        isSelected = !isSelected;
+    {   
+        _elementClickedChannel.RaiseEvent(this);
     }
 
     public virtual void OnPointerExit(PointerEventData eventData)
     {
-        if (!isSelected)
+        UpdateOutlineStatus();
+    }
+
+    public void UpdateOutlineStatus()
+    {
+        if (!IsSelectedBySystem())
         {
-            RemoveSelectionIndicator();
+            _outlinerHelper.RemoveFromOutline();
         }
     }
 
-    public void RemoveSelectionIndicator()
+    private bool IsSelectedBySystem()
     {
-        _outlinerHelper.RemoveFromOutline();
+        if (_selectionContext == null) return false;
+        return _selectionContext.IsElementSelected(this);
     }
 }
