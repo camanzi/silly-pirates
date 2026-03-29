@@ -464,6 +464,7 @@ GameObject:
   - component: {fileID: 751298082}
   - component: {fileID: 751298081}
   - component: {fileID: 751298084}
+  - component: {fileID: 751298085}
   m_Layer: 0
   m_Name: PF_CombatStateManager
   m_TagString: Untagged
@@ -548,6 +549,34 @@ MonoBehaviour:
       - m_Target: {fileID: 751298082}
         m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
         m_MethodName: OnPointerMoved
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &751298085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751298080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47d726ca307bcfd49a0e81347e821f6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetingDataChannelListener
+  eventChannel: {fileID: 11400000, guid: 1c9e583d899c4a646b407b480d433ce4, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 751298082}
+        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_MethodName: HandleGlobalClick
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2102,6 +2131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7704906954441759604, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
+    - {fileID: 478633340237029766, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

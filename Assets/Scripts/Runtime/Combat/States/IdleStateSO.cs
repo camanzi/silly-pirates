@@ -27,4 +27,6 @@ public class IdleStateSO : CombatStateSO
     }
 
     public override void HandlePointerMove(TargetingData data) { }
+
+    public override void HandleGlobalClick(TargetingData data) { }
 }

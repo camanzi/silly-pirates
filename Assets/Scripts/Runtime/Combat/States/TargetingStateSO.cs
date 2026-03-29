@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -45,5 +46,24 @@ public class TargetingStateSO : CombatStateSO
         manager.selectionCtx.ClearCtx();
         manager.combatCtx.ClearCtx();
         manager.TransitionToState(_idleStateTemplate);
+    }
+
+    public override void HandleGlobalClick(TargetingData data)
+    {
+        CombatContext combatCtx = manager.combatCtx;
+        AbilityBase selectedAbility = combatCtx.selectedAbility;
+        InteractableGridElement caster = manager.selectionCtx.currentCaster;
+
+        Vector3 target = selectedAbility.isFreeAim ? data.worldPosition : data.cellPosition;
+
+        if (selectedAbility.CanExecute(caster, target))
+        {
+            ICommand command = selectedAbility.CreateCommand(caster, target, new List<GridElement>());
+            
+            manager.turnController.AddCommand(command);
+            _ = manager.turnController.ProcessQueueAsync();
+
+            ClearCtxsAndReturnIdle();
+        }
     }
 }

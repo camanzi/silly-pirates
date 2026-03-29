@@ -7,7 +7,7 @@ public abstract class AbilityBase : ScriptableObject {
     [SerializeField] protected GridStateDataSO _gridStateData;
     [SerializeField] protected bool _isFreeAim;
 
-    public bool IsFreeAim => _isFreeAim;
+    public bool isFreeAim => _isFreeAim;
     protected Camera _camera;
 
     protected virtual void OnEnable()
