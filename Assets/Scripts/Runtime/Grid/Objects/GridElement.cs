@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
 public class GridElement : MonoBehaviour
@@ -17,17 +16,15 @@ public class GridElement : MonoBehaviour
             _gridPosition = value;
             _gridStateData.RegisterOccupancy(gridPosition, this);
         }
-        }
+    }
+
     public Vector3 worldPosition => _floorTilemap.CellToWorld(gridPosition);
     public Tilemap activeTilemap =>_floorTilemap;
     protected Tilemap _floorTilemap;
 
     private Vector3Int _gridPosition;
     
-    protected virtual void Awake()
-    {
-        
-    }
+    protected virtual void Awake() { }
 
     protected virtual void OnEnable()
     {

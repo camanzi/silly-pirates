@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -55,14 +54,23 @@ public class GridInputHandler : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
-            Vector3 worldPos = hit.point;
-            Vector3Int cellPos = _grid.WorldToCell(worldPos);
+            Vector3 finalWorldPos = hit.point;
+            ITargettable finalTarget = null;
+
+            if (hit.collider.TryGetComponent(out ITargettable target))
+            {
+                finalTarget = target;
+                finalWorldPos = hit.collider.transform.position;
+            }
+
+            Vector3Int cellPos = _grid.WorldToCell(finalWorldPos);
             bool isValidCell = _interactableTilemap.HasTile(cellPos);
 
             return new TargetingData(
-                worldPosition: worldPos, 
+                worldPosition: finalWorldPos, 
                 cellPosition: cellPos, 
-                isOverValidGrid: isValidCell
+                isOverValidGrid: isValidCell,
+                selectedTarget: finalTarget
             );
         }
 

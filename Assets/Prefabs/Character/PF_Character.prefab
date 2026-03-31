@@ -415,7 +415,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4197157872790995930}
         m_TargetAssemblyTypeName: GridCharacter, Assembly-CSharp
-        m_MethodName: UpdateOutlineStatus
+        m_MethodName: OnSelectionCtxChange
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

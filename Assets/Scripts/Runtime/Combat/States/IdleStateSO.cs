@@ -16,7 +16,7 @@ public class IdleStateSO : CombatStateSO
 
     public override void OnUpdate() { }
 
-    public override void HandleElementClick(GridElement element)
+    public override void HandleElementClick(IInteractableElement element)
     {
         if (element is InteractableGridElement interactable)
         {

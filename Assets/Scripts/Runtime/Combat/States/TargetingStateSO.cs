@@ -26,7 +26,7 @@ public class TargetingStateSO : CombatStateSO
         }
     }
 
-    public override void HandleElementClick(GridElement element)
+    public override void HandleElementClick(IInteractableElement element)
     {
         SelectionContextSO selectionCtx = manager.selectionCtx;
 
@@ -52,13 +52,13 @@ public class TargetingStateSO : CombatStateSO
     {
         CombatContext combatCtx = manager.combatCtx;
         AbilityBase selectedAbility = combatCtx.selectedAbility;
-        InteractableGridElement caster = manager.selectionCtx.currentCaster;
+        IInteractableElement caster = manager.selectionCtx.currentCaster;
 
         Vector3 target = selectedAbility.isFreeAim ? data.worldPosition : data.cellPosition;
 
         if (selectedAbility.CanExecute(caster, target))
         {
-            ICommand command = selectedAbility.CreateCommand(caster, target, new List<GridElement>());
+            ICommand command = selectedAbility.CreateCommand(caster, target, new List<IInteractableElement>());
             
             manager.turnController.AddCommand(command);
             _ = manager.turnController.ProcessQueueAsync();

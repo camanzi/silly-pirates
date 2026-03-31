@@ -4,13 +4,13 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Grid/Selection Context")]
 public class SelectionContextSO : ScriptableObject
 {
-    public InteractableGridElement currentCaster;
-    public List<GridElement> currentTargets = new();
+    public IInteractableElement currentCaster;
+    public List<IInteractableElement> currentTargets = new();
 
     [Header("Dependencies")]
     [SerializeField] private VoidEventChannel _onSelectionCtxChangeEventChannel;
 
-    public bool IsElementSelected(GridElement element)
+    public bool IsElementSelected(IInteractableElement element)
     {
         return currentCaster == element || currentTargets.Contains(element);
     }

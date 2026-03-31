@@ -34,7 +34,7 @@ public class CombatStateManager : MonoBehaviour
         _activeState?.OnUpdate();
     }
 
-    public void OnElementClicked(GridElement element)  => _activeState?.HandleElementClick(element);
+    public void OnElementClicked(IInteractableElement element)  => _activeState?.HandleElementClick(element);
 
     public void OnPointerMoved(TargetingData data)  => _activeState?.HandlePointerMove(data);
 

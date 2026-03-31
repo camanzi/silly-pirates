@@ -3,7 +3,7 @@ using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
-public class GridCharacter : InteractableGridElement, IMovable
+public class GridCharacter : InteractableGridElement, IMovable, ITargettable
 {
     // Da spostare piú avanti in uno SO di stats
     [Header("Grid Character configuration")]

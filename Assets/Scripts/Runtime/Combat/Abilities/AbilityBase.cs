@@ -15,10 +15,10 @@ public abstract class AbilityBase : ScriptableObject {
         _camera = Camera.main;
     }
 
-    public abstract AbilityPreviewData GetPreviewData(Vector3 target, GridElement caster);
+    public abstract AbilityPreviewData GetPreviewData(Vector3 target, IInteractableElement caster);
 
-    public abstract ICommand CreateCommand(GridElement caster, Vector3 target, List<GridElement> targetsInArea);
+    public abstract ICommand CreateCommand(IInteractableElement caster, Vector3 target, List<IInteractableElement> targetsInArea);
 
-    public abstract bool CanExecute(GridElement caster, Vector3 target);
+    public abstract bool CanExecute(IInteractableElement caster, Vector3 target);
 
 }

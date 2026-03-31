@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GridElementChannelListener : GenericEventChannelListener<GridElementEventChannel, GridElement>
+public class InteractableElementChannelListener : GenericEventChannelListener<InteractableElementEventChannel, IInteractableElement>
 {
     
 }

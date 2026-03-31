@@ -2,17 +2,25 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(OutlinerHelper))]
-public class InteractableGridElement : GridElement, IClickable
+public class InteractableGridElement : GridElement, ISelectable, IInteractableElement
 {
     [Header("Dependencies")]
     [SerializeField] private SelectionContextSO _selectionContext;
 
     [Header("Event channels")]
     [SerializeField] private AbilitySelectionEventChannel _selectAbilityEventChannel;
-    [SerializeField] private GridElementEventChannel _elementClickedChannel;
+    [SerializeField] private InteractableElementEventChannel _elementClickedChannel;
 
     private AbilityController _abilityController;
     public AbilityBase defaultCharacterAbility => _abilityController.defaultAbility;
+
+    public Transform Transform => transform;
+    public OutlinerHelper OutlinerHelper => _outlinerHelper;
+
+    public SelectionContextSO SelectionContext => _selectionContext;
+
+    public InteractableElementEventChannel ClickChannel => _elementClickedChannel;
+
     protected OutlinerHelper _outlinerHelper;
 
     protected override void Awake()
@@ -27,42 +35,12 @@ public class InteractableGridElement : GridElement, IClickable
         base.OnEnable();
     }
 
-    public void SetVisualSelection(bool active)
-    {
-        if (active)
-        {
-            _outlinerHelper.AddToOutline();
-        }  else
-        {
-            _outlinerHelper.RemoveFromOutline();
-        } 
-    }
+    public void OnPointerEnter(PointerEventData eventData) => this.HandlePointerEnter();
 
-    public virtual void OnPointerEnter(PointerEventData eventData)
-    {
-        _outlinerHelper.AddToOutline();
-    }
-    public virtual void OnPointerClick(PointerEventData eventData)
-    {   
-        _elementClickedChannel.RaiseEvent(this);
-    }
+    public void OnPointerClick(PointerEventData eventData) => this.HandlePointerClick();
 
-    public virtual void OnPointerExit(PointerEventData eventData)
-    {
-        UpdateOutlineStatus();
-    }
-
-    public void UpdateOutlineStatus()
-    {
-        if (!IsSelectedBySystem())
-        {
-            _outlinerHelper.RemoveFromOutline();
-        }
-    }
-
-    private bool IsSelectedBySystem()
-    {
-        if (_selectionContext == null) return false;
-        return _selectionContext.IsElementSelected(this);
-    }
+    public void OnPointerExit(PointerEventData eventData) => this.HandlePointerExit();
+    
+    // Chiamata da listenere
+    public void OnSelectionCtxChange() => this.HandlePointerExit();
 }

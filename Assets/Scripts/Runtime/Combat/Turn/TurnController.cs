@@ -11,22 +11,24 @@ public class TurnController : MonoBehaviour
     private Queue<ICommand> _commandQueue = new Queue<ICommand>();
     private bool _isProcessing = false;
 
-    public void DrawAbilityPreview(TargetingData targetingData, AbilityBase ability, GridElement caster)
+    #region ABILITY PREVIEW
+    // Attenzione forse la gestione corretta non dovrebbe essere qui, andrebbe spostata in un qualcosa di dedicato alla visualizzazione delle preview
+    public void DrawAbilityPreview(TargetingData targetingData, AbilityBase ability, IInteractableElement caster)
     {
         Vector3 targetPos = ability.isFreeAim ? targetingData.worldPosition : targetingData.cellPosition;
         AbilityPreviewData data = ability.GetPreviewData(targetPos, caster);
         bool canExecute = ability.CanExecute(caster, targetPos);
 
         _highlightCellsEventChannel.RaiseEvent(new HighlightPayload(data.affectedCells, canExecute));
-        _targetTransformEventChannel.RaiseEvent(new HighlightPayload(data.freeAimTargets, canExecute, caster.transform.position));
+        _targetTransformEventChannel.RaiseEvent(new HighlightPayload(data.freeAimTargets, canExecute, caster.Transform.position));
     }
 
-    // Attenzione forse la gestione corretta non dovrebbe essere qui, andrebbe spostata in un qualcosa di dedicato alla visualizzazione delle preview
     public void ClearPreview()
     {
         _highlightCellsEventChannel.RaiseEvent(HighlightPayload.Empty);
         _targetTransformEventChannel.RaiseEvent(HighlightPayload.Empty);
     }
+    #endregion
 
     public void AddCommand(ICommand command) => _commandQueue.Enqueue(command);
 
