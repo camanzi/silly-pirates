@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2300981207125442898}
-  - component: {fileID: 1283658834154143427}
   - component: {fileID: 3365122536592145621}
   m_Layer: 0
   m_Name: PF_TurnController
@@ -33,34 +32,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1283658834154143427
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3970896200464826270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd915b1ee90e46b40be81307b3874c05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CharacterEventChannelListener
-  eventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}
-  response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3365122536592145621}
-        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
-        m_MethodName: UpdateSelectedAbility
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &3365122536592145621
 MonoBehaviour:
   m_ObjectHideFlags: 0

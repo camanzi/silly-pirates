@@ -18,10 +18,10 @@ public abstract class AbilityBase : ScriptableObject {
         _camera = Camera.main;
     }
 
-    public abstract AbilityPreviewData GetPreviewData(Vector3 target, IInteractableElement caster);
+    public abstract AbilityPreviewData GetPreviewData(TargetingData targetingData, IInteractableElement caster);
 
-    public abstract ICommand CreateCommand(IInteractableElement caster, Vector3 target, List<IInteractableElement> targetsInArea);
+    public abstract ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData, List<IInteractableElement> targetsInArea);
 
-    public abstract bool CanExecute(IInteractableElement caster, Vector3 target);
+    public abstract bool CanExecute(IInteractableElement caster, TargetingData targetingData);
 
 }

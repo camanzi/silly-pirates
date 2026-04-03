@@ -497,7 +497,7 @@ GameObject:
   - component: {fileID: 3150874238114497636}
   - component: {fileID: 1450389051071591541}
   - component: {fileID: 3839102876060226769}
-  - component: {fileID: 1538545182024920381}
+  - component: {fileID: 5797126308011357101}
   m_Layer: 0
   m_Name: PF_Ship
   m_TagString: Untagged
@@ -563,7 +563,7 @@ MonoBehaviour:
   _mouseMoveThreshold: 1
   _onPointerMoved: {fileID: 11400000, guid: 219bff90088745048890addef74f5d99, type: 2}
   _onPointerClicked: {fileID: 11400000, guid: 1c9e583d899c4a646b407b480d433ce4, type: 2}
---- !u!114 &1538545182024920381
+--- !u!114 &5797126308011357101
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -572,9 +572,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5928166714952300585}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac51d0a5726625346afb8b89c2b0c049, type: 3}
+  m_Script: {fileID: 11500000, guid: 44525559af4904b4fb9e59941c89e03d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HighlightCellsEventChannelListener
+  m_EditorClassIdentifier: Assembly-CSharp::HighlightGridChannelListener
   eventChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
   response:
     m_PersistentCalls:

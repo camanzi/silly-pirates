@@ -16,9 +16,8 @@ public class TurnController : MonoBehaviour
     // Attenzione forse la gestione corretta non dovrebbe essere qui, andrebbe spostata in un qualcosa di dedicato alla visualizzazione delle preview
     public void DrawAbilityPreview(TargetingData targetingData, AbilityBase ability, IInteractableElement caster)
     {
-        Vector3 targetPos = ability.isFreeAim ? targetingData.worldPosition : targetingData.cellPosition;
-        AbilityPreviewData data = ability.GetPreviewData(targetPos, caster);
-        bool canExecute = ability.CanExecute(caster, targetPos);
+        AbilityPreviewData data = ability.GetPreviewData(targetingData, caster);
+        bool canExecute = ability.CanExecute(caster, targetingData);
 
         _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, canExecute));
         _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster.Transform.position, canExecute, data.FreeAimTarget));
