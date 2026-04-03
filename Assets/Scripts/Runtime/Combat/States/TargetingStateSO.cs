@@ -17,7 +17,6 @@ public class TargetingStateSO : CombatStateSO
         Debug.Log($"Sono uscito da Targeting state");
     }
 
-    // Se clicco col mouse destro allora Clear and back
     public override void OnUpdate()
     {
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
@@ -31,6 +30,11 @@ public class TargetingStateSO : CombatStateSO
         SelectionContextSO selectionCtx = manager.selectionCtx;
 
        if (selectionCtx.currentCaster == element) ClearCtxsAndReturnIdle();
+
+       if (element is ITargettable targettable)
+        {
+            selectionCtx.CurrentTargets.Add(targettable);
+        }
     }
 
     public override void HandlePointerMove(TargetingData data)
