@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
 
 public class TurnController : MonoBehaviour
 {
     [Header("Event Channels")]
-    [SerializeField] private HighlightEventChannel _highlightCellsEventChannel;
-    [SerializeField] private HighlightEventChannel _targetTransformEventChannel;
+    [SerializeField] private HighlightGridEventChannel _highlightCellsEventChannel;
+    [SerializeField] private HighlightFreeAimEventChannel _targetTransformEventChannel;
 
     private Queue<ICommand> _commandQueue = new Queue<ICommand>();
     private bool _isProcessing = false;
@@ -19,14 +20,14 @@ public class TurnController : MonoBehaviour
         AbilityPreviewData data = ability.GetPreviewData(targetPos, caster);
         bool canExecute = ability.CanExecute(caster, targetPos);
 
-        _highlightCellsEventChannel.RaiseEvent(new HighlightPayload(data.affectedCells, canExecute));
-        _targetTransformEventChannel.RaiseEvent(new HighlightPayload(data.freeAimTargets, canExecute, caster.Transform.position));
+        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, canExecute));
+        _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster.Transform.position, canExecute, data.FreeAimTarget));
     }
 
     public void ClearPreview()
     {
-        _highlightCellsEventChannel.RaiseEvent(HighlightPayload.Empty);
-        _targetTransformEventChannel.RaiseEvent(HighlightPayload.Empty);
+        _highlightCellsEventChannel.RaiseEvent(HighlightGridPayload.Empty);
+        _targetTransformEventChannel.RaiseEvent(HighlightFreeAimPayload.Empty);
     }
     #endregion
 

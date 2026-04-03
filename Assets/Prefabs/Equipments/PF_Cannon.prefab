@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 3748148766587142446}
   - component: {fileID: 1417285250194026181}
   m_Layer: 0
-  m_Name: PF_Equipment
+  m_Name: PF_Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

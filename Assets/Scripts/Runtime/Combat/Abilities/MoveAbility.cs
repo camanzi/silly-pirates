@@ -15,12 +15,12 @@ public class MoveAbility : AbilityBase {
         }
         
         AbilityPreviewData previewData = GetPreviewData(target, caster);
-        return ((GridCharacter)caster).maxMoveSpeed >= previewData.affectedCells.Count;
+        return ((GridCharacter)caster).maxMoveSpeed >= previewData.AffectedCells.Count;
     }
 
     public override ICommand CreateCommand(IInteractableElement caster, Vector3 target, List<IInteractableElement> targetsInArea)
     {
-        return new MoveCommand((GridCharacter) caster, GetPreviewData(target, caster).affectedCells);
+        return new MoveCommand((GridCharacter) caster, GetPreviewData(target, caster).AffectedCells);
     }
 
     public override AbilityPreviewData GetPreviewData(Vector3 target, IInteractableElement caster) {
@@ -40,6 +40,6 @@ public class MoveAbility : AbilityBase {
         }
 
         List<Vector3> path = PathFindingUtils.FindPath(gridElement.gridPosition, Vector3Int.FloorToInt(target), walkableCache, static (pos, cache) => cache.Contains(pos));
-        return new AbilityPreviewData(affectedCells: path, freeAimTargets: new());
+        return new AbilityPreviewData(affectedCells: path);
     }
 }

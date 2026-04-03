@@ -19,6 +19,6 @@ public abstract class AOEAbility : AbilityBase {
         if (caster is not GridElement gridElement) return AbilityPreviewData.Empty;
 
         IAreaShape shapeEvaluator = ShapeFactory.GetShape(shapeType);
-        return new AbilityPreviewData(affectedCells: shapeEvaluator.GetCells(Vector3Int.FloorToInt(target), radius, gridElement.gridPosition), freeAimTargets: new());
+        return new AbilityPreviewData(affectedCells: shapeEvaluator.GetCells(Vector3Int.FloorToInt(target), radius, gridElement.gridPosition));
     }
 }

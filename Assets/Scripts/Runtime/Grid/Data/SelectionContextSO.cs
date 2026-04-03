@@ -6,7 +6,7 @@ public class SelectionContextSO : ScriptableObject
 {
     public List<ITargettable> CurrentTargets => _currentTargets;
 
-    public IInteractableElement currentCaster;
+    public IInteractableElement CurrentCaster;
     private List<ITargettable> _currentTargets = new();
 
     [Header("Dependencies")]
@@ -14,12 +14,12 @@ public class SelectionContextSO : ScriptableObject
 
     public bool IsElementSelected(IInteractableElement element)
     {
-        return currentCaster == element || (element is ITargettable targettable && _currentTargets.Contains(targettable));
+        return CurrentCaster == element || (element is ITargettable targettable && _currentTargets.Contains(targettable));
     }
 
     public void ClearCtx()
     {
-        currentCaster = null;
+        CurrentCaster = null;
         _currentTargets.Clear();
         _onSelectionCtxChangeEventChannel.RaiseEvent();
     }

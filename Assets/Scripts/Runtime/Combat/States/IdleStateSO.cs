@@ -21,7 +21,7 @@ public class IdleStateSO : CombatStateSO
         if (element is InteractableGridElement interactable)
         {
             manager.combatCtx.selectedAbility = interactable.defaultCharacterAbility;
-            manager.selectionCtx.currentCaster = interactable;
+            manager.selectionCtx.CurrentCaster = interactable;
             manager.TransitionToState(_targetingStateTemplate);
         }
     }

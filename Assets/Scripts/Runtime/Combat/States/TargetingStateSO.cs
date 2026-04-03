@@ -29,7 +29,7 @@ public class TargetingStateSO : CombatStateSO
     {
         SelectionContextSO selectionCtx = manager.selectionCtx;
 
-       if (selectionCtx.currentCaster == element) ClearCtxsAndReturnIdle();
+       if (selectionCtx.CurrentCaster == element) ClearCtxsAndReturnIdle();
 
        if (element is ITargettable targettable)
         {
@@ -42,7 +42,7 @@ public class TargetingStateSO : CombatStateSO
         CombatContext combatCtx = manager.combatCtx;
         SelectionContextSO selectionCtx = manager.selectionCtx;
 
-        manager.turnController.DrawAbilityPreview(data, combatCtx.selectedAbility, selectionCtx.currentCaster);        
+        manager.turnController.DrawAbilityPreview(data, combatCtx.selectedAbility, selectionCtx.CurrentCaster);        
     }
 
     private void ClearCtxsAndReturnIdle()
@@ -56,7 +56,7 @@ public class TargetingStateSO : CombatStateSO
     {
         CombatContext combatCtx = manager.combatCtx;
         AbilityBase selectedAbility = combatCtx.selectedAbility;
-        IInteractableElement caster = manager.selectionCtx.currentCaster;
+        IInteractableElement caster = manager.selectionCtx.CurrentCaster;
 
         Vector3 target = selectedAbility.isFreeAim ? data.worldPosition : data.cellPosition;
 

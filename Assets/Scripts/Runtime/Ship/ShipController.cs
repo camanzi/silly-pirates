@@ -48,19 +48,19 @@ public class ShipController : MonoBehaviour
         return result;
     }
 
-    public void HighlightPath(HighlightPayload payload)
+    public void HighlightPath(HighlightGridPayload payload)
     {
         foreach (Vector3 node in previousHighlight ?? new List<Vector3>())
         {
             _ = ChangeTileAfterDelay(0, Vector3Int.FloorToInt(node), _previewMap, _defaultFloorTile);
         }
 
-        foreach (Vector3 node in payload.targets ?? new List<Vector3>())
+        foreach (Vector3 node in payload.AffectedCells ?? new List<Vector3>())
         {
-            _ = ChangeTileAfterDelay(0, Vector3Int.FloorToInt(node), _previewMap, payload.isValidHighlight ? _hoverFloorAllowTile : _hoverFloorNotAllowTile);
+            _ = ChangeTileAfterDelay(0, Vector3Int.FloorToInt(node), _previewMap, payload.IsValidHighlight ? _hoverFloorAllowTile : _hoverFloorNotAllowTile);
         }
 
-        previousHighlight = payload.targets;
+        previousHighlight = payload.AffectedCells;
     }
 
     private async Awaitable ChangeTileAfterDelay(int delay, Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null) 

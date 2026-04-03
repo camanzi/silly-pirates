@@ -20,9 +20,9 @@ public class FreeAimRenderer : MonoBehaviour
 
     // FIXME later, attenzione PER OGNI target devo avere un line renderer dedicato per far partire piú lines.
     // Questo vuol dire predisporre anche un pooler
-    public void HighlightTargets(HighlightPayload payload)
+    public void HighlightTargets(HighlightFreeAimPayload payload)
     {
-        if (payload.targets.Count == 0)
+        if (!payload.Target.HasValue)
         {
             _lineRenderer.enabled = false;
             return;
@@ -30,11 +30,8 @@ public class FreeAimRenderer : MonoBehaviour
 
         _lineRenderer.enabled = true;
         
-        foreach (Vector3 target in payload.targets)
-        {
-            Color lineColor = payload.isValidHighlight ? Color.green : Color.red;
-            DrawLine(payload.origin.Value, target, lineColor);
-        }
+        Color lineColor = payload.IsValidHighlight ? Color.green : Color.red;
+        DrawLine(payload.Origin, payload.Target.Value, lineColor);
     }
 
     private void DrawLine(Vector3 startPos, Vector3 endPos, Color lineColor)
