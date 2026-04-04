@@ -58,11 +58,9 @@ public class TargetingStateSO : CombatStateSO
         AbilityBase selectedAbility = combatCtx.selectedAbility;
         IInteractableElement caster = manager.selectionCtx.CurrentCaster;
 
-        Vector3 target = selectedAbility.isFreeAim ? data.worldPosition : data.cellPosition;
-
         if (selectedAbility.CanExecute(caster, data))
         {
-            ICommand command = selectedAbility.CreateCommand(caster, data, new List<IInteractableElement>());
+            ICommand command = selectedAbility.CreateCommand(caster, data);
             
             manager.turnController.AddCommand(command);
             _ = manager.turnController.ProcessQueueAsync();

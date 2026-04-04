@@ -19,7 +19,7 @@ public class MoveAbility : AbilityBase {
         return ((GridCharacter)caster).maxMoveSpeed >= previewData.AffectedCells.Count;
     }
 
-    public override ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData, List<IInteractableElement> targetsInArea)
+    public override ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData)
     {
         return new MoveCommand((GridCharacter) caster, GetPreviewData(targetingData, caster).AffectedCells);
     }

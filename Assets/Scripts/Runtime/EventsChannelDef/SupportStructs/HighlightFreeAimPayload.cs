@@ -3,19 +3,17 @@ using UnityEngine;
 
 public struct HighlightFreeAimPayload
 {
-    public Vector3? Target;
+    public Vector3? MousePosition;
+    public List<ITargettable> Targets;
     public bool IsValidHighlight;
-    public Vector3 Origin;
-    public HighlightFreeAimPayload(Vector3 origin, bool isValidHighlight, Vector3? target = null)
+    public IInteractableElement Origin;
+    public HighlightFreeAimPayload(IInteractableElement origin, bool isValidHighlight, List<ITargettable> targets = null, Vector3? mousePosition = null)
     {
+        this.MousePosition = mousePosition;
         this.IsValidHighlight = isValidHighlight;
         this.Origin = origin;
-        this.Target = target;
+        this.Targets = targets;
     }
 
-    public static HighlightFreeAimPayload Empty => new ()
-    {
-        IsValidHighlight = false,
-        Target = null 
-    };
+    public static HighlightFreeAimPayload Empty => new ();
 }

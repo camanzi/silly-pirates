@@ -20,7 +20,7 @@ public abstract class AbilityBase : ScriptableObject {
 
     public abstract AbilityPreviewData GetPreviewData(TargetingData targetingData, IInteractableElement caster);
 
-    public abstract ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData, List<IInteractableElement> targetsInArea);
+    public abstract ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData);
 
     public abstract bool CanExecute(IInteractableElement caster, TargetingData targetingData);
 

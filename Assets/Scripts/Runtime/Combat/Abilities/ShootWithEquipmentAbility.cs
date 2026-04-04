@@ -12,14 +12,14 @@ public class ShootWithEquipmentAbility : AbilityBase
         return _selectionCtx.CurrentTargets.Count == _maxTargets;
     }
 
-    public override ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData, List<IInteractableElement> targetsInArea)
+    public override ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData)
     {
         throw new System.NotImplementedException();
     }
 
     public override AbilityPreviewData GetPreviewData(TargetingData targetingData, IInteractableElement caster)
     {
-        return new AbilityPreviewData(affectedCells: new(), freeAimTarget: targetingData.worldPosition);
+        return new AbilityPreviewData(affectedCells: new(), freeAimTargets: _selectionCtx.CurrentTargets);
     
     }
 }

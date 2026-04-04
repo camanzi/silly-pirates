@@ -10,7 +10,7 @@ public abstract class AOEAbility : AbilityBase {
         throw new System.NotImplementedException();
     }
 
-    public override ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData, List<IInteractableElement> targetsInArea)
+    public override ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData)
     {
         throw new System.NotImplementedException();
     }

@@ -22,7 +22,7 @@ public class FreeAimRenderer : MonoBehaviour
     // Questo vuol dire predisporre anche un pooler
     public void HighlightTargets(HighlightFreeAimPayload payload)
     {
-        if (!payload.Target.HasValue)
+        if (payload.Equals(HighlightFreeAimPayload.Empty))
         {
             _lineRenderer.enabled = false;
             return;
@@ -31,7 +31,15 @@ public class FreeAimRenderer : MonoBehaviour
         _lineRenderer.enabled = true;
         
         Color lineColor = payload.IsValidHighlight ? Color.green : Color.red;
-        DrawLine(payload.Origin, payload.Target.Value, lineColor);
+        foreach (ITargettable target in payload.Targets)
+        {
+            DrawLine(payload.Origin.Transform.position, target.Transform.position, lineColor);
+        }
+
+        if (payload.MousePosition.HasValue)
+        {
+            DrawLine(payload.Origin.Transform.position, payload.MousePosition.Value, lineColor);
+        }
     }
 
     private void DrawLine(Vector3 startPos, Vector3 endPos, Color lineColor)

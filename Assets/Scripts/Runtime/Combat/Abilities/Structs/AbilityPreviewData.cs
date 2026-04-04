@@ -5,16 +5,16 @@ using UnityEngine.Tilemaps;
 public struct AbilityPreviewData
 {
     public List<Vector3> AffectedCells;    
-    public Vector3? FreeAimTarget;
+    public List<ITargettable> FreeAimTargets;
 
-    public AbilityPreviewData(List<Vector3> affectedCells, Vector3? freeAimTarget = null)
+    public AbilityPreviewData(List<Vector3> affectedCells, List<ITargettable> freeAimTargets = null)
     {
         this.AffectedCells = affectedCells;
-        this.FreeAimTarget = freeAimTarget;
+        this.FreeAimTargets = freeAimTargets;
     }      
 
     public static AbilityPreviewData Empty => new AbilityPreviewData { 
         AffectedCells = new (), 
-        FreeAimTarget = null 
+        FreeAimTargets = null 
     };
 }

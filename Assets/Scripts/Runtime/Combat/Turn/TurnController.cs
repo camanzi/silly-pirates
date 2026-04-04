@@ -20,7 +20,7 @@ public class TurnController : MonoBehaviour
         bool canExecute = ability.CanExecute(caster, targetingData);
 
         _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, canExecute));
-        _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster.Transform.position, canExecute, data.FreeAimTarget));
+        _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, targetingData.worldPosition));
     }
 
     public void ClearPreview()

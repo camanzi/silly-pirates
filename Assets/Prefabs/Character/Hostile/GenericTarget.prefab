@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 2401023248298348704}
   - component: {fileID: 5685337286304307031}
   - component: {fileID: 8268247932945328983}
+  - component: {fileID: 5641640005406227769}
   m_Layer: 0
   m_Name: GenericTarget
   m_TagString: Untagged
@@ -175,6 +176,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HostileCharacter
   _selectionContextSO: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
+--- !u!114 &5641640005406227769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566868596823550263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ece5938f2f80a94a8b017f45b7f28df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoidChannelListener
+  eventChannel: {fileID: 11400000, guid: 09390d4986a250f40abf05741ea0ff76, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8268247932945328983}
+        m_TargetAssemblyTypeName: HostileCharacter, Assembly-CSharp
+        m_MethodName: OnSelectionCtxChange
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0

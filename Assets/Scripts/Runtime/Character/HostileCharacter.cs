@@ -28,4 +28,6 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public void OnPointerClick(PointerEventData eventData) => this.HandlePointerClick();
 
     public void OnPointerExit(PointerEventData eventData) => this.HandlePointerExit();
+
+    public void OnSelectionCtxChange() => this.HandlePointerExit();
 }

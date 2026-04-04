@@ -41,6 +41,5 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
 
     public void OnPointerExit(PointerEventData eventData) => this.HandlePointerExit();
     
-    // Chiamata da listenere
     public void OnSelectionCtxChange() => this.HandlePointerExit();
 }
