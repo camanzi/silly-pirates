@@ -8,9 +8,9 @@ public abstract class AbilityBase : ScriptableObject {
     [SerializeField] protected SelectionContextSO _selectionCtx;
     
     [Header("Ability Base Configs")]
-    [SerializeField] protected bool _isFreeAim;
+    [SerializeField] protected bool showTrajectory;
 
-    public bool isFreeAim => _isFreeAim;
+    public bool ShowTrajectory => showTrajectory;
     protected Camera _camera;
 
     protected virtual void OnEnable()
