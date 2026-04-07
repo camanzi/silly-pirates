@@ -9,19 +9,15 @@ public abstract class AbilityBase : ScriptableObject {
     
     [Header("Ability Base Configs")]
     [SerializeField] protected bool showTrajectory;
+    [SerializeField] protected TrajectoryConfigsSO trajectoryConfigData;
 
     public bool ShowTrajectory => showTrajectory;
-    protected Camera _camera;
+    public TrajectoryConfigsSO TrajectoryConfigData => trajectoryConfigData;
 
-    protected virtual void OnEnable()
-    {
-        _camera = Camera.main;
-    }
+    public abstract AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData);
 
-    public abstract AbilityPreviewData GetPreviewData(TargetingData targetingData, IInteractableElement caster);
+    public abstract ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData);
 
-    public abstract ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData);
-
-    public abstract bool CanExecute(IInteractableElement caster, TargetingData targetingData);
+    public abstract bool CanExecute(IInteractableElement caster, TargetingData? targetingData);
 
 }

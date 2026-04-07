@@ -7,6 +7,7 @@ public class FreeAimRenderer : MonoBehaviour
     // FIXME Later da far diventare Poolable
     [Header("External References")]
     [SerializeField] private TrajectoryRenderer _trajectoryRenderer;
+    [SerializeField] private TrajectoryConfigsSO _defaultTajectoryConfigData;
 
     private Dictionary<ITargettable, TrajectoryRenderer> _activeRenderers = new();
     private TrajectoryRenderer _activeMouseRenderer;
@@ -25,7 +26,7 @@ public class FreeAimRenderer : MonoBehaviour
             
             TrajectoryRenderer renderer = Instantiate(_trajectoryRenderer);
             _activeRenderers.Add(target, renderer);
-            renderer.HighlightTrajectory(payload.Origin.Transform.position, target.Transform.position, lineColor);
+            renderer.HighlightTrajectory(payload.Origin.Transform.position, target.Transform.position, lineColor, payload.TrajectoryConfigData ?? _defaultTajectoryConfigData);
         }
 
         if (payload.MousePosition.HasValue)
@@ -34,7 +35,7 @@ public class FreeAimRenderer : MonoBehaviour
             {
                 _activeMouseRenderer = Instantiate(_trajectoryRenderer);
             }
-            _activeMouseRenderer.HighlightTrajectory(payload.Origin.Transform.position, payload.MousePosition.Value, lineColor);
+            _activeMouseRenderer.HighlightTrajectory(payload.Origin.Transform.position, payload.MousePosition.Value, lineColor, payload.TrajectoryConfigData ?? _defaultTajectoryConfigData);
         }
     }
 

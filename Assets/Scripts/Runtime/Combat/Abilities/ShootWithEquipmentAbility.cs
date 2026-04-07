@@ -6,18 +6,18 @@ public class ShootWithEquipmentAbility : AbilityBase
 {
     [Header("Cannon ability configs")]
     [SerializeField] private int _maxTargets = 1;
-
-    public override bool CanExecute(IInteractableElement caster, TargetingData targetingData)
+    [SerializeField] private GameObject _projectile;
+    public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData)
     {
         return _selectionCtx.CurrentTargets.Count == _maxTargets;
     }
 
-    public override ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData)
+    public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData)
     {
-        throw new System.NotImplementedException();
+        return new ShootCommand(caster, _selectionCtx.CurrentTargets, _projectile, trajectoryConfigData);
     }
 
-    public override AbilityPreviewData GetPreviewData(TargetingData targetingData, IInteractableElement caster)
+    public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData)
     {
         return new AbilityPreviewData(affectedCells: new(), freeAimTargets: _selectionCtx.CurrentTargets);
     

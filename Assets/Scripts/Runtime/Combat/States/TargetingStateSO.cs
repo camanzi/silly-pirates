@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -29,12 +30,14 @@ public class TargetingStateSO : CombatStateSO
     {
         SelectionContextSO selectionCtx = manager.selectionCtx;
 
-       if (selectionCtx.CurrentCaster == element) ClearCtxsAndReturnIdle();
+        if (selectionCtx.CurrentCaster == element) ClearCtxsAndReturnIdle();
 
-       if (element is ITargettable targettable)
+        if (element is ITargettable targettable)
         {
             selectionCtx.CurrentTargets.Add(targettable);
         }
+
+        _ = OnClickBehavior(null);
     }
 
     public override void HandlePointerMove(TargetingData data)
@@ -52,7 +55,9 @@ public class TargetingStateSO : CombatStateSO
         manager.TransitionToState(_idleStateTemplate);
     }
 
-    public override void HandleGlobalClick(TargetingData data)
+    public override void HandleGlobalClick(TargetingData data) => _ = OnClickBehavior(data);
+
+    private async Task OnClickBehavior(TargetingData? data)
     {
         CombatContext combatCtx = manager.combatCtx;
         AbilityBase selectedAbility = combatCtx.selectedAbility;
@@ -63,7 +68,7 @@ public class TargetingStateSO : CombatStateSO
             ICommand command = selectedAbility.CreateCommand(caster, data);
             
             manager.turnController.AddCommand(command);
-            _ = manager.turnController.ProcessQueueAsync();
+            await manager.turnController.ProcessQueueAsync();
 
             ClearCtxsAndReturnIdle();
         }

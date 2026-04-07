@@ -5,26 +5,26 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "Move Ability", menuName = "Abilities/Character/Move Ability")]
 public class MoveAbility : AbilityBase {
 
-    public override bool CanExecute(IInteractableElement caster, TargetingData targetingData)
+    public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData)
     {
-        if (caster is not GridElement gridElement) return false;
+        if (caster is not GridElement gridElement || !targetingData.HasValue) return false;
 
-        Vector3 target = targetingData.cellPosition;
+        Vector3 target = targetingData.Value.cellPosition;
         Vector3Int cellPosition = Vector3Int.FloorToInt(target);
         if (_gridStateData.IsOccupied(cellPosition) && !_gridStateData.GetEntityAt(cellPosition).Contains(gridElement)) {
             return false;
         }
         
-        AbilityPreviewData previewData = GetPreviewData(targetingData, caster);
+        AbilityPreviewData previewData = GetPreviewData(caster, targetingData.Value);
         return ((GridCharacter)caster).maxMoveSpeed >= previewData.AffectedCells.Count;
     }
 
-    public override ICommand CreateCommand(IInteractableElement caster, TargetingData targetingData)
+    public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData)
     {
-        return new MoveCommand((GridCharacter) caster, GetPreviewData(targetingData, caster).AffectedCells);
+        return new MoveCommand((GridCharacter) caster, GetPreviewData(caster, targetingData.Value).AffectedCells);
     }
 
-    public override AbilityPreviewData GetPreviewData(TargetingData targetingData, IInteractableElement caster) {
+    public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData) {
         if (caster is not GridElement gridElement) return AbilityPreviewData.Empty;
 
         Vector3 target = targetingData.cellPosition;
