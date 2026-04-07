@@ -50,8 +50,7 @@ public class ShootCommand : ICommand
         Vector3 end = target.Transform.position;
         Vector3 controlPoint = ((start + end) / 2) + Vector3.up * _trajectoryConfigData.Height;
 
-        // FIXME Da implementare shake sulla virtual camera stessa usando impulse
-        // _ = Tween.ShakeLocalPosition(Camera.main.transform, strength: new Vector3(1f, 1f, 0), duration: 0.4f);
+        if (_caster is ShootingEquipment shootingEquipment) shootingEquipment.OnShootEffects?.Invoke();
 
         await Tween.Custom(0f, 1f, duration: _trajectoryConfigData.TravelDuration, ease: Ease.Linear, onValueChange: t => 
         {

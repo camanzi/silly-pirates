@@ -562,6 +562,7 @@ GameObject:
   - component: {fileID: 825212464}
   - component: {fileID: 825212463}
   - component: {fileID: 825212462}
+  - component: {fileID: 825212468}
   - component: {fileID: 825212461}
   - component: {fileID: 825212467}
   - component: {fileID: 825212466}
@@ -830,6 +831,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &825212468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 825212459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1462,6 +1487,7 @@ GameObject:
   - component: {fileID: 2095840647}
   - component: {fileID: 2095840646}
   - component: {fileID: 2095840649}
+  - component: {fileID: 2095840652}
   - component: {fileID: 2095840651}
   - component: {fileID: 2095840650}
   m_Layer: 0
@@ -1616,6 +1642,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &2095840652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095840641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1001 &2434508970417764651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1986,6 +2036,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5010430319650090655, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
+      propertyPath: ImpulseDefinition.ImpulseDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6488994046265238083, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: m_Name
       value: PF_Cannon
