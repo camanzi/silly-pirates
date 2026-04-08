@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using Unity.Cinemachine;
 using UnityEngine;
 
 public class TurnController : MonoBehaviour
@@ -17,11 +15,22 @@ public class TurnController : MonoBehaviour
     private Queue<ICommand> _commandQueue = new Queue<ICommand>();
     private bool _isProcessing = false;
 
+    private List<ITurnAgent> _toBeRegistered = new();
+    private bool _initializationInProgress = true;
+
     // FIXME Later Idealmente quando INIZIA un fight bisogna chiamare questa cosa
     void OnEnable()
     {
         _turnOrderData.Clear();
         _currentTurnState.Clear();
+        _initializationInProgress = false;
+        
+        foreach (ITurnAgent agent in _toBeRegistered)
+        {
+            _turnOrderData.AddEntity(agent);
+        }
+
+        _toBeRegistered.Clear();
     }
 
     #region ABILITY PREVIEW
@@ -73,7 +82,16 @@ public class TurnController : MonoBehaviour
         }
     }
 
-    public void OnAgentJoin(ITurnAgent agent) => _turnOrderData.AddEntity(agent);
+    public void OnAgentJoin(ITurnAgent agent)
+    {
+        if (_initializationInProgress)
+        {
+            _toBeRegistered.Add(agent);
+        } else
+        {
+            _turnOrderData.AddEntity(agent);
+        }
+    }
     public void OnAgentLeave(ITurnAgent agent)
     {
         _turnOrderData.RemoveEntity(agent);
