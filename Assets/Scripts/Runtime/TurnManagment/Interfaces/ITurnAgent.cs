@@ -1,5 +1,6 @@
 public interface ITurnAgent
 {
+    public TurnRenderingAgentDataSO RenderingData { get; }
     public TurnAgentDataSO AgentData { get; }
     public TurnAgentEventChannel OnAgentJoin { get; }
     public TurnAgentEventChannel OnAgentLeave { get; }

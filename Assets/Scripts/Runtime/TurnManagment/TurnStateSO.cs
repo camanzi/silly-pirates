@@ -4,7 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CurrentTurnState", menuName = "Combat/Turn System/Turn State")]
 public class TurnStateSO : ScriptableObject
 {
-    [SerializeField] private ITurnAgent _activeAgent;
+    [SerializeField] private TurnAgentEventChannel _onAgentActivated;
+    public TurnAgentEventChannel OnAgentActivated => _onAgentActivated;
+    private ITurnAgent _activeAgent;
     
     private AwaitableCompletionSource _turnTaskSource;
 
@@ -15,6 +17,8 @@ public class TurnStateSO : ScriptableObject
     {
         _activeAgent = agent;
         _turnTaskSource = new AwaitableCompletionSource();
+
+        _onAgentActivated?.RaiseEvent(agent);
     }
 
     public void SignalTurnEnd() => _turnTaskSource?.SetResult();

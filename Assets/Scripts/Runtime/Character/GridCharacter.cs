@@ -5,18 +5,21 @@ using UnityEngine;
 
 public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent
 {
-    [Header("Grid Character configuration")]
+    [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
+    [SerializeField] private TurnRenderingAgentDataSO _renderingAgentData;
 
     [Header("Combat System event channels")]
     [SerializeField] private TurnAgentEventChannel _onAgentJoin;
     [SerializeField] private TurnAgentEventChannel _onAgentLeave;
 
     public TurnAgentDataSO AgentData => _agentData;
+    public TurnRenderingAgentDataSO RenderingData => _renderingAgentData;
 
-    TurnAgentEventChannel ITurnAgent.OnAgentJoin => _onAgentJoin;
+    public TurnAgentEventChannel OnAgentJoin => _onAgentJoin;
 
-    TurnAgentEventChannel ITurnAgent.OnAgentLeave => _onAgentLeave;
+    public TurnAgentEventChannel OnAgentLeave => _onAgentLeave;
+
 
     private DirectionalSpriteController _directionalSpriteController;
     private Tween _moveTween;

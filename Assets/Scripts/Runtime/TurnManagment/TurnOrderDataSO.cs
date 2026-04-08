@@ -1,44 +1,46 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
-using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "TurnOrderData", menuName = "Combat/Turn System/Turn Order")]
 public class TurnOrderDataSO : ScriptableObject
 {
-    public List<EntityTurnState> TurnQueue = new();
+    [SerializeField] private VoidEventChannel _onQueueUpdated;
     
-    [Space]
-    public UnityEvent OnQueueUpdated;
+    public VoidEventChannel OnQueueUpdated => _onQueueUpdated; 
+
+    private List<EntityTurnState> _turnQueue = new();
+    public ReadOnlyCollection<EntityTurnState> TurnQueue => _turnQueue.AsReadOnly();
 
     public void CompleteActiveTurn()
     {
-        if (TurnQueue.Count < 2) return;
+        if (_turnQueue.Count < 2) return;
 
-        EntityTurnState finishedEntity = TurnQueue[0];
-        TurnQueue.RemoveAt(0);
+        EntityTurnState finishedEntity = _turnQueue[0];
+        _turnQueue.RemoveAt(0);
 
-        float timePassed = TurnQueue[0].CurrentAV;
+        float timePassed = _turnQueue[0].CurrentAV;
 
-        foreach (EntityTurnState state in TurnQueue)
+        foreach (EntityTurnState state in _turnQueue)
         {
             state.CurrentAV -= timePassed;
             state.CurrentAV = Mathf.Max(0, state.CurrentAV);
         }
 
         finishedEntity.CurrentAV = CalculateBaseAV(finishedEntity.Agent);
-        TurnQueue.Add(finishedEntity);
+        _turnQueue.Add(finishedEntity);
 
         SortQueue();
     }
 
     public void AddEntity(ITurnAgent agent)
     {
-        if (TurnQueue.Exists(e => e.Agent == agent)) return;
+        if (_turnQueue.Exists(e => e.Agent == agent)) return;
 
         float initialAV = CalculateBaseAV(agent);
         
         EntityTurnState newState = new EntityTurnState(agent, initialAV);
-        TurnQueue.Add(newState);
+        _turnQueue.Add(newState);
 
         if (agent is MonoBehaviour mono)
             Debug.Log($"Ho aggiunto un nuovo Agent {mono.name} con AV: {initialAV}");
@@ -48,20 +50,20 @@ public class TurnOrderDataSO : ScriptableObject
 
     public void RemoveEntity(ITurnAgent agent)
     {
-        int index = TurnQueue.FindIndex(e => e.Agent == agent);
+        int index = _turnQueue.FindIndex(e => e.Agent == agent);
 
         if (index != -1)
         {
-            TurnQueue.RemoveAt(index);
+            _turnQueue.RemoveAt(index);
             
-            OnQueueUpdated?.Invoke();
+            _onQueueUpdated?.RaiseEvent();
         }
     }
 
     public void Clear()
     {
-        TurnQueue.Clear();
-        OnQueueUpdated?.Invoke();
+        _turnQueue.Clear();
+        _onQueueUpdated?.RaiseEvent();
     }
 
     private float CalculateBaseAV(ITurnAgent a)
@@ -71,7 +73,7 @@ public class TurnOrderDataSO : ScriptableObject
     } 
     private void SortQueue()
     {
-        TurnQueue.Sort((a, b) => {
+        _turnQueue.Sort((a, b) => {
             int result = a.CurrentAV.CompareTo(b.CurrentAV);
             
             if (result == 0)
@@ -80,6 +82,6 @@ public class TurnOrderDataSO : ScriptableObject
             return result;
         });
         
-        OnQueueUpdated?.Invoke();
+        _onQueueUpdated?.RaiseEvent();
     }
 }

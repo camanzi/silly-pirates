@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3456a4600df0a74438339182f1049920, type: 3}
-  m_Name: CurrentTurnState
-  m_EditorClassIdentifier: Assembly-CSharp::TurnStateSO
-  _onAgentActivated: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
+  m_Script: {fileID: 11500000, guid: 4fba0607c7f9f8c4eb1474ea645e8ba3, type: 3}
+  m_Name: OnTurnQueueChangeEventChannel
+  m_EditorClassIdentifier: Assembly-CSharp::VoidEventChannel

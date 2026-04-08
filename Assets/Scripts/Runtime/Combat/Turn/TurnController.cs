@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -31,6 +32,8 @@ public class TurnController : MonoBehaviour
         }
 
         _toBeRegistered.Clear();
+
+        _ = RunGameLoop(destroyCancellationToken);
     }
 
     #region ABILITY PREVIEW
@@ -70,15 +73,30 @@ public class TurnController : MonoBehaviour
 
     public async Awaitable RunGameLoop(CancellationToken token)
     {
-        while (!token.IsCancellationRequested)
+        try 
         {
-            ITurnAgent nextEntity = _turnOrderData.TurnQueue[0].Agent;
-            
-            _currentTurnState.SetActiveCharacter(nextEntity);
+            await Awaitable.NextFrameAsync(token);
 
-            await _currentTurnState.WaitUntilTurnFinished();
+            while (!token.IsCancellationRequested)
+            {
+                if (_turnOrderData.TurnQueue.Count == 0)
+                {
+                    await Awaitable.NextFrameAsync(token);
+                    continue;
+                }
 
-            _turnOrderData.CompleteActiveTurn();
+                ITurnAgent nextEntity = _turnOrderData.TurnQueue[0].Agent;
+                _currentTurnState.SetActiveCharacter(nextEntity);
+                nextEntity.OnStartingTurn();
+                
+                await _currentTurnState.WaitUntilTurnFinished();
+
+                _turnOrderData.CompleteActiveTurn();
+            }
+        } 
+        catch (OperationCanceledException)
+        {
+            Debug.Log("Turn Loop cancellato correttamente.");
         }
     }
 

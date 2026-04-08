@@ -12,7 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fa06dc88968bec4ca4b28417d00309c, type: 3}
   m_Name: TurnOrderData
   m_EditorClassIdentifier: Assembly-CSharp::TurnOrderDataSO
-  TurnQueue: []
-  OnQueueUpdated:
-    m_PersistentCalls:
-      m_Calls: []
+  _onQueueUpdated: {fileID: 11400000, guid: cb39ca7032707fc4a94aeea4e2f9331f, type: 2}

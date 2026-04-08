@@ -1,18 +1,16 @@
 using System;
 using UnityEngine;
 
-// Esistenza momentanea diventerá poi un SO
-[System.Serializable]
 public class CharacterTurnData
 {
-    public Guid characterID;
-    public int actionValue;
-    public Sprite icon;
-    
-    public CharacterTurnData(int actionValue, Sprite icon)
+    public ITurnAgent Agent;
+    public int ActionValue;
+    public Sprite Icon;
+
+    public CharacterTurnData(ITurnAgent agent, float av, Sprite icon)
     {
-        this.characterID = Guid.NewGuid();
-        this.actionValue = actionValue;
-        this.icon = icon;
+        this.Agent = agent;
+        this.ActionValue = (int)av;
+        this.Icon = icon;
     }
 }

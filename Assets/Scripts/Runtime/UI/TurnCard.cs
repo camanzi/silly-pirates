@@ -93,9 +93,9 @@ public partial class TurnCard : VisualElement
     /// </summary>
     private void UpdateDisplay()
     {
-        if (_data.icon != null)
+        if (_data.Icon != null)
         {
-            characterIcon.style.backgroundImage = new StyleBackground(_data.icon);
+            characterIcon.style.backgroundImage = new StyleBackground(_data.Icon);
         }
     }
     
