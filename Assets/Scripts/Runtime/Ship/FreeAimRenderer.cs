@@ -19,7 +19,7 @@ public class FreeAimRenderer : MonoBehaviour
             ClearRenderers();
         }
      
-        Color lineColor = payload.IsValidHighlight ? Color.white : Color.red;
+        Color lineColor = Color.white;
         foreach (ITargettable target in payload.Targets ?? new())
         {
             if (_activeRenderers.ContainsKey(target)) continue;

@@ -129,7 +129,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_Name
-      value: GenericTarget (2)
+      value: LittleSgarryCube - Left
       objectReference: {fileID: 0}
     - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_IsActive
@@ -495,11 +495,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_Name
-      value: GenericTarget (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
-      propertyPath: m_IsActive
-      value: 1
+      value: LittleSgarryCube - Right
       objectReference: {fileID: 0}
     - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_LocalPosition.x
@@ -540,10 +536,6 @@ PrefabInstance:
     - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1121,8 +1113,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4094058086563390557, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_Name
-      value: PF_Character (1)
+      value: PF_Character (001)
       objectReference: {fileID: 0}
+    - target: {fileID: 4197157872790995930, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _agentData
+      value: 
+      objectReference: {fileID: 11400000, guid: 67d92a1aad9ec544db56e47e4d4096ae, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1834,7 +1830,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4094058086563390557, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_Name
-      value: PF_Character
+      value: PF_Character (000)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1965,7 +1961,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_Name
-      value: GenericTarget
+      value: BigEvilCube
       objectReference: {fileID: 0}
     - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_LocalScale.x
@@ -2023,6 +2019,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _agentData
+      value: 
+      objectReference: {fileID: 11400000, guid: 87e5e3dec7488154499e58a9cbe64c94, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

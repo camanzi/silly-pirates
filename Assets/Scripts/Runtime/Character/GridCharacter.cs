@@ -3,11 +3,21 @@ using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
-public class GridCharacter : InteractableGridElement, IMovable, ITargettable
+public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent
 {
-    // Da spostare piú avanti in uno SO di stats
     [Header("Grid Character configuration")]
-    public int maxMoveSpeed;
+    [SerializeField] private TurnAgentDataSO _agentData;
+
+    [Header("Combat System event channels")]
+    [SerializeField] private TurnAgentEventChannel _onAgentJoin;
+    [SerializeField] private TurnAgentEventChannel _onAgentLeave;
+
+    public TurnAgentDataSO AgentData => _agentData;
+
+    TurnAgentEventChannel ITurnAgent.OnAgentJoin => _onAgentJoin;
+
+    TurnAgentEventChannel ITurnAgent.OnAgentLeave => _onAgentLeave;
+
     private DirectionalSpriteController _directionalSpriteController;
     private Tween _moveTween;
 
@@ -15,6 +25,12 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable
     {
         base.Awake();
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        OnCombatJoin();
     }
 
     public async Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token)
@@ -37,4 +53,10 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable
 
         _directionalSpriteController.PlayAnimation("human_idle");
     }
+
+    public void OnCombatJoin() => this.HandleCombatJoin();
+
+    public void OnCombatLeave() => this.HandleCombatLeave();
+
+    public void OnStartingTurn() => this.HandleStartingTurn();
 }

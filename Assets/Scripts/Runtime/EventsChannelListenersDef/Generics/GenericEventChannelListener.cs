@@ -5,6 +5,9 @@ public class GenericEventChannelListener<TEventChannel, TEventType> : MonoBehavi
 {
     [Header("Listen to event channel")]
     [SerializeField] protected TEventChannel eventChannel;
+    
+    [Space]
+    
     [Tooltip("Actions to invoke when channel fire an event")]
     [SerializeField] protected UnityEvent<TEventType> response;
 
@@ -34,6 +37,9 @@ public class GenericEventChannelListener<TEventChannel> : MonoBehaviour where TE
 {
     [Header("Listen to event channel")]
     [SerializeField] protected TEventChannel eventChannel;
+    
+    [Space]
+    
     [Tooltip("Actions to invoke when channel fire an event")]
     [SerializeField] protected UnityEvent response;
 
