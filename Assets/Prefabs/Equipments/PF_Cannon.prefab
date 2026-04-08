@@ -226,8 +226,8 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InteractableGridElement, Assembly-CSharp
+      - m_Target: {fileID: 5587952578991430984}
+        m_TargetAssemblyTypeName: ShootingEquipment, Assembly-CSharp
         m_MethodName: OnSelectionCtxChange
         m_Mode: 1
         m_Arguments:
@@ -259,7 +259,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    ImpulseDuration: 0.2
+    ImpulseDuration: 1
     ImpulseType: 1
     DissipationRate: 0.25
     RawSignal: {fileID: 0}

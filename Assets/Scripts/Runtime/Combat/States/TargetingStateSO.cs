@@ -7,7 +7,8 @@ using UnityEngine.InputSystem;
 public class TargetingStateSO : CombatStateSO
 {
     [SerializeField] private CombatStateSO _idleStateTemplate;
-    
+    [SerializeField] private CombatStateSO _executionStateTemplate;
+
     public override void OnEnter()
     {
         Debug.Log($"Sono entrato in Targeting state");
@@ -20,24 +21,21 @@ public class TargetingStateSO : CombatStateSO
 
     public override void OnUpdate()
     {
-        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
-        {
-            ClearCtxsAndReturnIdle();
-        }
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) manager.ClearCtxs(_idleStateTemplate);
     }
 
     public override void HandleElementClick(IInteractableElement element)
     {
         SelectionContextSO selectionCtx = manager.selectionCtx;
 
-        if (selectionCtx.CurrentCaster == element) ClearCtxsAndReturnIdle();
+        if (selectionCtx.CurrentCaster == element) manager.ClearCtxs(_idleStateTemplate);
 
         if (element is ITargettable targettable)
         {
             selectionCtx.CurrentTargets.Add(targettable);
         }
 
-        _ = OnClickBehavior(null);
+        OnClickBehavior(null);
     }
 
     public override void HandlePointerMove(TargetingData data)
@@ -48,16 +46,9 @@ public class TargetingStateSO : CombatStateSO
         manager.turnController.DrawAbilityPreview(data, combatCtx.selectedAbility, selectionCtx.CurrentCaster);        
     }
 
-    private void ClearCtxsAndReturnIdle()
-    {
-        manager.selectionCtx.ClearCtx();
-        manager.combatCtx.ClearCtx();
-        manager.TransitionToState(_idleStateTemplate);
-    }
+    public override void HandleGlobalClick(TargetingData data) => OnClickBehavior(data);
 
-    public override void HandleGlobalClick(TargetingData data) => _ = OnClickBehavior(data);
-
-    private async Task OnClickBehavior(TargetingData? data)
+    private void OnClickBehavior(TargetingData? data)
     {
         CombatContext combatCtx = manager.combatCtx;
         AbilityBase selectedAbility = combatCtx.selectedAbility;
@@ -68,9 +59,7 @@ public class TargetingStateSO : CombatStateSO
             ICommand command = selectedAbility.CreateCommand(caster, data);
             
             manager.turnController.AddCommand(command);
-            await manager.turnController.ProcessQueueAsync();
-
-            ClearCtxsAndReturnIdle();
+            manager.TransitionToState(_executionStateTemplate);
         }
     }
 }

@@ -39,4 +39,15 @@ public class CombatStateManager : MonoBehaviour
     public void OnPointerMoved(TargetingData data)  => _activeState?.HandlePointerMove(data);
 
     public void HandleGlobalClick(TargetingData data) => _activeState?.HandleGlobalClick(data);
+
+    public void ClearCtxs()
+    {
+        ClearCtxs(null);
+    }
+    public void ClearCtxs(CombatStateSO toState)
+    {
+        selectionCtx.ClearCtx();
+        combatCtx.ClearCtx();
+        if (toState) TransitionToState(toState);
+    }
 }

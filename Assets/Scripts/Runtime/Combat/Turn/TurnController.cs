@@ -19,7 +19,7 @@ public class TurnController : MonoBehaviour
         AbilityPreviewData data = ability.GetPreviewData(caster, targetingData);
         bool canExecute = ability.CanExecute(caster, targetingData);
 
-        if (ability.ShowTrajectory) {}
+        if (ability.ShowTrajectory)
             _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, targetingData.worldPosition, ability.TrajectoryConfigData));
         _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, canExecute));
     }
