@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class TurnController : MonoBehaviour
@@ -8,6 +9,7 @@ public class TurnController : MonoBehaviour
     [Header("Event Channels")]
     [SerializeField] private HighlightGridEventChannel _highlightCellsEventChannel;
     [SerializeField] private HighlightFreeAimEventChannel _targetTransformEventChannel;
+    [SerializeField] private TurnAgentEventChannel _onJoinFightAgentEventChannel;
 
     [Header("Turn Managments")]
     [SerializeField] private TurnOrderDataSO _turnOrderData;
@@ -16,23 +18,13 @@ public class TurnController : MonoBehaviour
     private Queue<ICommand> _commandQueue = new Queue<ICommand>();
     private bool _isProcessing = false;
 
-    private List<ITurnAgent> _toBeRegistered = new();
-    private bool _initializationInProgress = true;
-
     // FIXME Later Idealmente quando INIZIA un fight bisogna chiamare questa cosa
-    void OnEnable()
+    protected async Awaitable OnEnable()
     {
         _turnOrderData.Clear();
         _currentTurnState.Clear();
-        _initializationInProgress = false;
-        
-        foreach (ITurnAgent agent in _toBeRegistered)
-        {
-            _turnOrderData.AddEntity(agent);
-        }
 
-        _toBeRegistered.Clear();
-
+        await Awaitable.NextFrameAsync();
         _ = RunGameLoop(destroyCancellationToken);
     }
 
@@ -100,16 +92,8 @@ public class TurnController : MonoBehaviour
         }
     }
 
-    public void OnAgentJoin(ITurnAgent agent)
-    {
-        if (_initializationInProgress)
-        {
-            _toBeRegistered.Add(agent);
-        } else
-        {
-            _turnOrderData.AddEntity(agent);
-        }
-    }
+    public void OnAgentJoin(ITurnAgent agent) => _turnOrderData.AddEntity(agent);
+
     public void OnAgentLeave(ITurnAgent agent)
     {
         _turnOrderData.RemoveEntity(agent);

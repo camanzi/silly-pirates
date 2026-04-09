@@ -68,7 +68,7 @@ public class TurnOrderDataSO : ScriptableObject
 
     private float CalculateBaseAV(ITurnAgent a)
     {
-        float speed = Mathf.Max(1, a.AgentData.MaxMoveSpeed);
+        float speed = Mathf.Max(1, a.AgentData.InitialAgility);
         return 10000f / speed;
     } 
     private void SortQueue()

@@ -1859,10 +1859,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Character (000)
       objectReference: {fileID: 0}
-    - target: {fileID: 4197157872790995930, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
-      propertyPath: _renderingAgentData
-      value: 
-      objectReference: {fileID: 11400000, guid: 96384d747012b6a40ab148885f2db6cf, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1916,6 +1912,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3365122536592145621, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
+      propertyPath: _onJoinFightAgentEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
     - target: {fileID: 3970896200464826270, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
       propertyPath: m_Name
       value: PF_TurnController

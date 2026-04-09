@@ -20,7 +20,6 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public TurnAgentEventChannel OnAgentLeave => _onAgentLeave;
 
-
     private DirectionalSpriteController _directionalSpriteController;
     private Tween _moveTween;
 
