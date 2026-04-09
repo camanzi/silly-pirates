@@ -8,7 +8,6 @@ TagManager:
   - CollisionMap
   - FloorMap
   - PreviewMap
-  - Ship
   layers:
   - Default
   - TransparentFX

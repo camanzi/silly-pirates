@@ -17,6 +17,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [Header("Combat System event channels")]
     [SerializeField] private TurnAgentEventChannel _onAgentJoin;
     [SerializeField] private TurnAgentEventChannel _onAgentLeave;
+    [SerializeField] private TurnStateSO _currentTurnStateData;
 
     public Transform Transform => transform;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
@@ -51,5 +52,12 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public void OnCombatLeave() => this.HandleCombatLeave();
 
-    public void OnStartingTurn() => this.HandleStartingTurn();
+    public async void OnStartingTurn()
+    {
+        this.HandleStartingTurn();
+
+        await Awaitable.WaitForSecondsAsync(2.5f);
+
+        _currentTurnStateData.SignalTurnEnd();
+    }
 }

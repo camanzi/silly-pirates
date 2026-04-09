@@ -6,18 +6,19 @@ public class TurnStateSO : ScriptableObject
 {
     [SerializeField] private TurnAgentEventChannel _onAgentActivated;
     public TurnAgentEventChannel OnAgentActivated => _onAgentActivated;
-    private ITurnAgent _activeAgent;
-    
-    private AwaitableCompletionSource _turnTaskSource;
 
     public ITurnAgent ActiveAgent => _activeAgent;
-    public bool IsPlayerTurn => true;
+    public bool IsPlayerTurn => _isPlayerTurn;
+    private ITurnAgent _activeAgent;
+    private AwaitableCompletionSource _turnTaskSource;
+    private bool _isPlayerTurn = false;
 
     public void SetActiveCharacter(ITurnAgent agent)
     {
         _activeAgent = agent;
         _turnTaskSource = new AwaitableCompletionSource();
 
+        _isPlayerTurn = _activeAgent.CompareTag("Player");
         _onAgentActivated?.RaiseEvent(agent);
     }
 

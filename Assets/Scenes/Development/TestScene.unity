@@ -180,6 +180,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _agentData
+      value: 
+      objectReference: {fileID: 11400000, guid: dd7a936bd0ea5fa4c9ee57fc9eef7c82, type: 2}
+    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _renderingAgentData
       value: 
       objectReference: {fileID: 11400000, guid: 374959d3cd7b181458e15c616239e5c7, type: 2}
@@ -541,6 +545,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _agentData
+      value: 
+      objectReference: {fileID: 11400000, guid: dd7a936bd0ea5fa4c9ee57fc9eef7c82, type: 2}
     - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _renderingAgentData
       value: 
@@ -916,7 +924,9 @@ GameObject:
   - component: {fileID: 900829257}
   - component: {fileID: 900829260}
   - component: {fileID: 900829261}
+  - component: {fileID: 900829264}
   - component: {fileID: 900829262}
+  - component: {fileID: 900829263}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -1037,6 +1047,47 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &900829263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900829256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9185637d73040fb4cbaf157a02014a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnAgentChannelListener
+  eventChannel: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 900829264}
+        m_TargetAssemblyTypeName: EndTurnButton, Assembly-CSharp
+        m_MethodName: UpdateEndTurnButtonState
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &900829264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900829256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 614c751968b6cbe44a25e6050d7c3c14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndTurnButton
+  _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
 --- !u!1 &1045256477
 GameObject:
   m_ObjectHideFlags: 0
@@ -2050,14 +2101,6 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
-      propertyPath: _agentData
-      value: 
-      objectReference: {fileID: 11400000, guid: 87e5e3dec7488154499e58a9cbe64c94, type: 2}
-    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
-      propertyPath: _renderingAgentData
-      value: 
-      objectReference: {fileID: 11400000, guid: 611d36b89888e0f42a231be9eb550a33, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
