@@ -63,6 +63,7 @@ public class TurnController : MonoBehaviour
     }
     #endregion
 
+    #region TURN AGENT HANDLING & CORE GAME LOOP
     public async Awaitable RunGameLoop(CancellationToken token)
     {
         try 
@@ -103,4 +104,5 @@ public class TurnController : MonoBehaviour
             _currentTurnState.SignalTurnEnd();
         }
     }
+    #endregion
 }

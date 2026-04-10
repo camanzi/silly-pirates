@@ -6,18 +6,17 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class TurnCard : VisualElement
 {
-    private const string TEMPLATE_PATH = "UI/Templates/TurnCard/TurnCardTemplate";
-
     // Classi CSS per lo styling
     private const string USS_CLASS_CARD_CONTAINER = "card-container";
     private const string USS_CLASS_ACTIVE = "turn-card-wrapper--active";
     private const string USS_CLASS_WAITING = "turn-card-wrapper--waiting";
     
     // Elementi UI (cached per performance)
-    private VisualElement cardWrapper;
-    private VisualElement card;
-    private VisualElement iconContainer;
-    private VisualElement characterIcon;
+    private VisualElement _cardWrapper;
+    private VisualElement _card;
+    private VisualElement _iconContainer;
+    private Label _avLabel;
+    private VisualElement _characterIcon;
     
     // Dati interni
     private CharacterTurnData _data;
@@ -27,38 +26,26 @@ public partial class TurnCard : VisualElement
     /// Costruttore - crea la struttura della card
     /// </summary>
     public TurnCard()
-    {        
-        LoadTemplate();
-        CacheElements();
-        UpdateActiveState();
+    {   
+        AddToClassList(USS_CLASS_CARD_CONTAINER);
 
         // Stato iniziale
         IsActive = false;
     }
-    
-    /// <summary>
-    /// Carica il template UXML da Resources
-    /// </summary>
-    private void LoadTemplate()
+
+    public void InitElements()
     {
-        VisualTreeAsset template = Resources.Load<VisualTreeAsset>(TEMPLATE_PATH);
-        
-        if (template == null)
-        {
-            Debug.LogError($"Template UXML non trovato in Resources/{TEMPLATE_PATH}");
-            throw new System.Exception($"Template UXML non trovato in Resources/{TEMPLATE_PATH}");
-        }
-        
-        template.CloneTree(this);        
-        AddToClassList(USS_CLASS_CARD_CONTAINER);
+        CacheElements();
+        UpdateActiveState();
     }
 
     private void CacheElements()
     {
-        cardWrapper = this.Q<VisualElement>("card-wrapper");
-        card = this.Q<VisualElement>("card");
-        iconContainer = this.Q<VisualElement>("icon-container");
-        characterIcon = this.Q<VisualElement>("character-icon");
+        _cardWrapper = this.Q<VisualElement>("card-wrapper");
+        _card = this.Q<VisualElement>("card");
+        _iconContainer = this.Q<VisualElement>("icon-container");
+        _characterIcon = this.Q<VisualElement>("character-icon");
+        _avLabel = this.Q<Label>("AV-label");
     }
     
     /// <summary>
@@ -71,6 +58,7 @@ public partial class TurnCard : VisualElement
         {
             _data = value;
             UpdateDisplay();
+            UpdateActionValueDisplay();
         }
     }
     
@@ -85,6 +73,7 @@ public partial class TurnCard : VisualElement
             if (_isActive == value) return;
             _isActive = value;
             UpdateActiveState();
+            UpdateActionValueDisplay();
         }
     }
     
@@ -95,7 +84,7 @@ public partial class TurnCard : VisualElement
     {
         if (_data.Icon != null)
         {
-            characterIcon.style.backgroundImage = new StyleBackground(_data.Icon);
+            _characterIcon.style.backgroundImage = new StyleBackground(_data.Icon);
         }
     }
     
@@ -104,16 +93,21 @@ public partial class TurnCard : VisualElement
     /// </summary>
     private void UpdateActiveState()
     {
-        cardWrapper.RemoveFromClassList(USS_CLASS_ACTIVE);
-        cardWrapper.RemoveFromClassList(USS_CLASS_WAITING);
+        _cardWrapper.RemoveFromClassList(USS_CLASS_ACTIVE);
+        _cardWrapper.RemoveFromClassList(USS_CLASS_WAITING);
         
         if (_isActive)
         {
-            cardWrapper.AddToClassList(USS_CLASS_ACTIVE);
+            _cardWrapper.AddToClassList(USS_CLASS_ACTIVE);
         }
         else
         {
-            cardWrapper.AddToClassList(USS_CLASS_WAITING);
+            _cardWrapper.AddToClassList(USS_CLASS_WAITING);
         }
+    }
+
+    private void UpdateActionValueDisplay()
+    {
+        _avLabel.text = _isActive ? string.Empty : _data.ActionValue.ToString();;
     }
 }

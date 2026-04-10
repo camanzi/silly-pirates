@@ -1,3 +1,5 @@
+using System;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +16,18 @@ public class FreeRoamTarget : MonoBehaviour
     [Header("Events channels")]
     [SerializeField] private VoidEventChannel enableTacticalViewEventChannel;
     [SerializeField] private VoidEventChannel disableTacticalViewEventChannel;
+
+    [Header("Automoving Camera configs")]
+    [SerializeField] private Ease _interpolationCurve;
+    
+    [Min(0.2f)]
+    [SerializeField] private float _interpolationDuration;
+    
+    [Tooltip("After this timer passed, Camera starts moving automatically on change turn (S)")]
+    [Min(1f)]
+    [SerializeField] private float _enableAutomovingTimer = 1f;
+
+    private float _lastInputTime = float.NegativeInfinity;
 
     private Transform _cameraTransform;
     
@@ -68,7 +82,20 @@ public class FreeRoamTarget : MonoBehaviour
         ApplyMovement();
         ApplyRotation();
     }
-    #region Movement & Rotation
+
+    public void OnTurnAgentStart(ITurnAgent agent)
+    {
+        if (agent is not MonoBehaviour mono) return;
+
+        // Se il tempo trascorso in secondi é minore del mio timer NON muovo la telecamera 
+        if (Time.time - _lastInputTime < _enableAutomovingTimer) return;
+
+        Tween.StopAll();
+
+        Tween.Position(transform, mono.transform.position, duration: _interpolationDuration, ease: _interpolationCurve);
+    }
+
+    #region MOVEMENT & ROTATION
     private void HandleInput()
     {
         
@@ -77,6 +104,7 @@ public class FreeRoamTarget : MonoBehaviour
         if (_moveInputVector.magnitude > 1f)
         {
             _moveInputVector = _moveInputVector.normalized;
+            _lastInputTime = Time.time;
         }
     }
 

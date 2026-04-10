@@ -4,6 +4,7 @@ using UnityEngine;
 public class IdleStateSO : CombatStateSO
 {
     [SerializeField] private CombatStateSO _targetingStateTemplate;
+    [SerializeField] private TurnStateSO _currentTurnStateData;
 
     public override void OnEnter()
     {
@@ -18,6 +19,9 @@ public class IdleStateSO : CombatStateSO
 
     public override void HandleElementClick(IInteractableElement element)
     {
+        // Notifico di mostrare la sua UI con le sue opzioni
+
+        // Il prossimo step lo decide quindi la UI e non si selezionerá di base l'abilitá
         if (element is InteractableGridElement interactable)
         {
             manager.combatCtx.selectedAbility = interactable.defaultCharacterAbility;

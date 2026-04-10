@@ -453,6 +453,7 @@ GameObject:
   m_Component:
   - component: {fileID: 542180451}
   - component: {fileID: 542180453}
+  - component: {fileID: 542180454}
   m_Layer: 0
   m_Name: FreeRoamCameraTarget
   m_TagString: Untagged
@@ -493,6 +494,37 @@ MonoBehaviour:
   enableRotation: 1
   enableTacticalViewEventChannel: {fileID: 11400000, guid: 9e7eec016bf71a649b66b2c0381ecaaa, type: 2}
   disableTacticalViewEventChannel: {fileID: 11400000, guid: fc780932b78f00c448d696a01aa1fbcb, type: 2}
+  _interpolationCurve: 1
+  _interpolationDuration: 0.5
+  _enableAutomovingTimer: 10
+--- !u!114 &542180454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542180450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9185637d73040fb4cbaf157a02014a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnAgentChannelListener
+  eventChannel: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 542180453}
+        m_TargetAssemblyTypeName: FreeRoamTarget, Assembly-CSharp
+        m_MethodName: OnTurnAgentStart
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &762508606
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -925,8 +957,8 @@ GameObject:
   - component: {fileID: 900829260}
   - component: {fileID: 900829261}
   - component: {fileID: 900829264}
-  - component: {fileID: 900829262}
   - component: {fileID: 900829263}
+  - component: {fileID: 900829262}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -1019,6 +1051,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnOrderController
   _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
+  _turnCardTemplate: {fileID: 9197481963319205126, guid: 9cde3d66e09a68d49acbd54768449e27, type: 3}
 --- !u!114 &900829262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1963,10 +1996,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3365122536592145621, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
-      propertyPath: _onJoinFightAgentEventChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
     - target: {fileID: 3970896200464826270, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
       propertyPath: m_Name
       value: PF_TurnController

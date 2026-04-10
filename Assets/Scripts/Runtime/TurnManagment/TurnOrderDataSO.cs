@@ -24,7 +24,8 @@ public class TurnOrderDataSO : ScriptableObject
         foreach (EntityTurnState state in _turnQueue)
         {
             state.CurrentAV -= timePassed;
-            state.CurrentAV = Mathf.Max(0, state.CurrentAV);
+            // Minimo valore che puó assumere l'AV
+            state.CurrentAV = Mathf.Max(1, state.CurrentAV);
         }
 
         finishedEntity.CurrentAV = CalculateBaseAV(finishedEntity.Agent);

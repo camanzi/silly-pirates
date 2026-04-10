@@ -6,6 +6,9 @@ public class TurnOrderController : MonoBehaviour
 {   
     [Header("Data Source")]
     [SerializeField] private TurnOrderDataSO _turnOrderData;
+
+    [Header("UI Templates")]
+    [SerializeField] private VisualTreeAsset _turnCardTemplate;
     
     private UIDocument _uiDocument;
     private VisualElement root;
@@ -33,7 +36,13 @@ public class TurnOrderController : MonoBehaviour
     
     private void SetupListView()
     {
-        turnListView.makeItem = () => new TurnCard();
+        turnListView.makeItem = () =>
+        {
+            TurnCard card = new TurnCard();
+            _turnCardTemplate.CloneTree(card);
+            card.InitElements();
+            return card;
+        };
         
         turnListView.bindItem = (element, index) => {
             if (element is TurnCard card && index < _turnOrderData.TurnQueue.Count)
