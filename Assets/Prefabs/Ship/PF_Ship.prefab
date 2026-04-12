@@ -754,13 +754,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridInputHandler
   _grid: {fileID: 624325162096680193}
   _interactableTilemap: {fileID: 579327970968792580}
+  _inputReader: {fileID: 11400000, guid: 7e56d5efef3525e478b22e3e6ac7bb2d, type: 2}
   _gridLayerMask:
     serializedVersion: 2
     m_Bits: 256
-  _uiLayer:
-    serializedVersion: 2
-    m_Bits: 32
-  _mouseMoveThreshold: 1
+  _raycastDistance: 100
   _onPointerMoved: {fileID: 11400000, guid: 219bff90088745048890addef74f5d99, type: 2}
   _onPointerClicked: {fileID: 11400000, guid: 1c9e583d899c4a646b407b480d433ce4, type: 2}
 --- !u!114 &5797126308011357101

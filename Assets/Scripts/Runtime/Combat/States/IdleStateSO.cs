@@ -8,7 +8,7 @@ public class IdleStateSO : CombatStateSO
 
     public override void OnEnter()
     {
-        manager.turnController.ClearPreview();
+        manager.TurnController.ClearPreview();
     }
     public override void OnExit()
     {
@@ -24,8 +24,8 @@ public class IdleStateSO : CombatStateSO
         // Il prossimo step lo decide quindi la UI e non si selezionerá di base l'abilitá
         if (element is InteractableGridElement interactable)
         {
-            manager.combatCtx.selectedAbility = interactable.defaultCharacterAbility;
-            manager.selectionCtx.CurrentCaster = interactable;
+            manager.CombatCtx.selectedAbility = interactable.defaultCharacterAbility;
+            manager.SelectionCtx.CurrentCaster = interactable;
             manager.TransitionToState(_targetingStateTemplate);
         }
     }

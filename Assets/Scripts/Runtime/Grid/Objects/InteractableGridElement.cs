@@ -35,11 +35,11 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
         base.OnEnable();
     }
 
-    public void OnPointerEnter(PointerEventData eventData) => this.HandlePointerEnter();
+    public void OnHoverEnter() => this.HandlePointerEnter();
 
-    public void OnPointerClick(PointerEventData eventData) => this.HandlePointerClick();
+    public void OnClick() => this.HandlePointerClick();
 
-    public void OnPointerExit(PointerEventData eventData) => this.HandlePointerExit();
+    public void OnHoverExit() => this.HandlePointerExit();
     
     public void OnSelectionCtxChange() => this.HandlePointerExit();
 }

@@ -7,9 +7,9 @@ public class ExecutionStateSO : CombatStateSO
 
     public async override void OnEnter()
     {
-        await manager.turnController.ProcessQueueAsync();
+        await manager.TurnController.ProcessQueueAsync();
 
-        manager.turnController.ClearPreview();
+        manager.TurnController.ClearPreview();
         manager.ClearCtxs(_idleStateTemplate);
     }
     public override void OnExit()

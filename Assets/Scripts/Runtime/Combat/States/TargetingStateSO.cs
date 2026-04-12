@@ -21,14 +21,19 @@ public class TargetingStateSO : CombatStateSO
 
     public override void OnUpdate()
     {
-        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) manager.ClearCtxs(_idleStateTemplate);
+        // FIXME Later, da implementare con l'input reader
+        // if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) manager.ClearCtxs(_idleStateTemplate);
     }
 
     public override void HandleElementClick(IInteractableElement element)
     {
-        SelectionContextSO selectionCtx = manager.selectionCtx;
+        SelectionContextSO selectionCtx = manager.SelectionCtx;
 
-        if (selectionCtx.CurrentCaster == element) manager.ClearCtxs(_idleStateTemplate);
+        if (selectionCtx.CurrentCaster == element)
+        {
+            manager.ClearCtxs(_idleStateTemplate);
+            return;
+        }
 
         if (element is ITargettable targettable)
         {
@@ -40,25 +45,25 @@ public class TargetingStateSO : CombatStateSO
 
     public override void HandlePointerMove(TargetingData data)
     {
-        CombatContext combatCtx = manager.combatCtx;
-        SelectionContextSO selectionCtx = manager.selectionCtx;
+        CombatContext combatCtx = manager.CombatCtx;
+        SelectionContextSO selectionCtx = manager.SelectionCtx;
 
-        manager.turnController.DrawAbilityPreview(data, combatCtx.selectedAbility, selectionCtx.CurrentCaster);        
+        manager.TurnController.DrawAbilityPreview(data, combatCtx.selectedAbility, selectionCtx.CurrentCaster);        
     }
 
     public override void HandleGlobalClick(TargetingData data) => OnClickBehavior(data);
 
     private void OnClickBehavior(TargetingData? data)
     {
-        CombatContext combatCtx = manager.combatCtx;
+        CombatContext combatCtx = manager.CombatCtx;
         AbilityBase selectedAbility = combatCtx.selectedAbility;
-        IInteractableElement caster = manager.selectionCtx.CurrentCaster;
+        IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
 
         if (selectedAbility.CanExecute(caster, data))
         {
             ICommand command = selectedAbility.CreateCommand(caster, data);
             
-            manager.turnController.AddCommand(command);
+            manager.TurnController.AddCommand(command);
             manager.TransitionToState(_executionStateTemplate);
         }
     }
