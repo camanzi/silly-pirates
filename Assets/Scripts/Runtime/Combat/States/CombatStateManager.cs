@@ -5,6 +5,7 @@ public class CombatStateManager : MonoBehaviour
     [Header("Dependencies")]
     [SerializeField] private TurnController _turnController;
     [SerializeField] private SelectionContextSO _selectionCtx;
+    [SerializeField] private InputReader _inputReader;
 
     [Header("State Settings")]
     [SerializeField] private CombatStateSO _initialState;
@@ -15,6 +16,16 @@ public class CombatStateManager : MonoBehaviour
     public TurnController TurnController => _turnController;
     public SelectionContextSO SelectionCtx => _selectionCtx;
     public CombatContext CombatCtx => _combatContext;
+
+    void OnEnable()
+    {
+        _inputReader.RightClickEvent += OnRightClick;
+    }
+
+    void OnDisable()
+    {
+        _inputReader.RightClickEvent -= OnRightClick;
+    }
 
     private void Start() => TransitionToState(_initialState);
 
@@ -41,6 +52,12 @@ public class CombatStateManager : MonoBehaviour
         if (!CanProcessInput()) return;
         _activeState?.HandleElementClick(element);
     } 
+
+    public void OnRightClick()
+    {
+        if (!CanProcessInput()) return;
+        _activeState?.HandleRightClick();
+    }
 
     public void HandleGlobalClick(TargetingData data)
     {

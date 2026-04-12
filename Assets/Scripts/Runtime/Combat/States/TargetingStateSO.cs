@@ -19,11 +19,7 @@ public class TargetingStateSO : CombatStateSO
         Debug.Log($"Sono uscito da Targeting state");
     }
 
-    public override void OnUpdate()
-    {
-        // FIXME Later, da implementare con l'input reader
-        // if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) manager.ClearCtxs(_idleStateTemplate);
-    }
+    public override void OnUpdate() { }
 
     public override void HandleElementClick(IInteractableElement element)
     {
@@ -41,6 +37,11 @@ public class TargetingStateSO : CombatStateSO
         }
 
         OnClickBehavior(null);
+    }
+    
+    public override void HandleRightClick()
+    {
+        manager.ClearCtxs(_idleStateTemplate);
     }
 
     public override void HandlePointerMove(TargetingData data)

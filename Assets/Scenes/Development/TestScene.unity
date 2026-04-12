@@ -2084,10 +2084,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3839102876060226769, guid: c754ea2c20159ac4f9603c45f0a39a3f, type: 3}
-      propertyPath: _gridLayerMask.m_Bits
-      value: 256
-      objectReference: {fileID: 0}
     - target: {fileID: 5928166714952300585, guid: c754ea2c20159ac4f9603c45f0a39a3f, type: 3}
       propertyPath: m_Name
       value: PF_Ship

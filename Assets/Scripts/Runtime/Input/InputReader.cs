@@ -7,6 +7,7 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IPl
 {
     public event UnityAction<Vector2> PointEvent = delegate { };
     public event UnityAction ClickStartedEvent = delegate { };
+    public event UnityAction RightClickEvent = delegate { };
 
     private GameInput _gameInput;
 
@@ -42,11 +43,15 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IPl
         if (context.performed && context.ReadValueAsButton()) ClickStartedEvent?.Invoke();
     }
 
+    public void OnRightClick(InputAction.CallbackContext context)
+    {
+        if (context.performed && context.ReadValueAsButton()) RightClickEvent?.Invoke();
+    }
+
     // Metodi dell'interfaccia UI che dobbiamo dichiarare
     public void OnNavigate(InputAction.CallbackContext context) { }
     public void OnSubmit(InputAction.CallbackContext context) { }
     public void OnCancel(InputAction.CallbackContext context) { }
-    public void OnRightClick(InputAction.CallbackContext context) { }
     public void OnMiddleClick(InputAction.CallbackContext context) { }
     public void OnScrollWheel(InputAction.CallbackContext context) { }
     public void OnTrackedDevicePosition(InputAction.CallbackContext context) { }
