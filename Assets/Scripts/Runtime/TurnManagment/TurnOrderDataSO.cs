@@ -19,6 +19,11 @@ public class TurnOrderDataSO : ScriptableObject
         EntityTurnState finishedEntity = _turnQueue[0];
         _turnQueue.RemoveAt(0);
 
+        finishedEntity.CurrentAV = CalculateBaseAV(finishedEntity.Agent);
+        _turnQueue.Add(finishedEntity);
+
+        SortQueue();
+        
         float timePassed = _turnQueue[0].CurrentAV;
 
         foreach (EntityTurnState state in _turnQueue)
@@ -28,10 +33,7 @@ public class TurnOrderDataSO : ScriptableObject
             state.CurrentAV = Mathf.Max(1, state.CurrentAV);
         }
 
-        finishedEntity.CurrentAV = CalculateBaseAV(finishedEntity.Agent);
-        _turnQueue.Add(finishedEntity);
-
-        SortQueue();
+        _onQueueUpdated?.RaiseEvent();
     }
 
     public void AddEntity(ITurnAgent agent)
@@ -47,6 +49,7 @@ public class TurnOrderDataSO : ScriptableObject
             Debug.Log($"Ho aggiunto un nuovo Agent {mono.name} con AV: {initialAV}");
 
         SortQueue();
+        _onQueueUpdated?.RaiseEvent();
     }
 
     public void RemoveEntity(ITurnAgent agent)
@@ -82,7 +85,5 @@ public class TurnOrderDataSO : ScriptableObject
             
             return result;
         });
-        
-        _onQueueUpdated?.RaiseEvent();
     }
 }

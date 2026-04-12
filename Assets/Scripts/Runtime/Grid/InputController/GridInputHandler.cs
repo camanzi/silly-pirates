@@ -16,7 +16,7 @@ public class GridInputHandler : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float _mouseMoveThreshold = 1.0f;
 
-    [Header("event Channels")]
+    [Header("Event Channels")]
     [SerializeField] private TargetingDataEventChannel _onPointerMoved;
     [SerializeField] private TargetingDataEventChannel _onPointerClicked;    
     private Vector3Int? _lastHoveredCell;

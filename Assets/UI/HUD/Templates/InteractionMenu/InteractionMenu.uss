@@ -1,0 +1,17 @@
+.interaction-button {
+    width: 250px;
+    height: 250px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+    transition-property: scale, background-color;
+    transition-duration: 0.2s;
+}
+
+.interaction-button__icon {
+    width: 70%;
+    height: 70%;
+    -unity-background-scale-mode: scale-to-fit;
+}

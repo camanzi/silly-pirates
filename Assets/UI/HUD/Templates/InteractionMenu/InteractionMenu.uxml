@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Templates/InteractionMenu/InteractionMenu.uss?fileID=7433441132597879392&amp;guid=f16585ae27db7fe409153a60cc9cc7e2&amp;type=3#InteractionMenu"/>
+    <ui:VisualElement name="container" style="flex-direction: row; justify-content: center; align-items: center; border-radius: 10px; padding: 5px; width: 100%; height: 100%;"/>
+</ui:UXML>

@@ -1,15 +1,12 @@
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class TurnCard : VisualElement
 {
     // Classi CSS per lo styling
-    private const string USS_CLASS_CARD_CONTAINER = "card-container";
-    private const string USS_CLASS_ACTIVE = "turn-card-wrapper--active";
-    private const string USS_CLASS_WAITING = "turn-card-wrapper--waiting";
+    private static readonly string USS_CLASS_CARD_CONTAINER = "card-container";
+    private static readonly string USS_CLASS_ACTIVE = "turn-card-wrapper--active";
+    private static readonly string USS_CLASS_WAITING = "turn-card-wrapper--waiting";
     
     // Elementi UI (cached per performance)
     private VisualElement _cardWrapper;
@@ -76,10 +73,7 @@ public partial class TurnCard : VisualElement
             UpdateActionValueDisplay();
         }
     }
-    
-    /// <summary>
-    /// Aggiorna il contenuto visualizzato
-    /// </summary>
+
     private void UpdateDisplay()
     {
         if (_data.Icon != null)
@@ -88,9 +82,6 @@ public partial class TurnCard : VisualElement
         }
     }
     
-    /// <summary>
-    /// Cambia le classi CSS in base allo stato attivo
-    /// </summary>
     private void UpdateActiveState()
     {
         _cardWrapper.RemoveFromClassList(USS_CLASS_ACTIVE);
