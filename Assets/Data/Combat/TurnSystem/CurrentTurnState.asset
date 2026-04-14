@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: CurrentTurnState
   m_EditorClassIdentifier: Assembly-CSharp::TurnStateSO
   _onAgentActivated: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
+  _onTurnChangeProximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}

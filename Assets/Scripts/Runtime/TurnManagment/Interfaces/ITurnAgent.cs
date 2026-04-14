@@ -4,6 +4,7 @@ public interface ITurnAgent
     public TurnAgentDataSO AgentData { get; }
     public TurnAgentEventChannel OnAgentJoin { get; }
     public TurnAgentEventChannel OnAgentLeave { get; }
+    public InteractableProximityEventChannel ProximityChannel { get; }
 
     public void OnCombatJoin();
 

@@ -6,6 +6,7 @@ public class CombatStateManager : MonoBehaviour
     [SerializeField] private TurnController _turnController;
     [SerializeField] private SelectionContextSO _selectionCtx;
     [SerializeField] private InputReader _inputReader;
+    [SerializeField] private TurnStateSO _currentTurnStateData;
 
     [Header("State Settings")]
     [SerializeField] private CombatStateSO _initialState;
@@ -16,6 +17,7 @@ public class CombatStateManager : MonoBehaviour
     public TurnController TurnController => _turnController;
     public SelectionContextSO SelectionCtx => _selectionCtx;
     public CombatContext CombatCtx => _combatContext;
+    public TurnStateSO CurrentTurnStateData => _currentTurnStateData;
 
     void OnEnable()
     {

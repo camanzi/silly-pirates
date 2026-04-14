@@ -19,8 +19,11 @@ public class IdleStateSO : CombatStateSO
 
     public override void HandleElementClick(IInteractableElement element)
     {
-        // Notifico di mostrare la sua UI con le sue opzioni
-
+        // FIXME Later, attenzione da capire cosa far fare quando seleziono un personaggio e non é il suo turno
+        // Per il momento non lo seleziono e ignoro la selezione
+        if (element is not ITurnAgent clickedAgent || clickedAgent != manager.CurrentTurnStateData.ActiveAgent)
+            return;
+        
         // Il prossimo step lo decide quindi la UI e non si selezionerá di base l'abilitá
         if (element is InteractableGridElement interactable)
         {

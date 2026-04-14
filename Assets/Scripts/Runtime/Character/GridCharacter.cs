@@ -20,6 +20,8 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public TurnAgentEventChannel OnAgentLeave => _onAgentLeave;
 
+    public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
+
     private DirectionalSpriteController _directionalSpriteController;
     private Tween _moveTween;
 
@@ -52,7 +54,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
             
             gridPosition = Vector3Int.FloorToInt(node);
 
-            _proximityChannel.RaiseEvent(new ProximityPayload(this, _agentData.InteractionRange));
+            this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
         }
 
         _directionalSpriteController.PlayAnimation("human_idle");
@@ -62,5 +64,9 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public void OnCombatLeave() => this.HandleCombatLeave();
 
-    public void OnStartingTurn() => this.HandleStartingTurn();
+    public void OnStartingTurn()
+    {
+        this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
+        this.HandleStartingTurn();
+    }
 }

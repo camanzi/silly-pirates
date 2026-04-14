@@ -40,7 +40,11 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
 
     public void CheckProximity(ProximityPayload payload)
     {
-        int distance = PathFindingUtils.GetNormalizedDistance(gridPosition, payload.ActiveCharacter.gridPosition);
+        int distance = 0;
+        if (!payload.Equals(ProximityPayload.Empty))
+        {
+            distance = PathFindingUtils.GetNormalizedDistance(gridPosition, payload.ActiveCharacter.gridPosition);
+        }
 
         bool isInside = distance <= payload.Range;
         

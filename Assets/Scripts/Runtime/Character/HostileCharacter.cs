@@ -19,6 +19,9 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [SerializeField] private TurnAgentEventChannel _onAgentLeave;
     [SerializeField] private TurnStateSO _currentTurnStateData;
 
+    [Header("Proximity Logic")]
+    [SerializeField] protected InteractableProximityEventChannel _proximityChannel;
+
     public Transform Transform => transform;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
     public TurnRenderingAgentDataSO RenderingData => _renderingAgentData;
@@ -27,7 +30,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public InteractableElementEventChannel ClickChannel => _elementClickedChannel;
     public TurnAgentEventChannel OnAgentJoin => _onAgentJoin;
     public TurnAgentEventChannel OnAgentLeave => _onAgentLeave;
-    
+    public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
     private OutlinerHelper _outlinerHelper;
 
     void Awake()
@@ -55,6 +58,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public async void OnStartingTurn()
     {
         this.HandleStartingTurn();
+        this.EmitProximityCheck(ProximityPayload.Empty);
 
         await Awaitable.WaitForSecondsAsync(2.5f);
 
