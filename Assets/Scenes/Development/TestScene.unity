@@ -2174,10 +2174,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6406782005617882926, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
-      propertyPath: m_Settings.m_InteractionLayers.m_Bits
-      value: 32
-      objectReference: {fileID: 0}
     - target: {fileID: 6488994046265238083, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: m_Name
       value: PF_Cannon

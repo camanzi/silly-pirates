@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 234209107695974863}
   m_Layer: 5
-  m_Name: InteractionmMenu
+  m_Name: InteractionMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
     m_ProcessWorldSpaceInput: 1
     m_InteractionLayers:
       serializedVersion: 2
-      m_Bits: 499
+      m_Bits: 32
     m_MaxInteractionDistance: Infinity
     m_DefaultEventCameraIsMainCamera: 1
     m_EventCameras: []
@@ -224,6 +224,7 @@ GameObject:
   - component: {fileID: 1417285250194026181}
   - component: {fileID: 5010430319650090655}
   - component: {fileID: 5587952578991430984}
+  - component: {fileID: 3088319308627148957}
   m_Layer: 0
   m_Name: PF_Cannon
   m_TagString: Untagged
@@ -396,8 +397,23 @@ MonoBehaviour:
     m_Bits: 256
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionContext: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
-  _selectAbilityEventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
+  _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
+  OnProximityChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 892377213469747711}
+        m_TargetAssemblyTypeName: InteractionMenuController, Assembly-CSharp
+        m_MethodName: ToggleVisibility
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onShootEffects:
     m_PersistentCalls:
       m_Calls:
@@ -410,6 +426,34 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 1
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3088319308627148957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6488994046265238083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dddf7416d86e4b24c8337d5e8a01ad06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableProximityChannelListener
+  eventChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5587952578991430984}
+        m_TargetAssemblyTypeName: ShootingEquipment, Assembly-CSharp
+        m_MethodName: CheckProximity
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2

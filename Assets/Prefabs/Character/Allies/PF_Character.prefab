@@ -213,6 +213,7 @@ GameObject:
   - component: {fileID: 4197157872790995930}
   - component: {fileID: 5111650344878243217}
   - component: {fileID: 7996361524597493471}
+  - component: {fileID: 4584891140880305170}
   m_Layer: 0
   m_Name: PF_Character
   m_TagString: Player
@@ -375,8 +376,8 @@ MonoBehaviour:
     m_Bits: 256
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionContext: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
-  _selectAbilityEventChannel: {fileID: 11400000, guid: ee998bad18bf5a34f86f6b20fce7b800, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
+  _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
   _agentData: {fileID: 11400000, guid: 9e770d7783fee844896e751edd7cb259, type: 2}
   _renderingAgentData: {fileID: 11400000, guid: 96384d747012b6a40ab148885f2db6cf, type: 2}
   _onAgentJoin: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
@@ -430,3 +431,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4584891140880305170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4094058086563390557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dddf7416d86e4b24c8337d5e8a01ad06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableProximityChannelListener
+  eventChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls: []

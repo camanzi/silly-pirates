@@ -12,6 +12,10 @@ public class TurnAgentDataSO : ScriptableObject
     [Tooltip("Maximun movement on grid per turn")]
     [SerializeField] private int _maxMoveSpeed;
 
+    [Tooltip("Interaction range")]
+    [SerializeField] private int _interactionRange = 1;
+
     public int InitialAgility => _initialAgility;
     public int MaxMoveSpeed => _maxMoveSpeed;
+    public int InteractionRange => _interactionRange;
 }

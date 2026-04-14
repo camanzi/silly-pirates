@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(OutlinerHelper))]
 public class InteractableGridElement : GridElement, ISelectable, IInteractableElement
@@ -8,9 +8,12 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
     [SerializeField] private SelectionContextSO _selectionContext;
 
     [Header("Event channels")]
-    [SerializeField] private AbilitySelectionEventChannel _selectAbilityEventChannel;
-    [SerializeField] private InteractableElementEventChannel _elementClickedChannel;
+    [SerializeField] protected InteractableElementEventChannel _elementClickedChannel;
 
+    [Header("Proximity Logic")]
+    [SerializeField] protected InteractableProximityEventChannel _proximityChannel;
+    [Space]
+    [SerializeField] private UnityEvent<bool> OnProximityChanged;
     private AbilityController _abilityController;
     public AbilityBase defaultCharacterAbility => _abilityController.defaultAbility;
 
@@ -33,6 +36,15 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
     protected override void OnEnable()
     {
         base.OnEnable();
+    }
+
+    public void CheckProximity(ProximityPayload payload)
+    {
+        int distance = PathFindingUtils.GetNormalizedDistance(gridPosition, payload.ActiveCharacter.gridPosition);
+
+        bool isInside = distance <= payload.Range;
+        
+        OnProximityChanged?.Invoke(isInside);
     }
 
     public void OnHoverEnter() => this.HandlePointerEnter();

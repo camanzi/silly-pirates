@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697114ac8b492f04a85a19eabb834d9b, type: 3}
   m_Name: 001 Agent Data
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentDataSO
-  _initialAgility: 50
+  _initialAgility: 150
   _maxMoveSpeed: 2

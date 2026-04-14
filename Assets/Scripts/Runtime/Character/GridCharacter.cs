@@ -51,6 +51,8 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
             await Tween.Position(transform, targetPosition, duration: 0.5f, ease: Ease.Linear);
             
             gridPosition = Vector3Int.FloorToInt(node);
+
+            _proximityChannel.RaiseEvent(new ProximityPayload(this, _agentData.InteractionRange));
         }
 
         _directionalSpriteController.PlayAnimation("human_idle");

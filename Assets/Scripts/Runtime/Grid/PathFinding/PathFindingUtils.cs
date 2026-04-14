@@ -88,7 +88,12 @@ public static class PathFindingUtils
         return neighbors;
     }
 
-    private static int GetDistance(Vector3Int a, Vector3Int b)
+    public static int GetNormalizedDistance(Vector3Int a, Vector3Int b)
+    {
+        return GetDistance(a, b) / 10;
+    }
+
+    public static int GetDistance(Vector3Int a, Vector3Int b)
     {
         // Per gli esagoni la distanza Manhattan non funziona. Usiamo le coordinate assiali/cubiche.
         Vector3Int ac = OffsetToCube(a);

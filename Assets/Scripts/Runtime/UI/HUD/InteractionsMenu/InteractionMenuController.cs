@@ -10,13 +10,20 @@ public class InteractionMenuController : MonoBehaviour
     private VisualElement _container;
     private Camera _mainCamera;
 
+    private bool _isVisible = false;
+    private Tween _visibilityTween;
+
     void OnEnable()
     {
         _mainCamera = Camera.main;
         var root = uiDocument.rootVisualElement;
         _container = root.Q<VisualElement>("container");
         
-        BuildMenu();
+        if (_container != null)
+        {
+            _container.style.opacity = 0f;
+            _container.style.display = DisplayStyle.None;
+        }
     }
 
     void LateUpdate()
@@ -25,6 +32,29 @@ public class InteractionMenuController : MonoBehaviour
         {
             transform.LookAt(transform.position + _mainCamera.transform.rotation * Vector3.forward,
                              _mainCamera.transform.rotation * Vector3.up);
+        }
+    }
+
+    public void ToggleVisibility(bool show)
+    {
+        if (show == _isVisible) return;
+        _isVisible = show;
+
+        _visibilityTween.Stop();
+
+        if (show)
+        {
+            BuildMenu();
+            _container.style.display = DisplayStyle.Flex;
+            _visibilityTween = Tween.Custom(0f, 1f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
+                _container.style.opacity = new StyleFloat(newVal);
+            }); 
+        }
+        else
+        {
+            _visibilityTween = Tween.Custom(_container.style.opacity.value, 0f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
+                _container.style.opacity = new StyleFloat(newVal);
+            }).OnComplete(() => _container.style.display = DisplayStyle.None); 
         }
     }
 
@@ -40,14 +70,14 @@ public class InteractionMenuController : MonoBehaviour
                 InteractionButton btn = new InteractionButton();
                 btn.SetData(action, CheckIfActionIsEnabled(action));
                 
-                btn.style.scale = new StyleScale(Vector3.zero);
+                btn.style.scale = new StyleScale(new Scale(Vector3.zero));
                 _container.Add(btn);
 
-                Tween.Custom(Vector2.zero, Vector2.one, duration: 0.3f, startDelay: 0, endDelay: delay, ease: Ease.OutBack, onValueChange: newVal => {
-                    btn.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
+                Tween.Custom(0f, 1f, duration: 0.3f, startDelay: delay, ease: Ease.OutBack, onValueChange: newVal => {
+                    btn.style.scale = new StyleScale(new Scale(new Vector3(newVal, newVal, 1f)));
                 });
 
-                delay += 0.05f;
+                delay += 0.1f;
             }
         }
     }
