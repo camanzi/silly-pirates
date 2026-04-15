@@ -22,6 +22,13 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
 
+    public int RemainingActionPoints 
+    {
+        get => _remainingActionPoints; 
+        set => _remainingActionPoints = value;
+    }
+
+    private int _remainingActionPoints;
     private DirectionalSpriteController _directionalSpriteController;
     private Tween _moveTween;
 

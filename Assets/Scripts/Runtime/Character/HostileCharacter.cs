@@ -31,6 +31,13 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public TurnAgentEventChannel OnAgentJoin => _onAgentJoin;
     public TurnAgentEventChannel OnAgentLeave => _onAgentLeave;
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
+    public int RemainingActionPoints 
+    {
+        get => _remainingActionPoints; 
+        set => _remainingActionPoints = value;
+    }
+
+    private int _remainingActionPoints;
     private OutlinerHelper _outlinerHelper;
 
     void Awake()

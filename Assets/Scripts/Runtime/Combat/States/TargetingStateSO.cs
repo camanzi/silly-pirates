@@ -11,6 +11,7 @@ public class TargetingStateSO : CombatStateSO
 
     public override void OnEnter()
     {
+        base.OnEnter();
         Debug.Log($"Sono entrato in Targeting state");
     }
 

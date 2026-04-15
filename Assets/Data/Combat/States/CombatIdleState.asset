@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e79a8f41118a88468f9266c486a5773, type: 3}
   m_Name: CombatIdleState
   m_EditorClassIdentifier: Assembly-CSharp::IdleStateSO
+  _shouldShowUI: 1
   _targetingStateTemplate: {fileID: 11400000, guid: 47ce7cfcbf18fad4f86d68e9b3fefe32, type: 2}

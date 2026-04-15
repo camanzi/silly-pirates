@@ -12,7 +12,7 @@ public static class TurnAgentExtensions
 
     public static void HandleStartingTurn(this ITurnAgent element)
     {
-        
+        element.RemainingActionPoints = element.AgentData.MaxActionPointsPerTurn;   
     }
 
     public static void EmitProximityCheck(this ITurnAgent element, ProximityPayload payload)

@@ -1908,6 +1908,10 @@ PrefabInstance:
       propertyPath: _turnController
       value: 
       objectReference: {fileID: 435965747}
+    - target: {fileID: 5020568918102610953, guid: 9a86b14de3a764a41983f9ab08d9d924, type: 3}
+      propertyPath: _showUIEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: dd8d84cf213af304b84cc6768bfc7af3, type: 2}
     - target: {fileID: 6430928358923379667, guid: 9a86b14de3a764a41983f9ab08d9d924, type: 3}
       propertyPath: m_Name
       value: PF_CombatStateManager

@@ -7,6 +7,7 @@ public class CombatStateManager : MonoBehaviour
     [SerializeField] private SelectionContextSO _selectionCtx;
     [SerializeField] private InputReader _inputReader;
     [SerializeField] private TurnStateSO _currentTurnStateData;
+    [SerializeField] private BoolEventChannel _showUIEventChannel;
 
     [Header("State Settings")]
     [SerializeField] private CombatStateSO _initialState;
@@ -18,6 +19,7 @@ public class CombatStateManager : MonoBehaviour
     public SelectionContextSO SelectionCtx => _selectionCtx;
     public CombatContext CombatCtx => _combatContext;
     public TurnStateSO CurrentTurnStateData => _currentTurnStateData;
+    public BoolEventChannel ShowUIEventChannel => _showUIEventChannel; 
 
     void OnEnable()
     {

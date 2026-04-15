@@ -4,10 +4,10 @@ using UnityEngine;
 public class IdleStateSO : CombatStateSO
 {
     [SerializeField] private CombatStateSO _targetingStateTemplate;
-    [SerializeField] private TurnStateSO _currentTurnStateData;
 
     public override void OnEnter()
     {
+        base.OnEnter();
         manager.TurnController.ClearPreview();
     }
     public override void OnExit()

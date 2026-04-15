@@ -6,6 +6,7 @@ public class TurnAgentDataSO : ScriptableObject
     [Header("Turn Agent Data Config")]
     [Tooltip("Value on which evaluate Action Value during fight")]
     [SerializeField] private int _initialAgility;
+    [SerializeField] private int _maxActionPointsPerTurn = 5;
     
     // FIXME Later Attenzione! Questo oggetto dovrebbe contenere SOLO le info riguardanti i turni
     // Questo é un dato SOLO della griglia e quindi NON condiviso con i nemici!
@@ -16,6 +17,7 @@ public class TurnAgentDataSO : ScriptableObject
     [SerializeField] private int _interactionRange = 1;
 
     public int InitialAgility => _initialAgility;
+    public int MaxActionPointsPerTurn => _maxActionPointsPerTurn;
     public int MaxMoveSpeed => _maxMoveSpeed;
     public int InteractionRange => _interactionRange;
 }

@@ -359,7 +359,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _maxAwakePoints: 0
+  _toAwakePoints: 1
   _onShootEffects:
     m_PersistentCalls:
       m_Calls:
@@ -414,6 +414,7 @@ GameObject:
   - component: {fileID: 5652309546225881801}
   - component: {fileID: 3165446298186797797}
   - component: {fileID: 892377213469747711}
+  - component: {fileID: 2957332148682020349}
   m_Layer: 5
   m_Name: UIDocument
   m_TagString: Untagged
@@ -475,6 +476,22 @@ MonoBehaviour:
   _uiDocument: {fileID: 3165446298186797797}
   _bindedMenuElement: {fileID: 5587952578991430984}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+--- !u!114 &2957332148682020349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7192794995896005687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0122c6eede3494548afd80e954026be6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoolChannelListener
+  eventChannel: {fileID: 11400000, guid: dd8d84cf213af304b84cc6768bfc7af3, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7733375886605446537
 GameObject:
   m_ObjectHideFlags: 0

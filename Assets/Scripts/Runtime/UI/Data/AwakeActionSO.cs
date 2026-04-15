@@ -10,6 +10,19 @@ public class AwakeActionSO : InteractionActionSO
         if (element is not IAwakable awakable) return false;
 
         awakable.AddAwakingPoints(1);
+
+        interactingAgent.RemainingActionPoints--;
+        
         return true;
+    }
+
+    public override bool CanExecute(IInteractableElement element, ITurnAgent interactingAgent)
+    {
+        // Questo é un po' bruttino, peccato, sarebbe un check non necessario
+        if (interactingAgent == null) return false;
+
+        if (element is not IAwakable awakable) return false;
+
+        return interactingAgent.RemainingActionPoints > 0 && !awakable.IsAwake;
     }
 }

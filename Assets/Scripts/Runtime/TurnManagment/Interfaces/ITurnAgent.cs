@@ -5,11 +5,10 @@ public interface ITurnAgent
     public TurnAgentEventChannel OnAgentJoin { get; }
     public TurnAgentEventChannel OnAgentLeave { get; }
     public InteractableProximityEventChannel ProximityChannel { get; }
+    public int RemainingActionPoints { get; set; }
 
     public void OnCombatJoin();
-
     public void OnCombatLeave();
-
     public void OnStartingTurn();
     public bool CompareTag(string tag);
 }

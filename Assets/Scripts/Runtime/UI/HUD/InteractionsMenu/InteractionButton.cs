@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using PrimeTween;
+using System;
+using NUnit.Framework.Interfaces;
 
 [UxmlElement]
 public partial class InteractionButton : VisualElement
@@ -13,6 +15,7 @@ public partial class InteractionButton : VisualElement
     private IInteractableElement _bindedElement;
     private ITurnAgent _interactingAgent;
     private Tween _hoverTween;
+    private Action _onClickAction;
 
     public InteractionButton()
     {
@@ -28,15 +31,13 @@ public partial class InteractionButton : VisualElement
         RegisterCallback<PointerDownEvent>(OnPointerClick);
     }
 
-    public void SetData(InteractionActionSO data, IInteractableElement bindedElement, ITurnAgent interactingAgent, bool isEnabled)
+    public void SetData(InteractionActionSO data, IInteractableElement bindedElement, ITurnAgent interactingAgent, Action onClickAction)
     {
         _data = data;
         _bindedElement = bindedElement;
         _interactingAgent = interactingAgent;
         _iconElement.style.backgroundImage = new StyleBackground(data.Icon);
-        
-        style.opacity = isEnabled ? 1.0f : 0.3f;
-        SetEnabled(isEnabled);
+        _onClickAction = onClickAction;
         
         tooltip = data.ActionName;
     }
@@ -65,6 +66,8 @@ public partial class InteractionButton : VisualElement
             _iconElement.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
         });
 
-        _data.ExecuteAction(_bindedElement, _interactingAgent);
+        bool result = _data.ExecuteAction(_bindedElement, _interactingAgent);
+        
+        if (result) _onClickAction?.Invoke();
     }
 }

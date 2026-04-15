@@ -12,4 +12,11 @@ public class FireActionSO : InteractionActionSO
         _selectedAbilityChannel.RaiseEvent(shooter);
         return true;
     }
+
+    public override bool CanExecute(IInteractableElement element, ITurnAgent interactingAgent)
+    {
+        if (element is not IAwakable awakable) return false;
+        
+        return awakable.IsAwake;
+    }
 }
