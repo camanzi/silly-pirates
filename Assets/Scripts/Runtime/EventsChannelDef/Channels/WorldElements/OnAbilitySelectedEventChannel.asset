@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64d72f04690726e40aa2fb9404241e0b, type: 3}
-  m_Name: SelectAbilityEventChannel
-  m_EditorClassIdentifier: Assembly-CSharp::GridElementEventChannel
+  m_Script: {fileID: 11500000, guid: f04d8f6cbb3dd06428bf784acdc0e6e6, type: 3}
+  m_Name: OnAbilitySelectedEventChannel
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableGridElementEventChannel

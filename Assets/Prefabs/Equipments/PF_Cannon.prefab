@@ -359,6 +359,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _maxAwakePoints: 0
   _onShootEffects:
     m_PersistentCalls:
       m_Calls:
@@ -470,8 +471,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ae390e57d06ef44ea3da2d75e374c49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionMenuController
-  interactionSet: {fileID: 11400000, guid: e8b273f7149d6044490654946c36cfe9, type: 2}
-  uiDocument: {fileID: 3165446298186797797}
+  _interactionSet: {fileID: 11400000, guid: e8b273f7149d6044490654946c36cfe9, type: 2}
+  _uiDocument: {fileID: 3165446298186797797}
+  _bindedMenuElement: {fileID: 5587952578991430984}
+  _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
 --- !u!1 &7733375886605446537
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,4 +26,6 @@ public class ExecutionStateSO : CombatStateSO
     public override void HandleGlobalClick(TargetingData data) { }
 
     public override void HandleRightClick() { }
+
+    public override void HandleSelectAbility(IInteractableElement element) { }
 }

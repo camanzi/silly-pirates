@@ -68,4 +68,6 @@ public class TargetingStateSO : CombatStateSO
             manager.TransitionToState(_executionStateTemplate);
         }
     }
+
+    public override void HandleSelectAbility(IInteractableElement element) { }
 }

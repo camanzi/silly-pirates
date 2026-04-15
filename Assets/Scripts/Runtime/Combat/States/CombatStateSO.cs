@@ -11,6 +11,7 @@ public abstract class CombatStateSO : ScriptableObject
     public abstract void OnUpdate();
     public abstract void HandleRightClick();
     public abstract void HandleElementClick(IInteractableElement element);
+    public abstract void HandleSelectAbility(IInteractableElement element);
     public abstract void HandlePointerMove(TargetingData data);
     public abstract void HandleGlobalClick(TargetingData data);
 }

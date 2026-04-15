@@ -20,17 +20,22 @@ public class IdleStateSO : CombatStateSO
     public override void HandleElementClick(IInteractableElement element)
     {
         // FIXME Later, attenzione da capire cosa far fare quando seleziono un personaggio e non é il suo turno
-        // Per il momento non lo seleziono e ignoro la selezione
+        // Per il momento non faccio niente
         if (element is not ITurnAgent clickedAgent || clickedAgent != manager.CurrentTurnStateData.ActiveAgent)
             return;
         
         // Il prossimo step lo decide quindi la UI e non si selezionerá di base l'abilitá
-        if (element is InteractableGridElement interactable)
-        {
-            manager.CombatCtx.selectedAbility = interactable.defaultCharacterAbility;
-            manager.SelectionCtx.CurrentCaster = interactable;
-            manager.TransitionToState(_targetingStateTemplate);
-        }
+        if (element is not InteractableGridElement interactable) return;
+        
+        EnterTargetingState(interactable);
+    }
+
+    // handle selected ability by Interaction Menu
+    public override void HandleSelectAbility(IInteractableElement element)
+    {
+        if (element is not InteractableGridElement interactable) return;
+
+        EnterTargetingState(interactable);
     }
 
     public override void HandlePointerMove(TargetingData data) { }
@@ -38,4 +43,11 @@ public class IdleStateSO : CombatStateSO
     public override void HandleGlobalClick(TargetingData data) { }
 
     public override void HandleRightClick() { }
+
+    protected void EnterTargetingState(InteractableGridElement interactable)
+    {
+        manager.CombatCtx.selectedAbility = interactable.defaultCharacterAbility;
+        manager.SelectionCtx.CurrentCaster = interactable;
+        manager.TransitionToState(_targetingStateTemplate);
+    }
 }

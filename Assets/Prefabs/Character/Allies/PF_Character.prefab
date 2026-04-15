@@ -378,6 +378,9 @@ MonoBehaviour:
   _selectionContext: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
   _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
+  OnProximityChanged:
+    m_PersistentCalls:
+      m_Calls: []
   _agentData: {fileID: 11400000, guid: 9e770d7783fee844896e751edd7cb259, type: 2}
   _renderingAgentData: {fileID: 11400000, guid: 96384d747012b6a40ab148885f2db6cf, type: 2}
   _onAgentJoin: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
@@ -401,7 +404,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 1.75, z: 1}
+  m_Size: {x: 2, y: 1.75, z: 2}
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &7996361524597493471
 MonoBehaviour:

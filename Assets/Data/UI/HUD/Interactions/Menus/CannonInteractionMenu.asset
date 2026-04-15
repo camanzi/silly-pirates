@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: CannonInteractionMenu
   m_EditorClassIdentifier: Assembly-CSharp::InteractionSetSO
   _availableActions:
-  - {fileID: 11400000, guid: 8dff5a01a2fc57e45a003cf48917f590, type: 2}
-  - {fileID: 11400000, guid: 2aec6d2157770b4428ecb18d52f9b1bc, type: 2}
+  - {fileID: 11400000, guid: 245070555524e8941b8cab7b7a438712, type: 2}
+  - {fileID: 11400000, guid: 83afa6a004c9394449a9033b522ff6a1, type: 2}

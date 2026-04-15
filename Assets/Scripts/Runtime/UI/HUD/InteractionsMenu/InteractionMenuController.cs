@@ -4,9 +4,16 @@ using PrimeTween;
 
 public class InteractionMenuController : MonoBehaviour
 {
-    [SerializeField] private InteractionSetSO interactionSet;
-    [SerializeField] private UIDocument uiDocument;
+    [Header("Menu settings")]
+    [SerializeField] private InteractionSetSO _interactionSet;
+    [SerializeField] private UIDocument _uiDocument;
     
+    [Header("Dependences")]
+    // FIXME Later, sarebbe meglio l'interfaccia, peró non é serializzabile di default :/
+    // Dove sei Thor editor....
+    [SerializeField] private InteractableGridElement _bindedMenuElement;
+    [SerializeField] private TurnStateSO _currentTurnState;
+
     private VisualElement _container;
     private Camera _mainCamera;
 
@@ -16,7 +23,7 @@ public class InteractionMenuController : MonoBehaviour
     void OnEnable()
     {
         _mainCamera = Camera.main;
-        var root = uiDocument.rootVisualElement;
+        var root = _uiDocument.rootVisualElement;
         _container = root.Q<VisualElement>("container");
         
         if (_container != null)
@@ -63,12 +70,12 @@ public class InteractionMenuController : MonoBehaviour
         _container.Clear();
         float delay = 0f;
 
-        foreach (InteractionActionSO action in interactionSet.AvailableActions)
+        foreach (InteractionActionSO action in _interactionSet.AvailableActions)
         {
             if (CheckIfActionIsAllowed(action)) 
             {
                 InteractionButton btn = new InteractionButton();
-                btn.SetData(action, CheckIfActionIsEnabled(action));
+                btn.SetData(action, _bindedMenuElement, _currentTurnState.ActiveAgent, CheckIfActionIsEnabled(action));
                 
                 btn.style.scale = new StyleScale(new Scale(Vector3.zero));
                 _container.Add(btn);

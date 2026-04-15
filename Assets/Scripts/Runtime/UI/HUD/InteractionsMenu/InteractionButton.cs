@@ -10,6 +10,8 @@ public partial class InteractionButton : VisualElement
 
     private VisualElement _iconElement;
     private InteractionActionSO _data;
+    private IInteractableElement _bindedElement;
+    private ITurnAgent _interactingAgent;
     private Tween _hoverTween;
 
     public InteractionButton()
@@ -26,9 +28,11 @@ public partial class InteractionButton : VisualElement
         RegisterCallback<PointerDownEvent>(OnPointerClick);
     }
 
-    public void SetData(InteractionActionSO data, bool isEnabled)
+    public void SetData(InteractionActionSO data, IInteractableElement bindedElement, ITurnAgent interactingAgent, bool isEnabled)
     {
         _data = data;
+        _bindedElement = bindedElement;
+        _interactingAgent = interactingAgent;
         _iconElement.style.backgroundImage = new StyleBackground(data.Icon);
         
         style.opacity = isEnabled ? 1.0f : 0.3f;
@@ -60,5 +64,7 @@ public partial class InteractionButton : VisualElement
         Tween.Custom(_iconElement.resolvedStyle.scale.value, new Vector3(0.9f, 0.9f), duration: 0.05f, cycleMode: CycleMode.Rewind, cycles: 2, onValueChange: newVal => {
             _iconElement.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
         });
+
+        _data.ExecuteAction(_bindedElement, _interactingAgent);
     }
 }

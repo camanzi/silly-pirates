@@ -55,6 +55,12 @@ public class CombatStateManager : MonoBehaviour
         _activeState?.HandleElementClick(element);
     } 
 
+    public void OnSelectAbility(IInteractableElement element)
+    {
+        if (!CanProcessInput()) return;
+        _activeState?.HandleSelectAbility(element);
+    } 
+
     public void OnRightClick()
     {
         if (!CanProcessInput()) return;
