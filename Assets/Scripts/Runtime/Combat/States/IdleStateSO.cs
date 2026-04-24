@@ -9,6 +9,7 @@ public class IdleStateSO : CombatStateSO
     {
         base.OnEnter();
         manager.TurnController.ClearPreview();
+        Debug.Log($"Sono entrato da Idle state");
     }
     public override void OnExit()
     {

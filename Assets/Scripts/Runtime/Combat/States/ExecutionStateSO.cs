@@ -12,6 +12,7 @@ public class ExecutionStateSO : CombatStateSO
 
         manager.TurnController.ClearPreview();
         manager.ClearCtxs(_idleStateTemplate);
+        Debug.Log($"Sono entrato da Execution state");
     }
     public override void OnExit()
     {

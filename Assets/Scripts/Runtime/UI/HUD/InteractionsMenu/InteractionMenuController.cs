@@ -20,6 +20,8 @@ public class InteractionMenuController : MonoBehaviour
     private Dictionary<InteractionActionSO, InteractionButton> _activeButtons = new();
     private bool _isVisible = false;
     private Tween _visibilityTween;
+    private bool _isRequested = false;
+    private bool _isAllowedByState = true;
 
     void OnEnable()
     {
@@ -42,12 +44,28 @@ public class InteractionMenuController : MonoBehaviour
         }
     }
 
-    public void ToggleVisibility(bool show)
+    public void SetStatePermission(bool isAllowed)
     {
-        if (show == _isVisible) return;
-        _visibilityTween.Stop();
+        _isAllowedByState = isAllowed;
+        ApplyVisibility();
+    }
 
-        if (show)
+    public void ToggleRequested(bool show)
+    {
+        _isRequested = show;
+        ApplyVisibility();
+    }
+
+    private void ApplyVisibility()
+    {
+        bool finalVisibility = _isRequested && _isAllowedByState;
+
+        if (finalVisibility == _isVisible) return;
+        
+        _visibilityTween.Stop();
+        _isVisible = finalVisibility;
+
+        if (finalVisibility)
         {
             BuildMenu();
             _container.style.display = DisplayStyle.Flex;
@@ -55,15 +73,15 @@ public class InteractionMenuController : MonoBehaviour
                 _container.style.opacity = new StyleFloat(newVal);
             });
         }
-        else if (_isVisible)
+        else
         {
-            _activeButtons.Clear();
             _visibilityTween = Tween.Custom(_container.style.opacity.value, 0f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
                 _container.style.opacity = new StyleFloat(newVal);
-            }).OnComplete(() => _container.style.display = DisplayStyle.None);
+            }).OnComplete(() => {
+                _activeButtons.Clear();
+                _container.style.display = DisplayStyle.None;
+            });
         }
-
-        _isVisible = show;
     }
 
     public void BuildMenu()
