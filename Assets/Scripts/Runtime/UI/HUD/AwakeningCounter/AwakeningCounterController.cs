@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class AwakeningCounterController : WorldSpaceContainer
 {   
+    [Header("Dependences")]
+    [SerializeField] private InteractableGridElement _bindedMenuElement;
+
     private Label _currentCounterLabel;
     private Label _maxCounterLabel;
     private bool _isVisible = false;
@@ -54,7 +57,7 @@ public class AwakeningCounterController : WorldSpaceContainer
 
         if (finalVisibility)
         {
-            Container.style.display = DisplayStyle.Flex;
+            ShowCounters();
             _visibilityTween = Tween.Custom(0f, 1f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
                 Container.style.opacity = new StyleFloat(newVal);
             });
@@ -67,5 +70,29 @@ public class AwakeningCounterController : WorldSpaceContainer
                 Container.style.display = DisplayStyle.None;
             });
         }
+    }
+
+    private void ShowCounters()
+    {
+        UpdateCounters();
+        
+        if (_bindedMenuElement is not IAwakable awakableElement)
+            return;
+
+        awakableElement.OnDataChanged -= UpdateCounters;
+        awakableElement.OnDataChanged += UpdateCounters;
+    }
+
+    private void UpdateCounters()
+    {
+        if (_bindedMenuElement is not IAwakable awakableElement)
+        {
+            Container.style.display = DisplayStyle.None;
+            return;
+        }
+
+        _maxCounterLabel.text = awakableElement.MaxAwakeningPoints.ToString();
+        _currentCounterLabel.text = awakableElement.CurrentAwakingPoints.ToString();
+        Container.style.display = DisplayStyle.Flex;
     }
 }

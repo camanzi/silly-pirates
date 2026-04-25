@@ -73,7 +73,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public void OnStartingTurn()
     {
-        this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
         this.HandleStartingTurn();
+        this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
     }
 }

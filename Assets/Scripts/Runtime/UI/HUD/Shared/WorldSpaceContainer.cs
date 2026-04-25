@@ -20,27 +20,29 @@ public class WorldSpaceContainer : MonoBehaviour
         root.pickingMode = PickingMode.Ignore;
 
         if (_container != null) _container.pickingMode = PickingMode.Position;
+
+        UpdateUIPosition();
     }
 
     protected virtual void LateUpdate()
     {
-       if (_mainCamera == null || _container == null) return;
-        
+        UpdateUIPosition();
+    }
+
+    protected void UpdateUIPosition()
+    {
+        if (_mainCamera == null || _container == null || _container.style.display == DisplayStyle.None) 
+            return;
+
         Vector3 screenPos = _mainCamera.WorldToScreenPoint(transform.position);
         
         if (screenPos.z > 0)
         {
-            _container.style.display = DisplayStyle.Flex;
-            
             Vector2 panelPos = RuntimePanelUtils.CameraTransformWorldToPanel(
                 _container.panel, transform.position, _mainCamera);
 
             _container.style.left = panelPos.x;
             _container.style.top = panelPos.y;
-        }
-        else
-        {
-            _container.style.display = DisplayStyle.None;
         }
     }
 }

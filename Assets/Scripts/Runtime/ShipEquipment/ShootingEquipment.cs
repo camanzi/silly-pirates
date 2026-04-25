@@ -13,20 +13,35 @@ public class ShootingEquipment : InteractableGridElement, IAwakable
     [SerializeField] private UnityEvent _onShootEffects;
     public UnityEvent OnShootEffects => _onShootEffects;
 
-    private int _awakingPoints = 0;
-    public int AwakingPoints => _awakingPoints;
+    public int MaxAwakeningPoints => _toAwakePoints;
+    public int CurrentAwakingPoints => _awakingPoints;
     public bool IsAwake => _awakingPoints >= _toAwakePoints;
+    public Action OnDataChanged { get => _onDataChanged; set => _onDataChanged = value; }
 
-    public void AddAwakingPoints(int count) => _awakingPoints += count;
-    public void RemoveAwakingPoints(int count)
+    private Action _onDataChanged;
+
+    private int _awakingPoints = 0;
+    public void AddAwakingPoints(int count)
     {
         _awakingPoints += count;
+        _onDataChanged?.Invoke();
+    }
+
+    public void RemoveAwakingPoints(int count)
+    {
+        _awakingPoints -= count;
         if (_awakingPoints <= 0)
         {
             _awakingPoints = 0;
             Debug.LogWarning($"ATTENZIONE, gli awaking points NON possono andare sotto 0");
         }
+
+        _onDataChanged?.Invoke();
     }
 
-    public void ConsumeAllAwakingPoints() => _awakingPoints = 0;
+    public void ConsumeAllAwakingPoints()
+    {
+        _awakingPoints = 0;
+        _onDataChanged?.Invoke();
+    }
 }

@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using PrimeTween;
 using System;
-using NUnit.Framework.Interfaces;
 
 [UxmlElement]
 public partial class InteractionButton : VisualElement

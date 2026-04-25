@@ -23,7 +23,7 @@ public class InteractionMenuController : WorldSpaceContainer
     protected override void OnEnable()
     {
         base.OnEnable();
-                
+
         if (Container != null)
         {
             Container.style.opacity = 0f;
@@ -52,7 +52,12 @@ public class InteractionMenuController : WorldSpaceContainer
     {
         bool finalVisibility = _isRequested && _isAllowedByState;
 
-        if (finalVisibility == _isVisible) return;
+        if (finalVisibility == _isVisible) 
+        {
+            if (finalVisibility) 
+                RefreshMenu();
+            return;
+        }
         
         _visibilityTween.Stop();
         _isVisible = finalVisibility;

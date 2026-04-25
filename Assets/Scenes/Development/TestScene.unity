@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: _defaultAbility
       value: 
       objectReference: {fileID: 11400000, guid: 9de3e03f7743e394a83d38eff2bebb9c, type: 2}
+    - target: {fileID: 5587952578991430984, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
+      propertyPath: _toAwakePoints
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6488994046265238083, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: m_Name
       value: PF_MultishotCannon

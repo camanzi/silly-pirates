@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AwakeningCounterController
   _uiDocument: {fileID: 4937417368071031144}
+  _bindedMenuElement: {fileID: 5587952578991430984}
 --- !u!1 &4061103551244260095
 GameObject:
   m_ObjectHideFlags: 0
