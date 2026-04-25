@@ -3,45 +3,37 @@ using UnityEngine.UIElements;
 using PrimeTween;
 using System.Collections.Generic;
 
-public class InteractionMenuController : MonoBehaviour
+public class InteractionMenuController : WorldSpaceContainer
 {
     [Header("Menu settings")]
     [SerializeField] private InteractionSetSO _interactionSet;
-    [SerializeField] private UIDocument _uiDocument;
     
     [Header("Dependences")]
     // FIXME Later, sarebbe meglio l'interfaccia, peró non é serializzabile di default :/
-    // Dove sei Thor editor....
+    // Dove sei Odin inspector editor....
     [SerializeField] private InteractableGridElement _bindedMenuElement;
     [SerializeField] private TurnStateSO _currentTurnState;
 
-    private VisualElement _container;
-    private Camera _mainCamera;
     private Dictionary<InteractionActionSO, InteractionButton> _activeButtons = new();
     private bool _isVisible = false;
     private Tween _visibilityTween;
     private bool _isRequested = false;
     private bool _isAllowedByState = true;
 
-    void OnEnable()
+    protected override void OnEnable()
     {
-        _mainCamera = Camera.main;
-        var root = _uiDocument.rootVisualElement;
-        _container = root.Q<VisualElement>("container");
-        
-        if (_container != null)
+        base.OnEnable();
+                
+        if (Container != null)
         {
-            _container.style.opacity = 0f;
-            _container.style.display = DisplayStyle.None;
+            Container.style.opacity = 0f;
+            Container.style.display = DisplayStyle.None;
         }
     }
 
-    void LateUpdate()
+    protected override void LateUpdate()
     {
-        if (_mainCamera != null)
-        {
-            transform.LookAt(transform.position + _mainCamera.transform.rotation * Vector3.forward, _mainCamera.transform.rotation * Vector3.up);
-        }
+        base.LateUpdate();
     }
 
     public void SetStatePermission(bool isAllowed)
@@ -68,25 +60,25 @@ public class InteractionMenuController : MonoBehaviour
         if (finalVisibility)
         {
             BuildMenu();
-            _container.style.display = DisplayStyle.Flex;
+            Container.style.display = DisplayStyle.Flex;
             _visibilityTween = Tween.Custom(0f, 1f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
-                _container.style.opacity = new StyleFloat(newVal);
+                Container.style.opacity = new StyleFloat(newVal);
             });
         }
         else
         {
-            _visibilityTween = Tween.Custom(_container.style.opacity.value, 0f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
-                _container.style.opacity = new StyleFloat(newVal);
+            _visibilityTween = Tween.Custom(Container.style.opacity.value, 0f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
+                Container.style.opacity = new StyleFloat(newVal);
             }).OnComplete(() => {
                 _activeButtons.Clear();
-                _container.style.display = DisplayStyle.None;
+                Container.style.display = DisplayStyle.None;
             });
         }
     }
 
     public void BuildMenu()
     {
-        _container.Clear();
+        Container.Clear();
         float delay = 0f;
 
         foreach (InteractionActionSO action in _interactionSet.AvailableActions)
@@ -122,7 +114,7 @@ public class InteractionMenuController : MonoBehaviour
             
             Tween.Custom(1f, 0f, duration: 0.2f, onValueChange: v => {
                 btn.style.scale = new StyleScale(new Scale(new Vector3(v, v, 1f)));
-            }).OnComplete(() => _container.Remove(btn));
+            }).OnComplete(() => Container.Remove(btn));
         }
 
         foreach (InteractionActionSO action in available)
@@ -143,7 +135,7 @@ public class InteractionMenuController : MonoBehaviour
         btn.SetData(action, _bindedMenuElement, _currentTurnState.ActiveAgent, RefreshMenu);
         
         btn.style.scale = new StyleScale(new Scale(Vector3.zero));
-        _container.Add(btn);
+        Container.Add(btn);
         _activeButtons.Add(action, btn);
 
         Tween.Custom(0f, 1f, duration: 0.3f, startDelay: delay, ease: Ease.OutBack, onValueChange: v => {

@@ -1,0 +1,14 @@
+Label {
+    text-align: center;
+    color: white;
+    font-size: 104px;
+}
+
+.container {
+    position: absolute;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    translate: -50% -50%;
+}

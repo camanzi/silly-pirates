@@ -13,3 +13,13 @@
     height: 70%;
     -unity-background-scale-mode: scale-to-fit;
 }
+
+.container {
+    position: absolute;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    padding: 5px;
+    translate: -50% -50%;
+}
