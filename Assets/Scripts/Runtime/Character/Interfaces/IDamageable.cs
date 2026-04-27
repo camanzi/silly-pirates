@@ -3,5 +3,5 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    public Awaitable TakeDamage(float dmg, CancellationToken token);
+    public void TakeDamage(float dmg);
 }

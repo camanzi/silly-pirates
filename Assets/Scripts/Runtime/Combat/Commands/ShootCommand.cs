@@ -70,7 +70,9 @@ public class ShootCommand : ICommand
 
     private void HandleImpact(GameObject projectile, ITargettable target)
     {
-        Debug.Log($"[LOGIC] {target.Transform.name} ha ricevuto {_damage} danni.");
+        if (target is not IDamageable damageableTarget) return;
+
+        damageableTarget.TakeDamage(_damage);
         
         GameObject.Destroy(projectile);
     }

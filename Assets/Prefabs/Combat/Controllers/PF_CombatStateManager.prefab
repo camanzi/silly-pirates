@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7905440404563248050}
   - component: {fileID: 7181505288248191650}
   - component: {fileID: 7586427183595239196}
+  - component: {fileID: 7888480903734081428}
   m_Layer: 0
   m_Name: PF_CombatStateManager
   m_TagString: Untagged
@@ -51,6 +52,7 @@ MonoBehaviour:
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _inputReader: {fileID: 11400000, guid: 7e56d5efef3525e478b22e3e6ac7bb2d, type: 2}
   _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+  _showUIEventChannel: {fileID: 11400000, guid: dd8d84cf213af304b84cc6768bfc7af3, type: 2}
   _initialState: {fileID: 11400000, guid: 479618e8b15bfd849afd6ee5b349a2a9, type: 2}
 --- !u!114 &7905440404563248050
 MonoBehaviour:
@@ -127,6 +129,34 @@ MonoBehaviour:
       - m_Target: {fileID: 5020568918102610953}
         m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
         m_MethodName: HandleGlobalClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7888480903734081428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6430928358923379667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0739706f9a347b48a6531e69dbdbc46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableElementChannelListener
+  eventChannel: {fileID: 11400000, guid: fa60b2da21ed79a45a83ca824c4e083b, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5020568918102610953}
+        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_MethodName: OnSelectAbility
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -1,8 +1,9 @@
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(OutlinerHelper))]
-public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent
+public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent, IDamageable
 {
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
@@ -21,6 +22,9 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     [Header("Proximity Logic")]
     [SerializeField] protected InteractableProximityEventChannel _proximityChannel;
+
+    [Header("Hostile character configs")]
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
     public Transform Transform => transform;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
@@ -70,5 +74,10 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         await Awaitable.WaitForSecondsAsync(2.5f);
 
         _currentTurnStateData.SignalTurnEnd();
+    }
+
+    public void TakeDamage(float dmg)
+    {
+        Tween.PunchLocalPosition(_spriteRenderer.transform, strength: Vector3.one * .5f, duration: .5f);
     }
 }
