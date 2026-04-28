@@ -11,12 +11,15 @@ public class MoveAbility : AbilityBase {
 
         Vector3 target = targetingData.Value.cellPosition;
         Vector3Int cellPosition = Vector3Int.FloorToInt(target);
+
         if (_gridStateData.IsOccupied(cellPosition) && !_gridStateData.GetEntityAt(cellPosition).Contains(gridElement)) {
             return false;
         }
         
+        if (caster is not IMovable movableElement) return false;
+
         AbilityPreviewData previewData = GetPreviewData(caster, targetingData.Value);
-        return ((GridCharacter)caster).AgentData.MaxMoveSpeed >= previewData.AffectedCells.Count;
+        return movableElement.RemainingMovementPoints >= previewData.AffectedCells.Count;
     }
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData)

@@ -8,15 +8,17 @@ public class ShootCommand : ICommand
     private IInteractableElement _caster;
     private List<ITargettable> _targets;
     private GameObject _projectilePrefab;
+    private int _cooldown;
 
     private TrajectoryConfigsSO _trajectoryConfigData;
     private float _damage = 10f;
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, TrajectoryConfigsSO trajectoryConfigData)
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, int cooldown, TrajectoryConfigsSO trajectoryConfigData)
     {
         _caster = caster;
         _targets = targets;
         _projectilePrefab = prefab;
+        _cooldown = cooldown;
 
         _trajectoryConfigData = trajectoryConfigData;
     }
@@ -43,6 +45,8 @@ public class ShootCommand : ICommand
         }
 
         await ManualWaitForAll(flightTasks);
+
+        if (_caster is IAwakable awakableElement) awakableElement.Cooldown = _cooldown;
     }
 
     private async Awaitable LaunchProjectile(ITargettable target)

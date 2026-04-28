@@ -4,5 +4,7 @@ using UnityEngine;
 
 public interface IMovable
 {
+    public int RemainingMovementPoints { get; set; }
+
     public Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token);
 }

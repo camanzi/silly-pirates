@@ -22,12 +22,18 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
 
+    public int RemainingMovementPoints 
+    {
+        get => _remainingMovementPoints; 
+        set => _remainingMovementPoints = value;
+    }
+
     public int RemainingActionPoints 
     {
         get => _remainingActionPoints; 
         set => _remainingActionPoints = value;
     }
-
+    private int _remainingMovementPoints;
     private int _remainingActionPoints;
     private DirectionalSpriteController _directionalSpriteController;
     private Tween _moveTween;
@@ -61,6 +67,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
             
             gridPosition = Vector3Int.FloorToInt(node);
 
+            RemainingMovementPoints--;
             this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
         }
 
@@ -73,6 +80,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public void OnStartingTurn()
     {
+        _remainingMovementPoints = AgentData.MaxMovementPoints;
         this.HandleStartingTurn();
         this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
     }

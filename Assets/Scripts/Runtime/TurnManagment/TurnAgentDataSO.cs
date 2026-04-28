@@ -11,13 +11,13 @@ public class TurnAgentDataSO : ScriptableObject
     // FIXME Later Attenzione! Questo oggetto dovrebbe contenere SOLO le info riguardanti i turni
     // Questo é un dato SOLO della griglia e quindi NON condiviso con i nemici!
     [Tooltip("Maximun movement on grid per turn")]
-    [SerializeField] private int _maxMoveSpeed;
+    [SerializeField] private int _maxMovementPoints;
 
     [Tooltip("Interaction range")]
     [SerializeField] private int _interactionRange = 1;
 
     public int InitialAgility => _initialAgility;
     public int MaxActionPointsPerTurn => _maxActionPointsPerTurn;
-    public int MaxMoveSpeed => _maxMoveSpeed;
+    public int MaxMovementPoints => _maxMovementPoints;
     public int InteractionRange => _interactionRange;
 }

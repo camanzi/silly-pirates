@@ -35,7 +35,6 @@ public class FreeAimRenderer : MonoBehaviour
             {
                 _activeMouseRenderer = Instantiate(_trajectoryRenderer);
             }
-            Debug.Log($"{payload.MousePosition}");
             _activeMouseRenderer.HighlightTrajectory(payload.Origin.Transform.position, payload.MousePosition.Value, lineColor, payload.TrajectoryConfigData ?? _defaultTajectoryConfigData);
         }
     }

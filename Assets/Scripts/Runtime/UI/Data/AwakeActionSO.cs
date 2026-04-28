@@ -21,7 +21,7 @@ public class AwakeActionSO : InteractionActionSO
         // Questo é un po' bruttino, peccato, sarebbe un check non necessario
         if (interactingAgent == null) return false;
 
-        if (element is not IAwakable awakable) return false;
+        if (element is not IAwakable awakable || EAwakeningStatus.Cooldownm.Equals(awakable.AwakeningStatus)) return false;
 
         return interactingAgent.RemainingActionPoints > 0 && !awakable.IsAwake;
     }
