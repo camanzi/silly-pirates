@@ -15,10 +15,6 @@ public class InteractionMenuController : WorldSpaceContainer
     [SerializeField] private TurnStateSO _currentTurnState;
 
     private Dictionary<InteractionActionSO, InteractionButton> _activeButtons = new();
-    private bool _isVisible = false;
-    private Tween _visibilityTween;
-    private bool _isRequested = false;
-    private bool _isAllowedByState = true;
 
     protected override void OnEnable()
     {
@@ -36,49 +32,11 @@ public class InteractionMenuController : WorldSpaceContainer
         base.LateUpdate();
     }
 
-    public void SetStatePermission(bool isAllowed)
+    protected override void ShowUI()
     {
-        _isAllowedByState = isAllowed;
-        ApplyVisibility();
-    }
-
-    public void ToggleRequested(bool show)
-    {
-        _isRequested = show;
-        ApplyVisibility();
-    }
-
-    private void ApplyVisibility()
-    {
-        bool finalVisibility = _isRequested && _isAllowedByState;
-
-        if (finalVisibility == _isVisible) 
-        {
-            if (finalVisibility) 
-                RefreshMenu();
-            return;
-        }
-        
-        _visibilityTween.Stop();
-        _isVisible = finalVisibility;
-
-        if (finalVisibility)
-        {
-            BuildMenu();
-            Container.style.display = DisplayStyle.Flex;
-            _visibilityTween = Tween.Custom(0f, 1f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
-                Container.style.opacity = new StyleFloat(newVal);
-            });
-        }
-        else
-        {
-            _visibilityTween = Tween.Custom(Container.style.opacity.value, 0f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
-                Container.style.opacity = new StyleFloat(newVal);
-            }).OnComplete(() => {
-                _activeButtons.Clear();
-                Container.style.display = DisplayStyle.None;
-            });
-        }
+        base.ShowUI();
+        Container.style.display = DisplayStyle.Flex;
+        BuildMenu();
     }
 
     public void BuildMenu()
@@ -98,8 +56,20 @@ public class InteractionMenuController : WorldSpaceContainer
         }
     }
 
-    public void RefreshMenu()
+    protected override void OnCompleteHide()
     {
+        base.OnCompleteHide();
+        _activeButtons.Clear();
+    }
+
+    protected override void OnCompleteShow()
+    {
+        base.OnCompleteShow();
+    }
+
+    protected override void RefreshUI()
+    {
+        base.RefreshUI();
         List<InteractionActionSO> available = _interactionSet.AvailableActions;
         float delay = 0f;
 
@@ -137,7 +107,7 @@ public class InteractionMenuController : WorldSpaceContainer
     private void CreateInteractionButton(InteractionActionSO action, float delay)
     {
         InteractionButton btn = new InteractionButton();
-        btn.SetData(action, _bindedMenuElement, _currentTurnState.ActiveAgent, RefreshMenu);
+        btn.SetData(action, _bindedMenuElement, _currentTurnState.ActiveAgent, RefreshUI);
         
         btn.style.scale = new StyleScale(new Scale(Vector3.zero));
         Container.Add(btn);

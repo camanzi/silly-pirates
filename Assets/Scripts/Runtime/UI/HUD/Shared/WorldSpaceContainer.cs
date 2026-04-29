@@ -1,3 +1,4 @@
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,6 +9,10 @@ public class WorldSpaceContainer : MonoBehaviour
     protected VisualElement Container => _container;
     protected Camera MainCamera => _mainCamera; 
     private VisualElement _container;
+    protected bool _isVisible = false;
+    protected Tween _visibilityTween;
+    protected bool _isRequested = false;
+    protected bool _isAllowedByState = true;
     private Camera _mainCamera;
  
     protected virtual void OnEnable()
@@ -22,6 +27,61 @@ public class WorldSpaceContainer : MonoBehaviour
         if (_container != null) _container.pickingMode = PickingMode.Position;
 
         UpdateUIPosition();
+    }
+
+    public void SetStatePermission(bool isAllowed)
+    {
+        _isAllowedByState = isAllowed;
+        ApplyVisibility();
+    }
+
+    public void ToggleRequested(bool show)
+    {
+        _isRequested = show;
+        ApplyVisibility();
+    }
+
+    protected void ApplyVisibility()
+    {
+       bool finalVisibility = _isRequested && _isAllowedByState;
+
+        if (finalVisibility == _isVisible) 
+        {
+            if (finalVisibility) 
+                RefreshUI();
+            return;
+        }
+        
+        _visibilityTween.Stop();
+        _isVisible = finalVisibility;
+
+        if (finalVisibility)
+        {
+            ShowUI();
+            _visibilityTween = Tween.Custom(0f, 1f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
+                Container.style.opacity = new StyleFloat(newVal);
+            }).OnComplete(() => OnCompleteShow());
+        }
+        else
+        {
+            _visibilityTween = Tween.Custom(Container.style.opacity.value, 0f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
+                Container.style.opacity = new StyleFloat(newVal);
+            }).OnComplete(() => OnCompleteHide());
+        }
+    }
+
+    protected virtual void ShowUI() {}
+
+    protected virtual void RefreshUI() {}
+
+    protected virtual void OnCompleteHide()
+    {
+        Container.style.display = DisplayStyle.None;
+    }
+
+    protected virtual void OnCompleteShow()
+    {
+        
     }
 
     protected virtual void LateUpdate()

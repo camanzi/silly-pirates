@@ -10,10 +10,6 @@ public class AwakeningCounterController : WorldSpaceContainer
 
     private Label _currentCounterLabel;
     private Label _maxCounterLabel;
-    private bool _isVisible = false;
-    private Tween _visibilityTween;
-    private bool _isRequested = false;
-    private bool _isAllowedByState = true;
 
     protected override void OnEnable()
     {
@@ -33,43 +29,11 @@ public class AwakeningCounterController : WorldSpaceContainer
     {
         base.LateUpdate();
     }
-
-    public void SetStatePermission(bool isAllowed)
+    
+    protected override void ShowUI()
     {
-        _isAllowedByState = isAllowed;
-        ApplyVisibility();
-    }
-
-    public void ToggleRequested(bool show)
-    {
-        _isRequested = show;
-        ApplyVisibility();
-    }
-
-    private void ApplyVisibility()
-    {
-        bool finalVisibility = _isRequested && _isAllowedByState;
-
-        if (finalVisibility == _isVisible) return;
-        
-        _visibilityTween.Stop();
-        _isVisible = finalVisibility;
-
-        if (finalVisibility)
-        {
-            ShowCounters();
-            _visibilityTween = Tween.Custom(0f, 1f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
-                Container.style.opacity = new StyleFloat(newVal);
-            });
-        }
-        else
-        {
-            _visibilityTween = Tween.Custom(Container.style.opacity.value, 0f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
-                Container.style.opacity = new StyleFloat(newVal);
-            }).OnComplete(() => {
-                Container.style.display = DisplayStyle.None;
-            });
-        }
+        base.ShowUI();
+        ShowCounters();
     }
 
     private void ShowCounters()
