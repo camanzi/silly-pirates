@@ -54,7 +54,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     {
         _moveTween.Stop();
     
-        _directionalSpriteController.PlayAnimation("human_walk");
+        _directionalSpriteController.PlayAnimation("walk");
 
         foreach (Vector3 node in path)
         {
@@ -71,7 +71,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
             this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
         }
 
-        _directionalSpriteController.PlayAnimation("human_idle");
+        _directionalSpriteController.PlayAnimation("idle");
     }
 
     public void OnCombatJoin() => this.HandleCombatJoin();
