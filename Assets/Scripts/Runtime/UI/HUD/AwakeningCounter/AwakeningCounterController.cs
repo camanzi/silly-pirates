@@ -92,7 +92,7 @@ public class AwakeningCounterController : WorldSpaceContainer
         }
 
         _maxCounterLabel.text = awakableElement.MaxAwakeningPoints.ToString();
-        _currentCounterLabel.text = awakableElement.CurrentAwakingPoints.ToString();
+        _currentCounterLabel.text = awakableElement.CurrentAwakeningPoints.ToString();
         Container.style.display = DisplayStyle.Flex;
     }
 }

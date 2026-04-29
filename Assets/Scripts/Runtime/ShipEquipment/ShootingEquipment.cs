@@ -2,79 +2,78 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(EquipmentStateMachine))]
 // FIXME Later, questo dovrá diventare una macchina a stati in piena regola, ma per il momento va bene cosí
 public class ShootingEquipment : InteractableGridElement, IAwakable
 {
-    [Header("Awakable configs")]
-    // FIXME Later, magari da spostare in un SO??
+    [Header("Awakable Configs")]
     [SerializeField] private int _toAwakePoints;
 
-    [Header("Shooting Equipment configs")]
-    [Space]
+    [Header("Feedback Events")]
     [SerializeField] private UnityEvent _onShootEffects;
     public UnityEvent OnShootEffects => _onShootEffects;
 
     public int MaxAwakeningPoints => _toAwakePoints;
-    public int CurrentAwakingPoints => _awakingPoints;
-    public Action OnDataChanged { get => _onDataChanged; set => _onDataChanged = value; }
-    protected int AwakingPoints { 
-        get => _awakingPoints; 
+    public int CurrentAwakeningPoints => _awakeningPoints;
+    public int AwakeningPoints
+    {
+        get => _awakeningPoints;
         set
         {
-            _awakingPoints = value;
-            if (_awakingPoints >= _toAwakePoints) AwakeningStatus = EAwakeningStatus.Active;         
+            _awakeningPoints = value;
+            OnDataChanged?.Invoke();
         }
     }
-    public EAwakeningStatus AwakeningStatus 
+    public bool IsAwake => _stateMachine.IsActive;
+    public bool IsOnCooldown => _stateMachine.IsOnCooldown;
+    public int Cooldown 
     { 
-        get => _awakeningStatus; 
+        get => _cooldown;
         set
         {
-            _awakeningStatus = value;
-            Debug.Log($"Sono entrato in {_awakeningStatus}");
+            _cooldown = value;
+            if (_cooldown > 0) _stateMachine.TransitionTo(new CooldownState(_stateMachine, this));
         }
     }
-    public int Cooldown { get => _cooldown; set => _cooldown = value; }
+    public Action OnDataChanged { get; set; }
 
-    public bool IsAwake => EAwakeningStatus.Active.Equals(_awakeningStatus);
-
-    private Action _onDataChanged;
+    private int _awakeningPoints = 0;
     private int _cooldown = 0;
-    private EAwakeningStatus _awakeningStatus = EAwakeningStatus.Awakable;
-    private int _awakingPoints = 0;
-    public void AddAwakingPoints(int count)
+    private EquipmentStateMachine _stateMachine;
+
+    protected override void Awake()
     {
-        AwakingPoints += count;
-        _onDataChanged?.Invoke();
+        base.Awake();
+        _stateMachine = GetComponent<EquipmentStateMachine>();
     }
 
-    public void RemoveAwakingPoints(int count)
+    public void AddAwakeningPoints(int count)
     {
-        AwakingPoints -= count;
-        if (AwakingPoints < _toAwakePoints)
-        {
-            AwakeningStatus = EAwakeningStatus.Awakable;
-        }
+        AwakeningPoints += count;
 
-        if (AwakingPoints <= 0)
+        if (AwakeningPoints >= _toAwakePoints && !IsAwake)
         {
-            AwakingPoints = 0;
-            Debug.LogWarning($"ATTENZIONE, gli awaking points NON possono andare sotto 0");
+            _stateMachine.TransitionTo(new ActiveState(_stateMachine, this));
         }
-
-        _onDataChanged?.Invoke();
     }
 
-    public void ConsumeAllAwakingPoints()
+    public void RemoveAwakeningPoints(int count)
     {
-        AwakingPoints = 0;
-        AwakeningStatus = EAwakeningStatus.Cooldownm;
-        _onDataChanged?.Invoke();
+        AwakeningPoints = Mathf.Max(0, AwakeningPoints - count);
+
+        if (AwakeningPoints < _toAwakePoints && IsAwake)
+        {
+            _stateMachine.TransitionTo(new AwakableState(_stateMachine, this));
+        }
+    }
+
+    public void ConsumeAllAwakeningPoints()
+    {
+        AwakeningPoints = 0;
     }
 
     public void OnTurnChange()
     {
-        _cooldown--;
-        if (_cooldown <= 0) AwakeningStatus = EAwakeningStatus.Awakable;
+        _stateMachine.OnTurnChange();
     }
 }

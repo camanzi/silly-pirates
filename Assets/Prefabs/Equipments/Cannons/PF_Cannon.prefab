@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 5587952578991430984}
   - component: {fileID: 3088319308627148957}
   - component: {fileID: 1847080236700254185}
+  - component: {fileID: 2253224821503817962}
   m_Layer: 0
   m_Name: PF_Cannon
   m_TagString: Untagged
@@ -473,6 +474,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   _toAwakePoints: 1
+  _stateMachine: {fileID: 2253224821503817962}
   _onShootEffects:
     m_PersistentCalls:
       m_Calls:
@@ -544,6 +546,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2253224821503817962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6488994046265238083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 704ed6066c47a45499c5e491abd903c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentStateMachine
+  shootingEquipment: {fileID: 5587952578991430984}
 --- !u!1 &7192794995896005687
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,7 +26,7 @@ public class ShootCommand : ICommand
     public async Awaitable ExecuteAsync()
     {
         if (_caster is IAwakable awakable)
-            awakable.ConsumeAllAwakingPoints();
+            awakable.ConsumeAllAwakeningPoints();
         
         List<Awaitable> flightTasks = new List<Awaitable>();
 

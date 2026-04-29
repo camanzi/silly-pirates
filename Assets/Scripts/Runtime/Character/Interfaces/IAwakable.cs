@@ -4,13 +4,14 @@ using System;
 public interface IAwakable 
 {
     public int MaxAwakeningPoints { get; }
-    public int CurrentAwakingPoints { get; }
+    public int CurrentAwakeningPoints { get; }
+    public int AwakeningPoints { get; set; }
     public bool IsAwake { get; }
-    public EAwakeningStatus AwakeningStatus { get; set; }
+    public bool IsOnCooldown { get; }
     public int Cooldown { get; set; }
     
-    public void AddAwakingPoints(int count);
-    public void RemoveAwakingPoints(int count);
-    public void ConsumeAllAwakingPoints();
+    public void AddAwakeningPoints(int count);
+    public void RemoveAwakeningPoints(int count);
+    public void ConsumeAllAwakeningPoints();
     Action OnDataChanged { get; set; }
 }
