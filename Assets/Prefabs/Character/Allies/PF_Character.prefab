@@ -385,6 +385,7 @@ MonoBehaviour:
   _renderingAgentData: {fileID: 11400000, guid: 96384d747012b6a40ab148885f2db6cf, type: 2}
   _onAgentJoin: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
   _onAgentLeave: {fileID: 11400000, guid: 4c6b429f294d38043a95fa576ef2b83c, type: 2}
+  _onAPChangedEventChannel: {fileID: 11400000, guid: 066571a1e47dfaa48b2fe2b5ed844848, type: 2}
 --- !u!65 &5111650344878243217
 BoxCollider:
   m_ObjectHideFlags: 0

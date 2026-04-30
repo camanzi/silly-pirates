@@ -1,11 +1,12 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/Templates/TurnCard/TurnOrderStyle.uss?fileID=7433441132597879392&amp;guid=b3a55f0f4ae6f4945b227f3dc457e74f&amp;type=3#TurnOrderStyle"/>
+    <Style src="project://database/Assets/UI/HUD/Templates/TurnCard/TurnOrderStyle.uss?fileID=7433441132597879392&amp;guid=b3a55f0f4ae6f4945b227f3dc457e74f&amp;type=3#TurnOrderStyle"/>
+    <Style src="project://database/Assets/UI/HUD/Shared/STL_Overlay.uss?fileID=7433441132597879392&amp;guid=fd57d09f3b11bac48a1efb8ec56b077e&amp;type=3#STL_Overlay"/>
     <ui:VisualElement name="card-wrapper" class="turn-card-wrapper turn-card-wrapper--active">
         <ui:VisualElement name="card" class="turn-card turn-card--active">
             <ui:VisualElement name="icon-container" class="turn-card__icon-container">
                 <ui:VisualElement name="character-icon" class="turn-card__icon" style="background-image: resource(&quot;Sprites/Pirates/pixel_pirate&quot;); -unity-background-scale-mode: scale-and-crop; background-position-y: bottom 0;"/>
             </ui:VisualElement>
-            <ui:Label text="9999" name="AV-label" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" style="bottom: 5px; right: 10px; position: absolute; -unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-align: lower-center; -unity-text-outline-width: 0.5px; font-size: 15px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&amp;guid=e3265ab4bf004d28a9537516768c1c75&amp;type=3#LiberationSans&quot;);"/>
+            <ui:Label text="9999" name="AV-label" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="av-label"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

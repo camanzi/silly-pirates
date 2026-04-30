@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Green Agent Data
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentDataSO
   _initialAgility: 150
-  _maxActionPointsPerTurn: 5
+  _maxActionPointsPerTurn: 3
   _maxMovementPoints: 10
   _interactionRange: 1

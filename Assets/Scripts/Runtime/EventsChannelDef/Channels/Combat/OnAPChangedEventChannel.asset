@@ -9,10 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 697114ac8b492f04a85a19eabb834d9b, type: 3}
-  m_Name: Red Agent Data
-  m_EditorClassIdentifier: Assembly-CSharp::TurnAgentDataSO
-  _initialAgility: 155
-  _maxActionPointsPerTurn: 7
-  _maxMovementPoints: 4
-  _interactionRange: 1
+  m_Script: {fileID: 11500000, guid: 567a751f4485b6b4fba23451bab36193, type: 3}
+  m_Name: OnAPChangedEventChannel
+  m_EditorClassIdentifier: Assembly-CSharp::IntEventChannel

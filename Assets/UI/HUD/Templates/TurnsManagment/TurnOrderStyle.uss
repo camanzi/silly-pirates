@@ -72,3 +72,14 @@
     width: var(--icon-size-waiting);
     height: var(--icon-size-waiting);
 }
+
+.av-label {
+    bottom: 5px;
+    right: 10px;
+    position: absolute;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-align: lower-center;
+    -unity-text-outline-width: 0.5px;
+    font-size: 15px;
+}

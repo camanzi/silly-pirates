@@ -1,0 +1,16 @@
+.ap-container {
+    position: absolute;
+    right: 200px;
+    bottom: 60px;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    max-width: 400px;
+    justify-content: flex-start;
+}
+
+.ap-element {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    -unity-background-scale-mode: scale-to-fit;
+}

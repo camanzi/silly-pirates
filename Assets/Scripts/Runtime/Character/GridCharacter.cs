@@ -12,6 +12,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     [Header("Combat System event channels")]
     [SerializeField] private TurnAgentEventChannel _onAgentJoin;
     [SerializeField] private TurnAgentEventChannel _onAgentLeave;
+    [SerializeField] private IntEventChannel _onAPChangedEventChannel;
 
     public TurnAgentDataSO AgentData => _agentData;
     public TurnRenderingAgentDataSO RenderingData => _renderingAgentData;
@@ -19,6 +20,8 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     public TurnAgentEventChannel OnAgentJoin => _onAgentJoin;
 
     public TurnAgentEventChannel OnAgentLeave => _onAgentLeave;
+
+    public IntEventChannel OnAPChanged => _onAPChangedEventChannel;
 
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
 
@@ -31,7 +34,11 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     public int RemainingActionPoints 
     {
         get => _remainingActionPoints; 
-        set => _remainingActionPoints = value;
+        set
+        {
+            _remainingActionPoints = value;
+            OnAPChanged?.RaiseEvent(_remainingActionPoints);
+        }
     }
     private int _remainingMovementPoints;
     private int _remainingActionPoints;

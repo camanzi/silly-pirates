@@ -19,6 +19,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [SerializeField] private TurnAgentEventChannel _onAgentJoin;
     [SerializeField] private TurnAgentEventChannel _onAgentLeave;
     [SerializeField] private TurnStateSO _currentTurnStateData;
+    [SerializeField] private IntEventChannel _onAPConsumedEventChannel;
 
     [Header("Proximity Logic")]
     [SerializeField] protected InteractableProximityEventChannel _proximityChannel;
@@ -34,10 +35,13 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public InteractableElementEventChannel ClickChannel => _elementClickedChannel;
     public TurnAgentEventChannel OnAgentJoin => _onAgentJoin;
     public TurnAgentEventChannel OnAgentLeave => _onAgentLeave;
+    public IntEventChannel OnAPChanged => _onAPConsumedEventChannel;
+
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
     public int RemainingActionPoints 
     {
-        get => _remainingActionPoints; 
+        get => _remainingActionPoints;
+        // Intenzionale NON emettere niente da OnAPConsumed
         set => _remainingActionPoints = value;
     }
 
