@@ -13,5 +13,6 @@ public interface IAwakable
     public void AddAwakeningPoints(int count);
     public void RemoveAwakeningPoints(int count);
     public void ConsumeAllAwakeningPoints();
-    Action OnDataChanged { get; set; }
+    Action OnAwakeningCountersChanged { get; set; }
+    Action<int> OnCooldownChanged { get; set; }
 }

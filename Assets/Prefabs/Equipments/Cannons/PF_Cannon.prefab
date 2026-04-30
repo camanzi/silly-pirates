@@ -139,8 +139,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1775661459069279301}
-        m_TargetAssemblyTypeName: AwakeningCounterController, Assembly-CSharp
-        m_MethodName: SetStatePermission
+        m_TargetAssemblyTypeName: CountersController, Assembly-CSharp
+        m_MethodName: SetCombatStatePermission
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AwakeningCounterController
   _uiDocument: {fileID: 4937417368071031144}
+  _shownByDefault: 1
   _bindedMenuElement: {fileID: 5587952578991430984}
 --- !u!1 &4061103551244260095
 GameObject:
@@ -461,18 +462,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1775661459069279301}
-        m_TargetAssemblyTypeName: AwakeningCounterController, Assembly-CSharp
-        m_MethodName: ToggleRequested
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   _toAwakePoints: 1
   _onShootEffects:
     m_PersistentCalls:
@@ -627,6 +616,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionMenuController
   _uiDocument: {fileID: 3165446298186797797}
+  _shownByDefault: 0
   _interactionSet: {fileID: 11400000, guid: e8b273f7149d6044490654946c36cfe9, type: 2}
   _bindedMenuElement: {fileID: 5587952578991430984}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
@@ -648,7 +638,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 892377213469747711}
         m_TargetAssemblyTypeName: InteractionMenuController, Assembly-CSharp
-        m_MethodName: SetStatePermission
+        m_MethodName: SetCombatStatePermission
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -758,7 +748,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3830091769877227049}
   m_Layer: 5
-  m_Name: AwakeningCounter
+  m_Name: Counters
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

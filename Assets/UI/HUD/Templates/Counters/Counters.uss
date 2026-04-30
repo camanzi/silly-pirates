@@ -2,6 +2,7 @@ Label {
     text-align: center;
     color: white;
     font-size: 104px;
+    -unity-text-align: middle-center;
 }
 
 .container {
@@ -11,4 +12,11 @@ Label {
     justify-content: center;
     flex-direction: row;
     translate: -50% -50%;
+}
+
+.cooldown {
+    font-size: 200px;
+    -unity-text-align: middle-center;
+    text-overflow: ellipsis;
+    color: rgb(154, 43, 27);
 }

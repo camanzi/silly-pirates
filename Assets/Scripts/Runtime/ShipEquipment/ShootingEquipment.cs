@@ -21,7 +21,7 @@ public class ShootingEquipment : InteractableGridElement, IAwakable
         set
         {
             _awakeningPoints = value;
-            OnDataChanged?.Invoke();
+            OnAwakeningCountersChanged?.Invoke();
         }
     }
     public bool IsAwake => _stateMachine.IsActive;
@@ -32,10 +32,12 @@ public class ShootingEquipment : InteractableGridElement, IAwakable
         set
         {
             _cooldown = value;
+            OnCooldownChanged?.Invoke(_cooldown);
             if (_cooldown > 0) _stateMachine.TransitionTo(new CooldownState(_stateMachine, this));
         }
     }
-    public Action OnDataChanged { get; set; }
+    public Action OnAwakeningCountersChanged { get; set; }
+    public Action<int> OnCooldownChanged { get; set; }
 
     private int _awakeningPoints = 0;
     private int _cooldown = 0;

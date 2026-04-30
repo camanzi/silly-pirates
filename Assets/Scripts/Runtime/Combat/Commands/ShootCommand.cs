@@ -27,7 +27,9 @@ public class ShootCommand : ICommand
     {
         if (_caster is IAwakable awakable)
             awakable.ConsumeAllAwakeningPoints();
-        
+
+        if (_caster is IAwakable awakableElement) awakableElement.Cooldown = _cooldown;
+
         List<Awaitable> flightTasks = new List<Awaitable>();
 
         for (int i = 0; i < _targets.Count; i++)
@@ -45,8 +47,6 @@ public class ShootCommand : ICommand
         }
 
         await ManualWaitForAll(flightTasks);
-
-        if (_caster is IAwakable awakableElement) awakableElement.Cooldown = _cooldown;
     }
 
     private async Awaitable LaunchProjectile(ITargettable target)

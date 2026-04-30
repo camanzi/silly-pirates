@@ -3,7 +3,7 @@
     <Style src="project://database/Assets/UI/HUD/Shared/TM_WorldSpace.uss?fileID=7433441132597879392&amp;guid=982a6fb71843d3b45a6a8beb69b25ab0&amp;type=3#TM_WorldSpace"/>
     <ui:VisualElement name="container" class="container">
         <ui:Label text="1" name="current-counter"/>
-        <ui:Label text="/" name="divider"/>
+        <ui:Label text="/" name="divider" style="-unity-text-align: middle-center;"/>
         <ui:Label text="99" name="max-counter"/>
     </ui:VisualElement>
 </ui:UXML>

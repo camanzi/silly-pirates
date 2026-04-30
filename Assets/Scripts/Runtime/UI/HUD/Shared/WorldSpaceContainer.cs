@@ -6,18 +6,29 @@ public class WorldSpaceContainer : MonoBehaviour
 {
     [Header("UI Settings")]
     [SerializeField] protected UIDocument _uiDocument;
+    [Tooltip("If true try to show the menu by default without requesting it by proximity")]
+    [SerializeField] private bool _shownByDefault;
     protected VisualElement Container => _container;
     protected Camera MainCamera => _mainCamera; 
     private VisualElement _container;
     protected bool _isVisible = false;
     protected Tween _visibilityTween;
     protected bool _isRequested = false;
-    protected bool _isAllowedByState = true;
+    protected bool _isAllowedByCombatState = true;
+    protected bool _isAllowedByElementState = true;
     private Camera _mainCamera;
  
     protected virtual void OnEnable()
     {
         _mainCamera = Camera.main;
+        UpdateUIPosition();
+    }
+
+    protected virtual void OnDisable() { }
+
+    protected virtual void Awake()
+    {
+        _isRequested = _shownByDefault;
         var root = _uiDocument.rootVisualElement;
         _container = root.Q<VisualElement>("container");
 
@@ -25,25 +36,32 @@ public class WorldSpaceContainer : MonoBehaviour
         root.pickingMode = PickingMode.Ignore;
 
         if (_container != null) _container.pickingMode = PickingMode.Position;
-
-        UpdateUIPosition();
     }
 
-    public void SetStatePermission(bool isAllowed)
+    // Use when combat state changes and the element should hide his UI
+    public void SetCombatStatePermission(bool isAllowed)
     {
-        _isAllowedByState = isAllowed;
+        _isAllowedByCombatState = isAllowed;
         ApplyVisibility();
     }
 
+    // Use when element should hide his UI for some internal states
+    public void SetElementStatePermission(bool isAllowed)
+    {
+        _isAllowedByElementState = isAllowed;
+        ApplyVisibility();
+    }
+    
     public void ToggleRequested(bool show)
     {
         _isRequested = show;
         ApplyVisibility();
     }
 
+
     protected void ApplyVisibility()
     {
-       bool finalVisibility = _isRequested && _isAllowedByState;
+       bool finalVisibility = _isRequested && _isAllowedByCombatState && _isAllowedByElementState;
 
         if (finalVisibility == _isVisible) 
         {
