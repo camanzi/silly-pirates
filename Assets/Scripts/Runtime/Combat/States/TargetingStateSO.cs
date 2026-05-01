@@ -11,7 +11,9 @@ public class TargetingStateSO : CombatStateSO
 
     public override void OnEnter()
     {
-        base.OnEnter();
+        base.OnEnter(); 
+        IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
+        manager.TurnController.DrawAbilityPreview(new TargetingData(caster), manager.CombatCtx.selectedAbility, caster);        
     }
 
     public override void OnExit()

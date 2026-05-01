@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7cfab931c89df084e8125fe3c3379a0c, type: 3}
-  m_Name: HoveredAllowTile
+  m_Name: InRangeTile
   m_EditorClassIdentifier: Assembly-CSharp::TerrainTile
   m_Sprite: {fileID: -712631045867808456, guid: d4fba28d56ec32d40832b8203d7916fb, type: 3}
-  m_Color: {r: 0.27847126, g: 0.6698113, b: 0.16745283, a: 0.5882353}
+  m_Color: {r: 0.24125786, g: 0.5283019, b: 0.12210752, a: 0.39215687}
   m_Transform:
     e00: 1
     e01: 0
@@ -34,4 +34,4 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  _isWalkable: 0
+  _isWalkable: 1

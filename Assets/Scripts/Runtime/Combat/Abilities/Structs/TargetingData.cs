@@ -6,11 +6,12 @@ public struct TargetingData
     public bool isOverValidGrid;
     public ITargettable selectedTarget;
 
-    public TargetingData(Vector3Int cellPosition)
+    public TargetingData(IInteractableElement caster)
     {
-        this.cellPosition = cellPosition;
+        this.cellPosition = (caster as GridElement)?.gridPosition ?? default;
+        this.worldPosition = caster.Transform.position;
+        
         this.selectedTarget = null;
-        this.worldPosition = null;
         this.isOverValidGrid = false;
     }
 
