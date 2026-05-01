@@ -20,7 +20,7 @@ public class ShootWithEquipmentAbility : AbilityBase
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData)
     {
-        return new AbilityPreviewData(affectedCells: new(), freeAimTargets: _selectionCtx.CurrentTargets);
+        return new AbilityPreviewData(affectedCells: new(), interactionArea: new(), freeAimTargets: _selectionCtx.CurrentTargets);
     
     }
 }

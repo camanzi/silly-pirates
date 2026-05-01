@@ -1990,6 +1990,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1450389051071591541, guid: c754ea2c20159ac4f9603c45f0a39a3f, type: 3}
+      propertyPath: _inRangePreviewTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 01a91d20c74a9744a87780e15a498d48, type: 2}
     - target: {fileID: 3150874238114497636, guid: c754ea2c20159ac4f9603c45f0a39a3f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.8

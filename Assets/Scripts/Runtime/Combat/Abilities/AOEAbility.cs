@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class AOEAbility : AbilityBase {
@@ -20,6 +19,7 @@ public abstract class AOEAbility : AbilityBase {
 
         Vector3 target = targetingData.cellPosition;
         IAreaShape shapeEvaluator = ShapeFactory.GetShape(shapeType);
-        return new AbilityPreviewData(affectedCells: shapeEvaluator.GetCells(Vector3Int.FloorToInt(target), radius, gridElement.gridPosition));
+        // FIXME Later ATTENZIONE Bisogna implementare un meccanismo di calcolo di quali celle posso cliccare, come fatto per MoveAbility
+        return new AbilityPreviewData(affectedCells: shapeEvaluator.GetCells(Vector3Int.FloorToInt(target), radius, gridElement.gridPosition), interactionArea: new());
     }
 }

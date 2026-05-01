@@ -12,7 +12,6 @@ public class TargetingStateSO : CombatStateSO
     public override void OnEnter()
     {
         base.OnEnter();
-        Debug.Log($"Sono entrato in Targeting state");
     }
 
     public override void OnExit()
@@ -25,12 +24,6 @@ public class TargetingStateSO : CombatStateSO
     public override void HandleElementClick(IInteractableElement element)
     {
         SelectionContextSO selectionCtx = manager.SelectionCtx;
-
-        if (selectionCtx.CurrentCaster == element)
-        {
-            manager.ClearCtxs(_idleStateTemplate);
-            return;
-        }
 
         if (element is ITargettable targettable)
         {
@@ -47,10 +40,7 @@ public class TargetingStateSO : CombatStateSO
 
     public override void HandlePointerMove(TargetingData data)
     {
-        CombatContext combatCtx = manager.CombatCtx;
-        SelectionContextSO selectionCtx = manager.SelectionCtx;
-
-        manager.TurnController.DrawAbilityPreview(data, combatCtx.selectedAbility, selectionCtx.CurrentCaster);        
+        manager.TurnController.DrawAbilityPreview(data, manager.CombatCtx.selectedAbility, manager.SelectionCtx.CurrentCaster);        
     }
 
     public override void HandleGlobalClick(TargetingData data) => OnClickBehavior(data);

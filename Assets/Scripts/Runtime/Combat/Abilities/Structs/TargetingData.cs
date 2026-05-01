@@ -1,10 +1,18 @@
 using UnityEngine;
 public struct TargetingData
 {
-    public Vector3 worldPosition;   
+    public Vector3? worldPosition;   
     public Vector3Int cellPosition;  
     public bool isOverValidGrid;
     public ITargettable selectedTarget;
+
+    public TargetingData(Vector3Int cellPosition)
+    {
+        this.cellPosition = cellPosition;
+        this.selectedTarget = null;
+        this.worldPosition = null;
+        this.isOverValidGrid = false;
+    }
 
     public TargetingData(Vector3 worldPosition, Vector3Int cellPosition, bool isOverValidGrid)
     {

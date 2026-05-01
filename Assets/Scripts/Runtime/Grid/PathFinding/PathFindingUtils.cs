@@ -76,6 +76,53 @@ public static class PathFindingUtils
         return new List<Vector3>();
     }
 
+    public static List<Vector3> FindReachableArea<TState>(Vector3Int startPos, int maxMovementCost, TState state, Func<Vector3Int, TState, bool> walkabilityCheck)
+    {
+        List<Vector3Int> openSet = new List<Vector3Int> { startPos };
+        Dictionary<Vector3Int, int> costSoFar = new Dictionary<Vector3Int, int>();
+        costSoFar[startPos] = 0;
+        
+        List<Vector3> reachableArea = new List<Vector3>();
+
+        while (openSet.Count > 0)
+        {
+            Vector3Int currentPos = openSet[0];
+            int currentCost = costSoFar[currentPos];
+
+            for (int i = 1; i < openSet.Count; i++)
+            {
+                if (costSoFar[openSet[i]] < currentCost)
+                {
+                    currentPos = openSet[i];
+                    currentCost = costSoFar[currentPos];
+                }
+            }
+
+            openSet.Remove(currentPos);
+            reachableArea.Add(currentPos);
+
+            foreach (Vector3Int neighborPos in GetNeighbors(currentPos))
+            {
+                if (!walkabilityCheck(neighborPos, state))
+                    continue;
+
+                int newCost = costSoFar[currentPos] + 1; // Ogni movimento costa 1
+
+                if (newCost <= maxMovementCost)
+                {
+                    if (!costSoFar.ContainsKey(neighborPos) || newCost < costSoFar[neighborPos])
+                    {
+                        costSoFar[neighborPos] = newCost;
+                        if (!openSet.Contains(neighborPos))
+                            openSet.Add(neighborPos);
+                    }
+                }
+            }
+        }
+
+        return reachableArea;
+    }
+
     private static List<Vector3Int> GetNeighbors(Vector3Int pos)
     {
         List<Vector3Int> neighbors = new List<Vector3Int>();

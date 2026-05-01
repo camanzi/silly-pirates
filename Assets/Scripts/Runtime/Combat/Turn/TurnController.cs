@@ -37,7 +37,7 @@ public class TurnController : MonoBehaviour
 
         if (ability.ShowTrajectory)
             _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, targetingData.worldPosition, ability.TrajectoryConfigData));
-        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, canExecute));
+        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, data.InteractionArea, canExecute));
     }
 
     public void ClearPreview()

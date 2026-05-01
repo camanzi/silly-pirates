@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,6 +13,7 @@ public class ShipController : MonoBehaviour
 
     [Header("Tiles")]
     [SerializeField] private Tile _defaultFloorTile;
+    [SerializeField] private Tile _inRangePreviewTile;
     [SerializeField] private Tile _hoverFloorAllowTile;
     [SerializeField] private Tile _hoverFloorNotAllowTile;
     
@@ -20,11 +22,11 @@ public class ShipController : MonoBehaviour
     private Tilemap _floorMap;
     private Tilemap _previewMap;
 
-    private ICollection<Vector3> previousHighlight;
+    private ICollection<Vector3> _cacheedHighlight;
 
     private void Awake()
     {
-        previousHighlight = new List<Vector3>();
+        _cacheedHighlight = new List<Vector3>();
         _shipGrid = GetComponentInChildren<Grid>();
         
         _modelsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _modelsMapTag);
@@ -50,26 +52,34 @@ public class ShipController : MonoBehaviour
 
     public void HighlightPath(HighlightGridPayload payload)
     {
-        foreach (Vector3 node in previousHighlight ?? new List<Vector3>())
+        foreach (Vector3 node in _cacheedHighlight ?? new List<Vector3>())
         {
-            _ = ChangeTileAfterDelay(0, Vector3Int.FloorToInt(node), _previewMap, _defaultFloorTile);
+            ChangeTile(Vector3Int.FloorToInt(node), _previewMap, _defaultFloorTile);
+        }
+
+        foreach (Vector3 node in payload.InteractionArea ?? new List<Vector3>())
+        {
+            ChangeTile(Vector3Int.FloorToInt(node), _previewMap, _inRangePreviewTile);
         }
 
         foreach (Vector3 node in payload.AffectedCells ?? new List<Vector3>())
         {
-            _ = ChangeTileAfterDelay(0, Vector3Int.FloorToInt(node), _previewMap, payload.IsValidHighlight ? _hoverFloorAllowTile : _hoverFloorNotAllowTile);
+            ChangeTile(Vector3Int.FloorToInt(node), _previewMap, payload.IsValidHighlight ? _hoverFloorAllowTile : _hoverFloorNotAllowTile);
         }
 
-        previousHighlight = payload.AffectedCells;
+        _cacheedHighlight.Clear();
+        _cacheedHighlight.AddRange(payload.AffectedCells);
+        _cacheedHighlight.AddRange(payload.InteractionArea);
     }
 
-    private async Awaitable ChangeTileAfterDelay(int delay, Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null) 
+    private async Awaitable ChangeTile(Vector3Int tilePosition, Tilemap renderingMap, Tile newTile, int delay) 
     {
-        if (delay > 0)
-        {
-            await Awaitable.WaitForSecondsAsync(delay);
-        }
+        await Awaitable.WaitForSecondsAsync(delay);
+        ChangeTile(tilePosition, renderingMap, newTile);
+    }
 
+    private void ChangeTile(Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null)
+    {
         renderingMap.SetTile(tilePosition, newTile);
     }
 }
