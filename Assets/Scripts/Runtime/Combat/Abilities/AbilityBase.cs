@@ -14,10 +14,10 @@ public abstract class AbilityBase : ScriptableObject {
     public bool ShowTrajectory => showTrajectory;
     public TrajectoryConfigsSO TrajectoryConfigData => trajectoryConfigData;
 
-    public abstract AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData);
+    public abstract AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache);
 
-    public abstract ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData);
+    public abstract ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache);
 
-    public abstract bool CanExecute(IInteractableElement caster, TargetingData? targetingData);
+    public abstract bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache);
 
 }

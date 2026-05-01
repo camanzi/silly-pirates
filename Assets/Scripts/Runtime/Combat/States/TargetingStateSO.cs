@@ -11,9 +11,14 @@ public class TargetingStateSO : CombatStateSO
 
     public override void OnEnter()
     {
-        base.OnEnter(); 
+        base.OnEnter();
+        CombatContext ctx = manager.CombatCtx;
         IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
-        manager.TurnController.DrawAbilityPreview(new TargetingData(caster), manager.CombatCtx.selectedAbility, caster);        
+
+        TargetingData essentialTD = new TargetingData(caster);
+
+        AbilityPreviewData previewData = ctx.SelectedAbility.GetPreviewData(caster, essentialTD, ref ctx.AbilityCache);
+        manager.TurnController.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, essentialTD, false);
     }
 
     public override void OnExit()
@@ -42,7 +47,13 @@ public class TargetingStateSO : CombatStateSO
 
     public override void HandlePointerMove(TargetingData data)
     {
-        manager.TurnController.DrawAbilityPreview(data, manager.CombatCtx.selectedAbility, manager.SelectionCtx.CurrentCaster);        
+        CombatContext ctx = manager.CombatCtx;
+        IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
+
+        AbilityPreviewData previewData = ctx.SelectedAbility.GetPreviewData(caster, data, ref ctx.AbilityCache);
+        bool canExecute = ctx.SelectedAbility.CanExecute(caster, data, ref ctx.AbilityCache);
+        
+        manager.TurnController.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, data, canExecute);
     }
 
     public override void HandleGlobalClick(TargetingData data) => OnClickBehavior(data);
@@ -50,12 +61,12 @@ public class TargetingStateSO : CombatStateSO
     private void OnClickBehavior(TargetingData? data)
     {
         CombatContext combatCtx = manager.CombatCtx;
-        AbilityBase selectedAbility = combatCtx.selectedAbility;
+        AbilityBase selectedAbility = combatCtx.SelectedAbility;
         IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
 
-        if (selectedAbility.CanExecute(caster, data))
+        if (selectedAbility.CanExecute(caster, data, ref combatCtx.AbilityCache))
         {
-            ICommand command = selectedAbility.CreateCommand(caster, data);
+            ICommand command = selectedAbility.CreateCommand(caster, data, ref combatCtx.AbilityCache);
             
             manager.TurnController.AddCommand(command);
             manager.TransitionToState(_executionStateTemplate);

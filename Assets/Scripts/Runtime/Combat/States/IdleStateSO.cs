@@ -47,7 +47,7 @@ public class IdleStateSO : CombatStateSO
 
     protected void EnterTargetingState(InteractableGridElement interactable)
     {
-        manager.CombatCtx.selectedAbility = interactable.defaultCharacterAbility;
+        manager.CombatCtx.SelectedAbility = interactable.defaultCharacterAbility;
         manager.SelectionCtx.CurrentCaster = interactable;
         manager.TransitionToState(_targetingStateTemplate);
     }

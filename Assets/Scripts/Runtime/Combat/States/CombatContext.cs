@@ -2,11 +2,13 @@ using System.Collections.Generic;
 
 public class CombatContext
 {
-    public AbilityBase selectedAbility;
-    public TargetingData targetingData = TargetingData.Empty;
+    public AbilityBase SelectedAbility;
+    public object AbilityCache;
+    public TargetingData TargetingData = TargetingData.Empty;
     public void ClearCtx()
     {
-        selectedAbility = null;
-        targetingData = TargetingData.Empty;
+        SelectedAbility = null;
+        AbilityCache = null;
+        TargetingData = TargetingData.Empty;
     }
 }

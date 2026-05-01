@@ -29,12 +29,8 @@ public class TurnController : MonoBehaviour
     }
 
     #region ABILITY PREVIEW
-    // Attenzione forse la gestione corretta non dovrebbe essere qui, andrebbe spostata in un qualcosa di dedicato alla visualizzazione delle preview
-    public void DrawAbilityPreview(TargetingData targetingData, AbilityBase ability, IInteractableElement caster)
+    public void DrawAbilityPreview(AbilityPreviewData data, AbilityBase ability, IInteractableElement caster, TargetingData targetingData, bool canExecute)
     {
-        AbilityPreviewData data = ability.GetPreviewData(caster, targetingData);
-        bool canExecute = ability.CanExecute(caster, targetingData);
-
         if (ability.ShowTrajectory)
             _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, targetingData.worldPosition, ability.TrajectoryConfigData));
         _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, data.InteractionArea, canExecute));

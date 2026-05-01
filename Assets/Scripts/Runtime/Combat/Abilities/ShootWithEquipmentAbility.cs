@@ -8,17 +8,17 @@ public class ShootWithEquipmentAbility : AbilityBase
     [SerializeField] private int _maxTargets = 1;
     [SerializeField] private GameObject _projectile;
     [SerializeField] private int _cooldown = 2;
-    public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData)
+    public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
         return _selectionCtx.CurrentTargets.Count == _maxTargets;
     }
 
-    public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData)
+    public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
         return new ShootCommand(caster, _selectionCtx.CurrentTargets, _projectile, _cooldown, trajectoryConfigData);
     }
 
-    public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData)
+    public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache)
     {
         return new AbilityPreviewData(affectedCells: new(), interactionArea: new(), freeAimTargets: _selectionCtx.CurrentTargets);
     
