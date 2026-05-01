@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CombatStateManager : MonoBehaviour
@@ -19,7 +20,9 @@ public class CombatStateManager : MonoBehaviour
     public SelectionContextSO SelectionCtx => _selectionCtx;
     public CombatContext CombatCtx => _combatContext;
     public TurnStateSO CurrentTurnStateData => _currentTurnStateData;
-    public BoolEventChannel ShowUIEventChannel => _showUIEventChannel; 
+    public BoolEventChannel ShowUIEventChannel => _showUIEventChannel;
+
+    private Dictionary<CombatStateSO, CombatStateSO> _stateInstances = new Dictionary<CombatStateSO, CombatStateSO>();
 
     void OnEnable()
     {
@@ -35,19 +38,35 @@ public class CombatStateManager : MonoBehaviour
 
     public void TransitionToState(CombatStateSO newStateAsset)
     {
+        if (newStateAsset == null) return;
+
         _activeState?.OnExit();
         
-        _activeState = Instantiate(newStateAsset);
-        _activeState.Init(this);
+        if (!_stateInstances.ContainsKey(newStateAsset))
+        {
+            CombatStateSO stateClone = Instantiate(newStateAsset);
+            stateClone.Init(this);
+            _stateInstances[newStateAsset] = stateClone;
+        }
+        
+        _activeState = _stateInstances[newStateAsset];
         
         _lastTransitionFrame = Time.frameCount;
-
         _activeState.OnEnter();
     }
 
     void Update()
     {
         _activeState?.OnUpdate();
+    }
+
+    void OnDestroy()
+    {
+        foreach (var stateInstance in _stateInstances.Values)
+        {
+            if (stateInstance != null) Destroy(stateInstance);
+        }
+        _stateInstances.Clear();
     }
 
     public void OnPointerMoved(TargetingData data)  => _activeState?.HandlePointerMove(data);
