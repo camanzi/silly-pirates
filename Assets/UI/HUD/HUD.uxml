@@ -4,4 +4,5 @@
     <ui:VisualElement name="action-points-container" class="ap-container"/>
     <ui:Instance template="TurnOrderUI" name="TemplateContainer" style="width: 310px; height: 70%; top: 10px; left: 10px; flex-shrink: 0; padding-left: 0; margin-left: 0; flex-grow: 0;"/>
     <ui:Button text="End Turn" name="end-turn-button" focusable="false" data-source="" style="right: 0; bottom: 0; position: absolute;"/>
+    <ui:VisualElement name="crew-container" class="crew-member-container" style="position: absolute; bottom: 20px; left: 20px; flex-direction: row; align-items: flex-end; justify-content: flex-start; height: 150px;"/>
 </ui:UXML>

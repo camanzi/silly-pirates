@@ -1164,6 +1164,66 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+--- !u!1 &1740640673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+  m_PrefabInstance: {fileID: 707104960796648773}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1740640681 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2617577189569630218, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+  m_PrefabInstance: {fileID: 707104960796648773}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740640673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+--- !u!114 &1740640683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740640673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2920bf77bdbf434f9b83f88e69218cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrewOverviewController
+  _uiDocument: {fileID: 1740640681}
+  _crewMemberTemplate: {fileID: 9197481963319205126, guid: 44724ce16dc98974a875b41e59d8d0a9, type: 3}
+  _onJoinFightAgentEventChannel: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
+  _turnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+--- !u!114 &1740640684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740640673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9185637d73040fb4cbaf157a02014a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnAgentChannelListener
+  eventChannel: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1740640683}
+        m_TargetAssemblyTypeName: CrewOverviewController, Assembly-CSharp
+        m_MethodName: HandleAgentJoined
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1743090401
 GameObject:
   m_ObjectHideFlags: 0
@@ -1520,7 +1580,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1740640683}
+    - targetCorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1740640684}
   m_SourcePrefab: {fileID: 100100000, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
 --- !u!1001 &2434508970417764651
 PrefabInstance:

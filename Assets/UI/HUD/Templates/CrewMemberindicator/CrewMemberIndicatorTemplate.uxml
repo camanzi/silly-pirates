@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Templates/CrewMemberindicator/CrewMemberIndicatorStyle.uss?fileID=7433441132597879392&amp;guid=7dbb9ba4ea011fc4489d957dbf3be481&amp;type=3#CrewMemberIndicatorStyle"/>
+    <ui:VisualElement name="main-wrapper" class="container">
+        <ui:VisualElement name="portrait" class="character-portrait" style="background-image: resource(&quot;Sprites/Characters/Human/SpriteSheets/idle_dir_N&quot;);"/>
+        <ui:VisualElement name="health-container" class="health-container">
+            <ui:Label text="1000" name="health-label" class="health-label"/>
+            <ui:VisualElement name="health-bar-bg" class="health-bar">
+                <ui:VisualElement name="health-bar-fill" style="height: 100%; width: 100%; background-color: rgb(220, 20, 20); border-radius: 2px;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
