@@ -17,6 +17,8 @@ GameObject:
   - component: {fileID: 6642396514423168827}
   - component: {fileID: 8886951184808175055}
   - component: {fileID: 5944741646544662516}
+  - component: {fileID: 5085973386943220704}
+  - component: {fileID: 3946868697030411871}
   m_Layer: 5
   m_Name: PF_HUD
   m_TagString: Untagged
@@ -214,6 +216,49 @@ MonoBehaviour:
       - m_Target: {fileID: 8886951184808175055}
         m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
         m_MethodName: UpdateActionPoints
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5085973386943220704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2920bf77bdbf434f9b83f88e69218cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrewOverviewController
+  _uiDocument: {fileID: 2617577189569630218}
+  _crewMemberTemplate: {fileID: 9197481963319205126, guid: 44724ce16dc98974a875b41e59d8d0a9, type: 3}
+  _turnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+--- !u!114 &3946868697030411871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9185637d73040fb4cbaf157a02014a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnAgentChannelListener
+  eventChannel: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5085973386943220704}
+        m_TargetAssemblyTypeName: CrewOverviewController, Assembly-CSharp
+        m_MethodName: HandleAgentJoined
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

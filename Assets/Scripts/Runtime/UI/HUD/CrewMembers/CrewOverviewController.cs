@@ -19,6 +19,10 @@ public class CrewOverviewController : MonoBehaviour
         var root = _uiDocument.rootVisualElement;
         
         _crewContainer = root.Q<VisualElement>("crew-container");
+        foreach (var indicator in _activeIndicators)
+        {
+            _crewContainer.Add(indicator);
+        }
 
         _turnState.OnAgentActivated.OnEventRaised += HandleTurnChanged;
     }
@@ -36,7 +40,8 @@ public class CrewOverviewController : MonoBehaviour
         
         newIndicator.Initialize(agent, _crewMemberTemplate);
 
-        _crewContainer.Add(newIndicator);
+        if (_crewContainer != null)
+            _crewContainer.Add(newIndicator);
         _activeIndicators.Add(newIndicator);
         
         newIndicator.UpdateTurnState(_turnState.ActiveAgent);    
