@@ -546,6 +546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 704ed6066c47a45499c5e491abd903c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentStateMachine
+  _onEquipmentAwakenedEventChannel: {fileID: 11400000, guid: 4bd5ee5a30e30f94c80c8cea0ea486d0, type: 2}
 --- !u!1 &7192794995896005687
 GameObject:
   m_ObjectHideFlags: 0
