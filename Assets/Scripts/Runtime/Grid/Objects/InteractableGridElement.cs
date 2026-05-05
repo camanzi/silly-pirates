@@ -15,7 +15,7 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
     [Space]
     [SerializeField] private UnityEvent<bool> OnProximityChanged;
     private AbilityController _abilityController;
-    public AbilityBase defaultCharacterAbility => _abilityController.defaultAbility;
+    public AbilityBase DefaultCharacterAbility => _abilityController.DefaultAbility;
 
     public Transform Transform => transform;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;

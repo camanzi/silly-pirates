@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2253224821503817962, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
+      propertyPath: _onEquipmentAwakenedEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 4bd5ee5a30e30f94c80c8cea0ea486d0, type: 2}
     - target: {fileID: 3748148766587142446, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: _defaultAbility
       value: 
@@ -18,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6488994046265238083, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: m_Name
-      value: PF_MultishotCannon Variant
+      value: PF_MultishotCannon
       objectReference: {fileID: 0}
     - target: {fileID: 8457180569202193203, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -26,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8457180569202193203, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.1600001
+      value: 0.6600001
       objectReference: {fileID: 0}
     - target: {fileID: 8457180569202193203, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: m_LocalPosition.z

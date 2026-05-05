@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(fileName = "Move Ability", menuName = "Abilities/Character/Move Ability")]
-public class MoveAbility : AbilityBase {
-
+[CreateAssetMenu(fileName = "Move Ability", menuName = "Abilities/Character/Actives/Move Ability")]
+public class MoveAbility : AbilityBase 
+{
     private class MoveCache 
     {
         public List<Vector3> ReachableArea;
@@ -29,8 +29,7 @@ public class MoveAbility : AbilityBase {
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        MoveCommand mc = new MoveCommand((GridCharacter) caster, GetPreviewData(caster, targetingData.Value, ref cache).AffectedCells);
-        return mc;
+        return new MoveCommand((GridCharacter) caster, GetPreviewData(caster, targetingData.Value, ref cache).AffectedCells);
     }
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache) {

@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class AbilityController : MonoBehaviour
 {
-    public AbilityBase defaultAbility => _defaultAbility;
+    public AbilityBase DefaultAbility => _defaultAbility;
+    
+    [Header("Abilities")]
     [SerializeField] private AbilityBase _defaultAbility;
-
 }

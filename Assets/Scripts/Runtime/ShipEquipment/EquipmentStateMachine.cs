@@ -4,10 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(ShootingEquipment))]
 public class EquipmentStateMachine : MonoBehaviour
 {
+    [SerializeField] private VoidEventChannel _onEquipmentAwakenedEventChannel;
     protected IAwakable shootingEquipment;
-
     public bool IsActive => _currentState is ActiveState;
     public bool IsOnCooldown => _currentState is CooldownState;
+    public VoidEventChannel OnEquipmentAwakenedEventChannel => _onEquipmentAwakenedEventChannel;
     private EquipmentState _currentState;
 
     protected void Awake()

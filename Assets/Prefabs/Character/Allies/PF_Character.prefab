@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 5111650344878243217}
   - component: {fileID: 7996361524597493471}
   - component: {fileID: 4584891140880305170}
+  - component: {fileID: 3005545097045729255}
   m_Layer: 0
   m_Name: PF_Character
   m_TagString: Player
@@ -451,3 +452,17 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3005545097045729255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4094058086563390557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3222ccdd9e33774886c27662c40781b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveAbilityController
+  _basePassivesSO:
+  - {fileID: 11400000, guid: 2731b8e86265abc46ab6b367e1176471, type: 2}

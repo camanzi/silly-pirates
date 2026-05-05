@@ -2,14 +2,12 @@ using UnityEngine;
 
 public class ActiveState : EquipmentState
 {
-    public ActiveState(EquipmentStateMachine stateMachine, IAwakable context) : base(stateMachine, context)
-    {
-        
-    }
+    public ActiveState(EquipmentStateMachine stateMachine, IAwakable context) : base(stateMachine, context) { }
 
     public override void OnStateEnter()
     {
         base.OnStateEnter();
+        _stateMachine.OnEquipmentAwakenedEventChannel?.RaiseEvent();
     }
     public override void OnStateUpdate()
     {

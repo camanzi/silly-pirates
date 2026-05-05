@@ -43,12 +43,14 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     private int _remainingMovementPoints;
     private int _remainingActionPoints;
     private DirectionalSpriteController _directionalSpriteController;
+    private PassiveAbilityController _passiveAbilityController;
     private Tween _moveTween;
 
     protected override void Awake()
     {
         base.Awake();
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
+        _passiveAbilityController = GetComponent<PassiveAbilityController>();
     }
 
     protected override void OnEnable()
@@ -87,8 +89,20 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public void OnStartingTurn()
     {
-        _remainingMovementPoints = AgentData.MaxMovementPoints;
+        int bonusMovement = 0;
+        if (_passiveAbilityController)
+        {
+            foreach (var modifier in _passiveAbilityController.GetModifiers<IMovementModifier>())
+            {
+                bonusMovement += modifier.GetMovementBonus();
+            }
+
+            Debug.Log($"Bonus Movement: {bonusMovement}");
+        }
+
+        _remainingMovementPoints = AgentData.MaxMovementPoints + bonusMovement;
+        
         this.HandleStartingTurn();
-        this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
+        this.EmitProximityCheck(new ProximityPayload(this, AgentData.InteractionRange));
     }
 }
