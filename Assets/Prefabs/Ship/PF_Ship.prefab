@@ -850,6 +850,7 @@ MonoBehaviour:
   _floorMapTag: FloorMap
   _previewMapTag: PreviewMap
   _defaultFloorTile: {fileID: 11400000, guid: a455f4473c0a88b42b721860b0beb63c, type: 2}
+  _inRangePreviewTile: {fileID: 11400000, guid: 18540c01d1f6bea4b8483291e346db97, type: 2}
   _hoverFloorAllowTile: {fileID: 11400000, guid: 0b394c1747cfbbe45bef10a1e0acd657, type: 2}
   _hoverFloorNotAllowTile: {fileID: 11400000, guid: 5f621e8e9e9f3534eabcd3564495ae09, type: 2}
 --- !u!114 &3839102876060226769
@@ -974,7 +975,7 @@ Grid:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7234115681470888384}
   m_Enabled: 1
-  m_CellSize: {x: 2.59793, y: 3, z: 1}
+  m_CellSize: {x: 2.5, y: 3, z: 1}
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 1
   m_CellSwizzle: 3
