@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,6 +22,9 @@ public partial class CrewMemberIndicator : VisualElement
     private const float ACTIVE_BAR_HEIGHT = 25f;
     private const float ACTIVE_MARGIN_OFFSET = 30f;
 
+    private VisualElement _passivesContainer;
+    private List<IDisposableUI> _disposableElements = new List<IDisposableUI>();
+
     public void Initialize(ITurnAgent agent, VisualTreeAsset templateAsset)
     {
         LinkedAgent = agent;
@@ -29,6 +33,7 @@ public partial class CrewMemberIndicator : VisualElement
         _portrait = this.Q<VisualElement>("portrait");
         _healthBarBg = this.Q<VisualElement>("health-bar-bg");
         _healthBarFill = this.Q<VisualElement>("health-bar-fill");
+        _passivesContainer = this.Q<VisualElement>("passives-container");
 
         _baseMarginLeft = resolvedStyle.marginLeft;
 
@@ -41,7 +46,10 @@ public partial class CrewMemberIndicator : VisualElement
         if (agent.RenderingData.TurnAgentIcon)
             _portrait.style.backgroundImage = new StyleBackground(agent.RenderingData.TurnAgentIcon);
 
+        RegisterCallback<DetachFromPanelEvent>(ev => OnDispose());
+
         UpdateHealthMock(100);
+        InjectPassiveUI();
     }
 
     public void UpdateTurnState(ITurnAgent activeAgent)
@@ -83,5 +91,30 @@ public partial class CrewMemberIndicator : VisualElement
         _healthTween.Stop();
         _healthTween = Tween.Custom(_healthBarFill, _healthBarFill.style.width.value.value, targetWidth, duration: 0.3f,
             onValueChange: (target, val) => target.style.width = Length.Percent(val));
+    }
+
+    private void InjectPassiveUI() 
+    {
+        if (LinkedAgent is Component comp && comp.TryGetComponent<PassiveAbilityController>(out var controller))
+        {
+            var uiProviders = controller.GetModifiers<IPassiveUIProvider>();
+            
+            foreach (var provider in uiProviders)
+            {
+                var element = provider.CreateUIElement(provider.GetTemplate());
+                _passivesContainer.Add(element);
+
+                if (element is IDisposableUI disposable)
+                {
+                    _disposableElements.Add(disposable);
+                }
+            }
+        }
+    }
+
+    private void OnDispose()
+    {
+        foreach (var disp in _disposableElements) disp.Dispose();
+        _disposableElements.Clear();
     }
 }

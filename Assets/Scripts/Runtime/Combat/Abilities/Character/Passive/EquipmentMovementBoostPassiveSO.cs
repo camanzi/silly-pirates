@@ -1,21 +1,33 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "Equipment Movement Boost", menuName = "Abilities/Character/Passives/Equipment Movement Boost")]
-public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifier
+public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifier, IMovementBoostUIReporter, IPassiveUIProvider
 {
     [Header("Event Channels")]
     [SerializeField] private VoidEventChannel _equipmentAwakenedChannel; 
     [SerializeField] private TurnAgentEventChannel _turnChangedChannel;
 
+    [Header("UI Configs")]
+    [SerializeField] private VisualTreeAsset _uiTemplate;
+
     private int _stacks = 0;
     private int _inactiveTurns = 0;
 
-    public int GetMovementBonus()
-    {
-        return _stacks;
+    public int CurrentStacks => _stacks;
+    public int MaxStacks => 3;
+    public int TurnsUntilDecay => Mathf.Max(0, 2 - _inactiveTurns);
+
+    public event Action OnStateUpdated;
+
+    public VisualTreeAsset GetTemplate() => _uiTemplate;
+
+    public VisualElement CreateUIElement(VisualTreeAsset template) {
+        return new MovementBoostIndicator(this, template);
     }
+
+    public int GetMovementBonus() => _stacks;
 
     public override void OnEquip(PassiveAbilityController controller) 
     {
@@ -35,10 +47,8 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
     private void OnEquipmentAwakened() 
     {
         _inactiveTurns = 0; 
-        if (_stacks < 3) 
-        {
-            _stacks++;
-        }
+        if (_stacks < 3) _stacks++;
+        OnStateUpdated?.Invoke();
     }
 
     private void OnTurnChanged(ITurnAgent agent, PassiveAbilityController controller) 
@@ -46,10 +56,8 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
         if (agent.CompareTag("Player") && agent is GridCharacter) 
         {
             _inactiveTurns++;
-            if (_inactiveTurns >= 2 && _stacks > 0) 
-            {
-                _stacks--;
-            }
+            if (_inactiveTurns >= 2 && _stacks > 0) _stacks--;
+            OnStateUpdated?.Invoke();
         }
     }
 }

@@ -1,0 +1,14 @@
+.shoe-icon {
+    height: 100%; 
+    aspect-ratio: 1;
+    -unity-background-scale-mode: scale-to-fit;
+    background-image: url("project://database/Assets/Imports/2D/UI%20Icons/HUD/Passives/sprinting_boot_icon_fill.png?fileID=2800000&guid=d023d872dbd6d1e47a3d1d8cb01388a0&type=3#sprinting_boot_icon_fill");
+}
+
+.shoe-inactive {
+    -unity-background-image-tint-color: rgb(74, 74, 74);
+}
+
+.shoe-active {
+    -unity-background-image-tint-color: rgb(255, 215, 0);
+}

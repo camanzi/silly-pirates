@@ -4,8 +4,11 @@
         <ui:VisualElement name="portrait" class="character-portrait" style="background-image: resource(&quot;Sprites/Characters/Human/SpriteSheets/idle_dir_N&quot;);"/>
         <ui:VisualElement name="health-container" class="health-container">
             <ui:Label text="1000" name="health-label" class="health-label"/>
-            <ui:VisualElement name="health-bar-bg" class="health-bar">
-                <ui:VisualElement name="health-bar-fill" style="height: 100%; width: 100%; background-color: rgb(220, 20, 20); border-radius: 2px;"/>
+            <ui:VisualElement name="bottom-container" style="flex-grow: 1; flex-direction: row; align-items: center; justify-content: flex-start;">
+                <ui:VisualElement name="passives-container" class="passives-container"/>
+                <ui:VisualElement name="health-bar-bg" class="health-bar">
+                    <ui:VisualElement name="health-bar-fill" style="height: 100%; width: 100%; background-color: rgb(220, 20, 20); border-radius: 2px;"/>
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

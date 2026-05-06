@@ -41,3 +41,10 @@
     font-size: 18px;
     -unity-font-definition: url("project://database/Assets/Fonts/Jaini-Regular.ttf?fileID=12800000&guid=f87297ce785d8694c9876678ba95904d&type=3#Jaini-Regular");
 }
+
+.passives-container {
+    height: 100%; 
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
