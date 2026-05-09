@@ -31,8 +31,11 @@ public class TurnController : MonoBehaviour
     #region ABILITY PREVIEW
     public void DrawAbilityPreview(AbilityPreviewData data, AbilityBase ability, IInteractableElement caster, TargetingData targetingData, bool canExecute)
     {
-        if (ability.ShowTrajectory)
-            _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, targetingData.worldPosition, ability.TrajectoryConfigData));
+        if (ability.ShowTrajectory || data.CustomArcs != null)
+        {
+            Vector3? mousePos = ability.ShowTrajectory ? targetingData.worldPosition : (Vector3?)null;
+            _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, mousePos, ability.TrajectoryConfigData, data.CustomArcs));
+        }
         _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, data.InteractionArea, canExecute));
     }
 

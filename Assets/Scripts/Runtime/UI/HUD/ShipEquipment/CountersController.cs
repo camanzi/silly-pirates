@@ -36,7 +36,7 @@ public class CountersController : WorldSpaceContainer
 
     protected override void OnDisable()
     {
-        base.OnEnable();
+        base.OnDisable();
         if (_awakable != null)
         {
             _awakable.OnAwakeningCountersChanged -= UpdateUI;

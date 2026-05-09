@@ -77,10 +77,15 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
             gridPosition = Vector3Int.FloorToInt(node);
 
             RemainingMovementPoints--;
-            this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
         }
 
         _directionalSpriteController.PlayAnimation("idle");
+    }
+
+    protected override void OnGridPositionChanged()
+    {
+        if (_agentData != null)
+            this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
     }
 
     public void OnCombatJoin() => this.HandleCombatJoin();

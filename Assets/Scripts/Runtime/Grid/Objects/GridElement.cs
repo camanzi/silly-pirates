@@ -8,15 +8,18 @@ public class GridElement : MonoBehaviour
     [SerializeField] private LayerMask floorGridLayer;
     [SerializeField] private GridStateDataSO _gridStateData;
 
-    public Vector3Int gridPosition { 
+    public Vector3Int gridPosition {
         get { return _gridPosition; }
         set
         {
             _gridStateData.UnregisterOccupancy(_gridPosition, this);
             _gridPosition = value;
             _gridStateData.RegisterOccupancy(gridPosition, this);
+            OnGridPositionChanged();
         }
     }
+
+    protected virtual void OnGridPositionChanged() { }
 
     public Vector3 worldPosition => _floorTilemap.CellToWorld(gridPosition);
     public Tilemap activeTilemap =>_floorTilemap;
@@ -37,7 +40,11 @@ public class GridElement : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hitInfo, 5f, floorGridLayer))
         {
             _floorTilemap = hitInfo.transform.GetComponent<Tilemap>();
-            gridPosition = _floorTilemap.WorldToCell(hitInfo.point);
+            // Set directly to avoid triggering OnGridPositionChanged before the scene is ready
+            var pos = _floorTilemap.WorldToCell(hitInfo.point);
+            _gridStateData.UnregisterOccupancy(_gridPosition, this);
+            _gridPosition = pos;
+            _gridStateData.RegisterOccupancy(_gridPosition, this);
         }
     }
 }

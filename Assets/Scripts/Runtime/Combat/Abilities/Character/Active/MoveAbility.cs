@@ -1,83 +1,168 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Move Ability", menuName = "Abilities/Character/Actives/Move Ability")]
-public class MoveAbility : AbilityBase 
+public class MoveAbility : AbilityBase
 {
-    private class MoveCache 
+    private class MoveCache
     {
         public List<Vector3> ReachableArea;
+        public HashSet<Vector3Int> ReachableSet;
+        public HashSet<Vector3Int> WalkableSet;
+        public List<IMovementExtension> Extensions;
+        public IMovementExtension ActiveExtension;
+        public object ExtensionCache;
+    }
+
+
+    public override bool IsPhaseCommand(ICommand command)
+    {
+        if (command is not SelectOceanCurrentEntryCommand) return false;
+        return true;
+    }
+
+    public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache)
+    {
+        if (caster is not GridElement gridElement || caster is not IMovable movable)
+            return AbilityPreviewData.Empty;
+
+        EnsureCache(caster, gridElement, movable, ref cache);
+        var moveCache = (MoveCache)cache;
+
+        if (moveCache.ActiveExtension != null)
+            return moveCache.ActiveExtension.GetPreview(caster, targetingData, ref moveCache.ExtensionCache);
+
+        return GetPhase1Preview(gridElement, movable, moveCache, targetingData);
     }
 
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        if (caster is not GridElement gridElement || !targetingData.HasValue) return false;
-
-        Vector3 target = targetingData.Value.cellPosition;
-        Vector3Int cellPosition = Vector3Int.FloorToInt(target);
-
-        if (_gridStateData.IsOccupied(cellPosition) && !_gridStateData.GetEntityAt(cellPosition).Contains(gridElement)) {
+        if (caster is not GridElement gridElement || caster is not IMovable movable || !targetingData.HasValue)
             return false;
-        }
-        
-        if (caster is not IMovable movableElement) return false;
 
-        AbilityPreviewData previewData = GetPreviewData(caster, targetingData.Value, ref cache);
-        return movableElement.RemainingMovementPoints >= previewData.AffectedCells.Count && previewData.AffectedCells.Count > 0;
+        EnsureCache(caster, gridElement, movable, ref cache);
+        var moveCache = (MoveCache)cache;
+
+        Vector3Int td = Vector3Int.FloorToInt(targetingData.Value.cellPosition);
+
+        if (moveCache.ActiveExtension != null)
+            return moveCache.ActiveExtension.CanExecuteOn(caster, td, ref moveCache.ExtensionCache);
+
+        if (moveCache.ReachableSet.Contains(td) &&
+            (!_gridStateData.IsOccupied(td) || _gridStateData.GetEntityAt(td).Contains(gridElement)))
+            return true;
+
+        return moveCache.Extensions.Any(ext => ext.ClaimsTarget(td) &&
+               ext.GetExtensionCells(moveCache.ReachableSet, gridElement.activeTilemap).Contains(td));
     }
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        return new MoveCommand((GridCharacter) caster, GetPreviewData(caster, targetingData.Value, ref cache).AffectedCells);
-    }
+        if (caster is not GridElement gridElement || caster is not IMovable movable) return null;
 
-    public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache) {
-        if (caster is not GridElement gridElement || caster is not IMovable movableElement) return AbilityPreviewData.Empty;
+        EnsureCache(caster, gridElement, movable, ref cache);
+        var moveCache = (MoveCache)cache;
 
-        Tilemap floorTilemap = gridElement.activeTilemap;
+        Vector3Int td = Vector3Int.FloorToInt(targetingData.Value.cellPosition);
 
-        if (cache == null || cache is not MoveCache)
-        {            
-            int maxCost = movableElement.RemainingMovementPoints; 
-            
-            cache = new MoveCache 
+        if (moveCache.ActiveExtension != null)
+            return moveCache.ActiveExtension.CreateCommandFor(caster, td, ref moveCache.ExtensionCache);
+
+        foreach (var ext in moveCache.Extensions)
+        {
+            if (ext.ClaimsTarget(td))
             {
-                ReachableArea = PathFindingUtils.FindReachableArea(
-                    gridElement.gridPosition, 
-                    maxCost, 
-                    floorTilemap, 
-                    (pos, tilemap) => 
-                    {
-                        TerrainTile tile = tilemap.GetTile<TerrainTile>(pos);
-                        bool existAndWalkable = tile != null && tile.isWalkable;
-                        bool isOccupied = _gridStateData.IsOccupied(pos);
-                        return existAndWalkable && !isOccupied;
-                    }
-                ) 
-            };
-        }
-
-        Vector3 target = targetingData.cellPosition;
-        List<Vector3> path = new List<Vector3>();
-
-        HashSet<Vector3Int> walkableCache = new HashSet<Vector3Int>();
-        foreach (Vector3Int pos in floorTilemap.cellBounds.allPositionsWithin) {
-            TerrainTile tile = floorTilemap.GetTile<TerrainTile>(pos);
-            if (tile != null && tile.isWalkable)
-            {
-                walkableCache.Add(pos);
+                moveCache.ActiveExtension = ext;
+                moveCache.ExtensionCache = null;
+                return ext.CreateCommandFor(caster, td, ref moveCache.ExtensionCache);
             }
         }
 
-        path = PathFindingUtils.FindPath(
-            gridElement.gridPosition, 
-            Vector3Int.FloorToInt(target), 
-            walkableCache, 
-            static (pos, cache) => cache.Contains(pos)
+        AbilityPreviewData preview = GetPreviewData(caster, targetingData.Value, ref cache);
+        return new MoveCommand((GridCharacter)caster, preview.AffectedCells);
+    }
+
+
+    private AbilityPreviewData GetPhase1Preview(
+        GridElement gridElement, IMovable movable, MoveCache moveCache, TargetingData targetingData)
+    {
+        Tilemap tilemap = gridElement.activeTilemap;
+
+        var interactionArea = new List<Vector3>(moveCache.ReachableArea);
+        foreach (var ext in moveCache.Extensions)
+        {
+            foreach (var cell in ext.GetExtensionCells(moveCache.ReachableSet, tilemap))
+                interactionArea.Add((Vector3)cell);
+        }
+
+        Vector3Int hoveredCell = Vector3Int.FloorToInt(targetingData.cellPosition);
+
+        var claimingExt = moveCache.Extensions.FirstOrDefault(ext => ext.ClaimsTarget(hoveredCell));
+        if (claimingExt != null)
+        {
+            Vector3Int borderCell = claimingExt.GetBorderCell(hoveredCell, tilemap);
+            List<Vector3> pathToBorder = PathFindingUtils.FindPath(
+                gridElement.gridPosition, borderCell,
+                moveCache.WalkableSet, static (pos, set) => set.Contains(pos));
+            pathToBorder.Add(targetingData.cellPosition);
+            return new AbilityPreviewData(affectedCells: pathToBorder, interactionArea: interactionArea);
+        }
+
+        List<Vector3> path = PathFindingUtils.FindPath(
+            gridElement.gridPosition,
+            hoveredCell,
+            moveCache.WalkableSet,
+            static (pos, set) => set.Contains(pos)
         );
 
-        MoveCache moveCache = (MoveCache)cache;
-        return new AbilityPreviewData(affectedCells: path, interactionArea: moveCache.ReachableArea);
+        return new AbilityPreviewData(affectedCells: path, interactionArea: interactionArea);
+    }
+
+    private void EnsureCache(IInteractableElement caster, GridElement gridElement, IMovable movable, ref object cache)
+    {
+        if (cache is MoveCache) return;
+
+        Tilemap tilemap = gridElement.activeTilemap;
+
+        var reachable = PathFindingUtils.FindReachableArea(
+            gridElement.gridPosition,
+            movable.RemainingMovementPoints,
+            tilemap,
+            (pos, tm) =>
+            {
+                TerrainTile tile = tm.GetTile<TerrainTile>(pos);
+                return tile != null && tile.isWalkable && !_gridStateData.IsOccupied(pos);
+            }
+        );
+
+        var reachableSet = new HashSet<Vector3Int>();
+        foreach (Vector3 pos in reachable) reachableSet.Add(Vector3Int.FloorToInt(pos));
+
+        var walkableSet = new HashSet<Vector3Int>();
+        foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
+        {
+            TerrainTile tile = tilemap.GetTile<TerrainTile>(pos);
+            if (tile != null && tile.isWalkable) walkableSet.Add(pos);
+        }
+
+        var extensions = new List<IMovementExtension>();
+        if (caster is MonoBehaviour mono)
+        {
+            var controller = mono.GetComponent<PassiveAbilityController>();
+            if (controller != null)
+                extensions.AddRange(controller.GetModifiers<IMovementExtension>());
+        }
+
+        cache = new MoveCache
+        {
+            ReachableArea = reachable,
+            ReachableSet = reachableSet,
+            WalkableSet = walkableSet,
+            Extensions = extensions,
+            ActiveExtension = null,
+            ExtensionCache = null
+        };
     }
 }

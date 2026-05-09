@@ -13,19 +13,20 @@ public class TrajectoryRenderer : MonoBehaviour
     }
 
     public void HighlightTrajectory(Vector3 startPos, Vector3 endPos, Color lineColor, TrajectoryConfigsSO trajectoryConfig)
+        => HighlightTrajectory(startPos, endPos, trajectoryConfig.Height, lineColor);
+
+    public void HighlightTrajectory(Vector3 startPos, Vector3 endPos, float peakHeight, Color lineColor)
     {
         _lineRenderer.enabled = true;
-
         _lineRenderer.positionCount = _resolution;
-        _lineRenderer.SetPosition(0, startPos);
 
         Vector3 midPoint = (startPos + endPos) / 2;
-        Vector3 controlPoint = midPoint + Vector3.up * trajectoryConfig.Height;
+        Vector3 controlPoint = midPoint + Vector3.up * peakHeight;
 
-        for (int i = 0; i < _resolution; i++) {
+        for (int i = 0; i < _resolution; i++)
+        {
             float t = i / (float)(_resolution - 1);
-            Vector3 pos = MathUtils.EvaluateBezierPoint(t, startPos, controlPoint, endPos);
-            _lineRenderer.SetPosition(i, pos);
+            _lineRenderer.SetPosition(i, MathUtils.EvaluateBezierPoint(t, startPos, controlPoint, endPos));
         }
 
         _lineRenderer.startColor = lineColor;

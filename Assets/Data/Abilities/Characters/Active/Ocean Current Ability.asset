@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d2ec76fa1d10aa46abf492abf3d3bc0, type: 3}
+  m_Name: Ocean Current Ability
+  m_EditorClassIdentifier: Assembly-CSharp::OceanCurrentAbility
+  _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  showTrajectory: 0
+  trajectoryConfigData: {fileID: 0}
+  _jumpPeakHeight: 3
+  _diveDuration: 0.4
+  _exitDuration: 0.8
+  _exitRange: 3

@@ -67,7 +67,10 @@ public class TargetingStateSO : CombatStateSO
         if (selectedAbility.CanExecute(caster, data, ref combatCtx.AbilityCache))
         {
             ICommand command = selectedAbility.CreateCommand(caster, data, ref combatCtx.AbilityCache);
-            
+
+            if (selectedAbility.IsPhaseCommand(command))
+                return; // cache already updated inside CreateCommand — stay in targeting
+
             manager.TurnController.AddCommand(command);
             manager.TransitionToState(_executionStateTemplate);
         }

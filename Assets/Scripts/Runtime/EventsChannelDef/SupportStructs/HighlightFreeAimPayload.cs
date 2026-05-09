@@ -8,13 +8,16 @@ public struct HighlightFreeAimPayload
     public bool IsValidHighlight;
     public IInteractableElement Origin;
     public TrajectoryConfigsSO TrajectoryConfigData;
-    public HighlightFreeAimPayload(IInteractableElement origin, bool isValidHighlight, List<ITargettable> targets = null, Vector3? mousePosition = null, TrajectoryConfigsSO trajectoryConfigData = null)
+    public List<TrajectoryArc> CustomArcs; // null = none
+
+    public HighlightFreeAimPayload(IInteractableElement origin, bool isValidHighlight, List<ITargettable> targets = null, Vector3? mousePosition = null, TrajectoryConfigsSO trajectoryConfigData = null, List<TrajectoryArc> customArcs = null)
     {
         this.MousePosition = mousePosition;
         this.IsValidHighlight = isValidHighlight;
         this.Origin = origin;
         this.Targets = targets;
         this.TrajectoryConfigData = trajectoryConfigData;
+        this.CustomArcs = customArcs;
     }
 
     public static HighlightFreeAimPayload Empty => new ();

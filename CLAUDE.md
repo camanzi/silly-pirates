@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Workflow
+
+Before implementing any change that requires more than a single edit (anything beyond a label, rename, or trivial fix), enter plan mode and show the plan for approval before touching any file.
+
 ## Project Overview
 
 **Silly Pirates** is a tactical turn-based combat game built in Unity (URP). Characters occupy a hexagonal grid, take turns spending action points and movement points on abilities, and interact through a ScriptableObject-driven event architecture.
