@@ -7,7 +7,6 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "Ocean Currents Passive", menuName = "Abilities/Character/Passives/Ocean Currents")]
 public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
 {
-    // Hex neighbor offsets (odd/even row offset coords)
     private static readonly Vector3Int[] OddRowNeighbors =
     {
         new(0, 1, 0), new(1, 1, 0), new(1, 0, 0),
@@ -38,6 +37,12 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
     private List<Vector3Int> _currentCells = new();
     private bool _usedThisTurn;
     private UnityAction<ITurnAgent> _onTurnChanged;
+    private System.Action _onUsedDelegate;
+
+    private readonly List<Vector3> _previewAffectedCells = new(1);
+    private static readonly List<Vector3> _emptyInteractionArea = new();
+    private readonly HashSet<Vector3> _exitCellsSet = new();
+    private readonly List<Vector3> _exitCellsList = new();
 
     // Phase 2 cache — stored inside extCache passed by MoveAbility
     private class Phase2Cache
@@ -55,6 +60,7 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
         _currentCells = new List<Vector3Int>();
         _usedThisTurn = false;
         _onTurnChanged = OnTurnChanged;
+        _onUsedDelegate = () => _usedThisTurn = true;
         _turnChangedChannel.OnEventRaised += _onTurnChanged;
     }
 
@@ -105,9 +111,11 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
         if (extCache is Phase2Cache p2)
             return GetPhase2Preview(gridElement, p2, td);
 
+        _previewAffectedCells.Clear();
+        _previewAffectedCells.Add(td.cellPosition);
         return new AbilityPreviewData(
-            affectedCells: new List<Vector3> { td.cellPosition },
-            interactionArea: new List<Vector3>()
+            affectedCells: _previewAffectedCells,
+            interactionArea: _emptyInteractionArea
         );
     }
 
@@ -155,8 +163,9 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
             p2.EntryCell,
             exitSource,
             td,
-            () => _usedThisTurn = true,
+            _onUsedDelegate,
             _jumpPeakHeight,
+            _divePeakHeight,
             _diveDuration,
             _exitDuration
         );
@@ -164,17 +173,13 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
 
     public bool IsPhaseCommand(ICommand cmd) => cmd is SelectOceanCurrentEntryCommand;
 
-    public Vector3Int GetBorderCell(Vector3Int extensionCell, Tilemap tilemap)
-        => FindBorderCell(_owner.gridPosition, extensionCell, tilemap);
-
-    // --- Phase 2 preview ---
+    public Vector3Int GetBorderCell(Vector3Int extensionCell, Tilemap tilemap) => FindBorderCell(_owner.gridPosition, extensionCell, tilemap);
 
     private AbilityPreviewData GetPhase2Preview(GridElement gridElement, Phase2Cache p2, TargetingData td)
     {
         Tilemap tilemap = gridElement.activeTilemap;
         var exitCells = ComputeExitCells(gridElement, p2.EntryCell, tilemap);
 
-        // Arcs: always show the dive arc; add emerge arc if hovering valid exit
         Vector3 borderWorld = tilemap.GetCellCenterWorld(p2.BorderCell);
         Vector3 entryUnder = tilemap.GetCellCenterWorld(p2.EntryCell) + Vector3.down * 2f;
 
@@ -188,10 +193,14 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
 
         if (validExit)
         {
-            Vector3Int exitSource = _currentCells
-                .Where(c => c != p2.EntryCell)
-                .OrderBy(c => PathFindingUtils.GetDistance(c, hoveredCell))
-                .First();
+            Vector3Int exitSource = _currentCells[0];
+            int minDist = int.MaxValue;
+            foreach (var c in _currentCells)
+            {
+                if (c == p2.EntryCell) continue;
+                int d = PathFindingUtils.GetDistance(c, hoveredCell);
+                if (d < minDist) { minDist = d; exitSource = c; }
+            }
             Vector3 exitSourceUnder = tilemap.GetCellCenterWorld(exitSource) + Vector3.down * 2f;
             Vector3 exitWorld = tilemap.GetCellCenterWorld(hoveredCell);
             arcs.Add(new TrajectoryArc { Start = exitSourceUnder, End = exitWorld, PeakHeight = _jumpPeakHeight });
@@ -213,20 +222,23 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
         if (_gridStateData != null && _gridStateData.IsOccupied(td) &&
             !_gridStateData.GetEntityAt(td).Contains(gridElement)) return false;
 
-        return _currentCells
-            .Where(c => c != p2.EntryCell)
-            .Any(src => PathFindingUtils.GetNormalizedDistance(td, src) <= _exitRange);
+        foreach (var src in _currentCells)
+        {
+            if (src == p2.EntryCell) continue;
+            if (PathFindingUtils.GetNormalizedDistance(td, src) <= _exitRange) return true;
+        }
+        return false;
     }
 
     // --- Helpers ---
 
     private List<Vector3> ComputeExitCells(GridElement gridElement, Vector3Int entryCell, Tilemap tilemap)
     {
-        var exitSources = _currentCells.Where(c => c != entryCell).ToList();
-        var exitCells = new HashSet<Vector3>();
+        _exitCellsSet.Clear();
 
-        foreach (Vector3Int src in exitSources)
+        foreach (Vector3Int src in _currentCells)
         {
+            if (src == entryCell) continue;
             foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
             {
                 TerrainTile tile = tilemap.GetTile<TerrainTile>(pos);
@@ -234,11 +246,13 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
                 if (_gridStateData != null && _gridStateData.IsOccupied(pos) &&
                     !_gridStateData.GetEntityAt(pos).Contains(gridElement)) continue;
                 if (PathFindingUtils.GetNormalizedDistance(pos, src) <= _exitRange)
-                    exitCells.Add((Vector3)pos);
+                    _exitCellsSet.Add((Vector3)pos);
             }
         }
 
-        return exitCells.ToList();
+        _exitCellsList.Clear();
+        foreach (var c in _exitCellsSet) _exitCellsList.Add(c);
+        return _exitCellsList;
     }
 
     private static bool IsCurrentCellReachable(Vector3Int currentCell, HashSet<Vector3Int> reachableSet)

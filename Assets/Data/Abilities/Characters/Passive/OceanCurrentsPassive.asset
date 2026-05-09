@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OceanCurrentsPassiveSO
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _currentCellCount: 5
-  _exitRange: 3
-  _jumpPeakHeight: 3
-  _divePeakHeight: 0.5
-  _diveDuration: 0.4
-  _exitDuration: 0.8
+  _exitRange: 2
+  _jumpPeakHeight: 10
+  _divePeakHeight: 4
+  _diveDuration: 0.5
+  _exitDuration: 1
   _turnChangedChannel: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
   _highlightChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
