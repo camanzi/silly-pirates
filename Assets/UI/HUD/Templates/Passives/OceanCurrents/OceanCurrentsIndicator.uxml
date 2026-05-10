@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="OceanCurrentsIndicator.uss" />
+    <ui:VisualElement name="wave-icon" class="wave-icon wave-inactive" />
+</ui:UXML>

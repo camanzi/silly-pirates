@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "Ocean Currents Passive", menuName = "Abilities/Character/Passives/Ocean Currents")]
-public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
+public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPassiveUIProvider, IOceanCurrentsUIReporter
 {
     private static readonly Vector3Int[] OddRowNeighbors =
     {
@@ -21,6 +23,9 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
     [Header("Dependencies")]
     [SerializeField] private GridStateDataSO _gridStateData;
 
+    [Header("UI")]
+    [SerializeField] private VisualTreeAsset _uiTemplate;
+
     [Header("Configs")]
     [SerializeField] private int _currentCellCount = 5;
     [SerializeField] private int _exitRange = 3;
@@ -33,11 +38,14 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
     [SerializeField] private TurnAgentEventChannel _turnChangedChannel;
     [SerializeField] private HighlightGridEventChannel _highlightChannel;
 
+    public bool IsAvailable => !_usedThisTurn && _currentCells.Count > 0;
+    public event Action OnStateUpdated;
+
     private GridCharacter _owner;
     private List<Vector3Int> _currentCells = new();
     private bool _usedThisTurn;
     private UnityAction<ITurnAgent> _onTurnChanged;
-    private System.Action _onUsedDelegate;
+    private Action _onUsedDelegate;
 
     private readonly List<Vector3> _previewAffectedCells = new(1);
     private static readonly List<Vector3> _emptyInteractionArea = new();
@@ -60,7 +68,7 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
         _currentCells = new List<Vector3Int>();
         _usedThisTurn = false;
         _onTurnChanged = OnTurnChanged;
-        _onUsedDelegate = () => _usedThisTurn = true;
+        _onUsedDelegate = () => { _usedThisTurn = true; OnStateUpdated?.Invoke(); };
         _turnChangedChannel.OnEventRaised += _onTurnChanged;
     }
 
@@ -85,11 +93,20 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension
 
         Vector3 center = tilemap.cellBounds.center;
         List<Vector3Int> candidates = OceanCurrentDistributor.FindExteriorBorderCells(tilemap);
-        _currentCells = OceanCurrentDistributor.Distribute(candidates, _currentCellCount, center, Random.Range(0, 100000));
+        _currentCells = OceanCurrentDistributor.Distribute(candidates, _currentCellCount, center, UnityEngine.Random.Range(0, 100000));
         _usedThisTurn = false;
         _highlightChannel?.RaiseEvent(HighlightGridPayload.OceanCurrentUpdate(_currentCells));
+        OnStateUpdated?.Invoke();
     }
 
+
+    // --- IPassiveUIProvider ---
+
+    public VisualTreeAsset GetTemplate() => _uiTemplate;
+
+    public VisualElement CreateUIElement(VisualTreeAsset template) => new OceanCurrentsIndicator(this, template);
+
+    // --- IMovementExtension ---
 
     public IEnumerable<Vector3Int> GetExtensionCells(HashSet<Vector3Int> reachableSet, Tilemap tilemap)
     {

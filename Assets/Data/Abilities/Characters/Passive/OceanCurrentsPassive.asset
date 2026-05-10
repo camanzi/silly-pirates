@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: OceanCurrentsPassive
   m_EditorClassIdentifier: Assembly-CSharp::OceanCurrentsPassiveSO
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _uiTemplate: {fileID: 9197481963319205126, guid: a7141ddab9fd69c4fb1a7a06f51afad6, type: 3}
   _currentCellCount: 5
   _exitRange: 2
   _jumpPeakHeight: 10
