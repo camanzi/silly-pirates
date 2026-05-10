@@ -14,8 +14,8 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
     [SerializeField] protected InteractableProximityEventChannel _proximityChannel;
     [Space]
     [SerializeField] private UnityEvent<bool> OnProximityChanged;
-    private AbilityController _abilityController;
-    public AbilityBase DefaultCharacterAbility => _abilityController.DefaultAbility;
+    protected AbilityController AbilityController;
+    public AbilityBase DefaultCharacterAbility => AbilityController.DefaultAbility;
 
     public Transform Transform => transform;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
@@ -29,7 +29,7 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
     protected override void Awake()
     {
         base.Awake();
-        _abilityController = GetComponent<AbilityController>();
+        AbilityController = GetComponent<AbilityController>();
         _outlinerHelper = GetComponent<OutlinerHelper>();
     }
 

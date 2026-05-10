@@ -25,7 +25,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
 
-    public AbilityController ActiveAbilityController => _abilityController;
+    public AbilityController ActiveAbilityController => AbilityController;
     public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
 
     public int RemainingMovementPoints 
@@ -47,7 +47,6 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     private int _remainingActionPoints;
     private DirectionalSpriteController _directionalSpriteController;
     private PassiveAbilityController _passiveAbilityController;
-    private AbilityController _abilityController;
     private Tween _moveTween;
     private readonly List<IMovementModifier> _movementModifiers = new();
 
@@ -56,7 +55,6 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
         base.Awake();
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
-        _abilityController = GetComponent<AbilityController>();
     }
 
     protected override void OnEnable()
