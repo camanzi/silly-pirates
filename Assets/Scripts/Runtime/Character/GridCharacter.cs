@@ -3,7 +3,7 @@ using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
-public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent
+public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent, IAbilityHolder
 {
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
@@ -25,6 +25,9 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
 
+    public AbilityController ActiveAbilityController => _abilityController;
+    public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
+
     public int RemainingMovementPoints 
     {
         get => _remainingMovementPoints; 
@@ -44,13 +47,16 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     private int _remainingActionPoints;
     private DirectionalSpriteController _directionalSpriteController;
     private PassiveAbilityController _passiveAbilityController;
+    private AbilityController _abilityController;
     private Tween _moveTween;
+    private readonly List<IMovementModifier> _movementModifiers = new();
 
     protected override void Awake()
     {
         base.Awake();
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
+        _abilityController = GetComponent<AbilityController>();
     }
 
     protected override void OnEnable()
@@ -97,12 +103,13 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
         int bonusMovement = 0;
         if (_passiveAbilityController)
         {
-            foreach (var modifier in _passiveAbilityController.GetModifiers<IMovementModifier>())
-            {
-                bonusMovement += modifier.GetMovementBonus();
-            }
+            _passiveAbilityController.GetModifiers(_movementModifiers);
+            for (int i = 0; i < _movementModifiers.Count; i++)
+                bonusMovement += _movementModifiers[i].GetMovementBonus();
 
+#if UNITY_EDITOR
             Debug.Log($"Bonus Movement: {bonusMovement}");
+#endif
         }
 
         _remainingMovementPoints = AgentData.MaxMovementPoints + bonusMovement;

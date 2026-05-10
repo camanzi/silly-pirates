@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7181505288248191650}
   - component: {fileID: 7586427183595239196}
   - component: {fileID: 7888480903734081428}
+  - component: {fileID: 3859858684666364991}
   m_Layer: 0
   m_Name: PF_CombatStateManager
   m_TagString: Untagged
@@ -157,6 +158,34 @@ MonoBehaviour:
       - m_Target: {fileID: 5020568918102610953}
         m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
         m_MethodName: OnSelectAbility
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3859858684666364991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6430928358923379667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd5e8e27d65a8b4481bc719dde0b5db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActiveAbilityRequestChannelListener
+  eventChannel: {fileID: 11400000, guid: c7156c5950647164d90f40bc57c23d25, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5020568918102610953}
+        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_MethodName: RequestActiveAbility
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

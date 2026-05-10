@@ -9,11 +9,15 @@ public class IdleStateSO : CombatStateSO
     {
         base.OnEnter();
         manager.TurnController.ClearPreview();
+#if UNITY_EDITOR
         Debug.Log($"Sono entrato da Idle state");
+#endif
     }
     public override void OnExit()
     {
+#if UNITY_EDITOR
         Debug.Log($"Sono uscito dal Idle state");
+#endif
     }
 
     public override void OnUpdate() { }
@@ -44,6 +48,13 @@ public class IdleStateSO : CombatStateSO
     public override void HandleGlobalClick(TargetingData data) { }
 
     public override void HandleRightClick() { }
+
+    public override void HandleActiveAbilityRequest(ActiveAbilityRequestData data)
+    {
+        manager.CombatCtx.SelectedAbility = data.Ability;
+        manager.SelectionCtx.CurrentCaster = data.Caster;
+        manager.TransitionToState(_targetingStateTemplate);
+    }
 
     protected void EnterTargetingState(InteractableGridElement interactable)
     {

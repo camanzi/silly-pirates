@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PassiveAbilityController : MonoBehaviour
@@ -27,8 +26,16 @@ public class PassiveAbilityController : MonoBehaviour
         foreach (var passive in _instantiatedPassives) passive.OnUnequip(this);
     }
 
-    public IEnumerable<T> GetModifiers<T>() 
+    public IEnumerable<T> GetModifiers<T>()
     {
-        return _instantiatedPassives.OfType<T>();
+        for (int i = 0; i < _instantiatedPassives.Count; i++)
+            if (_instantiatedPassives[i] is T t) yield return t;
+    }
+
+    public void GetModifiers<T>(List<T> results)
+    {
+        results.Clear();
+        for (int i = 0; i < _instantiatedPassives.Count; i++)
+            if (_instantiatedPassives[i] is T t) results.Add(t);
     }
 }

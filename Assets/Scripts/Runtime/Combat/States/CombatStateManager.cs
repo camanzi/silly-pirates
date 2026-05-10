@@ -80,7 +80,13 @@ public class CombatStateManager : MonoBehaviour
     {
         if (!CanProcessInput()) return;
         _activeState?.HandleSelectAbility(element);
-    } 
+    }
+
+    public void RequestActiveAbility(ActiveAbilityRequestData data)
+    {
+        if (!CanProcessInput()) return;
+        _activeState?.HandleActiveAbilityRequest(data);
+    }
 
     public void OnRightClick()
     {

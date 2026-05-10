@@ -15,7 +15,9 @@
       "mcp__UnityMCP__execute_code",
       "mcp__UnityMCP__manage_components",
       "mcp__UnityMCP__manage_scene",
-      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\" -Recurse -Filter \"*Passive*\" -ErrorAction SilentlyContinue)"
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\" -Recurse -Filter \"*Passive*\" -ErrorAction SilentlyContinue)",
+      "Bash(xargs grep -l \"066571a1e47dfaa48b2fe2b5ed844848\")",
+      "mcp__UnityMCP__create_script"
     ]
   }
 }

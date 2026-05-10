@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1631601946501581771, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _activeAbility
+      value: 
+      objectReference: {fileID: 11400000, guid: 7f5ff6aad84bac1409e20ec2db56ca40, type: 2}
     - target: {fileID: 3005545097045729255, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: '_basePassivesSO.Array.data[0]'
       value: 
