@@ -38,6 +38,11 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
         base.OnEnable();
     }
 
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+    }
+
     public void CheckProximity(ProximityPayload payload)
     {
         int distance = 0;

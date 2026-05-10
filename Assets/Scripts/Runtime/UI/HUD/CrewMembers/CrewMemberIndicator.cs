@@ -8,6 +8,7 @@ public partial class CrewMemberIndicator : VisualElement
 {
     private VisualElement _portrait;
     private VisualElement _healthBarBg;
+    private Label _healthLabel;
     private VisualElement _healthBarFill;
     public ITurnAgent LinkedAgent { get; private set; }
 
@@ -24,6 +25,7 @@ public partial class CrewMemberIndicator : VisualElement
 
     private VisualElement _passivesContainer;
     private List<IDisposableUI> _disposableElements = new List<IDisposableUI>();
+    private HealthController _health;
 
     public void Initialize(ITurnAgent agent, VisualTreeAsset templateAsset)
     {
@@ -33,6 +35,7 @@ public partial class CrewMemberIndicator : VisualElement
         _portrait = this.Q<VisualElement>("portrait");
         _healthBarBg = this.Q<VisualElement>("health-bar-bg");
         _healthBarFill = this.Q<VisualElement>("health-bar-fill");
+        _healthLabel = this.Q<Label>("health-label");
         _passivesContainer = this.Q<VisualElement>("passives-container");
 
         _baseMarginLeft = resolvedStyle.marginLeft;
@@ -48,7 +51,13 @@ public partial class CrewMemberIndicator : VisualElement
 
         RegisterCallback<DetachFromPanelEvent>(ev => OnDispose());
 
-        UpdateHealthMock(100);
+        _health = agent.Health;
+        if (_health != null)
+        {
+            _health.OnHpChanged += HandleHpChanged;
+            UpdateHealth(_health.CurrentHp, _health.MaxHp);
+        }
+
         InjectPassiveUI();
     }
 
@@ -78,18 +87,27 @@ public partial class CrewMemberIndicator : VisualElement
             onValueChange: (target, val) => target.style.height = val);
     }
 
-    public void UpdateHealthMock(int currentHealth)
+    private void HandleHpChanged(float currentHp)
     {
-        bool isDead = currentHealth <= 0;
+        if (_health != null)
+            UpdateHealth(currentHp, _health.MaxHp);
+    }
+
+    private void UpdateHealth(float currentHp, float maxHp)
+    {
+        _healthLabel.text = ((int)currentHp).ToString();
+        bool isDead = currentHp <= 0f;
+        float ratio = maxHp > 0f ? currentHp / maxHp : 0f;
+
         Color targetColor = isDead ? new Color(0.3f, 0.3f, 0.3f, 1f) : Color.white;
-        float targetWidth = isDead ? 0f : 100f;
+        float targetWidth = isDead ? 0f : ratio * 100f;
 
         _colorTween.Stop();
-        _colorTween = Tween.Custom(_portrait, _portrait.style.unityBackgroundImageTintColor.value, targetColor, duration: 0.3f,
+        _colorTween = Tween.Custom(_portrait, _portrait.resolvedStyle.unityBackgroundImageTintColor, targetColor, duration: 0.3f,
             onValueChange: (target, val) => target.style.unityBackgroundImageTintColor = new StyleColor(val));
 
         _healthTween.Stop();
-        _healthTween = Tween.Custom(_healthBarFill, _healthBarFill.style.width.value.value, targetWidth, duration: 0.3f,
+        _healthTween = Tween.Custom(_healthBarFill, _healthBarFill.resolvedStyle.width, targetWidth, duration: 0.3f,
             onValueChange: (target, val) => target.style.width = Length.Percent(val));
     }
 
@@ -114,6 +132,12 @@ public partial class CrewMemberIndicator : VisualElement
 
     private void OnDispose()
     {
+        if (_health != null)
+        {
+            _health.OnHpChanged -= HandleHpChanged;
+            _health = null;
+        }
+
         foreach (var disp in _disposableElements) disp.Dispose();
         _disposableElements.Clear();
     }

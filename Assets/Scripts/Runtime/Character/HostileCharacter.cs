@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(OutlinerHelper))]
-public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent, IDamageable
+public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent, IHealthOwner
 {
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
@@ -47,15 +47,34 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     private int _remainingActionPoints;
     private OutlinerHelper _outlinerHelper;
+    private HealthController _healthController;
+    public HealthController Health => _healthController;
 
     void Awake()
     {
         _outlinerHelper = GetComponent<OutlinerHelper>();
+        _healthController = GetComponent<HealthController>();
     }
 
     protected virtual void OnEnable()
     {
         OnCombatJoin();
+        if (_healthController != null)
+        {
+            _healthController.OnDeath += OnCombatLeave;
+            _healthController.OnTakeDamage += OnTakeDamageFeedbackEffect;
+            _healthController.OnHealReceived += OnHealReceivedFeedbackEffect;
+        }
+    }
+
+    protected virtual void OnDisable()
+    {
+        if (_healthController != null)
+        {
+            _healthController.OnDeath -= OnCombatLeave;
+            _healthController.OnTakeDamage -= OnTakeDamageFeedbackEffect;
+            _healthController.OnHealReceived -= OnHealReceivedFeedbackEffect;
+        }
     }
 
      public void OnHoverEnter() => this.HandlePointerEnter();
@@ -72,6 +91,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public async void OnStartingTurn()
     {
+        _healthController?.OnTurnStart();
         this.HandleStartingTurn();
         this.EmitProximityCheck(ProximityPayload.Empty);
 
@@ -80,8 +100,13 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         _currentTurnStateData.SignalTurnEnd();
     }
 
-    public void TakeDamage(float dmg)
+    private void OnTakeDamageFeedbackEffect()
     {
         Tween.PunchLocalPosition(_spriteRenderer.transform, strength: Vector3.one * .5f, duration: .5f);
+    }
+
+    private void OnHealReceivedFeedbackEffect()
+    {
+        
     }
 }

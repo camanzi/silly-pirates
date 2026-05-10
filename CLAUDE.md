@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Before implementing any change that requires more than a single edit (anything beyond a label, rename, or trivial fix), enter plan mode and show the plan for approval before touching any file.
 
+During planning, if there are any implementation doubts — design decisions, ambiguous requirements, trade-offs between approaches — ask the user before finalising the plan. Never make large assumptions; always have all necessary information before exiting plan mode.
+
 ## Project Overview
 
 **Silly Pirates** is a tactical turn-based combat game built in Unity (URP). Characters occupy a hexagonal grid, take turns spending action points and movement points on abilities, and interact through a ScriptableObject-driven event architecture.
@@ -13,6 +15,8 @@ Before implementing any change that requires more than a single edit (anything b
 ## Unity & Build
 
 This is a Unity project — there is no CLI build command for day-to-day development. Open the project in the Unity Editor and use the standard Play/Build workflow. The Unity MCP integration (`unity-mcp` package) allows Claude Code to interact with the running Editor directly via MCP tools.
+
+**After completing a full implementation (all files for a plan are written):** call `refresh_unity`, wait for the domain reload to complete (poll `editor_state.isCompiling`), then call `read_console` to check for errors. Do not refresh after each individual file — do it once at the end.
 
 **Python utility (sprite sheet extraction):**
 ```

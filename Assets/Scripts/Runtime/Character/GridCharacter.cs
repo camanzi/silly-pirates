@@ -3,7 +3,7 @@ using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
-public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent, IAbilityHolder
+public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent, IAbilityHolder, IHealthOwner
 {
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
@@ -47,20 +47,31 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     private int _remainingActionPoints;
     private DirectionalSpriteController _directionalSpriteController;
     private PassiveAbilityController _passiveAbilityController;
+    private HealthController _healthController;
     private Tween _moveTween;
     private readonly List<IMovementModifier> _movementModifiers = new();
+
+    public HealthController Health => _healthController;
 
     protected override void Awake()
     {
         base.Awake();
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
+        _healthController = GetComponent<HealthController>();
     }
 
     protected override void OnEnable()
     {
         base.OnEnable();
         OnCombatJoin();
+        if (_healthController != null) _healthController.OnDeath += OnCombatLeave;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        if (_healthController != null) _healthController.OnDeath -= OnCombatLeave;
     }
 
     public async Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token)
@@ -94,7 +105,11 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public void OnCombatJoin() => this.HandleCombatJoin();
 
-    public void OnCombatLeave() => this.HandleCombatLeave();
+    public void OnCombatLeave()
+    {
+        _directionalSpriteController?.SetDeadVisual();
+        this.HandleCombatLeave();
+    }
 
     public void OnStartingTurn()
     {
@@ -111,7 +126,8 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
         }
 
         _remainingMovementPoints = AgentData.MaxMovementPoints + bonusMovement;
-        
+        _healthController?.OnTurnStart();
+
         this.HandleStartingTurn();
         this.EmitProximityCheck(new ProximityPayload(this, AgentData.InteractionRange));
     }

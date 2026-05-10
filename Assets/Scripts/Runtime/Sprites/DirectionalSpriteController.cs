@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using PrimeTween;
 using UnityEngine;
 
 public class DirectionalSpriteController : MonoBehaviour
@@ -29,6 +30,7 @@ public class DirectionalSpriteController : MonoBehaviour
     private float _lastAngle;
 
     private SpriteAtlasHelper _atlasHelper;
+    private Tween _colorTween;
 
     void Start()
     {
@@ -109,7 +111,7 @@ public class DirectionalSpriteController : MonoBehaviour
 
         float angle = GetAngleWithAtan2(directionToCamera, characterForward);
 
-        // Controlla se il cambiamento è significativo
+        // Controlla se il cambiamento ï¿½ significativo
         if (Mathf.Abs(angle - _lastAngle) < _minAngleChange)
             return;
 
@@ -249,6 +251,18 @@ public class DirectionalSpriteController : MonoBehaviour
     public void SetActive(bool active)
     {
         enabled = active;
+    }
+
+    public void SetDeadVisual()
+    {
+        _colorTween.Stop();
+        _colorTween = Tween.Color(_spriteRenderer, new Color(0.3f, 0.3f, 0.3f, 1f), duration: 0.3f);
+    }
+
+    public void ResetVisual()
+    {
+        _colorTween.Stop();
+        _colorTween = Tween.Color(_spriteRenderer, Color.white, duration: 0.3f);
     }
     #endregion
 }

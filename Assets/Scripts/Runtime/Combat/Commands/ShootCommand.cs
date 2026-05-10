@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
@@ -11,15 +10,19 @@ public class ShootCommand : ICommand
     private int _cooldown;
 
     private TrajectoryConfigsSO _trajectoryConfigData;
-    private float _damage = 10f;
+    private float _damage;
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, int cooldown, TrajectoryConfigsSO trajectoryConfigData)
+    private readonly List<Awaitable> _flightTasks = new();
+
+    private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
+
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, int cooldown, int damage, TrajectoryConfigsSO trajectoryConfigData)
     {
         _caster = caster;
         _targets = targets;
         _projectilePrefab = prefab;
         _cooldown = cooldown;
-
+        _damage = damage;
         _trajectoryConfigData = trajectoryConfigData;
     }
 
@@ -30,63 +33,67 @@ public class ShootCommand : ICommand
 
         if (_caster is IAwakable awakableElement) awakableElement.Cooldown = _cooldown;
 
-        List<Awaitable> flightTasks = new List<Awaitable>();
+        _flightTasks.Clear();
 
         for (int i = 0; i < _targets.Count; i++)
         {
             var target = _targets[i];
 
-            await Tween.Rotation(_caster.Transform, 
-                Quaternion.LookRotation(target.Transform.position - _caster.Transform.position), 
+            await Tween.Rotation(_caster.Transform,
+                Quaternion.LookRotation(target.Transform.position - _caster.Transform.position),
                 duration: 0.2f);
 
-            flightTasks.Add(LaunchProjectile(target));
+            _flightTasks.Add(LaunchProjectile(target));
 
             if (i < _targets.Count - 1)
-                await Awaitable.WaitForSecondsAsync(0.3f); 
+                await Awaitable.WaitForSecondsAsync(0.3f);
         }
 
-        await ManualWaitForAll(flightTasks);
+        await ManualWaitForAll(_flightTasks);
+    }
+
+    private class ProjectileState
+    {
+        public Transform Projectile;
+        public Vector3 Start, ControlPoint, End;
+        public ProjectileState(Transform p, Vector3 s, Vector3 cp, Vector3 e)
+        { Projectile = p; Start = s; ControlPoint = cp; End = e; }
     }
 
     private async Awaitable LaunchProjectile(ITargettable target)
     {
         var projectile = GameObject.Instantiate(_projectilePrefab, _caster.Transform.position, Quaternion.identity);
-        
+
         Vector3 start = _caster.Transform.position;
         Vector3 end = target.Transform.position;
-        Vector3 controlPoint = ((start + end) / 2) + Vector3.up * _trajectoryConfigData.Height;
+        Vector3 controlPoint = (start + end) / 2 + Vector3.up * _trajectoryConfigData.Height;
 
         if (_caster is ShootingEquipment shootingEquipment) shootingEquipment.OnShootEffects?.Invoke();
 
-        await Tween.Custom(0f, 1f, duration: _trajectoryConfigData.TravelDuration, ease: Ease.Linear, onValueChange: t => 
-        {
-            Vector3 currentPos = MathUtils.EvaluateBezierPoint(t, start, controlPoint, end);
-            
-            projectile.transform.LookAt(MathUtils.EvaluateBezierPoint(t + 0.01f, start, controlPoint, end));
-            projectile.transform.position = currentPos;
-
-            projectile.transform.localScale = new Vector3(0.8f, 0.8f, 1.4f); 
-        });
+        var state = new ProjectileState(projectile.transform, start, controlPoint, end);
+        await Tween.Custom(state, 0f, 1f, duration: _trajectoryConfigData.TravelDuration, ease: Ease.Linear,
+            onValueChange: static (s, t) =>
+            {
+                Vector3 cur = MathUtils.EvaluateBezierPoint(t, s.Start, s.ControlPoint, s.End);
+                s.Projectile.LookAt(MathUtils.EvaluateBezierPoint(t + 0.01f, s.Start, s.ControlPoint, s.End));
+                s.Projectile.position = cur;
+                s.Projectile.localScale = ProjectileScale;
+            });
 
         HandleImpact(projectile, target);
     }
 
     private void HandleImpact(GameObject projectile, ITargettable target)
     {
-        if (target is not IDamageable damageableTarget) return;
-
-        damageableTarget.TakeDamage(_damage);
-        
+        if (target is IHealthOwner healthOwner)
+            healthOwner.Health.TakeDamage(new DamagePayload(_damage));
         GameObject.Destroy(projectile);
     }
 
     private async Awaitable ManualWaitForAll(List<Awaitable> awaitables)
     {
-        foreach (var task in awaitables)
-        {
-            await task;
-        }
+        for (int i = 0; i < awaitables.Count; i++)
+            await awaitables[i];
     }
 
     public void Undo() { }

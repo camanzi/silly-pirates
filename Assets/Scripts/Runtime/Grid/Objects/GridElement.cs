@@ -34,6 +34,8 @@ public class GridElement : MonoBehaviour
         InitializePosition();
     }
 
+    protected virtual void OnDisable() { }
+
     private void InitializePosition()
     {
         Ray ray = new Ray(transform.position + (transform.up * 0.5f), -transform.up);

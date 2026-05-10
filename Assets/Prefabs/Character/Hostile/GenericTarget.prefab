@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 8268247932945328983}
   - component: {fileID: 5641640005406227769}
   - component: {fileID: 5911253517186705203}
+  - component: {fileID: 1228960839652886534}
   m_Layer: 0
   m_Name: GenericTarget
   m_TagString: Untagged
@@ -226,6 +227,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5, y: 4, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1228960839652886534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566868596823550263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49c62301858c67e4da1bcee13177053c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthController
+  _agentData: {fileID: 0}
+  _baseBehaviors: []
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,3 +18,5 @@ MonoBehaviour:
   trajectoryConfigData: {fileID: 11400000, guid: 3fdbbc9c379408d438ff6b483ef1f106, type: 2}
   _maxTargets: 3
   _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}
+  _cooldown: 2
+  _damagePerHit: 40
