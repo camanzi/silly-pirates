@@ -17,7 +17,37 @@
       "mcp__UnityMCP__manage_scene",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\" -Recurse -Filter \"*Passive*\" -ErrorAction SilentlyContinue)",
       "Bash(xargs grep -l \"066571a1e47dfaa48b2fe2b5ed844848\")",
-      "mcp__UnityMCP__create_script"
+      "mcp__UnityMCP__create_script",
+      "Bash(Get-ChildItem -Path \"Assets/Scripts/Runtime/Trajectories/\" -Recurse -Filter \"*.cs\")",
+      "Bash(Select-Object -ExpandProperty FullName)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch ~/.claude/unity-refresh-pending",
+            "shell": "bash"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -f ~/.claude/unity-refresh-pending && rm -f ~/.claude/unity-refresh-pending && echo 'Files were written this turn. If any were Unity C# scripts, call mcp__UnityMCP__refresh_unity, wait for isCompiling=false, then call mcp__UnityMCP__read_console.' && exit 2 || exit 0",
+            "shell": "bash",
+            "statusMessage": "Checking for pending Unity refresh...",
+            "asyncRewake": true,
+            "rewakeMessage": "Unity refresh check:"
+          }
+        ]
+      }
     ]
   }
 }

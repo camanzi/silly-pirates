@@ -16,8 +16,6 @@ During planning, if there are any implementation doubts — design decisions, am
 
 This is a Unity project — there is no CLI build command for day-to-day development. Open the project in the Unity Editor and use the standard Play/Build workflow. The Unity MCP integration (`unity-mcp` package) allows Claude Code to interact with the running Editor directly via MCP tools.
 
-**After completing a full implementation (all files for a plan are written):** call `refresh_unity`, wait for the domain reload to complete (poll `editor_state.isCompiling`), then call `read_console` to check for errors. Do not refresh after each individual file — do it once at the end.
-
 **Python utility (sprite sheet extraction):**
 ```
 python UtilityScripts/animation_extractor.py

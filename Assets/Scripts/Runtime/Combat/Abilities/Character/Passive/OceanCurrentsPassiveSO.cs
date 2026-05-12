@@ -226,7 +226,7 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
         return new AbilityPreviewData(
             affectedCells: validExit ? new List<Vector3> { td.cellPosition } : new List<Vector3>(),
             interactionArea: exitCells,
-            customArcs: arcs
+            arcs: arcs
         );
     }
 

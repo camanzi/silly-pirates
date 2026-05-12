@@ -31,11 +31,23 @@ public class TurnController : MonoBehaviour
     #region ABILITY PREVIEW
     public void DrawAbilityPreview(AbilityPreviewData data, AbilityBase ability, IInteractableElement caster, TargetingData targetingData, bool canExecute)
     {
-        if (ability.ShowTrajectory || data.CustomArcs != null)
+        List<TrajectoryArc> arcs = null;
+        if (data.Arcs != null)
         {
-            Vector3? mousePos = ability.ShowTrajectory ? targetingData.worldPosition : (Vector3?)null;
-            _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, mousePos, ability.TrajectoryConfigData, data.CustomArcs));
+            arcs = data.Arcs;
         }
+        else if (ability.ShowTrajectory)
+        {
+            float height = ability.TrajectoryConfigData?.Height ?? 0f;
+            arcs = new List<TrajectoryArc>();
+            foreach (ITargettable target in data.FreeAimTargets ?? new())
+                arcs.Add(new TrajectoryArc { Start = caster.Transform.position, End = target.Transform.position, PeakHeight = height });
+            if (targetingData.worldPosition.HasValue)
+                arcs.Add(new TrajectoryArc { Start = caster.Transform.position, End = targetingData.worldPosition.Value, PeakHeight = height });
+        }
+
+        if (arcs != null)
+            _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, arcs));
         _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, data.InteractionArea, canExecute));
     }
 
