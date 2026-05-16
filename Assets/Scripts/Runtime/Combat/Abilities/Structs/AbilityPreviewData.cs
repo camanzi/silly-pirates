@@ -6,7 +6,7 @@ public struct AbilityPreviewData
     public List<Vector3> InteractionArea;
     public List<Vector3> AffectedCells;
     public List<ITargettable> FreeAimTargets;
-    public List<TrajectoryArc> Arcs; // null = none
+    public List<TrajectoryArc> Arcs;
 
     public AbilityPreviewData(List<Vector3> affectedCells, List<Vector3> interactionArea, List<ITargettable> freeAimTargets = null, List<TrajectoryArc> arcs = null)
     {

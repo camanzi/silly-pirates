@@ -9,16 +9,8 @@ public class IdleStateSO : CombatStateSO
     {
         base.OnEnter();
         manager.TurnController.ClearPreview();
-#if UNITY_EDITOR
-        Debug.Log($"Sono entrato da Idle state");
-#endif
     }
-    public override void OnExit()
-    {
-#if UNITY_EDITOR
-        Debug.Log($"Sono uscito dal Idle state");
-#endif
-    }
+    public override void OnExit() { }
 
     public override void OnUpdate() { }
 
@@ -35,7 +27,6 @@ public class IdleStateSO : CombatStateSO
         EnterTargetingState(interactable);
     }
 
-    // handle selected ability by Interaction Menu
     public override void HandleSelectAbility(IInteractableElement element)
     {
         if (element is not InteractableGridElement interactable) return;

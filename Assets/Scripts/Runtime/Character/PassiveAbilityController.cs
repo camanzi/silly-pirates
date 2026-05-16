@@ -38,4 +38,17 @@ public class PassiveAbilityController : MonoBehaviour
         for (int i = 0; i < _instantiatedPassives.Count; i++)
             if (_instantiatedPassives[i] is T t) results.Add(t);
     }
+
+    public void AddPassive(PassiveAbilitySO instance)
+    {
+        _instantiatedPassives.Add(instance);
+        instance.OnEquip(this);
+    }
+
+    public void RemovePassive(PassiveAbilitySO instance)
+    {
+        instance.OnUnequip(this);
+        _instantiatedPassives.Remove(instance);
+        Destroy(instance);
+    }
 }

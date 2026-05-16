@@ -10,6 +10,7 @@ public class ShipController : MonoBehaviour
     [SerializeField] private string _modelsMapTag;
     [SerializeField] private string _floorMapTag;
     [SerializeField] private string _previewMapTag;
+    [SerializeField] private string _persistentEffectsMapTag;
 
     [Header("Tiles")]
     [SerializeField] private Tile _defaultFloorTile;
@@ -17,14 +18,17 @@ public class ShipController : MonoBehaviour
     [SerializeField] private Tile _hoverFloorAllowTile;
     [SerializeField] private Tile _hoverFloorNotAllowTile;
     [SerializeField] private Tile _oceanCurrentTile;
+    [SerializeField] private Tile _starPathTile;
 
     private Grid _shipGrid;
     private Tilemap _modelsMap;
     private Tilemap _floorMap;
     private Tilemap _previewMap;
+    private Tilemap _persistentEffectsMap;
 
     private ICollection<Vector3> _cacheedHighlight;
     private List<Vector3Int> _oceanCurrentCells = new();
+    private List<Vector3Int> _starPathCells = new();
 
     private void Awake()
     {
@@ -34,6 +38,7 @@ public class ShipController : MonoBehaviour
         _modelsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _modelsMapTag);
         _floorMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _floorMapTag);
         _previewMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _previewMapTag);
+        _persistentEffectsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _persistentEffectsMapTag);
     }
 
     private T FindChildByTag<T>(GameObject parent, string tag)
@@ -54,16 +59,19 @@ public class ShipController : MonoBehaviour
 
     public void HighlightPath(HighlightGridPayload payload)
     {
-        // Ocean-current-only update: just repaint those cells, leave path preview intact.
+        // Overlay-only update: just repaint those cells, leave path preview intact.
         if (payload.AffectedCells == null)
         {
-            ApplyOceanCurrentCells(payload.OceanCurrentCells ?? new List<Vector3Int>());
+            if (payload.OceanCurrentCells != null)
+                ApplyOceanCurrentCells(payload.OceanCurrentCells);
+            if (payload.PathOfStarCells != null)
+                ApplyStarPathCells(payload.PathOfStarCells);
             return;
         }
 
         foreach (Vector3 node in _cacheedHighlight ?? new List<Vector3>())
         {
-            ChangeTile(Vector3Int.FloorToInt(node), _previewMap, _defaultFloorTile);
+            ChangeTile(Vector3Int.FloorToInt(node), _previewMap, null);
         }
 
         foreach (Vector3 node in payload.InteractionArea ?? new List<Vector3>())
@@ -82,21 +90,30 @@ public class ShipController : MonoBehaviour
 
         if (payload.OceanCurrentCells != null)
             ApplyOceanCurrentCells(payload.OceanCurrentCells);
-
-        // Re-apply persistent ocean current tiles on top of any preview.
-        foreach (var pos in _oceanCurrentCells)
-            _previewMap.SetTile(pos, _oceanCurrentTile);
+        if (payload.PathOfStarCells != null)
+            ApplyStarPathCells(payload.PathOfStarCells);
     }
 
     private void ApplyOceanCurrentCells(List<Vector3Int> cells)
     {
         foreach (var pos in _oceanCurrentCells)
-            _previewMap.SetTile(pos, null);
+            _persistentEffectsMap.SetTile(pos, null);
 
-        _oceanCurrentCells = cells;
+        _oceanCurrentCells = new List<Vector3Int>(cells);
 
         foreach (var pos in _oceanCurrentCells)
-            _previewMap.SetTile(pos, _oceanCurrentTile);
+            _persistentEffectsMap.SetTile(pos, _oceanCurrentTile);
+    }
+
+    private void ApplyStarPathCells(List<Vector3Int> cells)
+    {
+        foreach (var pos in _starPathCells)
+            _persistentEffectsMap.SetTile(pos, null);
+
+        _starPathCells = cells;
+
+        foreach (var pos in _starPathCells)
+            _persistentEffectsMap.SetTile(pos, _starPathTile);
     }
 
     private async Awaitable ChangeTile(Vector3Int tilePosition, Tilemap renderingMap, Tile newTile, int delay)

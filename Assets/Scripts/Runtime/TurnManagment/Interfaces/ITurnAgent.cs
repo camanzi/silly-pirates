@@ -7,6 +7,7 @@ public interface ITurnAgent
     public IntEventChannel OnAPChanged { get; }
     public InteractableProximityEventChannel ProximityChannel { get; }
     public int RemainingActionPoints { get; set; }
+    public int EffectiveAgility { get; }
     public HealthController Health { get; }
     public void OnCombatJoin();
     public void OnCombatLeave();

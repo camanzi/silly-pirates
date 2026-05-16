@@ -14,15 +14,15 @@ PrefabInstance:
       objectReference: {fileID: 917256955, guid: c0c940b7f1c8ea54abd4d68896288448, type: 3}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.0799994
+      value: 4.43
       objectReference: {fileID: 0}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -16.15
+      value: -14.82
       objectReference: {fileID: 0}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5543415814276300125, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
+      propertyPath: '_basePassivesSO.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b50460d971b65b499c461689a3faeaf, type: 2}
     - target: {fileID: 6710381202474523136, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: _spriteAtlas
       value: 

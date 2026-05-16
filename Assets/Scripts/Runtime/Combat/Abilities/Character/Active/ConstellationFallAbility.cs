@@ -2,18 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(fileName = "Healing Touch Ability", menuName = "Abilities/Character/Actives/Healing Touch Ability")]
-public class HealingTouchAbility : AbilityBase
+[CreateAssetMenu(fileName = "Constellation Fall Ability", menuName = "Abilities/Character/Actives/Constellation Fall Ability")]
+public class ConstellationFallAbility : AbilityBase
 {
-    [Header("Healing Touch Configs")]
-    [SerializeField] private int _range = 1;
+    [Header("Constellation Fall Configs")]
+    [SerializeField] private int _range = 4;
     [SerializeField] private int _apCost = 1;
-    [SerializeField] private int _flatHealAmount = 10;
-    [SerializeField] [Range(0f, 100f)] private float _healPercentage = 0f;
+    [SerializeField] private ConstellationFragment _constellationPiecePrefab;
 
     public override int ActionPointCost => _apCost;
 
-    private class HealingTouchCache
+    private class ConstellationFallCache
     {
         public HashSet<Vector3Int> ValidCells;
     }
@@ -24,15 +23,15 @@ public class HealingTouchAbility : AbilityBase
             return AbilityPreviewData.Empty;
 
         EnsureCache(gridElement, ref cache);
-        var healCache = (HealingTouchCache)cache;
+        var fallCache = (ConstellationFallCache)cache;
 
         var interactionArea = new List<Vector3>();
-        foreach (Vector3Int cell in healCache.ValidCells)
+        foreach (Vector3Int cell in fallCache.ValidCells)
             interactionArea.Add((Vector3)cell);
 
         Vector3Int hoveredCell = targetingData.cellPosition;
         var affectedCells = new List<Vector3>();
-        if (healCache.ValidCells.Contains(hoveredCell))
+        if (fallCache.ValidCells.Contains(hoveredCell))
             affectedCells.Add((Vector3)hoveredCell);
 
         return new AbilityPreviewData(affectedCells: affectedCells, interactionArea: interactionArea);
@@ -42,39 +41,28 @@ public class HealingTouchAbility : AbilityBase
     {
         if (caster is not GridElement gridElement) return false;
         if (!targetingData.HasValue) return false;
-
         if (caster is ITurnAgent turnAgent && turnAgent.RemainingActionPoints < _apCost) return false;
 
         EnsureCache(gridElement, ref cache);
-        var healCache = (HealingTouchCache)cache;
+        var fallCache = (ConstellationFallCache)cache;
 
-        Vector3Int targetCell = targetingData.Value.cellPosition;
-
-        if (!healCache.ValidCells.Contains(targetCell)) return false;
-
-        ITargettable selected = targetingData.Value.selectedTarget;
-        if (selected == null) return false;
-        if (selected is not IHealthOwner) return false;
-
-        return true;
+        return fallCache.ValidCells.Contains(targetingData.Value.cellPosition);
     }
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        if (caster is not GridElement) return null;
         if (!targetingData.HasValue) return null;
+        if (caster is not GridElement gridElement) return null;
 
-        ITargettable target = targetingData.Value.selectedTarget;
-        if (target is not IHealthOwner healthOwner) return null;
+        Vector3Int targetCell = targetingData.Value.cellPosition;
+        Vector3 worldPos = gridElement.activeTilemap.GetCellCenterWorld(targetCell);
 
-        float healAmount = _flatHealAmount + (healthOwner.Health.MaxHp * (_healPercentage / 100f));
-
-        return new HealingTouchCommand(caster, target, healAmount, _apCost);
+        return new ConstellationFallCommand(caster, targetCell, worldPos, _constellationPiecePrefab, _apCost);
     }
 
     private void EnsureCache(GridElement caster, ref object cache)
     {
-        if (cache is HealingTouchCache) return;
+        if (cache is ConstellationFallCache) return;
 
         Vector3Int casterPos = caster.gridPosition;
         Tilemap tilemap = caster.activeTilemap;
@@ -84,7 +72,6 @@ public class HealingTouchAbility : AbilityBase
         foreach (Vector3 cellV3 in circle.GetCells(casterPos, _range, casterPos))
         {
             Vector3Int cell = Vector3Int.FloorToInt(cellV3);
-            if (cell == casterPos) continue;
 
             if (tilemap != null)
             {
@@ -95,6 +82,6 @@ public class HealingTouchAbility : AbilityBase
             validCells.Add(cell);
         }
 
-        cache = new HealingTouchCache { ValidCells = validCells };
+        cache = new ConstellationFallCache { ValidCells = validCells };
     }
 }

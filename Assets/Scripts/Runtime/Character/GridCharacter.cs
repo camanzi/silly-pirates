@@ -34,13 +34,33 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
         set => _remainingMovementPoints = value;
     }
 
-    public int RemainingActionPoints 
+    public int RemainingActionPoints
     {
-        get => _remainingActionPoints; 
+        get => _remainingActionPoints;
         set
         {
             _remainingActionPoints = value;
             OnAPChanged?.RaiseEvent(_remainingActionPoints);
+        }
+    }
+
+    public int EffectiveAgility
+    {
+        get
+        {
+            int totalFlat = 0;
+            float totalPct = 0f;
+            if (_passiveAbilityController)
+            {
+                _passiveAbilityController.GetModifiers(_agilityModifiers);
+                foreach (var m in _agilityModifiers)
+                {
+                    totalFlat += m.GetFlatAgilityBonus();
+                    totalPct  += m.GetPercentageAgilityBonus();
+                }
+            }
+            float modified = (AgentData.InitialAgility + totalFlat) * (1f + totalPct / 100f);
+            return Mathf.Max(1, Mathf.RoundToInt(modified));
         }
     }
     private int _remainingMovementPoints;
@@ -50,6 +70,9 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     private HealthController _healthController;
     private Tween _moveTween;
     private readonly List<IMovementModifier> _movementModifiers = new();
+    private readonly List<IAgilityModifier> _agilityModifiers = new();
+    private readonly List<IOnCellEntered> _cellEnteredHandlers = new();
+    private readonly List<IOnTurnStart> _turnStartHandlers = new();
 
     public HealthController Health => _healthController;
 
@@ -101,6 +124,13 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     {
         if (_agentData != null)
             this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
+
+        if (_passiveAbilityController)
+        {
+            _passiveAbilityController.GetModifiers(_cellEnteredHandlers);
+            foreach (var h in _cellEnteredHandlers)
+                h.OnCellEntered(gridPosition);
+        }
     }
 
     public void OnCombatJoin() => this.HandleCombatJoin();
@@ -127,6 +157,12 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
         _remainingMovementPoints = AgentData.MaxMovementPoints + bonusMovement;
         _healthController?.OnTurnStart();
+
+        if (_passiveAbilityController)
+        {
+            _passiveAbilityController.GetModifiers(_turnStartHandlers);
+            foreach (var h in _turnStartHandlers) h.OnTurnStart();
+        }
 
         this.HandleStartingTurn();
         this.EmitProximityCheck(new ProximityPayload(this, AgentData.InteractionRange));

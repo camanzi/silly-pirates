@@ -70,18 +70,28 @@ public class TurnOrderDataSO : ScriptableObject
         _onQueueUpdated?.RaiseEvent();
     }
 
+    public void UpdateAgentAV(ITurnAgent agent)
+    {
+        var state = _turnQueue.Find(s => s.Agent == agent);
+        if (state == null) return;
+        state.CurrentAV = CalculateBaseAV(agent);
+        SortQueue();
+        _onQueueUpdated?.RaiseEvent();
+    }
+
     private float CalculateBaseAV(ITurnAgent a)
     {
-        float speed = Mathf.Max(1, a.AgentData.InitialAgility);
+        float speed = Mathf.Max(1, a.EffectiveAgility);
         return 10000f / speed;
-    } 
+    }
+
     private void SortQueue()
     {
         _turnQueue.Sort((a, b) => {
             int result = a.CurrentAV.CompareTo(b.CurrentAV);
             
             if (result == 0)
-                return b.Agent.AgentData.InitialAgility.CompareTo(a.Agent.AgentData.InitialAgility);
+                return b.Agent.EffectiveAgility.CompareTo(a.Agent.EffectiveAgility);
             
             return result;
         });

@@ -38,14 +38,21 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
     [SerializeField] private TurnAgentEventChannel _turnChangedChannel;
     [SerializeField] private HighlightGridEventChannel _highlightChannel;
 
-    public bool IsAvailable => !_usedThisTurn && _currentCells.Count > 0;
-    public event Action OnStateUpdated;
+    // Shared across all cloned instances — one cell set for the whole party
+    private static readonly List<Vector3Int> s_sharedCurrentCells = new();
+    private static ITurnAgent s_lastSeenAgent;
+    private static int s_equippedCount;
 
-    private GridCharacter _owner;
-    private List<Vector3Int> _currentCells = new();
+    // Per-instance: cached once in OnEquip (needed for gridPosition in GetBorderCell,
+    // called per hover by MoveAbility — cannot afford GetComponent at runtime)
+    private GridElement _ownerElement;
+    private bool _isMyTurn;
     private bool _usedThisTurn;
     private UnityAction<ITurnAgent> _onTurnChanged;
     private Action _onUsedDelegate;
+
+    public bool IsAvailable => _isMyTurn && !_usedThisTurn && s_sharedCurrentCells.Count > 0;
+    public event Action OnStateUpdated;
 
     private readonly List<Vector3> _previewAffectedCells = new(1);
     private static readonly List<Vector3> _emptyInteractionArea = new();
@@ -64,38 +71,50 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
 
     public override void OnEquip(PassiveAbilityController controller)
     {
-        _owner = controller.GetComponent<GridCharacter>();
-        _currentCells = new List<Vector3Int>();
+        _ownerElement = controller.GetComponent<GridElement>();
+        _isMyTurn = false;
         _usedThisTurn = false;
         _onTurnChanged = OnTurnChanged;
         _onUsedDelegate = () => { _usedThisTurn = true; OnStateUpdated?.Invoke(); };
         _turnChangedChannel.OnEventRaised += _onTurnChanged;
+        s_equippedCount++;
     }
 
     public override void OnUnequip(PassiveAbilityController controller)
     {
         _turnChangedChannel.OnEventRaised -= _onTurnChanged;
-        _currentCells.Clear();
-        _highlightChannel?.RaiseEvent(HighlightGridPayload.OceanCurrentUpdate(new List<Vector3Int>()));
+        _isMyTurn = false;
+        s_equippedCount--;
+        if (s_equippedCount <= 0)
+        {
+            s_equippedCount = 0;
+            s_sharedCurrentCells.Clear();
+            s_lastSeenAgent = null;
+            _highlightChannel?.RaiseEvent(HighlightGridPayload.OceanCurrentUpdate(new List<Vector3Int>()));
+        }
     }
 
     private void OnTurnChanged(ITurnAgent agent)
     {
-        if (agent != (ITurnAgent)_owner)
+        _isMyTurn = agent is Component ac && ac.gameObject == _ownerElement.gameObject;
+        _usedThisTurn = false;
+
+        if (!ReferenceEquals(agent, s_lastSeenAgent))
         {
-            _currentCells.Clear();
-            _highlightChannel?.RaiseEvent(HighlightGridPayload.OceanCurrentUpdate(new List<Vector3Int>()));
-            return;
+            s_lastSeenAgent = agent;
+            Tilemap tilemap = (agent as GridElement)?.activeTilemap;
+            if (tilemap != null)
+            {
+                Vector3 center = tilemap.cellBounds.center;
+                List<Vector3Int> candidates = OceanCurrentDistributor.FindExteriorBorderCells(tilemap);
+                s_sharedCurrentCells.Clear();
+                s_sharedCurrentCells.AddRange(
+                    OceanCurrentDistributor.Distribute(candidates, _currentCellCount, center, UnityEngine.Random.Range(0, 100000))
+                );
+                _highlightChannel?.RaiseEvent(HighlightGridPayload.OceanCurrentUpdate(new List<Vector3Int>(s_sharedCurrentCells)));
+            }
         }
 
-        Tilemap tilemap = _owner.activeTilemap;
-        if (tilemap == null) return;
-
-        Vector3 center = tilemap.cellBounds.center;
-        List<Vector3Int> candidates = OceanCurrentDistributor.FindExteriorBorderCells(tilemap);
-        _currentCells = OceanCurrentDistributor.Distribute(candidates, _currentCellCount, center, UnityEngine.Random.Range(0, 100000));
-        _usedThisTurn = false;
-        _highlightChannel?.RaiseEvent(HighlightGridPayload.OceanCurrentUpdate(_currentCells));
         OnStateUpdated?.Invoke();
     }
 
@@ -110,8 +129,8 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
 
     public IEnumerable<Vector3Int> GetExtensionCells(HashSet<Vector3Int> reachableSet, Tilemap tilemap)
     {
-        if (_usedThisTurn) yield break;
-        foreach (var cell in _currentCells)
+        if (!_isMyTurn || _usedThisTurn) yield break;
+        foreach (var cell in s_sharedCurrentCells)
         {
             if (IsCurrentCellReachable(cell, reachableSet))
                 yield return cell;
@@ -119,7 +138,7 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
     }
 
     public bool ClaimsTarget(Vector3Int cell)
-        => !_usedThisTurn && _currentCells.Contains(cell);
+        => _isMyTurn && !_usedThisTurn && s_sharedCurrentCells.Contains(cell);
 
     public AbilityPreviewData GetPreview(IInteractableElement caster, TargetingData td, ref object extCache)
     {
@@ -143,7 +162,7 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
         if (extCache is Phase2Cache p2)
             return CanExecutePhase2(gridElement, p2, td);
 
-        return _currentCells.Contains(td);
+        return s_sharedCurrentCells.Contains(td);
     }
 
     public ICommand CreateCommandFor(IInteractableElement caster, Vector3Int td, ref object extCache)
@@ -169,7 +188,7 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
             p2.WalkableSet, static (pos, set) => set.Contains(pos)
         );
 
-        Vector3Int exitSource = _currentCells
+        Vector3Int exitSource = s_sharedCurrentCells
             .Where(c => c != p2.EntryCell)
             .OrderBy(c => PathFindingUtils.GetDistance(c, td))
             .First();
@@ -190,7 +209,8 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
 
     public bool IsPhaseCommand(ICommand cmd) => cmd is SelectOceanCurrentEntryCommand;
 
-    public Vector3Int GetBorderCell(Vector3Int extensionCell, Tilemap tilemap) => FindBorderCell(_owner.gridPosition, extensionCell, tilemap);
+    public Vector3Int GetBorderCell(Vector3Int extensionCell, Tilemap tilemap)
+        => FindBorderCell(_ownerElement.gridPosition, extensionCell, tilemap);
 
     private AbilityPreviewData GetPhase2Preview(GridElement gridElement, Phase2Cache p2, TargetingData td)
     {
@@ -210,9 +230,9 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
 
         if (validExit)
         {
-            Vector3Int exitSource = _currentCells[0];
+            Vector3Int exitSource = s_sharedCurrentCells[0];
             int minDist = int.MaxValue;
-            foreach (var c in _currentCells)
+            foreach (var c in s_sharedCurrentCells)
             {
                 if (c == p2.EntryCell) continue;
                 int d = PathFindingUtils.GetDistance(c, hoveredCell);
@@ -239,7 +259,7 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
         if (_gridStateData != null && _gridStateData.IsOccupied(td) &&
             !_gridStateData.GetEntityAt(td).Contains(gridElement)) return false;
 
-        foreach (var src in _currentCells)
+        foreach (var src in s_sharedCurrentCells)
         {
             if (src == p2.EntryCell) continue;
             if (PathFindingUtils.GetNormalizedDistance(td, src) <= _exitRange) return true;
@@ -253,7 +273,7 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
     {
         _exitCellsSet.Clear();
 
-        foreach (Vector3Int src in _currentCells)
+        foreach (Vector3Int src in s_sharedCurrentCells)
         {
             if (src == entryCell) continue;
             foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)

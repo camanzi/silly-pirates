@@ -38,12 +38,14 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public IntEventChannel OnAPChanged => _onAPConsumedEventChannel;
 
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
-    public int RemainingActionPoints 
+    public int RemainingActionPoints
     {
         get => _remainingActionPoints;
         // Intenzionale NON emettere niente da OnAPConsumed
         set => _remainingActionPoints = value;
     }
+
+    public int EffectiveAgility => AgentData.InitialAgility;
 
     private int _remainingActionPoints;
     private OutlinerHelper _outlinerHelper;

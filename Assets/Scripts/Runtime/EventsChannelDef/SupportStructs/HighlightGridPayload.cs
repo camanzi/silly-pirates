@@ -8,6 +8,7 @@ public struct HighlightGridPayload
     public bool IsValidHighlight;
     public Vector3? Origin;
     public List<Vector3Int> OceanCurrentCells; // null = no update, empty = clear
+    public List<Vector3Int> PathOfStarCells;   // null = no update, empty = clear
 
     public HighlightGridPayload(List<Vector3> affectedCells, List<Vector3> interactionArea, bool isValidHighlight, Vector3 origin)
     {
@@ -16,6 +17,7 @@ public struct HighlightGridPayload
         this.IsValidHighlight = isValidHighlight;
         this.Origin = origin;
         this.OceanCurrentCells = null;
+        this.PathOfStarCells = null;
     }
 
     public HighlightGridPayload(List<Vector3> affectedCells, List<Vector3> interactionArea, bool isValidHighlight)
@@ -25,6 +27,7 @@ public struct HighlightGridPayload
         this.InteractionArea = interactionArea;
         this.Origin = null;
         this.OceanCurrentCells = null;
+        this.PathOfStarCells = null;
     }
 
     public static HighlightGridPayload Empty => new()
@@ -32,7 +35,8 @@ public struct HighlightGridPayload
         IsValidHighlight = false,
         AffectedCells = new(),
         InteractionArea = new(),
-        OceanCurrentCells = null
+        OceanCurrentCells = null,
+        PathOfStarCells = null
     };
 
     // Raise this to update ocean current tiles without touching the path preview.
@@ -41,5 +45,13 @@ public struct HighlightGridPayload
         AffectedCells = null,
         InteractionArea = null,
         OceanCurrentCells = cells ?? new List<Vector3Int>()
+    };
+
+    // Raise this to update path-of-star tiles without touching the path preview.
+    public static HighlightGridPayload PathOfStarUpdate(List<Vector3Int> cells) => new()
+    {
+        AffectedCells = null,
+        InteractionArea = null,
+        PathOfStarCells = cells ?? new List<Vector3Int>()
     };
 }

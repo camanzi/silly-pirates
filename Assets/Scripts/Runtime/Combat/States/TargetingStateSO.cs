@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [CreateAssetMenu(menuName = "Combat/States/Targeting")]
 public class TargetingStateSO : CombatStateSO
@@ -69,7 +66,7 @@ public class TargetingStateSO : CombatStateSO
             ICommand command = selectedAbility.CreateCommand(caster, data, ref combatCtx.AbilityCache);
 
             if (selectedAbility.IsPhaseCommand(command))
-                return; // cache already updated inside CreateCommand — stay in targeting
+                return;
 
             manager.TurnController.AddCommand(command);
             manager.TransitionToState(_executionStateTemplate);
