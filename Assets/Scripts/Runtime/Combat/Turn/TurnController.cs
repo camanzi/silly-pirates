@@ -90,6 +90,9 @@ public class TurnController : MonoBehaviour
                 }
 
                 ITurnAgent nextEntity = _turnOrderData.TurnQueue[0].Agent;
+
+                _turnOrderData.StartActiveTurn();
+
                 _currentTurnState.SetActiveCharacter(nextEntity);
                 nextEntity.OnStartingTurn();
                 

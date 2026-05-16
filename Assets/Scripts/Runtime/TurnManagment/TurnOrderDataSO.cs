@@ -6,11 +6,27 @@ using UnityEngine;
 public class TurnOrderDataSO : ScriptableObject
 {
     [SerializeField] private VoidEventChannel _onQueueUpdated;
-    
-    public VoidEventChannel OnQueueUpdated => _onQueueUpdated; 
+
+    public VoidEventChannel OnQueueUpdated => _onQueueUpdated;
 
     private List<EntityTurnState> _turnQueue = new();
     public ReadOnlyCollection<EntityTurnState> TurnQueue => _turnQueue.AsReadOnly();
+
+    public void StartActiveTurn()
+    {
+        if (_turnQueue.Count == 0) return;
+
+        float timePassed = _turnQueue[0].CurrentAV;
+        _turnQueue[0].CurrentAV = 0f;
+
+        for (int i = 1; i < _turnQueue.Count; i++)
+        {
+            _turnQueue[i].CurrentAV -= timePassed;
+            _turnQueue[i].CurrentAV = Mathf.Max(1f, _turnQueue[i].CurrentAV);
+        }
+
+        _onQueueUpdated?.RaiseEvent();
+    }
 
     public void CompleteActiveTurn()
     {
@@ -23,15 +39,6 @@ public class TurnOrderDataSO : ScriptableObject
         _turnQueue.Add(finishedEntity);
 
         SortQueue();
-        
-        float timePassed = _turnQueue[0].CurrentAV;
-
-        foreach (EntityTurnState state in _turnQueue)
-        {
-            state.CurrentAV -= timePassed;
-            // Minimo valore che puó assumere l'AV
-            state.CurrentAV = Mathf.Max(1, state.CurrentAV);
-        }
 
         _onQueueUpdated?.RaiseEvent();
     }
@@ -41,7 +48,7 @@ public class TurnOrderDataSO : ScriptableObject
         if (_turnQueue.Exists(e => e.Agent == agent)) return;
 
         float initialAV = CalculateBaseAV(agent);
-        
+
         EntityTurnState newState = new EntityTurnState(agent, initialAV);
         _turnQueue.Add(newState);
 
@@ -59,7 +66,7 @@ public class TurnOrderDataSO : ScriptableObject
         if (index != -1)
         {
             _turnQueue.RemoveAt(index);
-            
+
             _onQueueUpdated?.RaiseEvent();
         }
     }
@@ -89,10 +96,10 @@ public class TurnOrderDataSO : ScriptableObject
     {
         _turnQueue.Sort((a, b) => {
             int result = a.CurrentAV.CompareTo(b.CurrentAV);
-            
+
             if (result == 0)
                 return b.Agent.EffectiveAgility.CompareTo(a.Agent.EffectiveAgility);
-            
+
             return result;
         });
     }
