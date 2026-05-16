@@ -123,7 +123,7 @@ public static class PathFindingUtils
         return reachableArea;
     }
 
-    private static List<Vector3Int> GetNeighbors(Vector3Int pos)
+    public static List<Vector3Int> GetNeighbors(Vector3Int pos)
     {
         List<Vector3Int> neighbors = new List<Vector3Int>();
         Vector3Int[] directions = (pos.y & 1) != 0 ? OddRowNeighbors : EvenRowNeighbors;

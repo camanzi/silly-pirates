@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d2ec76fa1d10aa46abf492abf3d3bc0, type: 3}
-  m_Name: Ocean Current Ability
-  m_EditorClassIdentifier: Assembly-CSharp::OceanCurrentAbility
+  m_Script: {fileID: 11500000, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
+  m_Name: Healing Touch
+  m_EditorClassIdentifier: Assembly-CSharp::HealingTouchAbility
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
-  _jumpPeakHeight: 3
-  _diveDuration: 0.4
-  _exitDuration: 0.8
-  _exitRange: 3
+  _range: 1
+  _apCost: 1
+  _flatHealAmount: 25
+  _healPercentage: 5
