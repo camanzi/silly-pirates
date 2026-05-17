@@ -14,6 +14,7 @@ public class TurnController : MonoBehaviour
     [Header("Turn Managments")]
     [SerializeField] private TurnOrderDataSO _turnOrderData;
     [SerializeField] private TurnStateSO _currentTurnState;
+    [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
 
     private Queue<ICommand> _commandQueue = new Queue<ICommand>();
     private bool _isProcessing = false;
@@ -98,6 +99,7 @@ public class TurnController : MonoBehaviour
                 
                 await _currentTurnState.WaitUntilTurnFinished();
 
+                _onAnyTurnEnded?.RaiseEvent(nextEntity);
                 _turnOrderData.CompleteActiveTurn();
             }
         } 

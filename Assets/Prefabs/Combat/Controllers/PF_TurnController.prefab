@@ -51,6 +51,7 @@ MonoBehaviour:
   _onJoinFightAgentEventChannel: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
   _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+  _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
 --- !u!114 &4529232175609205763
 MonoBehaviour:
   m_ObjectHideFlags: 0

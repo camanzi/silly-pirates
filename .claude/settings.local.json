@@ -33,7 +33,13 @@
       "mcp__UnityMCP__manage_gameobject",
       "mcp__UnityMCP__manage_components",
       "Bash(findstr /i \"passive\")",
-      "Bash(xargs grep -l \"Dictionary.*owner\\\\|Dictionary.*character\\\\|Dictionary.*GridCharacter\")"
+      "Bash(xargs grep -l \"Dictionary.*owner\\\\|Dictionary.*character\\\\|Dictionary.*GridCharacter\")",
+      "Bash(xargs ls -la)",
+      "Bash(xargs grep -l \"\\\\[CustomEditor\\\\]\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\" -Directory)",
+      "Bash(Select-Object -First 10)",
+      "Bash(xargs grep -l \"\\\\[SerializeField\\\\].*SO\")",
+      "mcp__UnityMCP__manage_scriptable_object"
     ]
   },
   "hooks": {

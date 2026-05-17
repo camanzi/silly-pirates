@@ -12,6 +12,8 @@ public class TurnOrderDataSO : ScriptableObject
     private List<EntityTurnState> _turnQueue = new();
     public ReadOnlyCollection<EntityTurnState> TurnQueue => _turnQueue.AsReadOnly();
 
+    private readonly List<IAVModifier> _avModifierBuffer = new();
+
     public void StartActiveTurn()
     {
         if (_turnQueue.Count == 0) return;
@@ -35,12 +37,31 @@ public class TurnOrderDataSO : ScriptableObject
         EntityTurnState finishedEntity = _turnQueue[0];
         _turnQueue.RemoveAt(0);
 
-        finishedEntity.CurrentAV = CalculateBaseAV(finishedEntity.Agent);
-        _turnQueue.Add(finishedEntity);
+        float av = CalculateBaseAV(finishedEntity.Agent);
+        av = ApplyAndConsumeAVDiscount(finishedEntity.Agent, av);
+        finishedEntity.CurrentAV = av;
 
+        _turnQueue.Add(finishedEntity);
         SortQueue();
 
         _onQueueUpdated?.RaiseEvent();
+    }
+
+    private float ApplyAndConsumeAVDiscount(ITurnAgent agent, float baseAV)
+    {
+        if (agent is not IAbilityHolder holder) return baseAV;
+        holder.PassiveAbilityController.GetModifiers(_avModifierBuffer);
+        if (_avModifierBuffer.Count == 0) return baseAV;
+
+        float totalDiscount = 0f;
+        foreach (var mod in _avModifierBuffer)
+            totalDiscount += mod.GetAVDiscountPercentage();
+
+        foreach (var mod in _avModifierBuffer)
+            if (mod is PassiveAbilitySO passive)
+                holder.PassiveAbilityController.RemovePassive(passive);
+
+        return baseAV * (1f - Mathf.Clamp01(totalDiscount / 100f));
     }
 
     public void AddEntity(ITurnAgent agent)

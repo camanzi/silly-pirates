@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6aa324f3d920fc4d9972ae26bc0c2f5, type: 3}
   m_Name: Path Of Star Data
   m_EditorClassIdentifier: Assembly-CSharp::PathOfStarDataSO
-  _onAnyTurnStarted: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
-  _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
+  _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _highlightChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
-  _agilityBonusPerApplication: 2
+  _avDiscountPercentage: 20
   _cellDurationInTurns: 3

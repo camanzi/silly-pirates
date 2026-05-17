@@ -10,19 +10,19 @@ public class ShootCommand : ICommand
     private int _cooldown;
 
     private TrajectoryConfigsSO _trajectoryConfigData;
-    private float _damage;
+    private IOffensiveEquipmentStats _stats;
 
     private readonly List<Awaitable> _flightTasks = new();
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, int cooldown, int damage, TrajectoryConfigsSO trajectoryConfigData)
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, int cooldown, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData)
     {
         _caster = caster;
         _targets = targets;
         _projectilePrefab = prefab;
         _cooldown = cooldown;
-        _damage = damage;
+        _stats = stats;
         _trajectoryConfigData = trajectoryConfigData;
     }
 
@@ -85,8 +85,13 @@ public class ShootCommand : ICommand
 
     private void HandleImpact(GameObject projectile, ITargettable target)
     {
-        if (target is IHealthOwner healthOwner)
-            healthOwner.Health.TakeDamage(new DamagePayload(_damage));
+        if (target is IHealthOwner healthOwner && _stats != null)
+        {
+            float damage = _stats.BaseDMG;
+            if (UnityEngine.Random.Range(0, 100) < _stats.CritRate)
+                damage += damage * _stats.CritDMG / 100f;
+            healthOwner.Health.TakeDamage(new DamagePayload(damage, _stats.DMGType));
+        }
         GameObject.Destroy(projectile);
     }
 

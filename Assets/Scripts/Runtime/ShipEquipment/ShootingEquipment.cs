@@ -4,8 +4,15 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(EquipmentStateMachine))]
 // FIXME Later, questo dovrá diventare una macchina a stati in piena regola, ma per il momento va bene cosí
-public class ShootingEquipment : InteractableGridElement, IAwakable
+public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentStats
 {
+    [Header("Equipment Stats")]
+    [SerializeField] private EquipmentType _equipmentType;
+    [SerializeField] private EquipmentStatsSO _statsConfig;
+
+    public EquipmentType EquipmentType => _equipmentType;
+    public EquipmentStatsSO StatsConfig => _statsConfig;
+
     [Header("Awakable Configs")]
     [SerializeField] private int _toAwakePoints;
 

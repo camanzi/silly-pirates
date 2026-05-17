@@ -5,55 +5,38 @@ using UnityEngine;
 public class PathOfStarDataSO : ScriptableObject
 {
     [Header("Dependencies")]
-    [SerializeField] private TurnAgentEventChannel _onAnyTurnStarted;
-    [SerializeField] private TurnOrderDataSO _turnOrderData;
+    [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
     [SerializeField] private GridStateDataSO _gridStateData;
     [SerializeField] private HighlightGridEventChannel _highlightChannel;
 
     [Header("Config")]
-    [SerializeField] private float _agilityBonusPerApplication = 2f;
+    [SerializeField] private float _avDiscountPercentage = 20f;
     [SerializeField] private int _cellDurationInTurns = 3;
 
     private readonly Dictionary<Vector3Int, int> _cellCountdowns = new();
-    private readonly Dictionary<ITurnAgent, StarAgilityBonusPassiveSO> _bonusPassives = new();
     private readonly List<Vector3Int> _toRemove = new();
 
     private void OnEnable()
     {
         _cellCountdowns.Clear();
-        _bonusPassives.Clear();
-        if (_onAnyTurnStarted != null)
-            _onAnyTurnStarted.OnEventRaised += OnTurnStarted;
+        if (_onAnyTurnEnded != null)
+            _onAnyTurnEnded.OnEventRaised += OnTurnEnded;
     }
 
     private void OnDisable()
     {
-        if (_onAnyTurnStarted != null)
-            _onAnyTurnStarted.OnEventRaised -= OnTurnStarted;
+        if (_onAnyTurnEnded != null)
+            _onAnyTurnEnded.OnEventRaised -= OnTurnEnded;
     }
 
     public void Apply(Vector3Int cell)
     {
         _cellCountdowns[cell] = _cellDurationInTurns;
-
-        var entities = _gridStateData.GetEntityAt(cell);
-        if (entities != null)
-        {
-            foreach (var entity in entities)
-            {
-                if (entity is IAbilityHolder holder && entity is ITurnAgent agent)
-                    ApplyBonus(holder, agent);
-            }
-        }
-
         RaiseHighlightEvent();
     }
 
-    private void OnTurnStarted(ITurnAgent startingAgent)
+    private void OnTurnEnded(ITurnAgent agent)
     {
-        if (startingAgent is IAbilityHolder startHolder)
-            ResetBonus(startHolder, startingAgent);
-
         _toRemove.Clear();
         var cellKeys = new List<Vector3Int>(_cellCountdowns.Keys);
         foreach (var cell in cellKeys)
@@ -64,38 +47,30 @@ public class PathOfStarDataSO : ScriptableObject
         foreach (var cell in _toRemove)
             _cellCountdowns.Remove(cell);
 
-        foreach (var cell in _cellCountdowns.Keys)
+        bool agentInStarCell = false;
+        GridElement agentElement = agent as GridElement;
+        if (agentElement != null)
         {
-            var entities = _gridStateData.GetEntityAt(cell);
-            if (entities == null) continue;
-            foreach (var entity in entities)
+            foreach (var cell in _cellCountdowns.Keys)
             {
-                if (entity is IAbilityHolder holder && entity is ITurnAgent agent && agent != startingAgent)
-                    ApplyBonus(holder, agent);
+                var entities = _gridStateData.GetEntityAt(cell);
+                if (entities == null) continue;
+                if (entities.Contains(agentElement))
+                {
+                    agentInStarCell = true;
+                    break;
+                }
             }
         }
 
-        RaiseHighlightEvent();
-    }
-
-    private void ApplyBonus(IAbilityHolder holder, ITurnAgent agent)
-    {
-        if (!_bonusPassives.TryGetValue(agent, out var bonus))
+        if (agentInStarCell && agent is IAbilityHolder holder)
         {
-            bonus = CreateInstance<StarAgilityBonusPassiveSO>();
+            var bonus = CreateInstance<StarNextActionPassiveSO>();
+            bonus.DiscountPercentage = _avDiscountPercentage;
             holder.PassiveAbilityController.AddPassive(bonus);
-            _bonusPassives[agent] = bonus;
         }
-        bonus.PercentageBonus += _agilityBonusPerApplication;
-        _turnOrderData.UpdateAgentAV(agent);
-    }
 
-    private void ResetBonus(IAbilityHolder holder, ITurnAgent agent)
-    {
-        if (!_bonusPassives.TryGetValue(agent, out var bonus)) return;
-        holder.PassiveAbilityController.RemovePassive(bonus);
-        _bonusPassives.Remove(agent);
-        _turnOrderData.UpdateAgentAV(agent);
+        RaiseHighlightEvent();
     }
 
     private void RaiseHighlightEvent()
