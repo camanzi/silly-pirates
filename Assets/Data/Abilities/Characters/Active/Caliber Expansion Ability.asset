@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1b1e490921723d44a947b2473daf7d2, type: 3}
+  m_Name: Caliber Expansion Ability
+  m_EditorClassIdentifier: Assembly-CSharp::CaliberExpansionAbility
+  _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  showTrajectory: 0
+  trajectoryConfigData: {fileID: 0}
+  _range: 1
+  _apCost: 1
+  _critDMGBonus: 10
+  _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}

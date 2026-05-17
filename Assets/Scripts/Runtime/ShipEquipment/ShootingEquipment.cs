@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(EquipmentStateMachine))]
 // FIXME Later, questo dovrá diventare una macchina a stati in piena regola, ma per il momento va bene cosí
-public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentStats
+public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentStats, ITargettable
 {
     [Header("Equipment Stats")]
     [SerializeField] private EquipmentType _equipmentType;
@@ -47,6 +48,22 @@ public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentS
     }
     public Action OnAwakeningCountersChanged { get; set; }
     public Action<int> OnCooldownChanged { get; set; }
+
+    private readonly List<ICritDMGModifier> _critDMGModifiers = new();
+
+    public int EffectiveCritDMG
+    {
+        get
+        {
+            int total = (_statsConfig as IOffensiveEquipmentStats)?.CritDMG ?? 0;
+            for (int i = 0; i < _critDMGModifiers.Count; i++)
+                total += _critDMGModifiers[i].GetCritDMGBonus();
+            return total;
+        }
+    }
+
+    public void AddCritDMGModifier(ICritDMGModifier modifier) => _critDMGModifiers.Add(modifier);
+    public void RemoveCritDMGModifier(ICritDMGModifier modifier) => _critDMGModifiers.Remove(modifier);
 
     private int _awakeningPoints = 0;
     private int _cooldown = 0;

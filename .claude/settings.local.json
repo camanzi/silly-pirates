@@ -41,7 +41,10 @@
       "Bash(xargs grep -l \"\\\\[SerializeField\\\\].*SO\")",
       "mcp__UnityMCP__manage_scriptable_object",
       "Bash(xargs grep -l \"OffensiveEquipmentStats\")",
-      "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\" -Filter \"*InteractionAction*.cs\")"
+      "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\" -Filter \"*InteractionAction*.cs\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\" -Filter \"*.cs\" -Recurse)",
+      "Bash(Select-String -Pattern \"\\(Damage|Health|Turn\\)\")",
+      "Bash(findstr *)"
     ]
   },
   "hooks": {

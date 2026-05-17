@@ -93,11 +93,12 @@ public class ShootCommand : ICommand
             float damage   = _stats.BaseDMG;
             int   critRate = _stats.CritRate + _overcapCritBonus;
 
+            int effectiveCritDMG = (_caster as ShootingEquipment)?.EffectiveCritDMG ?? _stats.CritDMG;
             bool isCrit = UnityEngine.Random.Range(0, 100) < critRate;
             if (isCrit)
-                damage += damage * _stats.CritDMG / 100f;
+                damage += damage * effectiveCritDMG / 100f;
 
-            Debug.Log($"[ShootCommand] Hit — crit: {isCrit}, damage: {damage}, critRate: {critRate}%, critDMG: {_stats.CritDMG}%");
+            Debug.Log($"[ShootCommand] Hit — crit: {isCrit}, damage: {damage}, critRate: {critRate}%, critDMG: {effectiveCritDMG}%");
             healthOwner.Health.TakeDamage(new DamagePayload(damage, _stats.DMGType));
         }
         GameObject.Destroy(projectile);
