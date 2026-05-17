@@ -23,4 +23,6 @@ public abstract class AbilityBase : ScriptableObject {
 
     public virtual bool IsPhaseCommand(ICommand command) => false;
 
+    public virtual bool RequiresTargeting => true;
+
 }

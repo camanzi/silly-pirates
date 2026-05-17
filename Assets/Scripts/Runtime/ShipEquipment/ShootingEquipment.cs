@@ -65,6 +65,16 @@ public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentS
     public void AddCritDMGModifier(ICritDMGModifier modifier) => _critDMGModifiers.Add(modifier);
     public void RemoveCritDMGModifier(ICritDMGModifier modifier) => _critDMGModifiers.Remove(modifier);
 
+    private readonly List<IDMGTypeModifier> _dmgTypeModifiers = new();
+
+    public DamageType EffectiveDMGType =>
+        _dmgTypeModifiers.Count > 0
+            ? _dmgTypeModifiers[^1].GetDMGTypeOverride()
+            : (_statsConfig as IOffensiveEquipmentStats)?.DMGType ?? DamageType.None;
+
+    public void AddDMGTypeModifier(IDMGTypeModifier m) => _dmgTypeModifiers.Add(m);
+    public void RemoveDMGTypeModifier(IDMGTypeModifier m) => _dmgTypeModifiers.Remove(m);
+
     private int _awakeningPoints = 0;
     private int _cooldown = 0;
     private EquipmentStateMachine _stateMachine;

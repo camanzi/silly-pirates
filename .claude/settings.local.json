@@ -44,7 +44,9 @@
       "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\" -Filter \"*InteractionAction*.cs\")",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\" -Filter \"*.cs\" -Recurse)",
       "Bash(Select-String -Pattern \"\\(Damage|Health|Turn\\)\")",
-      "Bash(findstr *)"
+      "Bash(findstr *)",
+      "Bash(find C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates *)",
+      "Bash(xargs grep -l \"class.*InteractionActionSO\")"
     ]
   },
   "hooks": {

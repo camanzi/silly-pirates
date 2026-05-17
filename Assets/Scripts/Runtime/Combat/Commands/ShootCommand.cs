@@ -98,8 +98,9 @@ public class ShootCommand : ICommand
             if (isCrit)
                 damage += damage * effectiveCritDMG / 100f;
 
-            Debug.Log($"[ShootCommand] Hit — crit: {isCrit}, damage: {damage}, critRate: {critRate}%, critDMG: {effectiveCritDMG}%");
-            healthOwner.Health.TakeDamage(new DamagePayload(damage, _stats.DMGType));
+            DamageType dmgType = (_caster as ShootingEquipment)?.EffectiveDMGType ?? _stats.DMGType;
+            healthOwner.Health.TakeDamage(new DamagePayload(damage, dmgType));
+            Debug.Log($"[ShootCommand] Hit — crit: {isCrit}, damage: {damage}, dmgType: {dmgType}, critRate: {critRate}%, critDMG: {effectiveCritDMG}%");
         }
         GameObject.Destroy(projectile);
     }

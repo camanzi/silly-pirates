@@ -4,6 +4,7 @@ using UnityEngine;
 public class IdleStateSO : CombatStateSO
 {
     [SerializeField] private CombatStateSO _targetingStateTemplate;
+    [SerializeField] private CombatStateSO _executionStateTemplate;
 
     public override void OnEnter()
     {
@@ -44,6 +45,19 @@ public class IdleStateSO : CombatStateSO
     {
         manager.CombatCtx.SelectedAbility = data.Ability;
         manager.SelectionCtx.CurrentCaster = data.Caster;
+
+        if (!data.Ability.RequiresTargeting)
+        {
+            object cache = null;
+            if (data.Ability.CanExecute(data.Caster, null, ref cache))
+            {
+                ICommand cmd = data.Ability.CreateCommand(data.Caster, null, ref cache);
+                manager.TurnController.AddCommand(cmd);
+            }
+            manager.TransitionToState(_executionStateTemplate);
+            return;
+        }
+
         manager.TransitionToState(_targetingStateTemplate);
     }
 

@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
-public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent, IAbilityHolder, IHealthOwner
+public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent, IAbilityHolder, IHealthOwner, IAwakeningModifierHolder
 {
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
@@ -73,6 +74,39 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     private readonly List<IAgilityModifier> _agilityModifiers = new();
     private readonly List<IOnCellEntered> _cellEnteredHandlers = new();
     private readonly List<IOnTurnStart> _turnStartHandlers = new();
+    private readonly List<IAwakeningModifier> _awakeningModifiers = new();
+
+    public event Action OnAwakeningModifiersChanged;
+
+    public int TotalAwakeningBonus
+    {
+        get
+        {
+            int total = 0;
+            for (int i = 0; i < _awakeningModifiers.Count; i++)
+                total += _awakeningModifiers[i].GetAwakeningBonus();
+            return total;
+        }
+    }
+
+    public void AddAwakeningModifier(IAwakeningModifier modifier)
+    {
+        _awakeningModifiers.Add(modifier);
+        OnAwakeningModifiersChanged?.Invoke();
+    }
+
+    public void RemoveAwakeningModifier(IAwakeningModifier modifier)
+    {
+        _awakeningModifiers.Remove(modifier);
+        OnAwakeningModifiersChanged?.Invoke();
+    }
+
+    public void NotifyAwakeningContribution(IAwakable awakable)
+    {
+        for (int i = 0; i < _awakeningModifiers.Count; i++)
+            if (_awakeningModifiers[i] is IAwakeningContributionEffect effect)
+                effect.OnContribution(awakable);
+    }
 
     public HealthController Health => _healthController;
 

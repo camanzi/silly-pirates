@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IdleStateSO
   _shouldShowUI: 1
   _targetingStateTemplate: {fileID: 11400000, guid: 47ce7cfcbf18fad4f86d68e9b3fefe32, type: 2}
+  _executionStateTemplate: {fileID: 11400000, guid: 8e1473c037eb70e48ade90d96f167fcc, type: 2}
