@@ -46,7 +46,7 @@ public class InteractionMenuController : WorldSpaceContainer
 
         foreach (InteractionActionSO action in _interactionSet.AvailableActions)
         {
-            if (!CheckIfActionIsAllowed(action)) continue;
+            if (!ShouldShowAction(action)) continue;
 
             if (!_activeButtons.ContainsKey(action))
             {
@@ -54,6 +54,8 @@ public class InteractionMenuController : WorldSpaceContainer
                 delay += 0.1f;
             }
         }
+
+        UpdateEnabledStates();
     }
 
     protected override void OnCompleteHide()
@@ -76,7 +78,7 @@ public class InteractionMenuController : WorldSpaceContainer
         List<InteractionActionSO> toRemove = new();
         foreach (KeyValuePair<InteractionActionSO, InteractionButton> pair in _activeButtons)
         {
-            if (!available.Contains(pair.Key) || !CheckIfActionIsAllowed(pair.Key))
+            if (!available.Contains(pair.Key) || !ShouldShowAction(pair.Key))
             {
                 toRemove.Add(pair.Key);
             }
@@ -86,7 +88,7 @@ public class InteractionMenuController : WorldSpaceContainer
         {
             InteractionButton btn = _activeButtons[action];
             _activeButtons.Remove(action);
-            
+
             Tween.Custom(1f, 0f, duration: 0.2f, onValueChange: v => {
                 btn.style.scale = new StyleScale(new Scale(new Vector3(v, v, 1f)));
             }).OnComplete(() => Container.Remove(btn));
@@ -94,7 +96,7 @@ public class InteractionMenuController : WorldSpaceContainer
 
         foreach (InteractionActionSO action in available)
         {
-            if (!CheckIfActionIsAllowed(action)) continue;
+            if (!ShouldShowAction(action)) continue;
 
             if (!_activeButtons.ContainsKey(action))
             {
@@ -102,6 +104,8 @@ public class InteractionMenuController : WorldSpaceContainer
                 delay += 0.1f;
             }
         }
+
+        UpdateEnabledStates();
     }
 
     private void CreateInteractionButton(InteractionActionSO action, float delay)
@@ -118,5 +122,12 @@ public class InteractionMenuController : WorldSpaceContainer
         });
     }
 
-    private bool CheckIfActionIsAllowed(InteractionActionSO action) => action.CanExecute(_bindedMenuElement, _currentTurnState.ActiveAgent);
+    private bool ShouldShowAction(InteractionActionSO action)
+        => action.CanShow(_bindedMenuElement, _currentTurnState.ActiveAgent);
+
+    private void UpdateEnabledStates()
+    {
+        foreach (var pair in _activeButtons)
+            pair.Value.SetEnabled(pair.Key.CanExecute(_bindedMenuElement, _currentTurnState.ActiveAgent));
+    }
 }

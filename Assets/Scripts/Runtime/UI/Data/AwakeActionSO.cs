@@ -18,11 +18,16 @@ public class AwakeActionSO : InteractionActionSO
 
     public override bool CanExecute(IInteractableElement element, ITurnAgent interactingAgent)
     {
-        // Questo é un po' bruttino, peccato, sarebbe un check non necessario
         if (interactingAgent == null) return false;
-
         if (element is not IAwakable awakable || awakable.IsOnCooldown) return false;
 
-        return interactingAgent.RemainingActionPoints > 0 && !awakable.IsAwake;
+        return interactingAgent.RemainingActionPoints > 0
+            && awakable.CurrentAwakeningPoints < awakable.OvercapLimit;
+    }
+
+    public override bool CanShow(IInteractableElement element, ITurnAgent interactingAgent)
+    {
+        if (element is not IAwakable awakable) return false;
+        return !awakable.IsOnCooldown && awakable.CurrentAwakeningPoints < awakable.OvercapLimit;
     }
 }

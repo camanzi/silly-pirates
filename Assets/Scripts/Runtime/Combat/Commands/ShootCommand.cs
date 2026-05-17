@@ -12,11 +12,13 @@ public class ShootCommand : ICommand
     private TrajectoryConfigsSO _trajectoryConfigData;
     private IOffensiveEquipmentStats _stats;
 
+    private readonly int _overcapCritBonus;
+
     private readonly List<Awaitable> _flightTasks = new();
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, int cooldown, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData)
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, int cooldown, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData, int overcapCritBonus = 0)
     {
         _caster = caster;
         _targets = targets;
@@ -24,6 +26,7 @@ public class ShootCommand : ICommand
         _cooldown = cooldown;
         _stats = stats;
         _trajectoryConfigData = trajectoryConfigData;
+        _overcapCritBonus = overcapCritBonus;
     }
 
     public async Awaitable ExecuteAsync()
@@ -87,9 +90,14 @@ public class ShootCommand : ICommand
     {
         if (target is IHealthOwner healthOwner && _stats != null)
         {
-            float damage = _stats.BaseDMG;
-            if (UnityEngine.Random.Range(0, 100) < _stats.CritRate)
+            float damage   = _stats.BaseDMG;
+            int   critRate = _stats.CritRate + _overcapCritBonus;
+
+            bool isCrit = UnityEngine.Random.Range(0, 100) < critRate;
+            if (isCrit)
                 damage += damage * _stats.CritDMG / 100f;
+
+            Debug.Log($"[ShootCommand] Hit — crit: {isCrit}, damage: {damage}, critRate: {critRate}%, critDMG: {_stats.CritDMG}%");
             healthOwner.Health.TakeDamage(new DamagePayload(damage, _stats.DMGType));
         }
         GameObject.Destroy(projectile);

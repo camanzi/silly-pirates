@@ -17,7 +17,19 @@ public class ShootWithEquipmentAbility : AbilityBase
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
         var offStats = (caster as IEquipmentStats)?.StatsConfig as IOffensiveEquipmentStats;
-        return new ShootCommand(caster, _selectionCtx.CurrentTargets, _projectile, _cooldown, offStats, trajectoryConfigData);
+
+        int overcapCritBonus = 0;
+        if (caster is IAwakable awakable)
+        {
+            int extraPoints = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
+            if (extraPoints > 0)
+                overcapCritBonus = (int)Mathf.Pow(2, extraPoints + 1) - 2;
+        }
+
+        Debug.Log($"[ShootCommand] Overcap crit bonus: +{overcapCritBonus}% (extraPoints: {(caster is IAwakable aw ? Mathf.Max(0, aw.CurrentAwakeningPoints - aw.MaxAwakeningPoints) : 0)})");
+
+        return new ShootCommand(caster, _selectionCtx.CurrentTargets, _projectile, _cooldown,
+                                offStats, trajectoryConfigData, overcapCritBonus);
     }
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache)

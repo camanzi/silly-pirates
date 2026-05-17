@@ -15,12 +15,14 @@ public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentS
 
     [Header("Awakable Configs")]
     [SerializeField] private int _toAwakePoints;
+    [SerializeField] [Min(1)] private int _overcapMultiplier = 2;
 
     [Header("Feedback Events")]
     [SerializeField] private UnityEvent _onShootEffects;
     public UnityEvent OnShootEffects => _onShootEffects;
 
     public int MaxAwakeningPoints => _toAwakePoints;
+    public int OvercapLimit => _toAwakePoints * _overcapMultiplier;
     public int CurrentAwakeningPoints => _awakeningPoints;
     public int AwakeningPoints
     {
@@ -58,12 +60,10 @@ public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentS
 
     public void AddAwakeningPoints(int count)
     {
-        AwakeningPoints += count;
+        AwakeningPoints = Mathf.Min(AwakeningPoints + count, OvercapLimit);
 
         if (AwakeningPoints >= _toAwakePoints && !IsAwake)
-        {
             _stateMachine.TransitionTo(new ActiveState(_stateMachine, this));
-        }
     }
 
     public void RemoveAwakeningPoints(int count)

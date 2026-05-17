@@ -12,4 +12,7 @@ public abstract class InteractionActionSO : ScriptableObject
     public abstract bool ExecuteAction(IInteractableElement element, ITurnAgent interactingAgent);
 
     public abstract bool CanExecute(IInteractableElement element, ITurnAgent interactingAgent);
+
+    public virtual bool CanShow(IInteractableElement element, ITurnAgent interactingAgent)
+        => CanExecute(element, interactingAgent);
 }

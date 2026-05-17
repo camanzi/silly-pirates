@@ -39,7 +39,9 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\" -Directory)",
       "Bash(Select-Object -First 10)",
       "Bash(xargs grep -l \"\\\\[SerializeField\\\\].*SO\")",
-      "mcp__UnityMCP__manage_scriptable_object"
+      "mcp__UnityMCP__manage_scriptable_object",
+      "Bash(xargs grep -l \"OffensiveEquipmentStats\")",
+      "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\" -Filter \"*InteractionAction*.cs\")"
     ]
   },
   "hooks": {

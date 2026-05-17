@@ -14,6 +14,10 @@
     -unity-background-scale-mode: scale-to-fit;
 }
 
+.interaction-button:disabled {
+    opacity: 0.4;
+}
+
 .container {
     position: absolute;
     flex-direction: row;

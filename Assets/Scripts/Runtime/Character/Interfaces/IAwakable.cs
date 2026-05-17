@@ -4,6 +4,7 @@ using System;
 public interface IAwakable 
 {
     public int MaxAwakeningPoints { get; }
+    public int OvercapLimit { get; }
     public int CurrentAwakeningPoints { get; }
     public int AwakeningPoints { get; set; }
     public bool IsAwake { get; }
