@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TurnController : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class TurnController : MonoBehaviour
     [SerializeField] private HighlightGridEventChannel _highlightCellsEventChannel;
     [SerializeField] private HighlightFreeAimEventChannel _targetTransformEventChannel;
     [SerializeField] private TurnAgentEventChannel _onJoinFightAgentEventChannel;
+
+    [Header("Preview Tiles")]
+    [SerializeField] private Tile _hoverFloorAllowTile;
+    [SerializeField] private Tile _hoverFloorNotAllowTile;
+    [SerializeField] private Tile _inRangePreviewTile;
 
     [Header("Turn Managments")]
     [SerializeField] private TurnOrderDataSO _turnOrderData;
@@ -49,13 +55,33 @@ public class TurnController : MonoBehaviour
 
         if (arcs != null)
             _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, arcs));
-        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload(data.AffectedCells, data.InteractionArea, canExecute));
+
+        var layers = new List<CellOverlayLayer>();
+        if (data.InteractionArea != null)
+            layers.Add(new CellOverlayLayer { Key = HighlightLayerKeys.PreviewInteraction, Cells = ToVector3IntList(data.InteractionArea), Tile = _inRangePreviewTile, Target = TilemapTarget.Preview });
+        layers.Add(new CellOverlayLayer { Key = HighlightLayerKeys.PreviewAffected, Cells = ToVector3IntList(data.AffectedCells), Tile = canExecute ? _hoverFloorAllowTile : _hoverFloorNotAllowTile, Target = TilemapTarget.Preview });
+        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload { Layers = layers });
     }
 
     public void ClearPreview()
     {
-        _highlightCellsEventChannel.RaiseEvent(HighlightGridPayload.Empty);
+        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload
+        {
+            Layers = new List<CellOverlayLayer>
+            {
+                new() { Key = HighlightLayerKeys.PreviewAffected,    Target = TilemapTarget.Preview },
+                new() { Key = HighlightLayerKeys.PreviewInteraction, Target = TilemapTarget.Preview }
+            }
+        });
         _targetTransformEventChannel.RaiseEvent(HighlightFreeAimPayload.Empty);
+    }
+
+    private static List<Vector3Int> ToVector3IntList(List<Vector3> list)
+    {
+        if (list == null) return null;
+        var result = new List<Vector3Int>(list.Count);
+        foreach (var v in list) result.Add(Vector3Int.FloorToInt(v));
+        return result;
     }
     #endregion
 

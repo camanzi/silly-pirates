@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Path Of Star Data", menuName = "Grid/Path Of Star Data")]
 public class PathOfStarDataSO : ScriptableObject
@@ -8,6 +9,9 @@ public class PathOfStarDataSO : ScriptableObject
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
     [SerializeField] private GridStateDataSO _gridStateData;
     [SerializeField] private HighlightGridEventChannel _highlightChannel;
+
+    [Header("Tiles")]
+    [SerializeField] private Tile _starPathTile;
 
     [Header("Config")]
     [SerializeField] private float _avDiscountPercentage = 20f;
@@ -77,6 +81,8 @@ public class PathOfStarDataSO : ScriptableObject
     {
         if (_highlightChannel == null) return;
         var cells = new List<Vector3Int>(_cellCountdowns.Keys);
-        _highlightChannel.RaiseEvent(HighlightGridPayload.PathOfStarUpdate(cells));
+        _highlightChannel.RaiseEvent(new HighlightGridPayload { Layers = new List<CellOverlayLayer> {
+            new() { Key = HighlightLayerKeys.StarPath, Cells = cells, Tile = _starPathTile, Target = TilemapTarget.PersistentEffects }
+        }});
     }
 }

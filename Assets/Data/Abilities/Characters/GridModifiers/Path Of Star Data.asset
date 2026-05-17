@@ -15,5 +15,6 @@ MonoBehaviour:
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _highlightChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
+  _starPathTile: {fileID: 11400000, guid: 98b94abbb13283742919ca79ddcd460b, type: 2}
   _avDiscountPercentage: 20
   _cellDurationInTurns: 3

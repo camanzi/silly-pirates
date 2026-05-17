@@ -20,5 +20,6 @@ MonoBehaviour:
   _divePeakHeight: 4
   _diveDuration: 0.5
   _exitDuration: 1
+  _oceanCurrentTile: {fileID: 11400000, guid: da73cc5e4ead15846af1b88976b4856e, type: 2}
   _turnChangedChannel: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
   _highlightChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}

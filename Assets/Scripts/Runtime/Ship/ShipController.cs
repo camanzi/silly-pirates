@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,11 +13,6 @@ public class ShipController : MonoBehaviour
 
     [Header("Tiles")]
     [SerializeField] private Tile _defaultFloorTile;
-    [SerializeField] private Tile _inRangePreviewTile;
-    [SerializeField] private Tile _hoverFloorAllowTile;
-    [SerializeField] private Tile _hoverFloorNotAllowTile;
-    [SerializeField] private Tile _oceanCurrentTile;
-    [SerializeField] private Tile _starPathTile;
 
     private Grid _shipGrid;
     private Tilemap _modelsMap;
@@ -26,13 +20,10 @@ public class ShipController : MonoBehaviour
     private Tilemap _previewMap;
     private Tilemap _persistentEffectsMap;
 
-    private ICollection<Vector3> _cacheedHighlight;
-    private List<Vector3Int> _oceanCurrentCells = new();
-    private List<Vector3Int> _starPathCells = new();
+    private Dictionary<string, (TilemapTarget target, List<Vector3Int> cells)> _activeLayers = new();
 
     private void Awake()
     {
-        _cacheedHighlight = new List<Vector3>();
         _shipGrid = GetComponentInChildren<Grid>();
 
         _modelsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _modelsMapTag);
@@ -59,71 +50,29 @@ public class ShipController : MonoBehaviour
 
     public void HighlightPath(HighlightGridPayload payload)
     {
-        // Overlay-only update: just repaint those cells, leave path preview intact.
-        if (payload.AffectedCells == null)
+        if (payload.Layers == null) return;
+        foreach (var layer in payload.Layers)
+            ApplyLayer(layer);
+    }
+
+    private void ApplyLayer(CellOverlayLayer layer)
+    {
+        if (_activeLayers.TryGetValue(layer.Key, out var prev))
         {
-            if (payload.OceanCurrentCells != null)
-                ApplyOceanCurrentCells(payload.OceanCurrentCells);
-            if (payload.PathOfStarCells != null)
-                ApplyStarPathCells(payload.PathOfStarCells);
+            Tilemap prevMap = prev.target == TilemapTarget.Preview ? _previewMap : _persistentEffectsMap;
+            foreach (var pos in prev.cells)
+                prevMap.SetTile(pos, null);
+        }
+
+        if (layer.Cells == null || layer.Cells.Count == 0)
+        {
+            _activeLayers.Remove(layer.Key);
             return;
         }
 
-        foreach (Vector3 node in _cacheedHighlight ?? new List<Vector3>())
-        {
-            ChangeTile(Vector3Int.FloorToInt(node), _previewMap, null);
-        }
-
-        foreach (Vector3 node in payload.InteractionArea ?? new List<Vector3>())
-        {
-            ChangeTile(Vector3Int.FloorToInt(node), _previewMap, _inRangePreviewTile);
-        }
-
-        foreach (Vector3 node in payload.AffectedCells ?? new List<Vector3>())
-        {
-            ChangeTile(Vector3Int.FloorToInt(node), _previewMap, payload.IsValidHighlight ? _hoverFloorAllowTile : _hoverFloorNotAllowTile);
-        }
-
-        _cacheedHighlight.Clear();
-        _cacheedHighlight.AddRange(payload.AffectedCells);
-        _cacheedHighlight.AddRange(payload.InteractionArea ?? new List<Vector3>());
-
-        if (payload.OceanCurrentCells != null)
-            ApplyOceanCurrentCells(payload.OceanCurrentCells);
-        if (payload.PathOfStarCells != null)
-            ApplyStarPathCells(payload.PathOfStarCells);
-    }
-
-    private void ApplyOceanCurrentCells(List<Vector3Int> cells)
-    {
-        foreach (var pos in _oceanCurrentCells)
-            _persistentEffectsMap.SetTile(pos, null);
-
-        _oceanCurrentCells = new List<Vector3Int>(cells);
-
-        foreach (var pos in _oceanCurrentCells)
-            _persistentEffectsMap.SetTile(pos, _oceanCurrentTile);
-    }
-
-    private void ApplyStarPathCells(List<Vector3Int> cells)
-    {
-        foreach (var pos in _starPathCells)
-            _persistentEffectsMap.SetTile(pos, null);
-
-        _starPathCells = cells;
-
-        foreach (var pos in _starPathCells)
-            _persistentEffectsMap.SetTile(pos, _starPathTile);
-    }
-
-    private async Awaitable ChangeTile(Vector3Int tilePosition, Tilemap renderingMap, Tile newTile, int delay)
-    {
-        await Awaitable.WaitForSecondsAsync(delay);
-        ChangeTile(tilePosition, renderingMap, newTile);
-    }
-
-    private void ChangeTile(Vector3Int tilePosition, Tilemap renderingMap, Tile newTile = null)
-    {
-        renderingMap.SetTile(tilePosition, newTile);
+        Tilemap map = layer.Target == TilemapTarget.Preview ? _previewMap : _persistentEffectsMap;
+        _activeLayers[layer.Key] = (layer.Target, new List<Vector3Int>(layer.Cells));
+        foreach (var pos in layer.Cells)
+            map.SetTile(pos, layer.Tile);
     }
 }

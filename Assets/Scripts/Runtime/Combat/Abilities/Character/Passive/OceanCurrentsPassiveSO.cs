@@ -34,6 +34,9 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
     [SerializeField] private float _diveDuration = 0.4f;
     [SerializeField] private float _exitDuration = 0.8f;
 
+    [Header("Tiles")]
+    [SerializeField] private Tile _oceanCurrentTile;
+
     [Header("Event Channels")]
     [SerializeField] private TurnAgentEventChannel _turnChangedChannel;
     [SerializeField] private HighlightGridEventChannel _highlightChannel;
@@ -90,7 +93,9 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
             s_equippedCount = 0;
             s_sharedCurrentCells.Clear();
             s_lastSeenAgent = null;
-            _highlightChannel?.RaiseEvent(HighlightGridPayload.OceanCurrentUpdate(new List<Vector3Int>()));
+            _highlightChannel?.RaiseEvent(new HighlightGridPayload { Layers = new List<CellOverlayLayer> {
+                new() { Key = HighlightLayerKeys.OceanCurrents, Target = TilemapTarget.PersistentEffects }
+            }});
         }
     }
 
@@ -111,7 +116,9 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
                 s_sharedCurrentCells.AddRange(
                     OceanCurrentDistributor.Distribute(candidates, _currentCellCount, center, UnityEngine.Random.Range(0, 100000))
                 );
-                _highlightChannel?.RaiseEvent(HighlightGridPayload.OceanCurrentUpdate(new List<Vector3Int>(s_sharedCurrentCells)));
+                _highlightChannel?.RaiseEvent(new HighlightGridPayload { Layers = new List<CellOverlayLayer> {
+                    new() { Key = HighlightLayerKeys.OceanCurrents, Cells = new List<Vector3Int>(s_sharedCurrentCells), Tile = _oceanCurrentTile, Target = TilemapTarget.PersistentEffects }
+                }});
             }
         }
 

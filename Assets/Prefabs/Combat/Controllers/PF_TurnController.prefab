@@ -49,6 +49,9 @@ MonoBehaviour:
   _highlightCellsEventChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
   _targetTransformEventChannel: {fileID: 11400000, guid: c8b4aaa8ffe0e8e449b1f092a61a0160, type: 2}
   _onJoinFightAgentEventChannel: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
+  _hoverFloorAllowTile: {fileID: 11400000, guid: 0b394c1747cfbbe45bef10a1e0acd657, type: 2}
+  _hoverFloorNotAllowTile: {fileID: 11400000, guid: 5f621e8e9e9f3534eabcd3564495ae09, type: 2}
+  _inRangePreviewTile: {fileID: 11400000, guid: 18540c01d1f6bea4b8483291e346db97, type: 2}
   _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}

@@ -1,57 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+
+public enum TilemapTarget { Preview, PersistentEffects }
+
+public struct CellOverlayLayer
+{
+    public string Key;
+    public List<Vector3Int> Cells; // null or empty = clear this layer
+    public Tile Tile;              // ignored when clearing
+    public TilemapTarget Target;
+}
+
+public static class HighlightLayerKeys
+{
+    public const string PreviewAffected    = "preview-affected";
+    public const string PreviewInteraction = "preview-interaction";
+    public const string OceanCurrents     = "ocean-currents";
+    public const string StarPath          = "star-path";
+}
 
 public struct HighlightGridPayload
 {
-    public List<Vector3> InteractionArea;
-    public List<Vector3> AffectedCells;
-    public bool IsValidHighlight;
-    public Vector3? Origin;
-    public List<Vector3Int> OceanCurrentCells; // null = no update, empty = clear
-    public List<Vector3Int> PathOfStarCells;   // null = no update, empty = clear
-
-    public HighlightGridPayload(List<Vector3> affectedCells, List<Vector3> interactionArea, bool isValidHighlight, Vector3 origin)
-    {
-        this.AffectedCells = affectedCells;
-        this.InteractionArea = interactionArea;
-        this.IsValidHighlight = isValidHighlight;
-        this.Origin = origin;
-        this.OceanCurrentCells = null;
-        this.PathOfStarCells = null;
-    }
-
-    public HighlightGridPayload(List<Vector3> affectedCells, List<Vector3> interactionArea, bool isValidHighlight)
-    {
-        this.AffectedCells = affectedCells;
-        this.IsValidHighlight = isValidHighlight;
-        this.InteractionArea = interactionArea;
-        this.Origin = null;
-        this.OceanCurrentCells = null;
-        this.PathOfStarCells = null;
-    }
-
-    public static HighlightGridPayload Empty => new()
-    {
-        IsValidHighlight = false,
-        AffectedCells = new(),
-        InteractionArea = new(),
-        OceanCurrentCells = null,
-        PathOfStarCells = null
-    };
-
-    // Raise this to update ocean current tiles without touching the path preview.
-    public static HighlightGridPayload OceanCurrentUpdate(List<Vector3Int> cells) => new()
-    {
-        AffectedCells = null,
-        InteractionArea = null,
-        OceanCurrentCells = cells ?? new List<Vector3Int>()
-    };
-
-    // Raise this to update path-of-star tiles without touching the path preview.
-    public static HighlightGridPayload PathOfStarUpdate(List<Vector3Int> cells) => new()
-    {
-        AffectedCells = null,
-        InteractionArea = null,
-        PathOfStarCells = cells ?? new List<Vector3Int>()
-    };
+    public List<CellOverlayLayer> Layers; // null = no-op
 }
