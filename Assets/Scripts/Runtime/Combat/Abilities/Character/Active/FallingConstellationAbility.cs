@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(fileName = "Constellation Fall Ability", menuName = "Abilities/Character/Actives/Constellation Fall Ability")]
-public class ConstellationFallAbility : AbilityBase
+[CreateAssetMenu(fileName = "Falling Constellation Ability", menuName = "Abilities/Character/Actives/Falling Constellation Ability")]
+public class FallingConstellationAbility : AbilityBase
 {
-    [Header("Constellation Fall Configs")]
+    [Header("Falling Constellation Configs")]
     [SerializeField] private int _range = 4;
     [SerializeField] private int _apCost = 1;
     [SerializeField] private ConstellationFragment _constellationPiecePrefab;

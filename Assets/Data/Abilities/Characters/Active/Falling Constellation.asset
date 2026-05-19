@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 043c5e6e8dda7d142ba904b1a8efdb7f, type: 3}
-  m_Name: Constellation Fall Ability
+  m_Name: Falling Constellation
   m_EditorClassIdentifier: Assembly-CSharp::ConstellationFallAbility
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
