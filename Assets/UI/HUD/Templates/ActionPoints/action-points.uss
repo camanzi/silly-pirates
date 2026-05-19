@@ -9,18 +9,9 @@
 }
 
 .ap-element {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     margin: 5px;
     -unity-background-scale-mode: scale-to-fit;
 }
 
-#active-ability-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    border-width: 2px;
-    border-color: rgb(200, 160, 60);
-    background-color: rgba(20, 20, 30, 0.85);
-    -unity-background-scale-mode: scale-to-fit;
-}

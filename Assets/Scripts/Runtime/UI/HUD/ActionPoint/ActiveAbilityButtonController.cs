@@ -6,22 +6,22 @@ public class ActiveAbilityButtonController : MonoBehaviour
     [SerializeField] private UIDocument _hudDocument;
     [SerializeField] private ActiveAbilityRequestEventChannel _activeAbilityRequestChannel;
 
-    private Button _button;
+    private ActiveAbilityButton _abilityButton;
     private AbilityController _cachedAbilityCtrl;
     private ITurnAgent _cachedAgent;
     private readonly ActiveAbilityRequestData _requestData = new();
 
     private void Start()
     {
-        _button = _hudDocument.rootVisualElement.Q<Button>("active-ability-button");
-        _button.clicked += OnButtonClicked;
-        _button.style.display = DisplayStyle.None;
+        _abilityButton = _hudDocument.rootVisualElement.Q<ActiveAbilityButton>("active-ability-button");
+        _abilityButton.clicked += OnButtonClicked;
+        _abilityButton.style.display = DisplayStyle.None;
     }
 
     private void OnDestroy()
     {
-        if (_button != null)
-            _button.clicked -= OnButtonClicked;
+        if (_abilityButton != null)
+            _abilityButton.clicked -= OnButtonClicked;
         UnsubscribeFromAgent();
     }
 
@@ -32,14 +32,16 @@ public class ActiveAbilityButtonController : MonoBehaviour
         {
             _cachedAbilityCtrl = holder.ActiveAbilityController;
             _cachedAgent = agent;
-            _button.style.display = DisplayStyle.Flex;
+            _abilityButton.style.display = DisplayStyle.Flex;
+            _abilityButton.SetAbilityIcon(_cachedAbilityCtrl.ActiveAbility.Icon);
             _cachedAgent.OnAPChanged.OnEventRaised += UpdateButtonEnabledState;
             UpdateButtonEnabledState(agent.RemainingActionPoints);
         }
         else
         {
             _cachedAbilityCtrl = null;
-            _button.style.display = DisplayStyle.None;
+            _abilityButton.SetAbilityIcon(null);
+            _abilityButton.style.display = DisplayStyle.None;
         }
     }
 
@@ -53,7 +55,7 @@ public class ActiveAbilityButtonController : MonoBehaviour
     private void UpdateButtonEnabledState(int remainingAp)
     {
         if (_cachedAbilityCtrl?.ActiveAbility == null) return;
-        _button.SetEnabled(remainingAp >= _cachedAbilityCtrl.ActiveAbility.ActionPointCost);
+        _abilityButton.SetEnabled(remainingAp >= _cachedAbilityCtrl.ActiveAbility.ActionPointCost);
     }
 
     private void OnButtonClicked()

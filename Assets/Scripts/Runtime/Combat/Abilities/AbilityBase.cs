@@ -11,6 +11,10 @@ public abstract class AbilityBase : ScriptableObject {
     [SerializeField] protected bool showTrajectory;
     [SerializeField] protected TrajectoryConfigsSO trajectoryConfigData;
 
+    [Header("UI Rendering")]
+    [SerializeField] private Sprite _icon;
+
+    public Sprite Icon => _icon;
     public bool ShowTrajectory => showTrajectory;
     public TrajectoryConfigsSO TrajectoryConfigData => trajectoryConfigData;
     public virtual int ActionPointCost => 0;

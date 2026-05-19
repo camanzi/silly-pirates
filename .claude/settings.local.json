@@ -46,7 +46,9 @@
       "Bash(Select-String -Pattern \"\\(Damage|Health|Turn\\)\")",
       "Bash(findstr *)",
       "Bash(find C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates *)",
-      "Bash(xargs grep -l \"class.*InteractionActionSO\")"
+      "Bash(xargs grep -l \"class.*InteractionActionSO\")",
+      "Bash(find C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\\\\Scripts\\\\Runtime\\\\Combat\\\\Abilities *)",
+      "Bash(grep -v \"^Assets.*//.*\")"
     ]
   },
   "hooks": {
