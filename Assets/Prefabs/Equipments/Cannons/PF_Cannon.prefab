@@ -273,6 +273,7 @@ GameObject:
   - component: {fileID: 3088319308627148957}
   - component: {fileID: 1847080236700254185}
   - component: {fileID: 2253224821503817962}
+  - component: {fileID: 911911671155663393}
   m_Layer: 0
   m_Name: PF_Cannon
   m_TagString: Untagged
@@ -347,6 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterAbilityController
   _defaultAbility: {fileID: 11400000, guid: 147837b5e015f104aae11e422168b2cf, type: 2}
+  _activeAbility: {fileID: 0}
 --- !u!114 &1417285250194026181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -462,7 +464,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _equipmentType: 0
+  _statsConfig: {fileID: 0}
   _toAwakePoints: 1
+  _overcapMultiplier: 2
   _onShootEffects:
     m_PersistentCalls:
       m_Calls:
@@ -547,6 +552,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentStateMachine
   _onEquipmentAwakenedEventChannel: {fileID: 11400000, guid: 4bd5ee5a30e30f94c80c8cea0ea486d0, type: 2}
+--- !u!114 &911911671155663393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6488994046265238083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f713f4644aac0d642a5f9505a52aa335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentAnimationController
+  _meshHolder: {fileID: 8552949899614844811}
 --- !u!1 &7192794995896005687
 GameObject:
   m_ObjectHideFlags: 0
