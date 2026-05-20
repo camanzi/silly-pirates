@@ -1,3 +1,5 @@
 :root {
     -unity-font-definition: url("project://database/Assets/Fonts/BlakaHollow-Regular.ttf");
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgb(0, 0, 0);
 }

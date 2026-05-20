@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Shared/STL_WorldSpace.uss?fileID=7433441132597879392&amp;guid=982a6fb71843d3b45a6a8beb69b25ab0&amp;type=3#STL_WorldSpace"/>
+    <Style src="project://database/Assets/UI/HUD/Templates/DamageNumbers/DamageNumber.uss?fileID=7433441132597879392&amp;guid=b7c18b1337c3b824594559e4946efddf&amp;type=3#DamageNumber"/>
+    <ui:VisualElement name="damage-popup" class="damage-popup">
+        <ui:VisualElement name="number-group" class="number-group">
+            <ui:Label name="crit-label" text="CRIT Hit" class="crit-label" style="bottom: 75%;"/>
+            <ui:Label name="damage-label" text="0" class="damage-label"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

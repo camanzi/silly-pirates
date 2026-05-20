@@ -1026,6 +1026,114 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1166419620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1166419623}
+  - component: {fileID: 1166419622}
+  - component: {fileID: 1166419621}
+  - component: {fileID: 1166419624}
+  m_Layer: 0
+  m_Name: DamageNumberUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1166419621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166419620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f5bcd1b8984d0e42ac2f71112cdadad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageNumberManager
+  _damageEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
+  _damageNumberTemplate: {fileID: 9197481963319205126, guid: c5027c0da943c3046a71cef51c74e7df, type: 3}
+  _normalFontSize: 100
+  _critFontSize: 120
+  _shrinkAmount: 40
+  _growDuration: 0.2
+  _shrinkDuration: 1
+  _fadeOutDuration: 0.5
+  _critFadeInDuration: 0.3
+  _critFadeInDelay: 0.2
+  _critLabelSizeRatio: 0.35
+--- !u!114 &1166419622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166419620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: e52617c2db1cfb44db5cd5d43158168e, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 50
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &1166419623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166419620}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1166419624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166419620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a0e0df0d4ed574c9a72ef817ba6b0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageChannelListener
+  eventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1166419621}
+        m_TargetAssemblyTypeName: DamageNumberManager, Assembly-CSharp
+        m_MethodName: SpawnDamageNumber
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1186039560
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1400,6 +1508,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1079392768869426619, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: _damageEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.6299999
@@ -1933,6 +2045,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1803626211452743749, guid: 7d39d4e790500c040b99dc894ae8cf44, type: 3}
+      propertyPath: _damageEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 5133798879767350915, guid: 7d39d4e790500c040b99dc894ae8cf44, type: 3}
       propertyPath: m_Name
       value: PF_Character (blue)
@@ -2047,6 +2163,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2503714713132231036, guid: a7c15f3f14af1e848ade611685fb12cd, type: 3}
+      propertyPath: _damageEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 7638007545298146974, guid: a7c15f3f14af1e848ade611685fb12cd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.77
@@ -2275,6 +2395,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 52765966705622960, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
+      propertyPath: _damageEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 2320834942969208449, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
       propertyPath: m_Name
       value: BigEvilCube
@@ -2389,6 +2513,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 266792915406944289, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
+      propertyPath: _damageEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.02
@@ -2446,6 +2574,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1079392768869426619, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: _damageEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.170001
@@ -2503,6 +2635,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4443768023617402375, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
+      propertyPath: _damageEventChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 7174869599670356161, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_Name
       value: PF_Character (green)
@@ -2568,7 +2704,6 @@ SceneRoots:
   - {fileID: 542180451}
   - {fileID: 2095840647}
   - {fileID: 511849068}
-  - {fileID: 707104960796648773}
   - {fileID: 1045256479}
   - {fileID: 6011743194702439395}
   - {fileID: 5488487743648239233}
@@ -2586,3 +2721,5 @@ SceneRoots:
   - {fileID: 1720819990}
   - {fileID: 171171695064951625}
   - {fileID: 1743090402}
+  - {fileID: 1166419623}
+  - {fileID: 707104960796648773}

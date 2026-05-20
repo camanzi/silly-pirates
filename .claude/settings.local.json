@@ -48,7 +48,12 @@
       "Bash(find C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates *)",
       "Bash(xargs grep -l \"class.*InteractionActionSO\")",
       "Bash(find C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\\\\Scripts\\\\Runtime\\\\Combat\\\\Abilities *)",
-      "Bash(grep -v \"^Assets.*//.*\")"
+      "Bash(grep -v \"^Assets.*//.*\")",
+      "Bash(ls *)",
+      "Bash(Get-ChildItem *)",
+      "Bash(xargs grep -l \"DamagePayload\")",
+      "Bash(xargs grep -l \"Damage\\\\|Health\")",
+      "Bash(git grep *)"
     ]
   },
   "hooks": {
