@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using PrimeTween;
 using System.Collections.Generic;
+using System.Linq;
 
 public class InteractionMenuController : WorldSpaceContainer
 {
@@ -75,13 +76,34 @@ public class InteractionMenuController : WorldSpaceContainer
         List<InteractionActionSO> available = _interactionSet.AvailableActions;
         float delay = 0f;
 
-        List<InteractionActionSO> toRemove = new();
+        var toRemove = new List<InteractionActionSO>();
         foreach (KeyValuePair<InteractionActionSO, InteractionButton> pair in _activeButtons)
         {
             if (!available.Contains(pair.Key) || !ShouldShowAction(pair.Key))
-            {
                 toRemove.Add(pair.Key);
-            }
+        }
+
+        var toAdd = new List<InteractionActionSO>();
+        foreach (InteractionActionSO action in available)
+        {
+            if (ShouldShowAction(action) && !_activeButtons.ContainsKey(action))
+                toAdd.Add(action);
+        }
+
+        // In-place swap: se una nuova azione dichiara di sostituire una che sta per essere rimossa,
+        // aggiorna il bottone esistente invece di rimuoverlo e crearne uno nuovo.
+        foreach (InteractionActionSO newAction in toAdd.ToList())
+        {
+            if (newAction is not IInPlaceSwappable swappable) continue;
+            if (!toRemove.Contains(swappable.BaseAction)) continue;
+
+            InteractionButton btn = _activeButtons[swappable.BaseAction];
+            _activeButtons.Remove(swappable.BaseAction);
+            _activeButtons[newAction] = btn;
+            btn.UpdateData(newAction);
+
+            toRemove.Remove(swappable.BaseAction);
+            toAdd.Remove(newAction);
         }
 
         foreach (InteractionActionSO action in toRemove)
@@ -94,15 +116,10 @@ public class InteractionMenuController : WorldSpaceContainer
             }).OnComplete(() => Container.Remove(btn));
         }
 
-        foreach (InteractionActionSO action in available)
+        foreach (InteractionActionSO action in toAdd)
         {
-            if (!ShouldShowAction(action)) continue;
-
-            if (!_activeButtons.ContainsKey(action))
-            {
-                CreateInteractionButton(action, delay);
-                delay += 0.1f;
-            }
+            CreateInteractionButton(action, delay);
+            delay += 0.1f;
         }
 
         UpdateEnabledStates();

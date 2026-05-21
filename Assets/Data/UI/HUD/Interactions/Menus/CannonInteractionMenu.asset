@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractionSetSO
   _availableActions:
   - {fileID: 11400000, guid: 245070555524e8941b8cab7b7a438712, type: 2}
+  - {fileID: 11400000, guid: 46ecfac87b15846498e8407da65945c1, type: 2}
   - {fileID: 11400000, guid: 83afa6a004c9394449a9033b522ff6a1, type: 2}

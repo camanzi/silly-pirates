@@ -26,12 +26,12 @@ public class AwakeActionSO : InteractionActionSO
         if (element is not IAwakable awakable || awakable.IsOnCooldown) return false;
 
         return interactingAgent.RemainingActionPoints > 0
-            && awakable.CurrentAwakeningPoints < awakable.OvercapLimit;
+            && !awakable.IsAwake;
     }
 
     public override bool CanShow(IInteractableElement element, ITurnAgent interactingAgent)
     {
         if (element is not IAwakable awakable) return false;
-        return !awakable.IsOnCooldown && awakable.CurrentAwakeningPoints < awakable.OvercapLimit;
+        return !awakable.IsOnCooldown && !awakable.IsAwake;
     }
 }

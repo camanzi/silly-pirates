@@ -37,8 +37,21 @@ public partial class InteractionButton : VisualElement
         _interactingAgent = interactingAgent;
         _iconElement.style.backgroundImage = new StyleBackground(data.Icon);
         _onClickAction = onClickAction;
-        
+
         tooltip = data.ActionName;
+    }
+
+    public void UpdateData(InteractionActionSO data)
+    {
+        _data = data;
+        tooltip = data.ActionName;
+
+        Sequence.Create()
+            .Chain(Tween.Custom(this, 1f, 0.7f, duration: 0.1f,
+                onValueChange: (self, v) => self.style.scale = new StyleScale(new Scale(new Vector3(v, v, 1f)))))
+            .ChainCallback(() => _iconElement.style.backgroundImage = new StyleBackground(data.Icon))
+            .Chain(Tween.Custom(this, 0.7f, 1f, duration: 0.15f, ease: Ease.OutBack,
+                onValueChange: (self, v) => self.style.scale = new StyleScale(new Scale(new Vector3(v, v, 1f)))));
     }
 
     private void OnPointerEnter(PointerEnterEvent evt)

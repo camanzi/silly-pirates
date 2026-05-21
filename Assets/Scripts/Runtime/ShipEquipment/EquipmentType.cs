@@ -1,1 +1,1 @@
-public enum EquipmentType { Offensive, Defensive }
+public enum EquipmentType { Offensive, Defensive, Healing }
