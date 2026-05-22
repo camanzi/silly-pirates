@@ -26,7 +26,6 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     [Header("Hostile character configs")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private EnemyTurnDriver _enemyTurnDriver;
 
     public Transform Transform => transform;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
@@ -48,15 +47,18 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public int EffectiveAgility => AgentData.InitialAgility;
 
+    public HealthController Health => _healthController;
+    
     private int _remainingActionPoints;
     private OutlinerHelper _outlinerHelper;
     private HealthController _healthController;
-    public HealthController Health => _healthController;
+    private EnemyTurnDriver _enemyTurnDriver;
 
     void Awake()
     {
         _outlinerHelper = GetComponent<OutlinerHelper>();
         _healthController = GetComponent<HealthController>();
+        _enemyTurnDriver = GetComponent<EnemyTurnDriver>();
     }
 
     protected virtual void OnEnable()
