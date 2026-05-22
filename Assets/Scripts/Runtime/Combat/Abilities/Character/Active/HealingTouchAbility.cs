@@ -53,8 +53,7 @@ public class HealingTouchAbility : AbilityBase
         if (!healCache.ValidCells.Contains(targetCell)) return false;
 
         ITargettable selected = targetingData.Value.selectedTarget;
-        if (selected == null) return false;
-        if (selected is not IHealthOwner) return false;
+        if (selected is not IHealthOwner ho || ho.Health == null || !ho.Health.IsAlive) return false;
 
         return true;
     }
