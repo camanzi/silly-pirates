@@ -26,6 +26,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     [Header("Hostile character configs")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private EnemyTurnDriver _enemyTurnDriver;
 
     public Transform Transform => transform;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
@@ -96,10 +97,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         _healthController?.OnTurnStart();
         this.HandleStartingTurn();
         this.EmitProximityCheck(ProximityPayload.Empty);
-
-        await Awaitable.WaitForSecondsAsync(2.5f);
-
-        _currentTurnStateData.SignalTurnEnd();
+        await _enemyTurnDriver.ExecuteTurnAsync(destroyCancellationToken);
     }
 
     private void OnTakeDamageFeedbackEffect()

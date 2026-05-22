@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7740786c1a2d78a479db24de0cbf773e, type: 3}
+  m_Name: BigEvilCube BehaviorData
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAIDataSO
+  _abilities: []
+  _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
+  _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}

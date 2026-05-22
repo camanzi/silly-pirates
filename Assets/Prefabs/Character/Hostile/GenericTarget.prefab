@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 5641640005406227769}
   - component: {fileID: 5911253517186705203}
   - component: {fileID: 1228960839652886534}
+  - component: {fileID: 1123212999449217133}
   m_Layer: 0
   m_Name: GenericTarget
   m_TagString: Untagged
@@ -178,6 +179,7 @@ MonoBehaviour:
   _onAPConsumedEventChannel: {fileID: 11400000, guid: 066571a1e47dfaa48b2fe2b5ed844848, type: 2}
   _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
   _spriteRenderer: {fileID: 2611006998671086757}
+  _enemyTurnDriver: {fileID: 0}
 --- !u!114 &5641640005406227769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,6 +244,53 @@ MonoBehaviour:
   _agentData: {fileID: 0}
   _baseBehaviors: []
   _damageEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
+--- !u!114 &1123212999449217133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566868596823550263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphAgent
+  m_Graph: {fileID: 2726540222924974965, guid: 14fa562a46303ae4aaffb6532feef807, type: 2}
+  m_BlackboardVariableOverridesList:
+  - rid: 3650710072783274352
+  - rid: 3650710072783274353
+  - rid: 3650710072783274354
+  m_OriginalGraph: {fileID: 0}
+  m_IsInitialised: 0
+  m_IsStarted: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 3650710072783274352
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Agent
+        m_Value: {fileID: 3566868596823550263}
+    - rid: 3650710072783274353
+      type: {class: 'BlackboardVariable`1[[TurnController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 17068495676152405424
+          m_Value1: 17560698402883109620
+        Name: TurnControllerRef
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274354
+      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 7945665044519069491
+          m_Value1: 7365899650197800515
+        Name: AIData
+        m_Value: {fileID: 11400000, guid: e4c381fdad0016f40972513c668b1c56, type: 2}
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0

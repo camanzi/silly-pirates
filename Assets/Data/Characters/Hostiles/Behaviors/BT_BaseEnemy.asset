@@ -1,0 +1,819 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8844193655486203930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
+  m_Name: BT_BaseEnemy Blackboard
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.RuntimeBlackboardAsset
+  VersionTimestamp: 639150786687093038
+  AssetID:
+    m_Value0: 0
+    m_Value1: 0
+  m_Blackboard:
+    m_Variables:
+    - rid: 3650710072783274114
+    - rid: 3650710072783274193
+    - rid: 3650710072783274217
+    - rid: 3650710072783274251
+    - rid: 3650710072783274280
+  m_SharedBlackboardVariableGuids: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 3650710072783274114
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Agent
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274193
+      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 7945665044519069491
+          m_Value1: 7365899650197800515
+        Name: AIData
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274217
+      type: {class: 'BlackboardVariable`1[[TurnController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 17068495676152405424
+          m_Value1: 17560698402883109620
+        Name: TurnControllerRef
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274251
+      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2841507027988935019
+          m_Value1: 12508773428630172887
+        Name: SelectedAbility
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274280
+      type: {class: 'BlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 18427776371930694167
+          m_Value1: 7053403484320968292
+        Name: SelectedTarget
+        m_Value: {fileID: 0}
+--- !u!114 &-1148878354356844140
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd922ae02c94c87a66e46a10a7319b9, type: 3}
+  m_Name: BT_BaseEnemy Blackboard
+  m_EditorClassIdentifier: Unity.Behavior.Authoring::Unity.Behavior.BehaviorBlackboardAuthoringAsset
+  AssetID:
+    m_Value0: 0
+    m_Value1: 0
+  m_Variables:
+  - rid: 3650710072783274115
+  - rid: 3650710072783274192
+  - rid: 3650710072783274216
+  - rid: 3650710072783274250
+  - rid: 3650710072783274279
+  m_VersionTimestamp: 639150786687093038
+  m_CommandBuffer:
+    m_Commands: []
+  m_RuntimeBlackboardAsset: {fileID: -8844193655486203930}
+  references:
+    version: 2
+    RefIds:
+    - rid: 3650710072783274115
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Agent
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274192
+      type: {class: 'TypedVariableModel`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 7945665044519069491
+          m_Value1: 7365899650197800515
+        Name: AIData
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274216
+      type: {class: 'TypedVariableModel`1[[TurnController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 17068495676152405424
+          m_Value1: 17560698402883109620
+        Name: TurnControllerRef
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274250
+      type: {class: 'TypedVariableModel`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 2841507027988935019
+          m_Value1: 12508773428630172887
+        Name: SelectedAbility
+        IsExposed: 0
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274279
+      type: {class: 'TypedVariableModel`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 18427776371930694167
+          m_Value1: 7053403484320968292
+        Name: SelectedTarget
+        IsExposed: 0
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bad8f2220607dac4db5082ff333fafb8, type: 3}
+  m_Name: BT_BaseEnemy
+  m_EditorClassIdentifier: Unity.Behavior.Authoring::Unity.Behavior.BehaviorAuthoringGraph
+  Blackboard: {fileID: -1148878354356844140}
+  m_Description: 
+  m_Nodes:
+  - rid: 3650710072783274116
+  - rid: 3650710072783274130
+  - rid: 3650710072783274148
+  - rid: 3650710072783274167
+  m_VersionTimestamp: 639150786697215368
+  m_SerializedVersion: 2
+  m_DebugInfo: {fileID: 312919443397650534}
+  m_RuntimeGraph: {fileID: 2726540222924974965}
+  AssetID:
+    m_Value0: 16445510067212974612
+    m_Value1: 574470839525113770
+  Story:
+    Story: 
+    StoryVariableNames: []
+    Variables: []
+  m_NodeModelsInfo:
+  - Name: On Start
+    Story: 
+    RuntimeTypeString: Unity.Behavior.Start, Unity.Behavior, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 3335272451348827663
+      m_Value1: 11549843281177505721
+    Variables: []
+    NamedChildren: []
+    IsPlaceholder: 0
+  - Name: Evaluate And Select Ability
+    Story: '[Agent] evaluates abilities and selects the best one using [AIData]'
+    RuntimeTypeString: EvaluateAndSelectAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 13305875091066958497
+      m_Value1: 15475974310776131785
+    Variables:
+    - Name: Agent
+      Type:
+        m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      Tooltip: 
+    - Name: AIData
+      Type:
+        m_SerializableType: EnemyAIDataSO, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+      Tooltip: 
+    - Name: SelectedAbility
+      Type:
+        m_SerializableType: AbilityBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+      Tooltip: 
+    - Name: SelectedTarget
+      Type:
+        m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      Tooltip: 
+    NamedChildren: []
+    IsPlaceholder: 0
+  - Name: Execute Selected Ability
+    Story: '[Agent] executes [SelectedAbility] on [SelectedTarget] via [TurnControllerRef]'
+    RuntimeTypeString: ExecuteSelectedAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 14535552476197995442
+      m_Value1: 16705757247412822480
+    Variables:
+    - Name: Agent
+      Type:
+        m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      Tooltip: 
+    - Name: SelectedAbility
+      Type:
+        m_SerializableType: AbilityBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+      Tooltip: 
+    - Name: SelectedTarget
+      Type:
+        m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      Tooltip: 
+    - Name: TurnControllerRef
+      Type:
+        m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      Tooltip: 
+    NamedChildren: []
+    IsPlaceholder: 0
+  m_Blackboards: []
+  m_MainBlackboardAuthoringAsset: {fileID: -1148878354356844140}
+  m_CommandBuffer:
+    m_Commands: []
+  m_SubgraphsInfo: []
+  m_BlackboardMissingManagedRef: 0
+  m_GraphMissingManagedRef: 0
+  m_HasMissingTypeInManagedRef: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 3650710072783274116
+      type: {class: StartNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: 0.7999999, y: 0}
+        ID:
+          m_Value0: 597792044584855873
+          m_Value1: 4181873177389361994
+        Parents: []
+        PortModels:
+        - rid: 3650710072783274117
+        NodeType:
+          m_SerializableType: Unity.Behavior.Start, Unity.Behavior, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 3335272451348827663
+          m_Value1: 11549843281177505721
+        m_FieldValues: []
+        Repeat: 0
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 3650710072783274117
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 3650710072783274116
+        m_Connections:
+        - rid: 3650710072783274168
+    - rid: 3650710072783274130
+      type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: -273.29996, y: 228.09999}
+        ID:
+          m_Value0: 2382769948957726025
+          m_Value1: 9989154214668154884
+        Parents:
+        - rid: 3650710072783274167
+        PortModels:
+        - rid: 3650710072783274131
+        - rid: 3650710072783274132
+        NodeType:
+          m_SerializableType: EvaluateAndSelectAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 13305875091066958497
+          m_Value1: 15475974310776131785
+        m_FieldValues:
+        - rid: 3650710072783274133
+        - rid: 3650710072783274134
+        - rid: 3650710072783274135
+        - rid: 3650710072783274136
+    - rid: 3650710072783274131
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: InputPort
+        m_PortDataFlowType: 0
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 3650710072783274130
+        m_Connections: []
+    - rid: 3650710072783274132
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 3650710072783274130
+        m_Connections: []
+    - rid: 3650710072783274133
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Agent
+        Type:
+          m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 3650710072783274137
+        LinkedVariable:
+          rid: 3650710072783274200
+    - rid: 3650710072783274134
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: AIData
+        Type:
+          m_SerializableType: EnemyAIDataSO, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        LocalValue:
+          rid: 3650710072783274138
+        LinkedVariable:
+          rid: 3650710072783274208
+    - rid: 3650710072783274135
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: SelectedAbility
+        Type:
+          m_SerializableType: AbilityBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        LocalValue:
+          rid: 3650710072783274139
+        LinkedVariable:
+          rid: -2
+    - rid: 3650710072783274136
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: SelectedTarget
+        Type:
+          m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 3650710072783274140
+        LinkedVariable:
+          rid: -2
+    - rid: 3650710072783274137
+      type: {class: 'BlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274138
+      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274139
+      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274140
+      type: {class: 'BlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274148
+      type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: -237.29999, y: 252.09998}
+        ID:
+          m_Value0: 17558329880386543288
+          m_Value1: 1571694775790205682
+        Parents:
+        - rid: 3650710072783274167
+        PortModels:
+        - rid: 3650710072783274149
+        - rid: 3650710072783274150
+        NodeType:
+          m_SerializableType: ExecuteSelectedAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 14535552476197995442
+          m_Value1: 16705757247412822480
+        m_FieldValues:
+        - rid: 3650710072783274151
+        - rid: 3650710072783274152
+        - rid: 3650710072783274153
+        - rid: 3650710072783274154
+    - rid: 3650710072783274149
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: InputPort
+        m_PortDataFlowType: 0
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 3650710072783274148
+        m_Connections: []
+    - rid: 3650710072783274150
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 3650710072783274148
+        m_Connections: []
+    - rid: 3650710072783274151
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Agent
+        Type:
+          m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 3650710072783274155
+        LinkedVariable:
+          rid: 3650710072783274200
+    - rid: 3650710072783274152
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: SelectedAbility
+        Type:
+          m_SerializableType: AbilityBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        LocalValue:
+          rid: 3650710072783274156
+        LinkedVariable:
+          rid: 3650710072783274312
+    - rid: 3650710072783274153
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: SelectedTarget
+        Type:
+          m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 3650710072783274157
+        LinkedVariable:
+          rid: 3650710072783274324
+    - rid: 3650710072783274154
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: TurnControllerRef
+        Type:
+          m_SerializableType: UnityEngine.MonoBehaviour, UnityEngine.CoreModule,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 3650710072783274158
+        LinkedVariable:
+          rid: 3650710072783274336
+    - rid: 3650710072783274155
+      type: {class: 'BlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274156
+      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274157
+      type: {class: 'BlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274158
+      type: {class: 'BlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274167
+      type: {class: SequenceNodeModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        Position: {x: 1.1000202, y: 136.09998}
+        ID:
+          m_Value0: 826269719783196881
+          m_Value1: 12802528025864428482
+        Parents: []
+        PortModels:
+        - rid: 3650710072783274168
+        - rid: 3650710072783274169
+        Nodes:
+        - rid: 3650710072783274130
+        - rid: 3650710072783274148
+    - rid: 3650710072783274168
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: InputPort
+        m_PortDataFlowType: 0
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 3650710072783274167
+        m_Connections:
+        - rid: 3650710072783274117
+    - rid: 3650710072783274169
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 3650710072783274167
+        m_Connections: []
+    - rid: 3650710072783274200
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Agent
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274208
+      type: {class: 'TypedVariableModel`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 7945665044519069491
+          m_Value1: 7365899650197800515
+        Name: AIData
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274312
+      type: {class: 'TypedVariableModel`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 2841507027988935019
+          m_Value1: 12508773428630172887
+        Name: SelectedAbility
+        IsExposed: 0
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274324
+      type: {class: 'TypedVariableModel`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 18427776371930694167
+          m_Value1: 7053403484320968292
+        Name: SelectedTarget
+        IsExposed: 0
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274336
+      type: {class: 'TypedVariableModel`1[[TurnController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 17068495676152405424
+          m_Value1: 17560698402883109620
+        Name: TurnControllerRef
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+--- !u!114 &312919443397650534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b27bb6d9a2c8d540a10dff10acc543e, type: 3}
+  m_Name: BT_BaseEnemy Debug Info
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphDebugInfo
+  m_CodeBreakPointsList: []
+--- !u!114 &2726540222924974965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db920e62f70f420bb33c771449926fa4, type: 3}
+  m_Name: BT_BaseEnemy
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraph
+  Graphs:
+  - rid: 3650710072783274118
+  m_DebugInfo: {fileID: 312919443397650534}
+  m_WasCompileWithPlaceholderNode: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 3650710072783274118
+      type: {class: BehaviorGraphModule, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        AuthoringAssetID:
+          m_Value0: 16445510067212974612
+          m_Value1: 574470839525113770
+        m_DebugInfo: {fileID: 312919443397650534}
+        BlackboardReference:
+          rid: 3650710072783274119
+        BlackboardGroupReferences: []
+        Root:
+          rid: 3650710072783274337
+        m_VersionTimestamp: 639150786697215368
+    - rid: 3650710072783274119
+      type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        m_Blackboard:
+          rid: 3650710072783274121
+        m_Source: {fileID: -8844193655486203930}
+    - rid: 3650710072783274121
+      type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        m_Variables:
+        - rid: 3650710072783274339
+        - rid: 3650710072783274340
+        - rid: 3650710072783274341
+        - rid: 3650710072783274342
+        - rid: 3650710072783274343
+    - rid: 3650710072783274182
+      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274183
+      type: {class: 'BlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274337
+      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 597792044584855873
+          m_Value1: 4181873177389361994
+        Graph:
+          rid: 3650710072783274118
+        m_Parent:
+          rid: -2
+        m_Child:
+          rid: 3650710072783274338
+        Repeat: 0
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 3650710072783274338
+      type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 826269719783196881
+          m_Value1: 12802528025864428482
+        Graph:
+          rid: 3650710072783274118
+        m_Parent:
+          rid: 3650710072783274337
+        m_Children:
+        - rid: 3650710072783274344
+        - rid: 3650710072783274345
+        m_RegisteredObservers: []
+    - rid: 3650710072783274339
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Agent
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274340
+      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 7945665044519069491
+          m_Value1: 7365899650197800515
+        Name: AIData
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274341
+      type: {class: 'BlackboardVariable`1[[TurnController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 17068495676152405424
+          m_Value1: 17560698402883109620
+        Name: TurnControllerRef
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274342
+      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2841507027988935019
+          m_Value1: 12508773428630172887
+        Name: SelectedAbility
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274343
+      type: {class: 'BlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 18427776371930694167
+          m_Value1: 7053403484320968292
+        Name: SelectedTarget
+        m_Value: {fileID: 0}
+    - rid: 3650710072783274344
+      type: {class: EvaluateAndSelectAbilityAction, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 2382769948957726025
+          m_Value1: 9989154214668154884
+        Graph:
+          rid: 3650710072783274118
+        m_Parent:
+          rid: 3650710072783274338
+        Agent:
+          rid: 3650710072783274346
+        AIData:
+          rid: 3650710072783274340
+        SelectedAbility:
+          rid: 3650710072783274182
+        SelectedTarget:
+          rid: 3650710072783274183
+    - rid: 3650710072783274345
+      type: {class: ExecuteSelectedAbilityAction, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 17558329880386543288
+          m_Value1: 1571694775790205682
+        Graph:
+          rid: 3650710072783274118
+        m_Parent:
+          rid: 3650710072783274338
+        Agent:
+          rid: 3650710072783274347
+        SelectedAbility:
+          rid: 3650710072783274342
+        SelectedTarget:
+          rid: 3650710072783274343
+        TurnControllerRef:
+          rid: 3650710072783274348
+    - rid: 3650710072783274346
+      type: {class: 'GameObjectToComponentBlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+        m_LinkedVariable:
+          rid: 3650710072783274339
+    - rid: 3650710072783274347
+      type: {class: 'GameObjectToComponentBlackboardVariable`1[[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+        m_LinkedVariable:
+          rid: 3650710072783274339
+    - rid: 3650710072783274348
+      type: {class: 'ComponentToComponentBlackboardVariable`2[[TurnController, Assembly-CSharp],[UnityEngine.MonoBehaviour, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+        m_LinkedVariable:
+          rid: 3650710072783274341

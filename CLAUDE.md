@@ -40,6 +40,27 @@ Abilities are ScriptableObjects extending `AbilityBase`, which defines three key
 
 AoE shapes are defined via `IAreaShape` implementations (`CircleShape`, `LineShape`), keeping shape logic separate from ability logic. Equipment-bound abilities go through `ShootWithEquipmentAbility`.
 
+**Enemy abilities** extend `EnemyAbilityBase : AbilityBase`, which adds a fourth method:
+- `Score(AIContext context, out TargetingData targeting)` — evaluates how desirable this ability is given the current game state, and outputs the chosen target. Returns `float.NegativeInfinity` if the ability is not applicable (turn passes).
+
+`AIContext` carries the caster (`HostileCharacter`), `TurnOrderDataSO` (for iterating active agents by team), and `GridStateDataSO`. Enemy ability assets live under `Assets/Data/Abilities/Enemy/`.
+
+### Enemy AI
+
+Enemy turns are driven by `EnemyTurnDriver` (MonoBehaviour on the enemy prefab), which bridges the `com.unity.behavior` Behavior Tree with the turn system.
+
+Turn flow:
+1. `HostileCharacter.OnStartingTurn()` calls `EnemyTurnDriver.ExecuteTurnAsync()`
+2. The driver injects runtime references into the BT Blackboard and calls `Restart()`
+3. The BT runs two sequential custom nodes:
+   - `EvaluateAndSelectAbilityAction` — calls `Score()` on every `EnemyAbilityBase` in the `EnemyAIDataSO`, picks the highest score, writes result to the Blackboard
+   - `ExecuteSelectedAbilityAction` — reads the Blackboard, calls `CanExecute` / `CreateCommand` / `AddCommand` on the chosen ability
+4. After the BT completes (Success or Failure), the driver calls `ProcessQueueAsync()` then `SignalTurnEnd()` — guaranteed via `finally`, so the turn always ends
+
+`EnemyAIDataSO` is the per-enemy-type configuration SO (ability list + TurnOrderDataSO + GridStateDataSO refs). It lives on `EnemyTurnDriver` as a `[SerializeField]`. Enemies execute exactly **one ability per turn** and do **not move**. If no ability scores above `NegativeInfinity`, the turn passes silently.
+
+Scripts: `Assets/Scripts/Runtime/Combat/AI/` — BT nodes: `Assets/Scripts/Runtime/Combat/AI/BT/`
+
 ### Command Pattern
 
 Commands (`ICommand`) are queued in `TurnController` and executed asynchronously. Commands support undo. This is the sole path for mutating game state during a turn.
@@ -48,7 +69,7 @@ Commands (`ICommand`) are queued in `TurnController` and executed asynchronously
 
 `GridStateDataSO` tracks per-cell occupancy for multiple entity types. `ShipController` manages the tilemaps and renders movement/ability highlights by swapping tiles. `PathFindingUtils` implements A* for hexagonal grids (odd/even row offset coordinates) and exposes reachable-area calculation.
 
-Characters extend `GridElement` (position + occupancy registration) → `InteractableGridElement` (click, selection, proximity) → `GridCharacter` / `HostileCharacter`.
+Player characters extend `GridElement` (position + occupancy registration) → `InteractableGridElement` (click, selection, proximity) → `GridCharacter`. `HostileCharacter` is a separate `MonoBehaviour` that implements the same interfaces directly (`IInteractableElement`, `ITargettable`, `ITurnAgent`, `IHealthOwner`) but does **not** extend `GridElement`.
 
 ### Event Channel Pattern
 
@@ -92,6 +113,7 @@ Project-specific agents are in `.claude/agents/` — invoke with `@<name>` in th
 
 - Async operations use Unity's `Awaitable` (not `Task`) with `CancellationToken` propagation.
 - ScriptableObjects are the primary data/configuration container; avoid duplicating state in MonoBehaviours.
-- New abilities: extend `AbilityBase` and place the asset under `Assets/Data/Abilities/`.
+- New player abilities: extend `AbilityBase` and place the asset under `Assets/Data/Abilities/`.
+- New enemy abilities: extend `EnemyAbilityBase`, implement `Score()` + `CanExecute()` + `CreateCommand()` (cast `caster` to `HostileCharacter`, not `GridElement`). Place the asset under `Assets/Data/Abilities/Enemy/`.
 - New event channels: create a typed subclass of `GenericEventChannelSO<T>` and matching listener.
 - Grid positions use the `Vector2Int` offset coordinate system (odd-row offset for hex).

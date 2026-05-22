@@ -73,10 +73,49 @@ InputReader (New Input System events)
 TurnController (async game loop)
   └─> TurnOrderDataSO (turn queue)
         └─> ITurnAgent.OnStartingTurn() / EndTurn()
+              ├─> GridCharacter (player) → CombatStateManager drives ability selection
+              └─> HostileCharacter (enemy) → EnemyTurnDriver drives the BT
 ```
 
 To add behavior in the combat loop: implement `ICommand` and enqueue via `TurnController.AddCommand()`.
 To react to turn changes: subscribe to `TurnStateSO.OnAgentActivated` or `TurnOrderDataSO` events.
+
+## Enemy AI system
+
+Enemy turns bypass the player FSM entirely. The flow is:
+
+```
+HostileCharacter.OnStartingTurn()
+  └─> EnemyTurnDriver.ExecuteTurnAsync()
+        ├─> Injects Blackboard vars (Agent, AIData, TurnControllerRef)
+        ├─> BehaviorGraphAgent.Restart()  ← com.unity.behavior BT
+        │     ├─> EvaluateAndSelectAbilityAction
+        │     │     └─> calls Score() on each EnemyAbilityBase in EnemyAIDataSO.Abilities
+        │     │           → writes SelectedAbility + SelectedTarget to Blackboard
+        │     └─> ExecuteSelectedAbilityAction
+        │           └─> CanExecute / CreateCommand / TurnController.AddCommand()
+        ├─> TurnController.ProcessQueueAsync()
+        └─> TurnStateSO.SignalTurnEnd()  ← always called (finally block)
+```
+
+### Key enemy AI types
+
+| Type | Kind | Purpose |
+|------|------|---------|
+| `EnemyAbilityBase : AbilityBase` | SO (abstract) | Adds `Score(AIContext, out TargetingData)` — returns `float.NegativeInfinity` if not applicable |
+| `EnemyAIDataSO` | SO | Per-enemy-type config: `List<EnemyAbilityBase>` + `TurnOrderDataSO` + `GridStateDataSO` refs |
+| `AIContext` | struct | Passed to `Score()`: `Caster (HostileCharacter)`, `TurnOrder`, `GridState` |
+| `EnemyTurnDriver` | MonoBehaviour | Orchestrates the turn; holds `EnemyAIDataSO` as `[SerializeField]` |
+| `EvaluateAndSelectAbilityAction` | BT Action node | Scoring loop → writes to Blackboard |
+| `ExecuteSelectedAbilityAction` | BT Action node | Reads Blackboard → enqueues command |
+
+### Constraints
+- Enemies execute **one ability per turn**, do **not move**
+- `HostileCharacter` is a pure `MonoBehaviour` (does **not** extend `GridElement`) — cast caster to `HostileCharacter` or `ITurnAgent`, never `GridElement`
+- Blackboard variables must use native Unity types (`MonoBehaviour`, `ScriptableObject` subclasses) — custom serializable classes as `BlackboardVariable<T>` break the graph editor
+- New enemy abilities: extend `EnemyAbilityBase`, asset in `Assets/Data/Abilities/Enemy/`, add to `EnemyAIDataSO.Abilities`
+
+Scripts: `Assets/Scripts/Runtime/Combat/AI/` — BT nodes: `Assets/Scripts/Runtime/Combat/AI/BT/`
 
 ## File placement
 
