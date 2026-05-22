@@ -483,7 +483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealthController
   _agentData: {fileID: 0}
   _baseBehaviors: []
-  _damageEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
+  _showDamageUIEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
 --- !u!54 &6399273607978963194
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ public class HealthController : MonoBehaviour, IDamageable
 {
     [SerializeField] private TurnAgentDataSO _agentData;
     [SerializeField] private List<HealthBehaviorSO> _baseBehaviors;
-    [SerializeField] private DamageEventChannel _damageEventChannel;
+    [SerializeField] private DamageEventChannel _showDamageUIEventChannel;
 
     private List<HealthBehaviorSO> _behaviors = new();
     private float _currentHp;
@@ -64,7 +64,7 @@ public class HealthController : MonoBehaviour, IDamageable
             _behaviors[i].OnDamageTaken(this, payload);
             if (died) _behaviors[i].OnDeath(this);
         }
-        _damageEventChannel?.RaiseEvent(new DamageEvent { Payload = payload, WorldPosition = transform.position });
+        _showDamageUIEventChannel?.RaiseEvent(new DamageEvent { Payload = payload, WorldPosition = transform.position });
 
         if (died)
         {

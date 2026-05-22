@@ -43,8 +43,14 @@
 }
 
 .passives-container {
-    height: 100%; 
+    height: 100%;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+}
+
+#health-bar-fill {
+    transition-property: width;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out;
 }

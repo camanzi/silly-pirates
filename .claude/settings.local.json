@@ -54,7 +54,12 @@
       "Bash(xargs grep -l \"DamagePayload\")",
       "Bash(xargs grep -l \"Damage\\\\|Health\")",
       "Bash(git grep *)",
-      "Bash(xargs grep -l \"ShootingEquipment\\\\|Equipment\")"
+      "Bash(xargs grep -l \"ShootingEquipment\\\\|Equipment\")",
+      "Bash(xargs grep -l \"compress\\\\|expand\\\\|Animator\\\\|Animation\")",
+      "Bash(cd C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates *)",
+      "Bash(Select-String -Pattern \"\\(Turn|Combat|Manager\\)\")",
+      "Bash(xargs cat)",
+      "PowerShell(head *)"
     ]
   },
   "hooks": {
