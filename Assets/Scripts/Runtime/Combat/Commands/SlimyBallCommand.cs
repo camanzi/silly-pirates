@@ -8,17 +8,22 @@ public class SlimyBallCommand : ICommand
     private readonly GameObject _projectilePrefab;
     private readonly TrajectoryConfigsSO _trajectoryConfig;
     private readonly int _damage;
+    private readonly SlimyCellDataSO _slimyCellData;
+    private readonly Vector3Int _targetCell;
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
     public SlimyBallCommand(IInteractableElement caster, ITargettable target,
-                             GameObject projectilePrefab, TrajectoryConfigsSO trajectoryConfig, int damage)
+                             GameObject projectilePrefab, TrajectoryConfigsSO trajectoryConfig, int damage,
+                             SlimyCellDataSO slimyCellData = null, Vector3Int targetCell = default)
     {
         _caster = caster;
         _target = target;
         _projectilePrefab = projectilePrefab;
         _trajectoryConfig = trajectoryConfig;
         _damage = damage;
+        _slimyCellData = slimyCellData;
+        _targetCell = targetCell;
     }
 
     public async Awaitable ExecuteAsync()
@@ -53,6 +58,8 @@ public class SlimyBallCommand : ICommand
 
         if (_target is IHealthOwner healthOwner)
             healthOwner.Health.TakeDamage(new DamagePayload(_damage, DamageType.Physical));
+
+        _slimyCellData?.Apply(_targetCell);
 
         GameObject.Destroy(projectile);
     }

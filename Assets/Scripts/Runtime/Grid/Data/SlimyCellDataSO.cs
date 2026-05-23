@@ -1,22 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Path Of Star Data", menuName = "Grid/Path Of Star Data")]
-public class PathOfStarDataSO : ScriptableObject
+[CreateAssetMenu(fileName = "Slimy Cell Data", menuName = "Grid/Slimy Cell Data")]
+public class SlimyCellDataSO : ScriptableObject, ICellCostModifier
 {
     [Header("Dependencies")]
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
-    [SerializeField] private GridStateDataSO _gridStateData;
     [SerializeField] private CellEffectEventChannel _effectChannel;
+    [SerializeField] private CellCostRegistrySO _cellCostRegistry;
 
     [Header("Visual")]
     [SerializeField] private Texture2D _texture;
-    [SerializeField] private Color _color = Color.yellow;
-    [SerializeField] private CellEffectAnimMode _animMode = CellEffectAnimMode.Pulse;
-    [SerializeField] private Vector4 _animParams = new(1.5f, 0.3f, 1f, 0f); // speed, minAlpha, maxAlpha
+    [SerializeField] private Color _color = Color.green;
+    [SerializeField] private CellEffectAnimMode _animMode = CellEffectAnimMode.Scroll;
+    [SerializeField] private Vector4 _animParams = new(0.05f, 0f, 0f, 0f);
 
     [Header("Config")]
-    [SerializeField] private float _avDiscountPercentage = 20f;
+    [SerializeField] private int _additionalMoveCost = 1;
     [SerializeField] private int _cellDurationInTurns = 3;
 
     private readonly Dictionary<Vector3Int, int> _cellCountdowns = new();
@@ -25,12 +25,14 @@ public class PathOfStarDataSO : ScriptableObject
     private void OnEnable()
     {
         _cellCountdowns.Clear();
+        _cellCostRegistry?.Register(this);
         if (_onAnyTurnEnded != null)
             _onAnyTurnEnded.OnEventRaised += OnTurnEnded;
     }
 
     private void OnDisable()
     {
+        _cellCostRegistry?.Unregister(this);
         if (_onAnyTurnEnded != null)
             _onAnyTurnEnded.OnEventRaised -= OnTurnEnded;
         RaiseEffectEvent(null);
@@ -42,40 +44,21 @@ public class PathOfStarDataSO : ScriptableObject
         RaiseEffectEvent(new List<Vector3Int>(_cellCountdowns.Keys));
     }
 
+    public int GetAdditionalCost(Vector3Int cell) =>
+        _cellCountdowns.ContainsKey(cell) ? _additionalMoveCost : 0;
+
     private void OnTurnEnded(ITurnAgent agent)
     {
         _toRemove.Clear();
-        var cellKeys = new List<Vector3Int>(_cellCountdowns.Keys);
-        foreach (var cell in cellKeys)
+        var keys = new List<Vector3Int>(_cellCountdowns.Keys);
+        foreach (var cell in keys)
         {
             _cellCountdowns[cell]--;
-            if (_cellCountdowns[cell] <= 0) _toRemove.Add(cell);
+            if (_cellCountdowns[cell] <= 0)
+                _toRemove.Add(cell);
         }
         foreach (var cell in _toRemove)
             _cellCountdowns.Remove(cell);
-
-        bool agentInStarCell = false;
-        GridElement agentElement = agent as GridElement;
-        if (agentElement != null)
-        {
-            foreach (var cell in _cellCountdowns.Keys)
-            {
-                var entities = _gridStateData.GetEntityAt(cell);
-                if (entities == null) continue;
-                if (entities.Contains(agentElement))
-                {
-                    agentInStarCell = true;
-                    break;
-                }
-            }
-        }
-
-        if (agentInStarCell && agent is IAbilityHolder holder)
-        {
-            var bonus = CreateInstance<StarNextActionPassiveSO>();
-            bonus.DiscountPercentage = _avDiscountPercentage;
-            holder.PassiveAbilityController.AddPassive(bonus);
-        }
 
         RaiseEffectEvent(new List<Vector3Int>(_cellCountdowns.Keys));
     }
@@ -83,7 +66,7 @@ public class PathOfStarDataSO : ScriptableObject
     private void RaiseEffectEvent(List<Vector3Int> cells) =>
         _effectChannel?.RaiseEvent(new CellEffectPayload
         {
-            Key = "star-path",
+            Key = "slimy",
             Cells = cells,
             Descriptor = new CellEffectDescriptor
             {

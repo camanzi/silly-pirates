@@ -131,10 +131,13 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
         if (_healthController != null) _healthController.OnDeath -= OnCombatLeave;
     }
 
-    public async Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token)
+    public Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token)
+        => MoveTo(path, null, token);
+
+    public async Awaitable MoveTo(IEnumerable<Vector3> path, Func<Vector3Int, int> costGetter, CancellationToken token)
     {
         _moveTween.Stop();
-    
+
         _directionalSpriteController.PlayAnimation("walk");
 
         foreach (Vector3 node in path)
@@ -145,10 +148,10 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
             transform.LookAt(targetPosition);
             await Tween.Position(transform, targetPosition, duration: 0.5f, ease: Ease.Linear);
-            
+
             gridPosition = Vector3Int.FloorToInt(node);
 
-            RemainingMovementPoints--;
+            RemainingMovementPoints -= costGetter?.Invoke(Vector3Int.FloorToInt(node)) ?? 1;
         }
 
         _directionalSpriteController.PlayAnimation("idle");

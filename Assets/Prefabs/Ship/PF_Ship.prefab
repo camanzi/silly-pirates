@@ -1437,6 +1437,8 @@ GameObject:
   - component: {fileID: 1450389051071591541}
   - component: {fileID: 3839102876060226769}
   - component: {fileID: 5797126308011357101}
+  - component: {fileID: 6877799202832247022}
+  - component: {fileID: 700315522822921877}
   m_Layer: 0
   m_Name: PF_Ship
   m_TagString: Untagged
@@ -1478,11 +1480,6 @@ MonoBehaviour:
   _previewMapTag: PreviewMap
   _persistentEffectsMapTag: PersistentEffectsMap
   _defaultFloorTile: {fileID: 11400000, guid: a455f4473c0a88b42b721860b0beb63c, type: 2}
-  _inRangePreviewTile: {fileID: 11400000, guid: 18540c01d1f6bea4b8483291e346db97, type: 2}
-  _hoverFloorAllowTile: {fileID: 11400000, guid: 0b394c1747cfbbe45bef10a1e0acd657, type: 2}
-  _hoverFloorNotAllowTile: {fileID: 11400000, guid: 5f621e8e9e9f3534eabcd3564495ae09, type: 2}
-  _oceanCurrentTile: {fileID: 11400000, guid: da73cc5e4ead15846af1b88976b4856e, type: 2}
-  _starPathTile: {fileID: 11400000, guid: 98b94abbb13283742919ca79ddcd460b, type: 2}
 --- !u!114 &3839102876060226769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1519,6 +1516,51 @@ MonoBehaviour:
       - m_Target: {fileID: 1450389051071591541}
         m_TargetAssemblyTypeName: ShipController, Assembly-CSharp
         m_MethodName: HighlightPath
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6877799202832247022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5928166714952300585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e270b58d72606fe4f8f47c785813b649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CellEffectsRenderer
+  _targetGrid: {fileID: 624325162096680193}
+  _effectMaterialTemplate: {fileID: 2100000, guid: e4b826cbdc0f0684bac27f550da06921, type: 2}
+  _effectTile: {fileID: 11400000, guid: 5f63ff8e13a236f4e91dc6f1cb67d51d, type: 2}
+  _sortingLayerName: Default
+  _baseSortingOrder: 5
+--- !u!114 &700315522822921877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5928166714952300585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0747e29b1bbf41b40bddcb7bac70c969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CellEffectChannelListener
+  eventChannel: {fileID: 11400000, guid: cccfa9f09a7271f4a86b5b07bcdf1881, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6877799202832247022}
+        m_TargetAssemblyTypeName: CellEffectsRenderer, Assembly-CSharp
+        m_MethodName: OnEffectReceived
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

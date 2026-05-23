@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PathOfStarDataSO
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
-  _highlightChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
-  _starPathTile: {fileID: 11400000, guid: 98b94abbb13283742919ca79ddcd460b, type: 2}
+  _effectChannel: {fileID: 11400000, guid: cccfa9f09a7271f4a86b5b07bcdf1881, type: 2}
+  _texture: {fileID: 0}
+  _color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _animMode: 1
+  _animParams: {x: 1.5, y: 0.3, z: 1, w: 0}
   _avDiscountPercentage: 20
   _cellDurationInTurns: 3

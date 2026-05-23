@@ -166,6 +166,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8886951184808175055}
+        m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
+        m_MethodName: HandleAgentActivated
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &6642396514423168827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,7 +221,6 @@ MonoBehaviour:
   _apAvailableSprite: {fileID: 21300000, guid: 5c58abe18d5354b43a9ceea71768b988, type: 3}
   _apConsumedSprite: {fileID: 21300000, guid: deeef6a86e46eef46bf096ff95e03b72, type: 3}
   _hudDocument: {fileID: 2617577189569630218}
-  _turnStateSO: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
 --- !u!114 &5944741646544662516
 MonoBehaviour:
   m_ObjectHideFlags: 0

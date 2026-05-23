@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,6 +7,9 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "Move Ability", menuName = "Abilities/Character/Actives/Move Ability")]
 public class MoveAbility : AbilityBase
 {
+    [Header("Cell Cost")]
+    [SerializeField] private CellCostRegistrySO _cellCostRegistry;
+
     private class MoveCache
     {
         public List<Vector3> ReachableArea;
@@ -14,6 +18,7 @@ public class MoveAbility : AbilityBase
         public List<IMovementExtension> Extensions;
         public IMovementExtension ActiveExtension;
         public object ExtensionCache;
+        public Func<Vector3Int, int> CostGetter;
     }
 
 
@@ -81,7 +86,7 @@ public class MoveAbility : AbilityBase
         }
 
         AbilityPreviewData preview = GetPreviewData(caster, targetingData.Value, ref cache);
-        return new MoveCommand((GridCharacter)caster, preview.AffectedCells);
+        return new MoveCommand((GridCharacter)caster, preview.AffectedCells, moveCache.CostGetter);
     }
 
 
@@ -110,12 +115,9 @@ public class MoveAbility : AbilityBase
             return new AbilityPreviewData(affectedCells: pathToBorder, interactionArea: interactionArea);
         }
 
-        List<Vector3> path = PathFindingUtils.FindPath(
-            gridElement.gridPosition,
-            hoveredCell,
-            moveCache.WalkableSet,
-            static (pos, set) => set.Contains(pos)
-        );
+        List<Vector3> path = moveCache.CostGetter != null
+            ? PathFindingUtils.FindPath(gridElement.gridPosition, hoveredCell, moveCache.WalkableSet, static (pos, set) => set.Contains(pos), moveCache.CostGetter)
+            : PathFindingUtils.FindPath(gridElement.gridPosition, hoveredCell, moveCache.WalkableSet, static (pos, set) => set.Contains(pos));
 
         return new AbilityPreviewData(affectedCells: path, interactionArea: interactionArea);
     }
@@ -126,16 +128,19 @@ public class MoveAbility : AbilityBase
 
         Tilemap tilemap = gridElement.activeTilemap;
 
-        var reachable = PathFindingUtils.FindReachableArea(
-            gridElement.gridPosition,
-            movable.RemainingMovementPoints,
-            tilemap,
-            (pos, tm) =>
-            {
-                TerrainTile tile = tm.GetTile<TerrainTile>(pos);
-                return tile != null && tile.isWalkable && !_gridStateData.IsOccupied(pos);
-            }
-        );
+        Func<Vector3Int, int> costGetter = _cellCostRegistry != null
+            ? _cellCostRegistry.GetMovementCost
+            : null;
+
+        var walkabilityCheck = (Func<Vector3Int, Tilemap, bool>)((pos, tm) =>
+        {
+            TerrainTile tile = tm.GetTile<TerrainTile>(pos);
+            return tile != null && tile.isWalkable && !_gridStateData.IsOccupied(pos);
+        });
+
+        var reachable = costGetter != null
+            ? PathFindingUtils.FindReachableArea(gridElement.gridPosition, movable.RemainingMovementPoints, tilemap, walkabilityCheck, costGetter)
+            : PathFindingUtils.FindReachableArea(gridElement.gridPosition, movable.RemainingMovementPoints, tilemap, walkabilityCheck);
 
         var reachableSet = new HashSet<Vector3Int>();
         foreach (Vector3 pos in reachable) reachableSet.Add(Vector3Int.FloorToInt(pos));
@@ -162,7 +167,8 @@ public class MoveAbility : AbilityBase
             WalkableSet = walkableSet,
             Extensions = extensions,
             ActiveExtension = null,
-            ExtensionCache = null
+            ExtensionCache = null,
+            CostGetter = costGetter
         };
     }
 }

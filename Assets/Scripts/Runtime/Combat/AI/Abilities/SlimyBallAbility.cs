@@ -6,6 +6,7 @@ public class SlimyBallAbility : EnemyAbilityBase
 {
     [SerializeField] private GameObject _projectile;
     [SerializeField] private int _baseDamage = 15;
+    [SerializeField] private SlimyCellDataSO _slimyCellData;
 
     public override float Score(AIContext context, out TargetingData targeting)
     {
@@ -69,7 +70,9 @@ public class SlimyBallAbility : EnemyAbilityBase
             targetingData.Value.selectedTarget,
             _projectile,
             trajectoryConfigData,
-            _baseDamage
+            _baseDamage,
+            _slimyCellData,
+            targetingData.Value.cellPosition
         );
     }
 }

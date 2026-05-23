@@ -19,6 +19,63 @@ public static class PathFindingUtils
     {
         return FindPath(startPos, endPos, false, state, walkabilityCheck);
     }
+
+    public static List<Vector3> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, TState state, Func<Vector3Int, TState, bool> walkabilityCheck, Func<Vector3Int, int> cellCostGetter)
+    {
+        return FindPath(startPos, endPos, false, state, walkabilityCheck, cellCostGetter);
+    }
+
+    public static List<Vector3> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, bool includeStartingPosition, TState state, Func<Vector3Int, TState, bool> walkabilityCheck, Func<Vector3Int, int> cellCostGetter)
+    {
+        List<Vector3Int> openSet = new List<Vector3Int> { startPos };
+        HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
+        Dictionary<Vector3, AStarNode> allNodes = new Dictionary<Vector3, AStarNode>();
+
+        allNodes[startPos] = new AStarNode(startPos, true, 0, GetDistance(startPos, endPos), null);
+
+        while (openSet.Count > 0)
+        {
+            Vector3Int currentPos = openSet[0];
+            for (int i = 1; i < openSet.Count; i++)
+            {
+                if (allNodes[openSet[i]].fCost < allNodes[currentPos].fCost ||
+                    (allNodes[openSet[i]].fCost == allNodes[currentPos].fCost && allNodes[openSet[i]].hCost < allNodes[currentPos].hCost))
+                {
+                    currentPos = openSet[i];
+                }
+            }
+
+            openSet.Remove(currentPos);
+            closedSet.Add(currentPos);
+
+            if (currentPos == endPos)
+                return RetracePath(allNodes, startPos, endPos, includeStartingPosition);
+
+            foreach (Vector3Int neighborPos in GetNeighbors(currentPos))
+            {
+                if (closedSet.Contains(neighborPos) || !walkabilityCheck(neighborPos, state))
+                    continue;
+
+                int newMovementCostToNeighbor = allNodes[currentPos].gCost + cellCostGetter(neighborPos) * 10;
+
+                if (!allNodes.ContainsKey(neighborPos) || newMovementCostToNeighbor < allNodes[neighborPos].gCost)
+                {
+                    AStarNode neighborNode = new AStarNode(
+                        neighborPos, true,
+                        newMovementCostToNeighbor,
+                        GetDistance(neighborPos, endPos),
+                        currentPos);
+
+                    allNodes[neighborPos] = neighborNode;
+
+                    if (!openSet.Contains(neighborPos))
+                        openSet.Add(neighborPos);
+                }
+            }
+        }
+
+        return new List<Vector3>();
+    }
     public static List<Vector3> FindPath<TState>(Vector3Int startPos, Vector3Int endPos, bool includeStartingPosition, TState state, Func<Vector3Int, TState, bool> walkabilityCheck)
     {
         List<Vector3Int> openSet = new List<Vector3Int> { startPos };
@@ -81,7 +138,7 @@ public static class PathFindingUtils
         List<Vector3Int> openSet = new List<Vector3Int> { startPos };
         Dictionary<Vector3Int, int> costSoFar = new Dictionary<Vector3Int, int>();
         costSoFar[startPos] = 0;
-        
+
         List<Vector3> reachableArea = new List<Vector3>();
 
         while (openSet.Count > 0)
@@ -107,6 +164,53 @@ public static class PathFindingUtils
                     continue;
 
                 int newCost = costSoFar[currentPos] + 1; // Ogni movimento costa 1
+
+                if (newCost <= maxMovementCost)
+                {
+                    if (!costSoFar.ContainsKey(neighborPos) || newCost < costSoFar[neighborPos])
+                    {
+                        costSoFar[neighborPos] = newCost;
+                        if (!openSet.Contains(neighborPos))
+                            openSet.Add(neighborPos);
+                    }
+                }
+            }
+        }
+
+        return reachableArea;
+    }
+
+    public static List<Vector3> FindReachableArea<TState>(Vector3Int startPos, int maxMovementCost, TState state, Func<Vector3Int, TState, bool> walkabilityCheck, Func<Vector3Int, int> cellCostGetter)
+    {
+        List<Vector3Int> openSet = new List<Vector3Int> { startPos };
+        Dictionary<Vector3Int, int> costSoFar = new Dictionary<Vector3Int, int>();
+        costSoFar[startPos] = 0;
+
+        List<Vector3> reachableArea = new List<Vector3>();
+
+        while (openSet.Count > 0)
+        {
+            Vector3Int currentPos = openSet[0];
+            int currentCost = costSoFar[currentPos];
+
+            for (int i = 1; i < openSet.Count; i++)
+            {
+                if (costSoFar[openSet[i]] < currentCost)
+                {
+                    currentPos = openSet[i];
+                    currentCost = costSoFar[currentPos];
+                }
+            }
+
+            openSet.Remove(currentPos);
+            reachableArea.Add(currentPos);
+
+            foreach (Vector3Int neighborPos in GetNeighbors(currentPos))
+            {
+                if (!walkabilityCheck(neighborPos, state))
+                    continue;
+
+                int newCost = costSoFar[currentPos] + cellCostGetter(neighborPos);
 
                 if (newCost <= maxMovementCost)
                 {

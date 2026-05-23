@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8f8c72ac10e31f4580fd3c2ce2dda37, type: 3}
+  m_Name: Slimy Cell Data
+  m_EditorClassIdentifier: Assembly-CSharp::SlimyCellDataSO
+  _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
+  _effectChannel: {fileID: 11400000, guid: cccfa9f09a7271f4a86b5b07bcdf1881, type: 2}
+  _cellCostRegistry: {fileID: 11400000, guid: ab568e1a11cac39458b00ef542aafea0, type: 2}
+  _texture: {fileID: 0}
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _animMode: 2
+  _animParams: {x: 0.05, y: 0, z: 0, w: 0}
+  _additionalMoveCost: 1
+  _cellDurationInTurns: 3

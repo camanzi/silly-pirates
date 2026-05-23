@@ -11,7 +11,6 @@ public class ActionPointController : MonoBehaviour
 
     [Header("Dependences")]
     [SerializeField] private UIDocument _hudDocument;
-    [SerializeField] private TurnStateSO _turnStateSO;
 
     private VisualElement _apContainer;
     private List<ActionPointElement> _apElements = new();
@@ -22,17 +21,7 @@ public class ActionPointController : MonoBehaviour
         _apContainer = root.Q<VisualElement>("action-points-container");
     }
 
-    private void OnEnable()
-    {
-        _turnStateSO.OnAgentActivated.OnEventRaised += HandleAgentActivated;
-    }
-
-    private void OnDisable()
-    {
-        _turnStateSO.OnAgentActivated.OnEventRaised -= HandleAgentActivated;
-    }
-
-    private void HandleAgentActivated(ITurnAgent agent)
+    public void HandleAgentActivated(ITurnAgent agent)
     {
         if (!agent.CompareTag("Player")) 
         {
