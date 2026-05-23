@@ -48,9 +48,3 @@
     align-items: center;
     justify-content: flex-start;
 }
-
-#health-bar-fill {
-    transition-property: width;
-    transition-duration: 0.3s;
-    transition-timing-function: ease-out;
-}

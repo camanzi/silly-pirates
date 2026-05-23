@@ -19,6 +19,7 @@ public class EnemyTurnDriver : MonoBehaviour
 
     public async Awaitable ExecuteTurnAsync(CancellationToken token)
     {
+        await Awaitable.WaitForSecondsAsync(1f, token);
         try
         {
             _agent.SetVariableValue("Agent", (MonoBehaviour)_hostile);
@@ -37,6 +38,8 @@ public class EnemyTurnDriver : MonoBehaviour
         }
         finally
         {
+            await Awaitable.WaitForSecondsAsync(.5f, token);
+
             _currentTurnStateData.SignalTurnEnd();
         }
     }

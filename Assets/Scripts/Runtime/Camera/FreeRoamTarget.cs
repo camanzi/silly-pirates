@@ -42,6 +42,7 @@ public class FreeRoamTarget : MonoBehaviour
     private InputAction _tacticalView;
 
     private bool _isTacticalViewActive;
+    private Tween _cameraMoveTween;
 
     private void Awake()
     {
@@ -90,9 +91,8 @@ public class FreeRoamTarget : MonoBehaviour
         // Se il tempo trascorso in secondi é minore del mio timer NON muovo la telecamera 
         if (Time.time - _lastInputTime < _enableAutomovingTimer) return;
 
-        Tween.StopAll();
-
-        Tween.Position(transform, mono.transform.position, duration: _interpolationDuration, ease: _interpolationCurve);
+        _cameraMoveTween.Stop();
+        _cameraMoveTween = Tween.Position(transform, mono.transform.position, duration: _interpolationDuration, ease: _interpolationCurve);
     }
 
     #region MOVEMENT & ROTATION

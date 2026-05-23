@@ -15,6 +15,7 @@ public partial class CrewMemberIndicator : VisualElement
     private Tween _scaleTween;
     private Tween _barHeightTween;
     private Tween _colorTween;
+    private Tween _healthTween;
     private Tween _marginTween;
 
     private float _baseMarginLeft;
@@ -105,7 +106,9 @@ public partial class CrewMemberIndicator : VisualElement
         _colorTween = Tween.Custom(_portrait, _portrait.resolvedStyle.unityBackgroundImageTintColor, targetColor, duration: 0.3f,
             onValueChange: (target, val) => target.style.unityBackgroundImageTintColor = new StyleColor(val));
 
-        _healthBarFill.style.width = Length.Percent(targetWidth);
+        _healthTween.Stop();
+        _healthTween = Tween.Custom(_healthBarFill, _healthBarFill.resolvedStyle.width, targetWidth, duration: 0.3f,
+            onValueChange: (target, val) => target.style.width = Length.Percent(val));
     }
 
     private void InjectPassiveUI() 
