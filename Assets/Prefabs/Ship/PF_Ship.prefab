@@ -1538,6 +1538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CellEffectsRenderer
   _targetGrid: {fileID: 624325162096680193}
+  _templateTilemap: {fileID: 3207077314575919727}
   _effectMaterialTemplate: {fileID: 2100000, guid: e4b826cbdc0f0684bac27f550da06921, type: 2}
   _effectTile: {fileID: 11400000, guid: 5f63ff8e13a236f4e91dc6f1cb67d51d, type: 2}
   _sortingLayerName: Default

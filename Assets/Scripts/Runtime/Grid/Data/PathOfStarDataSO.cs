@@ -10,10 +10,7 @@ public class PathOfStarDataSO : ScriptableObject
     [SerializeField] private CellEffectEventChannel _effectChannel;
 
     [Header("Visual")]
-    [SerializeField] private Texture2D _texture;
-    [SerializeField] private Color _color = Color.yellow;
-    [SerializeField] private CellEffectAnimMode _animMode = CellEffectAnimMode.Pulse;
-    [SerializeField] private Vector4 _animParams = new(1.5f, 0.3f, 1f, 0f); // speed, minAlpha, maxAlpha
+    [SerializeField] private Material _material;
 
     [Header("Config")]
     [SerializeField] private float _avDiscountPercentage = 20f;
@@ -85,12 +82,6 @@ public class PathOfStarDataSO : ScriptableObject
         {
             Key = "star-path",
             Cells = cells,
-            Descriptor = new CellEffectDescriptor
-            {
-                Texture = _texture,
-                Color = _color,
-                Mode = _animMode,
-                Params = _animParams
-            }
+            Material = _material
         });
 }

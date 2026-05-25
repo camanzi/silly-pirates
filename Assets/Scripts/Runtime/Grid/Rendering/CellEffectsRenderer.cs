@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 public class CellEffectsRenderer : MonoBehaviour
 {
     [SerializeField] private Grid _targetGrid;
-    [SerializeField] private Material _effectMaterialTemplate;
+    [SerializeField] private Tilemap _templateTilemap;
     [SerializeField] private TileBase _effectTile;
     [SerializeField] private string _sortingLayerName = "Default";
     [SerializeField] private int _baseSortingOrder = 5;
@@ -13,11 +13,6 @@ public class CellEffectsRenderer : MonoBehaviour
     private readonly Dictionary<string, Tilemap> _tilemapByKey = new();
     private readonly Dictionary<string, List<Vector3Int>> _cellsByKey = new();
     private int _sortingCounter;
-
-    private static readonly int s_MainTex = Shader.PropertyToID("_MainTex");
-    private static readonly int s_Color   = Shader.PropertyToID("_Color");
-    private static readonly int s_Mode    = Shader.PropertyToID("_Mode");
-    private static readonly int s_Params  = Shader.PropertyToID("_Params");
 
     public void OnEffectReceived(CellEffectPayload payload)
     {
@@ -35,9 +30,7 @@ public class CellEffectsRenderer : MonoBehaviour
         }
 
         if (!_tilemapByKey.TryGetValue(payload.Key, out Tilemap tilemap))
-            tilemap = CreateTilemap(payload.Key, payload.Descriptor);
-        else
-            ApplyDescriptorToMaterial(tilemap.GetComponent<TilemapRenderer>().sharedMaterial, payload.Descriptor);
+            tilemap = CreateTilemap(payload.Key, payload.Material);
 
         _cellsByKey.TryGetValue(payload.Key, out List<Vector3Int> oldCells);
 
@@ -54,29 +47,23 @@ public class CellEffectsRenderer : MonoBehaviour
         _cellsByKey[payload.Key] = new List<Vector3Int>(payload.Cells);
     }
 
-    private Tilemap CreateTilemap(string key, CellEffectDescriptor descriptor)
+    private Tilemap CreateTilemap(string key, Material material)
     {
         var go = new GameObject($"CellEffect_{key}");
         go.transform.SetParent(_targetGrid.transform, false);
 
         var tilemap = go.AddComponent<Tilemap>();
+        if (_templateTilemap != null)
+        {
+            tilemap.orientation = _templateTilemap.orientation;
+            tilemap.tileAnchor  = _templateTilemap.tileAnchor;
+        }
         var renderer = go.AddComponent<TilemapRenderer>();
         renderer.sortingLayerName = _sortingLayerName;
         renderer.sortingOrder = _baseSortingOrder + _sortingCounter++;
-
-        var mat = new Material(_effectMaterialTemplate);
-        renderer.sharedMaterial = mat;
-        ApplyDescriptorToMaterial(mat, descriptor);
+        renderer.sharedMaterial = new Material(material);
 
         _tilemapByKey[key] = tilemap;
         return tilemap;
-    }
-
-    private void ApplyDescriptorToMaterial(Material mat, CellEffectDescriptor descriptor)
-    {
-        mat.SetTexture(s_MainTex, descriptor.Texture != null ? descriptor.Texture : Texture2D.whiteTexture);
-        mat.SetColor(s_Color, descriptor.Color);
-        mat.SetFloat(s_Mode, (float)descriptor.Mode);
-        mat.SetVector(s_Params, descriptor.Params);
     }
 }

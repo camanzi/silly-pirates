@@ -59,7 +59,9 @@
       "Bash(cd C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates *)",
       "Bash(Select-String -Pattern \"\\(Turn|Combat|Manager\\)\")",
       "Bash(xargs cat)",
-      "PowerShell(head *)"
+      "PowerShell(head *)",
+      "Bash(xargs grep -l \"OnEffectReceived\\\\|CellEffectChannelListener\")",
+      "Bash(grep -E \"\\\\.\\(asset|cs\\)$\")"
     ]
   },
   "hooks": {

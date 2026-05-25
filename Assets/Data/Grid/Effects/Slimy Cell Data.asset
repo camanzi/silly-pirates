@@ -15,9 +15,6 @@ MonoBehaviour:
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
   _effectChannel: {fileID: 11400000, guid: cccfa9f09a7271f4a86b5b07bcdf1881, type: 2}
   _cellCostRegistry: {fileID: 11400000, guid: ab568e1a11cac39458b00ef542aafea0, type: 2}
-  _texture: {fileID: 0}
-  _color: {r: 0, g: 1, b: 0, a: 1}
-  _animMode: 2
-  _animParams: {x: 0.05, y: 0, z: 0, w: 0}
+  _material: {fileID: 2100000, guid: b59e3a86dd27cbd419f4048b5bec464a, type: 2}
   _additionalMoveCost: 1
-  _cellDurationInTurns: 3
+  _cellDurationInTurns: 5

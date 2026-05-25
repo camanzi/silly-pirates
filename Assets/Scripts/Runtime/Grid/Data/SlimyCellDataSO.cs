@@ -10,10 +10,7 @@ public class SlimyCellDataSO : ScriptableObject, ICellCostModifier
     [SerializeField] private CellCostRegistrySO _cellCostRegistry;
 
     [Header("Visual")]
-    [SerializeField] private Texture2D _texture;
-    [SerializeField] private Color _color = Color.green;
-    [SerializeField] private CellEffectAnimMode _animMode = CellEffectAnimMode.Scroll;
-    [SerializeField] private Vector4 _animParams = new(0.05f, 0f, 0f, 0f);
+    [SerializeField] private Material _material;
 
     [Header("Config")]
     [SerializeField] private int _additionalMoveCost = 1;
@@ -68,12 +65,6 @@ public class SlimyCellDataSO : ScriptableObject, ICellCostModifier
         {
             Key = "slimy",
             Cells = cells,
-            Descriptor = new CellEffectDescriptor
-            {
-                Texture = _texture,
-                Color = _color,
-                Mode = _animMode,
-                Params = _animParams
-            }
+            Material = _material
         });
 }

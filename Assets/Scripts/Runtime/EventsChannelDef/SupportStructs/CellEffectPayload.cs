@@ -5,5 +5,5 @@ public struct CellEffectPayload
 {
     public string Key;
     public List<Vector3Int> Cells;
-    public CellEffectDescriptor Descriptor;
+    public Material Material;
 }
