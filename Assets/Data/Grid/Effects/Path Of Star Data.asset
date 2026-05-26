@@ -15,9 +15,6 @@ MonoBehaviour:
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _effectChannel: {fileID: 11400000, guid: cccfa9f09a7271f4a86b5b07bcdf1881, type: 2}
-  _texture: {fileID: 2800000, guid: 7352e05e7b5a5bd42b7a9edef5c2f5a7, type: 3}
-  _color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  _animMode: 1
-  _animParams: {x: 1.5, y: 0.3, z: 1, w: 0}
+  _material: {fileID: 2100000, guid: 2325965f599ce8b489d2e4ea8f807251, type: 2}
   _avDiscountPercentage: 20
   _cellDurationInTurns: 3

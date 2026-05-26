@@ -148,7 +148,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -1283,7 +1283,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 1, y: 0.82421875, z: 0}
@@ -1539,10 +1539,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CellEffectsRenderer
   _targetGrid: {fileID: 624325162096680193}
   _templateTilemap: {fileID: 3207077314575919727}
-  _effectMaterialTemplate: {fileID: 2100000, guid: e4b826cbdc0f0684bac27f550da06921, type: 2}
   _effectTile: {fileID: 11400000, guid: 5f63ff8e13a236f4e91dc6f1cb67d51d, type: 2}
   _sortingLayerName: Default
-  _baseSortingOrder: 5
+  _baseSortingOrder: 0
 --- !u!114 &700315522822921877
 MonoBehaviour:
   m_ObjectHideFlags: 0
