@@ -5,6 +5,7 @@ using UnityEngine;
 public class HealthController : MonoBehaviour, IDamageable
 {
     [SerializeField] private TurnAgentDataSO _agentData;
+    [SerializeField] private float _standaloneMaxHp;
     [SerializeField] private List<HealthBehaviorSO> _baseBehaviors;
     [SerializeField] private DamageEventChannel _showDamageUIEventChannel;
 
@@ -12,7 +13,7 @@ public class HealthController : MonoBehaviour, IDamageable
     private float _currentHp;
 
     public float CurrentHp => _currentHp;
-    public float MaxHp => _agentData.MaxHp;
+    public float MaxHp => _agentData != null ? _agentData.MaxHp : _standaloneMaxHp;
     public bool IsAlive => _currentHp > 0f;
 
     public event Action<float> OnHpChanged;
@@ -26,7 +27,7 @@ public class HealthController : MonoBehaviour, IDamageable
             _agentData = GetComponent<ITurnAgent>()?.AgentData;
 
         for (int i = 0; i < _baseBehaviors.Count; i++) _behaviors.Add(Instantiate(_baseBehaviors[i]));
-        _currentHp = _agentData != null ? _agentData.MaxHp : 0f;
+        _currentHp = MaxHp;
     }
 
     private void OnEnable()

@@ -61,7 +61,12 @@
       "Bash(xargs cat)",
       "PowerShell(head *)",
       "Bash(xargs grep -l \"OnEffectReceived\\\\|CellEffectChannelListener\")",
-      "Bash(grep -E \"\\\\.\\(asset|cs\\)$\")"
+      "Bash(grep -E \"\\\\.\\(asset|cs\\)$\")",
+      "Bash(dir C:\\\\Users\\\\loren\\\\git\\\\Unity\\\\silly-pirates\\\\Assets\\\\Scripts\\\\Runtime\\\\Combat *)",
+      "Bash(xargs grep -l \"class.*Part\\\\|ComponentPart\\\\|SubComponent\")",
+      "Bash(xargs grep -l \"interface IInteractableElement\")",
+      "Bash(grep -E \"\\\\.\\(cs|asset\\)$\")",
+      "Bash(xargs grep -l \"interface ITargettable\")"
     ]
   },
   "hooks": {

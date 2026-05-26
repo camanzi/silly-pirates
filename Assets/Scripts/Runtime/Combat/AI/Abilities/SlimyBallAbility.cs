@@ -8,7 +8,7 @@ public class SlimyBallAbility : EnemyAbilityBase
     [SerializeField] private int _baseDamage = 15;
     [SerializeField] private SlimyCellDataSO _slimyCellData;
 
-    public override float Score(AIContext context, out TargetingData targeting)
+    protected override float ComputeScore(AIContext context, out TargetingData targeting)
     {
         var candidates = new List<(ITargettable target, float dist)>();
 

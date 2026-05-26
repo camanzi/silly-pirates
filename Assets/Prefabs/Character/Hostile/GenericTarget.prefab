@@ -180,7 +180,6 @@ MonoBehaviour:
   _onAPConsumedEventChannel: {fileID: 11400000, guid: 066571a1e47dfaa48b2fe2b5ed844848, type: 2}
   _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
   _spriteRenderer: {fileID: 2611006998671086757}
-  _enemyTurnDriver: {fileID: 0}
 --- !u!114 &5641640005406227769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,8 +242,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthController
   _agentData: {fileID: 0}
+  _standaloneMaxHp: 0
   _baseBehaviors: []
-  _damageEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
+  _showDamageUIEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
 --- !u!114 &1123212999449217133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,7 +274,7 @@ MonoBehaviour:
         GUID:
           m_Value0: 1
           m_Value1: 0
-        Name: Agent
+        Name: Self
         m_Value: {fileID: 3566868596823550263}
     - rid: 3650710072783274353
       type: {class: 'BlackboardVariable`1[[TurnController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}

@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1228960839652886534, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _agentData
+      value: 
+      objectReference: {fileID: 11400000, guid: 87e5e3dec7488154499e58a9cbe64c94, type: 2}
     - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_Name
       value: BigEvilCube

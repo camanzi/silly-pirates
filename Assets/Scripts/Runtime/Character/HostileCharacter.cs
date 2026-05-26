@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(OutlinerHelper))]
-public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent, IHealthOwner
+public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent, IHealthOwner, IPartOwner
 {
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
@@ -53,13 +53,18 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     private OutlinerHelper _outlinerHelper;
     private HealthController _healthController;
     private EnemyTurnDriver _enemyTurnDriver;
+    private EnemyPartController _partController;
 
     void Awake()
     {
         _outlinerHelper = GetComponent<OutlinerHelper>();
         _healthController = GetComponent<HealthController>();
         _enemyTurnDriver = GetComponent<EnemyTurnDriver>();
+        _partController = GetComponent<EnemyPartController>();
     }
+
+    public bool IsPartFunctional(EnemyPartSO part)
+        => _partController == null || _partController.IsPartFunctional(part);
 
     protected virtual void OnEnable()
     {
@@ -97,6 +102,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public async void OnStartingTurn()
     {
         _healthController?.OnTurnStart();
+        _partController?.OnTurnStart();
         this.HandleStartingTurn();
         this.EmitProximityCheck(ProximityPayload.Empty);
         await _enemyTurnDriver.ExecuteTurnAsync(destroyCancellationToken);
