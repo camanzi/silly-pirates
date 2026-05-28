@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 367c144dcf3480649be1c904f296171e, type: 3}
+  m_Name: Slimy Curse Ability
+  m_EditorClassIdentifier: Assembly-CSharp::SlimyCurseAbility
+  _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  showTrajectory: 0
+  trajectoryConfigData: {fileID: 11400000, guid: ef232f08ea2afcd448a72b4afc59923c, type: 2}
+  _icon: {fileID: 0}
+  _requiredPart: {fileID: 0}
+  _basePriority: 0.5
+  _cursePassive: {fileID: 11400000, guid: 1f5b98cd91e555d4a888a8f0e6bbfe95, type: 2}
