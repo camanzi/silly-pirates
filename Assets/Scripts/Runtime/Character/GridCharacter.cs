@@ -204,4 +204,6 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
         this.HandleStartingTurn();
         this.EmitProximityCheck(new ProximityPayload(this, AgentData.InteractionRange));
     }
+
+    public void OnContinuingTurn() { }
 }

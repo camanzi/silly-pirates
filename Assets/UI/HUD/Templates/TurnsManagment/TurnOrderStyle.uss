@@ -83,3 +83,7 @@
     -unity-text-outline-width: 0.5px;
     font-size: 15px;
 }
+
+.card-container--sub-turn {
+    padding-left: 20px;
+}

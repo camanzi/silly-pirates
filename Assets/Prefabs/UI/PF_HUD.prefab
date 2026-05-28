@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnOrderController
   _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
+  _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _turnCardTemplate: {fileID: 9197481963319205126, guid: 9cde3d66e09a68d49acbd54768449e27, type: 3}
 --- !u!114 &5939637095325751624
 MonoBehaviour:
@@ -170,6 +171,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
         m_MethodName: HandleAgentActivated
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8269550459025187014}
+        m_TargetAssemblyTypeName: TurnOrderController, Assembly-CSharp
+        m_MethodName: RefreshList
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

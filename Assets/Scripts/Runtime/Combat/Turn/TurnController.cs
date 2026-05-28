@@ -120,13 +120,25 @@ public class TurnController : MonoBehaviour
 
                 _turnOrderData.StartActiveTurn();
 
-                _currentTurnState.SetActiveCharacter(nextEntity);
-                nextEntity.OnStartingTurn();
-                
-                await _currentTurnState.WaitUntilTurnFinished();
+                int actionsPerTurn = nextEntity.AgentData.ActionsPerTurn;
+                bool agentStillActive = true;
+
+                for (int action = 0; action < actionsPerTurn; action++)
+                {
+                    _currentTurnState.SetActiveCharacter(nextEntity, action);
+                    if (action == 0) nextEntity.OnStartingTurn();
+                    else nextEntity.OnContinuingTurn();
+
+                    await _currentTurnState.WaitUntilTurnFinished();
+
+                    agentStillActive = _turnOrderData.TurnQueue.Count > 0
+                                       && _turnOrderData.TurnQueue[0].Agent == nextEntity;
+                    if (!agentStillActive) break;
+                }
 
                 _onAnyTurnEnded?.RaiseEvent(nextEntity);
-                _turnOrderData.CompleteActiveTurn();
+                if (agentStillActive)
+                    _turnOrderData.CompleteActiveTurn();
             }
         } 
         catch (OperationCanceledException)

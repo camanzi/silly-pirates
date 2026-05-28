@@ -28,15 +28,30 @@ public partial class EvaluateAndSelectAbilityAction : Unity.Behavior.Action
         }
 
         var context = new AIContext(hostile, aiData.TurnOrderData, aiData.GridStateData);
+        var used = hostile.UsedAbilitiesThisTurn;
 
         float bestScore = float.NegativeInfinity;
         EnemyAbilityBase bestAbility = null;
         TargetingData bestTargeting = default;
 
+        float bestFallbackScore = float.NegativeInfinity;
+        EnemyAbilityBase bestFallback = null;
+        TargetingData bestFallbackTargeting = default;
+
         foreach (var ability in aiData.Abilities)
         {
             if (ability == null) continue;
+            if (!ability.UnlimitedUse && used.Contains(ability)) continue;
+
             float score = ability.Score(context, out TargetingData targeting);
+
+            if (ability.UnlimitedUse && score > bestFallbackScore)
+            {
+                bestFallbackScore = score;
+                bestFallback = ability;
+                bestFallbackTargeting = targeting;
+            }
+
             if (score > bestScore)
             {
                 bestScore = score;
@@ -45,14 +60,21 @@ public partial class EvaluateAndSelectAbilityAction : Unity.Behavior.Action
             }
         }
 
-        if (bestAbility == null || bestScore <= float.NegativeInfinity)
+        bool mainValid = bestAbility != null && bestScore > float.NegativeInfinity;
+        bool fallbackValid = bestFallback != null && bestFallbackScore > float.NegativeInfinity;
+
+        if (!mainValid && !fallbackValid)
         {
             LogFailure("No valid ability found.");
             return Status.Failure;
         }
 
-        SelectedAbility.Value = bestAbility;
-        SelectedTarget.Value = bestTargeting.selectedTarget as MonoBehaviour;
+        EnemyAbilityBase selected = mainValid ? bestAbility : bestFallback;
+        TargetingData selectedTargeting = mainValid ? bestTargeting : bestFallbackTargeting;
+
+        used.Add(selected);
+        SelectedAbility.Value = selected;
+        SelectedTarget.Value = selectedTargeting.selectedTarget as MonoBehaviour;
 
         return Status.Success;
     }

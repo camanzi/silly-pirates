@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -51,6 +52,8 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public HealthController Health => _healthController;
     
+    public readonly List<EnemyAbilityBase> UsedAbilitiesThisTurn = new();
+
     private int _remainingActionPoints;
     private OutlinerHelper _outlinerHelper;
     private HealthController _healthController;
@@ -103,10 +106,16 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public async void OnStartingTurn()
     {
+        UsedAbilitiesThisTurn.Clear();
         _healthController?.OnTurnStart();
         _partController?.OnTurnStart();
         this.HandleStartingTurn();
         this.EmitProximityCheck(ProximityPayload.Empty);
+        await _enemyTurnDriver.ExecuteTurnAsync(destroyCancellationToken);
+    }
+
+    public async void OnContinuingTurn()
+    {
         await _enemyTurnDriver.ExecuteTurnAsync(destroyCancellationToken);
     }
 

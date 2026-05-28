@@ -8,6 +8,10 @@ public abstract class EnemyAbilityBase : AbilityBase
     [Header("AI Scoring")]
     [Tooltip("Base priority of this ability. Higher values make it more likely to be chosen over other abilities, all else equal.")]
     [SerializeField] private float _basePriority = 0f;
+    [Tooltip("When true, this ability is never excluded by the sub-turn deduplication filter and always acts as a fallback candidate.")]
+    [SerializeField] private bool _unlimitedUse = false;
+
+    public bool UnlimitedUse => _unlimitedUse;
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache) => AbilityPreviewData.Empty;
 

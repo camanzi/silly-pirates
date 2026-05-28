@@ -17,9 +17,13 @@ public class TurnAgentDataSO : ScriptableObject
     [Tooltip("Interaction range")]
     [SerializeField] private int _interactionRange = 1;
 
+    [Tooltip("Number of consecutive actions this agent takes per turn cycle")]
+    [SerializeField] private int _actionsPerTurn = 1;
+
     public int InitialAgility => _initialAgility;
     public int MaxActionPointsPerTurn => _maxActionPointsPerTurn;
     public int MaxMovementPoints => _maxMovementPoints;
     public int InteractionRange => _interactionRange;
     public float MaxHp => _maxHp;
+    public int ActionsPerTurn => _actionsPerTurn;
 }

@@ -12,10 +12,14 @@ public class TurnStateSO : ScriptableObject
     private ITurnAgent _activeAgent;
     private AwaitableCompletionSource _turnTaskSource;
     private bool _isPlayerTurn = false;
+    private int _currentActionIndex;
 
-    public void SetActiveCharacter(ITurnAgent agent)
+    public int CurrentActionIndex => _currentActionIndex;
+
+    public void SetActiveCharacter(ITurnAgent agent, int actionIndex = 0)
     {
         _activeAgent = agent;
+        _currentActionIndex = actionIndex;
         _turnTaskSource = new AwaitableCompletionSource();
 
         _isPlayerTurn = _activeAgent.CompareTag("Player");

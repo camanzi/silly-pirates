@@ -7,6 +7,7 @@ public partial class TurnCard : VisualElement
     private static readonly string USS_CLASS_CARD_CONTAINER = "card-container";
     private static readonly string USS_CLASS_ACTIVE = "turn-card-wrapper--active";
     private static readonly string USS_CLASS_WAITING = "turn-card-wrapper--waiting";
+    private static readonly string USS_CLASS_SUB_TURN = "card-container--sub-turn";
     
     // Elementi UI (cached per performance)
     private VisualElement _cardWrapper;
@@ -80,6 +81,15 @@ public partial class TurnCard : VisualElement
         {
             _characterIcon.style.backgroundImage = new StyleBackground(_data.Icon);
         }
+        UpdateSubTurnState();
+    }
+
+    private void UpdateSubTurnState()
+    {
+        if (_data.IsSubTurn)
+            AddToClassList(USS_CLASS_SUB_TURN);
+        else
+            RemoveFromClassList(USS_CLASS_SUB_TURN);
     }
     
     private void UpdateActiveState()
