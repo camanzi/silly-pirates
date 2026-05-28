@@ -8,6 +8,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
     [SerializeField] private TurnRenderingAgentDataSO _renderingAgentData;
+    [SerializeField] private EnemyCritStatsSO _critStats;
 
     [Header("External references")]
     [SerializeField] private SelectionContextSO _selectionContextSO;
@@ -28,6 +29,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
     public Transform Transform => transform;
+    public EnemyCritStatsSO CritStats => _critStats;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
     public TurnRenderingAgentDataSO RenderingData => _renderingAgentData;
     public TurnAgentDataSO AgentData => _agentData;

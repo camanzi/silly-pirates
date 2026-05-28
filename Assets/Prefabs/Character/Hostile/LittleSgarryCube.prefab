@@ -89,6 +89,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: dd7a936bd0ea5fa4c9ee57fc9eef7c82, type: 2}
     - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _critStats
+      value: 
+      objectReference: {fileID: 11400000, guid: 1a95d8cddf02ac248b0ade2d5d85aa91, type: 2}
+    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _renderingAgentData
       value: 
       objectReference: {fileID: 11400000, guid: 374959d3cd7b181458e15c616239e5c7, type: 2}

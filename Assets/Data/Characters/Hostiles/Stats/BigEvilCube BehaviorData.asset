@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BigEvilCube BehaviorData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAIDataSO
   _abilities:
-  - {fileID: 11400000, guid: 7b0723c246efc0a4fbcd34dacccb0c2a, type: 2}
+  - {fileID: 11400000, guid: f396f21627e5c614caeb1d317e25b13e, type: 2}
+  - {fileID: 11400000, guid: 6de6e1236e7ad044387fa382fabbf42d, type: 2}
   _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}

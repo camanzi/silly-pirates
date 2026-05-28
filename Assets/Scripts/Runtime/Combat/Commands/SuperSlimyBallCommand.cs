@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
 
-public class SlimyBallCommand : ICommand
+public class SuperSlimyBallCommand : ICommand
 {
     private readonly IInteractableElement _caster;
     private readonly ITargettable _target;
@@ -11,15 +12,16 @@ public class SlimyBallCommand : ICommand
     private readonly DamageType _damageType;
     private readonly SlimyCellDataSO _slimyCellData;
     private readonly Vector3Int _targetCell;
+    private readonly int _slimeRadius;
     private readonly EnemyCritStatsSO _critStats;
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public SlimyBallCommand(IInteractableElement caster, ITargettable target,
-                             GameObject projectilePrefab, TrajectoryConfigsSO trajectoryConfig, int damage,
-                             DamageType damageType = DamageType.Physical,
-                             SlimyCellDataSO slimyCellData = null, Vector3Int targetCell = default,
-                             EnemyCritStatsSO critStats = null)
+    public SuperSlimyBallCommand(IInteractableElement caster, ITargettable target,
+                                  GameObject projectilePrefab, TrajectoryConfigsSO trajectoryConfig, int damage,
+                                  DamageType damageType = DamageType.Physical,
+                                  SlimyCellDataSO slimyCellData = null, Vector3Int targetCell = default,
+                                  int slimeRadius = 1, EnemyCritStatsSO critStats = null)
     {
         _caster = caster;
         _target = target;
@@ -29,6 +31,7 @@ public class SlimyBallCommand : ICommand
         _damageType = damageType;
         _slimyCellData = slimyCellData;
         _targetCell = targetCell;
+        _slimeRadius = slimeRadius;
         _critStats = critStats;
     }
 
@@ -74,9 +77,18 @@ public class SlimyBallCommand : ICommand
             healthOwner.Health.TakeDamage(new DamagePayload(damage, _damageType) { IsCritical = isCrit });
         }
 
-        _slimyCellData?.Apply(_targetCell);
+        ApplyAoESlime();
 
         GameObject.Destroy(projectile);
+    }
+
+    private void ApplyAoESlime()
+    {
+        if (_slimyCellData == null) return;
+
+        IAreaShape circle = ShapeFactory.GetShape(ShapeType.Circle);
+        foreach (Vector3 cell in circle.GetCells(_targetCell, _slimeRadius, _targetCell))
+            _slimyCellData.Apply(Vector3Int.FloorToInt(cell));
     }
 
     public void Undo() { }

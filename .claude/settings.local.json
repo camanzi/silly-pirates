@@ -66,7 +66,10 @@
       "Bash(xargs grep -l \"class.*Part\\\\|ComponentPart\\\\|SubComponent\")",
       "Bash(xargs grep -l \"interface IInteractableElement\")",
       "Bash(grep -E \"\\\\.\\(cs|asset\\)$\")",
-      "Bash(xargs grep -l \"interface ITargettable\")"
+      "Bash(xargs grep -l \"interface ITargettable\")",
+      "mcp__UnityMCP__validate_script",
+      "Bash(xargs grep -l \"UnityEngine.Random\\\\|Random.Range\")",
+      "mcp__UnityMCP__manage_prefabs"
     ]
   },
   "hooks": {

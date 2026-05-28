@@ -2,10 +2,14 @@ using UnityEngine;
 
 public abstract class EnemyAbilityBase : AbilityBase
 {
+    [Header("Composite enemy configuration")]
     [SerializeField] private EnemyPartSO _requiredPart;
 
-    public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache)
-        => AbilityPreviewData.Empty;
+    [Header("AI Scoring")]
+    [Tooltip("Base priority of this ability. Higher values make it more likely to be chosen over other abilities, all else equal.")]
+    [SerializeField] private float _basePriority = 0f;
+
+    public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache) => AbilityPreviewData.Empty;
 
     /// <summary>
     /// Returns float.NegativeInfinity if preconditions fail or no valid target exists.
@@ -14,7 +18,9 @@ public abstract class EnemyAbilityBase : AbilityBase
     public float Score(AIContext context, out TargetingData targeting)
     {
         if (!MeetsPreconditions(context)) { targeting = default; return float.NegativeInfinity; }
-        return ComputeScore(context, out targeting);
+        float raw = ComputeScore(context, out targeting);
+        if (raw == float.NegativeInfinity) return float.NegativeInfinity;
+        return _basePriority + raw;
     }
 
     protected virtual bool MeetsPreconditions(AIContext context)

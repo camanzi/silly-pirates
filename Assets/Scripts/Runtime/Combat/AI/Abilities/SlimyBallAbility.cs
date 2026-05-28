@@ -4,8 +4,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SlimyBall Ability", menuName = "Abilities/Enemy/Slimy Ball Ability")]
 public class SlimyBallAbility : EnemyAbilityBase
 {
+    [Header("SlimyBall ability configs")]
     [SerializeField] private GameObject _projectile;
     [SerializeField] private int _baseDamage = 15;
+    [SerializeField] private DamageType _damageType = DamageType.Physical;
     [SerializeField] private SlimyCellDataSO _slimyCellData;
 
     protected override float ComputeScore(AIContext context, out TargetingData targeting)
@@ -71,8 +73,10 @@ public class SlimyBallAbility : EnemyAbilityBase
             _projectile,
             trajectoryConfigData,
             _baseDamage,
+            _damageType,
             _slimyCellData,
-            targetingData.Value.cellPosition
+            targetingData.Value.cellPosition,
+            (caster as HostileCharacter)?.CritStats
         );
     }
 }

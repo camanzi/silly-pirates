@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(EquipmentStateMachine))]
-// FIXME Later, questo dovrá diventare una macchina a stati in piena regola, ma per il momento va bene cosí
 public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentStats, ITargettable
 {
     [Header("Equipment Stats")]
