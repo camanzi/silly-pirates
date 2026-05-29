@@ -107,6 +107,15 @@ public class TurnOrderDataSO : ScriptableObject
         _onQueueUpdated?.RaiseEvent();
     }
 
+    public void AdjustAgentAV(ITurnAgent agent, float avDelta)
+    {
+        var state = _turnQueue.Find(s => s.Agent == agent);
+        if (state == null || state.CurrentAV == 0f) return;
+        state.CurrentAV = Mathf.Max(1f, state.CurrentAV + avDelta);
+        SortQueue();
+        _onQueueUpdated?.RaiseEvent();
+    }
+
     private float CalculateBaseAV(ITurnAgent a)
     {
         float speed = Mathf.Max(1, a.EffectiveAgility);

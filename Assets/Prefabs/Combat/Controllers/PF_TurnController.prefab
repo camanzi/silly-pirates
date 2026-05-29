@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3365122536592145621}
   - component: {fileID: 4529232175609205763}
   - component: {fileID: 5873374114270933119}
+  - component: {fileID: 9022829285983271794}
   m_Layer: 0
   m_Name: PF_TurnController
   m_TagString: Untagged
@@ -102,6 +103,34 @@ MonoBehaviour:
       - m_Target: {fileID: 3365122536592145621}
         m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
         m_MethodName: OnAgentLeave
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &9022829285983271794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3970896200464826270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 001f6d6d01318e340be53fdb3c38a1fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentAVDeltaChannelListener
+  eventChannel: {fileID: 11400000, guid: 63c2b4e4503f0c04083fedc24ccd57b5, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3365122536592145621}
+        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_MethodName: OnAgilityChanged
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

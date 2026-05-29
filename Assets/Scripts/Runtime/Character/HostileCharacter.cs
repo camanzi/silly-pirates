@@ -6,7 +6,7 @@ using UnityEngine;
 public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent, IHealthOwner, IPartOwner
 {
     [Header("General configurations")]
-    [SerializeField] private bool _isBoss;
+    [SerializeField] private EnemyRole _role;
     [SerializeField] private string _displayName;
 
     [Header("Turn Agent configurations")]
@@ -25,6 +25,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [SerializeField] private TurnAgentEventChannel _onAgentLeave;
     [SerializeField] private TurnStateSO _currentTurnStateData;
     [SerializeField] private IntEventChannel _onAPConsumedEventChannel;
+    [SerializeField] private AgentAVDeltaEventChannel _onAgilityChangedChannel;
 
     [Header("Proximity Logic")]
     [SerializeField] protected InteractableProximityEventChannel _proximityChannel;
@@ -32,8 +33,9 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [Header("Hostile character configs")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
-    public bool IsBoss => _isBoss;
+    public EnemyRole Role => _role;
     public string DisplayName => _displayName;
+    public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
 
     public Transform Transform => transform;
     public EnemyCritStatsSO CritStats => _critStats;
@@ -54,7 +56,23 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         set => _remainingActionPoints = value;
     }
 
-    public int EffectiveAgility => AgentData.InitialAgility;
+    public int EffectiveAgility
+    {
+        get
+        {
+            if (_passiveAbilityController == null) return AgentData.InitialAgility;
+            int totalFlat = 0;
+            float totalPct = 0f;
+            _passiveAbilityController.GetModifiers(_agilityModifiers);
+            foreach (var m in _agilityModifiers)
+            {
+                totalFlat += m.GetFlatAgilityBonus();
+                totalPct  += m.GetPercentageAgilityBonus();
+            }
+            float modified = (AgentData.InitialAgility + totalFlat) * (1f + totalPct / 100f);
+            return Mathf.Max(1, Mathf.RoundToInt(modified));
+        }
+    }
 
     public HealthController Health => _healthController;
     
@@ -62,10 +80,14 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public readonly Dictionary<EnemyAbilityBase, int> AbilityCooldowns = new();
 
     private int _remainingActionPoints;
+    private int _lastKnownEffectiveAgility;
     private OutlinerHelper _outlinerHelper;
     private HealthController _healthController;
     private EnemyTurnDriver _enemyTurnDriver;
     private EnemyPartController _partController;
+    private PassiveAbilityController _passiveAbilityController;
+    private readonly List<IAgilityModifier> _agilityModifiers = new();
+    private readonly List<IOnTurnStart> _turnStartHandlers = new();
 
     void Awake()
     {
@@ -73,6 +95,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         _healthController = GetComponent<HealthController>();
         _enemyTurnDriver = GetComponent<EnemyTurnDriver>();
         _partController = GetComponent<EnemyPartController>();
+        _passiveAbilityController = GetComponent<PassiveAbilityController>();
     }
 
     public bool IsPartFunctional(EnemyPartSO part)
@@ -87,6 +110,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
             _healthController.OnTakeDamage += OnTakeDamageFeedbackEffect;
             _healthController.OnHealReceived += OnHealReceivedFeedbackEffect;
         }
+        if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged += HandlePassivesChanged;
     }
 
     protected virtual void OnDisable()
@@ -97,6 +121,19 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
             _healthController.OnTakeDamage -= OnTakeDamageFeedbackEffect;
             _healthController.OnHealReceived -= OnHealReceivedFeedbackEffect;
         }
+        if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged -= HandlePassivesChanged;
+    }
+
+    private void Start() => _lastKnownEffectiveAgility = EffectiveAgility;
+
+    private void HandlePassivesChanged()
+    {
+        int newAgility = EffectiveAgility;
+        if (newAgility == _lastKnownEffectiveAgility) return;
+        float oldBaseAV = 10000f / Mathf.Max(1, _lastKnownEffectiveAgility);
+        float newBaseAV = 10000f / Mathf.Max(1, newAgility);
+        _onAgilityChangedChannel?.RaiseEvent(new AgentAVDeltaPayload { Agent = this, AVDelta = newBaseAV - oldBaseAV });
+        _lastKnownEffectiveAgility = newAgility;
     }
 
      public void OnHoverEnter() => this.HandlePointerEnter();
@@ -120,6 +157,11 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         UsedAbilitiesThisTurn.Clear();
         _healthController?.OnTurnStart();
         _partController?.OnTurnStart();
+        if (_passiveAbilityController != null)
+        {
+            _passiveAbilityController.GetModifiers(_turnStartHandlers);
+            foreach (var h in _turnStartHandlers) h.OnTurnStart();
+        }
         this.HandleStartingTurn();
         this.EmitProximityCheck(ProximityPayload.Empty);
         await _enemyTurnDriver.ExecuteTurnAsync(destroyCancellationToken);

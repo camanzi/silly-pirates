@@ -26,7 +26,7 @@ public class BossHealthBarController : MonoBehaviour
 
     public void OnAgentJoined(ITurnAgent agent)
     {
-        if (agent is not HostileCharacter hostile || !hostile.IsBoss) return;
+        if (agent is not HostileCharacter hostile || hostile.Role != EnemyRole.Boss) return;
         UnbindBoss();
         _bossHealth = hostile.Health;
         _bossHealth.OnHpChanged += OnBossHpChanged;

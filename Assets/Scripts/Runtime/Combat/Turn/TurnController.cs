@@ -149,6 +149,8 @@ public class TurnController : MonoBehaviour
 
     public void OnAgentJoin(ITurnAgent agent) => _turnOrderData.AddEntity(agent);
 
+    public void OnAgilityChanged(AgentAVDeltaPayload payload) => _turnOrderData.AdjustAgentAV(payload.Agent, payload.AVDelta);
+
     public void OnAgentLeave(ITurnAgent agent)
     {
         _turnOrderData.RemoveEntity(agent);

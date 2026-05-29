@@ -387,9 +387,11 @@ MonoBehaviour:
       m_Calls: []
   _agentData: {fileID: 11400000, guid: 9e770d7783fee844896e751edd7cb259, type: 2}
   _renderingAgentData: {fileID: 11400000, guid: 96384d747012b6a40ab148885f2db6cf, type: 2}
+  _displayName: 
   _onAgentJoin: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
   _onAgentLeave: {fileID: 11400000, guid: 4c6b429f294d38043a95fa576ef2b83c, type: 2}
   _onAPChangedEventChannel: {fileID: 11400000, guid: 066571a1e47dfaa48b2fe2b5ed844848, type: 2}
+  _onAgilityChangedChannel: {fileID: 11400000, guid: 63c2b4e4503f0c04083fedc24ccd57b5, type: 2}
 --- !u!65 &5111650344878243217
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -469,6 +471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PassiveAbilityController
   _basePassivesSO:
   - {fileID: 11400000, guid: 2731b8e86265abc46ab6b367e1176471, type: 2}
+  _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
 --- !u!114 &7415223762041215643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -482,6 +485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthController
   _agentData: {fileID: 0}
+  _standaloneMaxHp: 0
   _baseBehaviors: []
   _showDamageUIEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
 --- !u!54 &6399273607978963194

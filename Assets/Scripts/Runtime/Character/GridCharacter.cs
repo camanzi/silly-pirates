@@ -15,6 +15,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     [SerializeField] private TurnAgentEventChannel _onAgentJoin;
     [SerializeField] private TurnAgentEventChannel _onAgentLeave;
     [SerializeField] private IntEventChannel _onAPChangedEventChannel;
+    [SerializeField] private AgentAVDeltaEventChannel _onAgilityChangedChannel;
 
     public TurnAgentDataSO AgentData => _agentData;
     public TurnRenderingAgentDataSO RenderingData => _renderingAgentData;
@@ -68,6 +69,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     }
     private int _remainingMovementPoints;
     private int _remainingActionPoints;
+    private int _lastKnownEffectiveAgility;
     private DirectionalSpriteController _directionalSpriteController;
     private PassiveAbilityController _passiveAbilityController;
     private HealthController _healthController;
@@ -125,12 +127,26 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
         base.OnEnable();
         OnCombatJoin();
         if (_healthController != null) _healthController.OnDeath += OnCombatLeave;
+        if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged += HandlePassivesChanged;
     }
 
     protected override void OnDisable()
     {
         base.OnDisable();
         if (_healthController != null) _healthController.OnDeath -= OnCombatLeave;
+        if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged -= HandlePassivesChanged;
+    }
+
+    private void Start() => _lastKnownEffectiveAgility = EffectiveAgility;
+
+    private void HandlePassivesChanged()
+    {
+        int newAgility = EffectiveAgility;
+        if (newAgility == _lastKnownEffectiveAgility) return;
+        float oldBaseAV = 10000f / Mathf.Max(1, _lastKnownEffectiveAgility);
+        float newBaseAV = 10000f / Mathf.Max(1, newAgility);
+        _onAgilityChangedChannel?.RaiseEvent(new AgentAVDeltaPayload { Agent = this, AVDelta = newBaseAV - oldBaseAV });
+        _lastKnownEffectiveAgility = newAgility;
     }
 
     public Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token)

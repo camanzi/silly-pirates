@@ -1,0 +1,44 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "SpeedBoost Passive", menuName = "Abilities/Character/Passives/Speed Boost")]
+public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnStart
+{
+    [Header("SpeedBoost configs")]
+    [SerializeField] private int _flatBonus = 10;
+    [SerializeField] private float _percentBonus = 40f;
+    [SerializeField] private int _durationInTurns = 6;
+
+    private static readonly HashSet<HostileCharacter> _activeTargets = new();
+
+    public static bool IsActiveOn(HostileCharacter hostile) => _activeTargets.Contains(hostile);
+
+    private PassiveAbilityController _controller;
+    private int _turnCount;
+
+    public override void OnEquip(PassiveAbilityController controller)
+    {
+        _controller = controller;
+        _turnCount = 0;
+        if (controller.TryGetComponent<HostileCharacter>(out var h))
+            _activeTargets.Add(h);
+    }
+
+    public override void OnUnequip(PassiveAbilityController controller)
+    {
+        if (controller.TryGetComponent<HostileCharacter>(out var h))
+            _activeTargets.Remove(h);
+        _controller = null;
+    }
+
+    int IAgilityModifier.GetFlatAgilityBonus() => _flatBonus;
+
+    float IAgilityModifier.GetPercentageAgilityBonus() => _percentBonus;
+
+    void IOnGlobalTurnStart.OnGlobalTurnStart()
+    {
+        _turnCount++;
+        if (_turnCount >= _durationInTurns)
+            _controller.RemovePassive(this);
+    }
+}

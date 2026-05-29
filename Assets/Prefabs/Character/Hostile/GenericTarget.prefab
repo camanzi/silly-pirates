@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 1228960839652886534}
   - component: {fileID: 1123212999449217133}
   - component: {fileID: 6697091672470467953}
+  - component: {fileID: 3596544409351883156}
   m_Layer: 0
   m_Name: GenericTarget
   m_TagString: Untagged
@@ -170,14 +171,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73726badcc2948b4b973fe691ddb4ba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HostileCharacter
+  _role: 0
+  _displayName: 
   _agentData: {fileID: 11400000, guid: 87e5e3dec7488154499e58a9cbe64c94, type: 2}
   _renderingAgentData: {fileID: 11400000, guid: 611d36b89888e0f42a231be9eb550a33, type: 2}
+  _critStats: {fileID: 0}
   _selectionContextSO: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
   _onAgentJoin: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
   _onAgentLeave: {fileID: 11400000, guid: 4c6b429f294d38043a95fa576ef2b83c, type: 2}
   _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _onAPConsumedEventChannel: {fileID: 11400000, guid: 066571a1e47dfaa48b2fe2b5ed844848, type: 2}
+  _onAgilityChangedChannel: {fileID: 11400000, guid: 63c2b4e4503f0c04083fedc24ccd57b5, type: 2}
   _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
   _spriteRenderer: {fileID: 2611006998671086757}
 --- !u!114 &5641640005406227769
@@ -307,6 +312,20 @@ MonoBehaviour:
   _aiData: {fileID: 0}
   _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _turnController: {fileID: 0}
+--- !u!114 &3596544409351883156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566868596823550263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3222ccdd9e33774886c27662c40781b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveAbilityController
+  _basePassivesSO: []
+  _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0
