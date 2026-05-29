@@ -21,6 +21,6 @@ MonoBehaviour:
   _basePriority: 0
   _unlimitedUse: 1
   _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}
-  _baseDamage: 15
+  _baseDamage: 170
   _damageType: 1
   _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}

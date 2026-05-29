@@ -20,5 +20,5 @@ MonoBehaviour:
   _requiredPart: {fileID: 0}
   _basePriority: 5
   _unlimitedUse: 0
-  _requiredAlternateTurns: 4
+  _requiredAlternateTurns: 2
   _passiveSO: {fileID: 11400000, guid: f7b8d933692195f4988e8eca08030099, type: 2}

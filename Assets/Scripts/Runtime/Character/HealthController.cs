@@ -29,6 +29,7 @@ public class HealthController : MonoBehaviour, IDamageable
 
         for (int i = 0; i < _baseBehaviors.Count; i++) _behaviors.Add(Instantiate(_baseBehaviors[i]));
         _currentHp = MaxHp;
+        OnHpChanged?.Invoke(_currentHp);
     }
 
     private void OnEnable()

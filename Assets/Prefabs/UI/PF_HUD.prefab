@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 5085973386943220704}
   - component: {fileID: 3946868697030411871}
   - component: {fileID: 7381703322447710225}
+  - component: {fileID: 5171537186858070485}
   m_Layer: 5
   m_Name: PF_HUD
   m_TagString: Untagged
@@ -305,6 +306,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 5171537186858070485}
+        m_TargetAssemblyTypeName: BossHealthBarController, Assembly-CSharp
+        m_MethodName: OnAgentJoined
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7381703322447710225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,3 +332,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActiveAbilityButtonController
   _hudDocument: {fileID: 2617577189569630218}
   _activeAbilityRequestChannel: {fileID: 11400000, guid: c7156c5950647164d90f40bc57c23d25, type: 2}
+--- !u!114 &5171537186858070485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f1537bbf0192954282e28abafd278c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossHealthBarController
+  _hudDocument: {fileID: 2617577189569630218}

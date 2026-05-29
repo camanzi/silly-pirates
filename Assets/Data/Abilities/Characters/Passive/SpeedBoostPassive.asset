@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19de1bab58668a447be991c6d3a8b332, type: 3}
   m_Name: SpeedBoostPassive
   m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostPassiveSO
-  _percentBonus: 20
+  _flatBonus: 50
+  _percentBonus: 15
   _durationInTurns: 6

@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealingTouchAbility
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
-  _icon: {fileID: 21300000, guid: efa9f7af19933a54d998b0d232d453fc, type: 3}
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
+  _icon: {fileID: 21300000, guid: efa9f7af19933a54d998b0d232d453fc, type: 3}
   _range: 1
   _apCost: 1
-  _flatHealAmount: 25
-  _healPercentage: 5
+  _flatHealAmount: 250
+  _healPercentage: 10

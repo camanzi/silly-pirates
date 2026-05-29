@@ -12,8 +12,11 @@ public class BossHealthBarController : MonoBehaviour
     private VisualElement _icon;
     private HealthController _bossHealth;
 
-    private void Awake()
+    private void Awake() => InitUI();
+
+    private void InitUI()
     {
+        if (_container != null) return;
         var root = _hudDocument.rootVisualElement;
         _container = root.Q<VisualElement>("boss-health-container");
         _fill = root.Q<VisualElement>("boss-bar-fill");
@@ -26,6 +29,7 @@ public class BossHealthBarController : MonoBehaviour
 
     public void OnAgentJoined(ITurnAgent agent)
     {
+        InitUI();
         if (agent is not HostileCharacter hostile || hostile.Role != EnemyRole.Boss) return;
         UnbindBoss();
         _bossHealth = hostile.Health;
