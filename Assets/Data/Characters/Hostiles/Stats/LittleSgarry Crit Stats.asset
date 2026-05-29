@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b401625e0b6a92b4fa3f84f1d9e26d1d, type: 3}
   m_Name: LittleSgarry Crit Stats
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCritStatsSO
-  _critRate: 20
+  _critRate: 35
   _critDMG: 100

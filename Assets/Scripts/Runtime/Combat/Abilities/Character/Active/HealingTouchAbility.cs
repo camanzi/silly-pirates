@@ -83,7 +83,6 @@ public class HealingTouchAbility : AbilityBase
         foreach (Vector3 cellV3 in circle.GetCells(casterPos, _range, casterPos))
         {
             Vector3Int cell = Vector3Int.FloorToInt(cellV3);
-            if (cell == casterPos) continue;
 
             if (tilemap != null)
             {

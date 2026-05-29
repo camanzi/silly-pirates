@@ -1,21 +1,25 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PartRegenBehavior", menuName = "Combat/Health Behaviors/Part Regen")]
-public class PartRegenBehaviorSO : HealthBehaviorSO
+public class PartRegenBehaviorSO : HealthBehaviorSO, IOnTurnStart
 {
     [SerializeField] private int _regenTurns;
 
+    private HealthController _controller;
     private int _turnsUntilRegen = -1;
+
+    public override void OnEquip(HealthController controller) => _controller = controller;
+    public override void OnUnequip(HealthController controller) => _controller = null;
 
     public override void OnDeath(HealthController controller) => _turnsUntilRegen = _regenTurns;
 
-    public override void OnTurnStart(HealthController controller)
+    void IOnTurnStart.OnTurnStart()
     {
         if (_turnsUntilRegen <= 0) return;
         if (--_turnsUntilRegen == 0)
         {
             _turnsUntilRegen = -1;
-            controller.Heal(controller.MaxHp);
+            _controller.Revive(_controller.MaxHp);
         }
     }
 }

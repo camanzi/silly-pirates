@@ -10,6 +10,7 @@ public class HealthController : MonoBehaviour, IDamageable
     [SerializeField] private DamageEventChannel _showDamageUIEventChannel;
 
     private List<HealthBehaviorSO> _behaviors = new();
+    private readonly List<IOnTurnStart> _turnStartHandlers = new();
     private float _currentHp;
 
     public float CurrentHp => _currentHp;
@@ -54,6 +55,13 @@ public class HealthController : MonoBehaviour, IDamageable
         ApplyHeal(amount);
     }
 
+    public void Revive(float hpAmount)
+    {
+        if (IsAlive) return;
+        _currentHp = Mathf.Clamp(hpAmount, 1f, MaxHp);
+        OnHpChanged?.Invoke(_currentHp);
+    }
+
     private void ApplyDamage(DamagePayload payload)
     {
         if (payload.Amount < 0f) { ApplyHeal(-payload.Amount); return; }
@@ -87,6 +95,9 @@ public class HealthController : MonoBehaviour, IDamageable
 
     public void OnTurnStart()
     {
-        for (int i = 0; i < _behaviors.Count; i++) _behaviors[i].OnTurnStart(this);
+        _turnStartHandlers.Clear();
+        for (int i = 0; i < _behaviors.Count; i++)
+            if (_behaviors[i] is IOnTurnStart h) _turnStartHandlers.Add(h);
+        foreach (var h in _turnStartHandlers) h.OnTurnStart();
     }
 }

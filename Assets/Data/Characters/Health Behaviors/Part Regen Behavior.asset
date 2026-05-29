@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d089d901e10595419d72078af4a395a, type: 3}
   m_Name: Part Regen Behavior
   m_EditorClassIdentifier: Assembly-CSharp::PartRegenBehaviorSO
-  _regenTurns: 5
+  _regenTurns: 2

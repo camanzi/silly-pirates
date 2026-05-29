@@ -8,6 +8,5 @@ public abstract class HealthBehaviorSO : ScriptableObject
     public virtual void OnDamageTaken(HealthController controller, DamagePayload payload) { }
     public virtual float ModifyHeal(float amount) => amount;
     public virtual void OnHealReceived(HealthController controller, float amount) { }
-    public virtual void OnTurnStart(HealthController controller) { }
     public virtual void OnDeath(HealthController controller) { }
 }

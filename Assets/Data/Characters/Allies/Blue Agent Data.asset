@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697114ac8b492f04a85a19eabb834d9b, type: 3}
   m_Name: Blue Agent Data
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentDataSO
-  _initialAgility: 143
-  _maxActionPointsPerTurn: 12
-  _maxMovementPoints: 6
+  _initialAgility: 110
+  _maxActionPointsPerTurn: 6
+  _maxHp: 1530
+  _maxMovementPoints: 4
   _interactionRange: 1
+  _actionsPerTurn: 1
