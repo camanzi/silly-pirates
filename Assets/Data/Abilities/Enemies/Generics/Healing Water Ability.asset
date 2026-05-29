@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84d3738b869a1c14fb3abe468e115db9, type: 3}
+  m_Name: Healing Water Ability
+  m_EditorClassIdentifier: Assembly-CSharp::HealingWaterAbility
+  _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  showTrajectory: 0
+  trajectoryConfigData: {fileID: 11400000, guid: 11444163b464dc34d864ad32b101e6c4, type: 2}
+  _icon: {fileID: 0}
+  _requiredPart: {fileID: 0}
+  _basePriority: 5
+  _unlimitedUse: 0
+  _fixedHeal: 20
+  _percentHeal: 0.1
+  _healThreshold: 0.75
+  _requiredAlternateTurns: 2
+  _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}

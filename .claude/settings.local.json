@@ -69,7 +69,8 @@
       "Bash(xargs grep -l \"interface ITargettable\")",
       "mcp__UnityMCP__validate_script",
       "Bash(xargs grep -l \"UnityEngine.Random\\\\|Random.Range\")",
-      "mcp__UnityMCP__manage_prefabs"
+      "mcp__UnityMCP__manage_prefabs",
+      "mcp__UnityMCP__manage_ui"
     ]
   },
   "hooks": {

@@ -84,6 +84,12 @@
     font-size: 15px;
 }
 
-.card-container--sub-turn {
+.turn-card-wrapper--sub-turn {
     padding-left: 20px;
+    margin-top: 1px;
+    margin: 0;
+}
+
+.av-label--sub-turn {
+    display: none;
 }

@@ -8,6 +8,7 @@ public class WorldSpaceContainer : MonoBehaviour
     [SerializeField] protected UIDocument _uiDocument;
     [Tooltip("If true try to show the menu by default without requesting it by proximity")]
     [SerializeField] private bool _shownByDefault;
+    [SerializeField] protected Vector3 _positionOffset;
     protected VisualElement Container => _container;
     protected Camera MainCamera => _mainCamera; 
     private VisualElement _container;
@@ -112,12 +113,12 @@ public class WorldSpaceContainer : MonoBehaviour
         if (_mainCamera == null || _container == null || _container.style.display == DisplayStyle.None) 
             return;
 
-        Vector3 screenPos = _mainCamera.WorldToScreenPoint(transform.position);
-        
+        Vector3 screenPos = _mainCamera.WorldToScreenPoint(transform.position + _positionOffset);
+
         if (screenPos.z > 0)
         {
             Vector2 panelPos = RuntimePanelUtils.CameraTransformWorldToPanel(
-                _container.panel, transform.position, _mainCamera);
+                _container.panel, transform.position + _positionOffset, _mainCamera);
 
             _container.style.left = panelPos.x;
             _container.style.top = panelPos.y;

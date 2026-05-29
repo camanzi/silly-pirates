@@ -1508,10 +1508,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1044784462123448367, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
-      propertyPath: managedReferences[3650710072783274351].m_Value
-      value: 
-      objectReference: {fileID: 435965747}
     - target: {fileID: 1180672198515598800, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: managedReferences[3650710072783274353].m_Value
       value: 
@@ -1560,6 +1556,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LittleSgarryCube - Left
       objectReference: {fileID: 0}
+    - target: {fileID: 4829048724554651852, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: _aiData
+      value: 
+      objectReference: {fileID: 11400000, guid: 598d22de7023cd34b8cd4a9fc5f6909c, type: 2}
     - target: {fileID: 4829048724554651852, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: _turnController
       value: 
@@ -1680,6 +1680,35 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d82078492fd9eb347a0c1025da88d339, type: 3}
+--- !u!1 &2048384962 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+  m_PrefabInstance: {fileID: 707104960796648773}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2048384973 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2617577189569630218, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+  m_PrefabInstance: {fileID: 707104960796648773}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048384962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+--- !u!114 &2048384975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048384962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f1537bbf0192954282e28abafd278c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossHealthBarController
+  _hudDocument: {fileID: 2048384973}
 --- !u!1 &2095840641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1939,6 +1968,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_HUD
       objectReference: {fileID: 0}
+    - target: {fileID: 3946868697030411871, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3946868697030411871, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2048384975}
+    - target: {fileID: 3946868697030411871, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3946868697030411871, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnAgentJoined
+      objectReference: {fileID: 0}
+    - target: {fileID: 3946868697030411871, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: BossHealthBarController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3946868697030411871, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5327279891052958176, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1982,7 +2035,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2048384975}
   m_SourcePrefab: {fileID: 100100000, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
 --- !u!1001 &2434508970417764651
 PrefabInstance:

@@ -1,7 +1,9 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="TurnOrderUI" src="project://database/Assets/UI/HUD/Templates/TurnsManagment/TurnOrderUI.uxml?fileID=9197481963319205126&amp;guid=a297f7a2ace558847ba155922d158c5d&amp;type=3#TurnOrderUI"/>
+    <ui:Template name="BossHealthBar" src="project://database/Assets/UI/HUD/Templates/BossHealthBar/BossHealthBarTemplate.uxml?fileID=9197481963319205126&amp;guid=52820c58f1ae59647be1f830ee9831f8&amp;type=3#BossHealthBarTemplate"/>
     <Style src="project://database/Assets/UI/HUD/Templates/ActionPoints/action-points.uss?fileID=7433441132597879392&amp;guid=bed4aed701604034bbf27aa40ff73df5&amp;type=3#action-points"/>
     <Style src="project://database/Assets/UI/HUD/Templates/ActiveAbility/active-ability-button.uss?fileID=7433441132597879392&amp;guid=8577023032f49aa4c89e7d8d08e2d034&amp;type=3#active-ability-button"/>
+    <ui:Instance template="BossHealthBar" name="BossHealthBarInstance"/>
     <ui:VisualElement name="action-points-container" class="ap-container"/>
     <ui:Instance template="TurnOrderUI" name="TemplateContainer" style="width: 310px; height: 70%; top: 10px; left: 10px; flex-shrink: 0; padding-left: 0; margin-left: 0; flex-grow: 0;"/>
     <ActiveAbilityButton name="active-ability-button" focusable="false" style="display: none;"/>

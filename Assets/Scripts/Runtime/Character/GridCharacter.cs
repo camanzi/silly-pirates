@@ -9,6 +9,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
     [SerializeField] private TurnRenderingAgentDataSO _renderingAgentData;
+    [SerializeField] private string _displayName;
 
     [Header("Combat System event channels")]
     [SerializeField] private TurnAgentEventChannel _onAgentJoin;
@@ -17,6 +18,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
 
     public TurnAgentDataSO AgentData => _agentData;
     public TurnRenderingAgentDataSO RenderingData => _renderingAgentData;
+    public string DisplayName => _displayName;
 
     public TurnAgentEventChannel OnAgentJoin => _onAgentJoin;
 

@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(OutlinerHelper))]
 public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent, IHealthOwner, IPartOwner
 {
+    [Header("General configurations")]
+    [SerializeField] private bool _isBoss;
+    [SerializeField] private string _displayName;
+
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
     [SerializeField] private TurnRenderingAgentDataSO _renderingAgentData;
@@ -28,6 +31,9 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     [Header("Hostile character configs")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
+
+    public bool IsBoss => _isBoss;
+    public string DisplayName => _displayName;
 
     public Transform Transform => transform;
     public EnemyCritStatsSO CritStats => _critStats;
@@ -53,6 +59,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public HealthController Health => _healthController;
     
     public readonly List<EnemyAbilityBase> UsedAbilitiesThisTurn = new();
+    public readonly Dictionary<EnemyAbilityBase, int> AbilityCooldowns = new();
 
     private int _remainingActionPoints;
     private OutlinerHelper _outlinerHelper;
@@ -106,6 +113,10 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public async void OnStartingTurn()
     {
+        var cooldownKeys = new List<EnemyAbilityBase>(AbilityCooldowns.Keys);
+        foreach (var k in cooldownKeys)
+            if (AbilityCooldowns[k] > 0) AbilityCooldowns[k]--;
+
         UsedAbilitiesThisTurn.Clear();
         _healthController?.OnTurnStart();
         _partController?.OnTurnStart();

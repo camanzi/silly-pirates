@@ -34,6 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2572107201965880777}
+  - {fileID: 6158923090179094592}
   m_Father: {fileID: 2846489129807784185}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5675555650426116683
@@ -103,6 +104,78 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPartBehavior
   _selectionContextSO: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
+--- !u!1 &3589971052624078795
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6158923090179094592}
+  - component: {fileID: 7925400034295395996}
+  - component: {fileID: 2413485944754258362}
+  m_Layer: 0
+  m_Name: PartHealthUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6158923090179094592
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3589971052624078795}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3345111086780926804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7925400034295395996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3589971052624078795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: e52617c2db1cfb44db5cd5d43158168e, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 4164c6d8dc49f684598afeb2fa77fb87, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &2413485944754258362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3589971052624078795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed951ff68aade1f47a32cbf365bfdbc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBarController
+  _uiDocument: {fileID: 7925400034295395996}
+  _shownByDefault: 1
+  _positionOffset: {x: 0, y: 3, z: 0}
+  _healthController: {fileID: 7023914574854259847}
 --- !u!1 &8146115789172016712
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,9 +341,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: e4c381fdad0016f40972513c668b1c56, type: 2}
     - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _isBoss
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _critStats
       value: 
       objectReference: {fileID: 11400000, guid: 1a95d8cddf02ac248b0ade2d5d85aa91, type: 2}
+    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _displayName
+      value: Big Evil Octopus
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
