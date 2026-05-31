@@ -16,6 +16,7 @@ public class TurnOrderController : MonoBehaviour
     private ListView turnListView;
 
     private readonly List<(EntityTurnState state, bool isSubTurn)> _displayList = new();
+    private ITurnAgent _hoveredAgent;
 
     void Awake()
     {
@@ -62,6 +63,7 @@ public class TurnOrderController : MonoBehaviour
                 );
 
                 card.IsActive = index == 0;
+                card.SetHovered(_hoveredAgent != null && state.Agent == _hoveredAgent);
             }
         };
 
@@ -95,5 +97,20 @@ public class TurnOrderController : MonoBehaviour
         RebuildDisplayList();
         turnListView.itemsSource = _displayList;
         turnListView.RefreshItems();
+    }
+
+    public void OnElementHovered(IInteractableElement element)
+    {
+        _hoveredAgent = element as ITurnAgent;
+        RefreshHoverStates();
+    }
+
+    private void RefreshHoverStates()
+    {
+        for (int i = 0; i < _displayList.Count; i++)
+        {
+            if (turnListView.GetRootElementForIndex(i) is TurnCard card)
+                card.SetHovered(_hoveredAgent != null && _displayList[i].state.Agent == _hoveredAgent);
+        }
     }
 }

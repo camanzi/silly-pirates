@@ -63,3 +63,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 471
   _maxDistance: 100
+  _hoverChannel: {fileID: 11400000, guid: cde277e7880155241b6f11fb52d26ed2, type: 2}

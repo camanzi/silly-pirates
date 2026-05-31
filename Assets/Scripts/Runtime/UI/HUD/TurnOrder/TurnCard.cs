@@ -1,3 +1,4 @@
+using PrimeTween;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -20,6 +21,10 @@ public partial class TurnCard : VisualElement
     // Dati interni
     private CharacterTurnData _data;
     private bool _isActive;
+    private Tween _wobbleTween;
+
+    private const float WobbleAmount = 15f;
+    private const float WobbleDuration = .75f;
     
     /// <summary>
     /// Costruttore - crea la struttura della card
@@ -118,5 +123,15 @@ public partial class TurnCard : VisualElement
     private void UpdateActionValueDisplay()
     {
         _avLabel.text = _isActive ? string.Empty : _data.ActionValue.ToString();;
+    }
+
+    public void SetHovered(bool hovered)
+    {
+        _wobbleTween.Stop();
+        _cardWrapper.style.translate = StyleKeyword.Initial;
+        if (!hovered) return;
+        _wobbleTween = Tween.Custom(0, WobbleAmount, WobbleDuration,
+            onValueChange: v => _cardWrapper.style.translate = new StyleTranslate(new Translate(v, 0f)),
+            cycles: -1, cycleMode: CycleMode.Rewind, ease: Ease.InOutSine);
     }
 }

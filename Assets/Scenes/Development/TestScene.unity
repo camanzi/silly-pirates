@@ -977,6 +977,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &956223560 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+  m_PrefabInstance: {fileID: 707104960796648773}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &956223585 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8269550459025187014, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+  m_PrefabInstance: {fileID: 707104960796648773}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 956223560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47994e012e1ef2344a07308217da5dc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnOrderController
+--- !u!114 &956223589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 956223560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0739706f9a347b48a6531e69dbdbc46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableElementChannelListener
+  eventChannel: {fileID: 11400000, guid: cde277e7880155241b6f11fb52d26ed2, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 956223585}
+        m_TargetAssemblyTypeName: TurnOrderController, Assembly-CSharp
+        m_MethodName: OnElementHovered
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1045256477
 GameObject:
   m_ObjectHideFlags: 0
@@ -1991,7 +2035,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 956223589}
   m_SourcePrefab: {fileID: 100100000, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
 --- !u!1001 &2434508970417764651
 PrefabInstance:

@@ -7,6 +7,9 @@ public class WorldInteractor : MonoBehaviour
     [SerializeField] private LayerMask _interactableLayer;
     [SerializeField] private float _maxDistance = 100f;
 
+    [Header("Event Channels")]
+    [SerializeField] private InteractableElementEventChannel _hoverChannel;
+
     private Camera _mainCamera;
     private IClickable _currentHovered;
     private Vector2 _mousePosition;
@@ -58,6 +61,7 @@ public class WorldInteractor : MonoBehaviour
                 ResetHover();
                 _currentHovered = interactable;
                 _currentHovered?.OnHoverEnter();
+                _hoverChannel?.RaiseEvent(_currentHovered as IInteractableElement);
             }
         }
         else
@@ -71,6 +75,7 @@ public class WorldInteractor : MonoBehaviour
         if (_currentHovered != null)
         {
             _currentHovered.OnHoverExit();
+            _hoverChannel?.RaiseEvent(null);
             _currentHovered = null;
         }
     }
