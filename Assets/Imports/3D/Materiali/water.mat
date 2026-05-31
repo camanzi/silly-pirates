@@ -108,7 +108,7 @@ Material:
     - _EnvironmentReflections: 1
     - _FlowSpeed: 0.01
     - _FlowStrength: 0.005
-    - _FoamDistance: 0
+    - _FoamDistance: 0.76
     - _FresnelPower: 5
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -138,13 +138,13 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Basecolor: {r: 0.090196095, g: 0.26693362, b: 0.9254902, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkFoamcolor: {r: 0, g: 0.17727375, b: 0.3301887, a: 1}
+    - _DarkFoamcolor: {r: 0, g: 0.16528471, b: 0.32941177, a: 1}
     - _Emission: {r: 1.513884, g: 1.698113, b: 1.681583, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightFoamcolor: {r: 1, g: 1, b: 1, a: 1}
+    - _LightFoamcolor: {r: 0.514151, g: 0.7523737, b: 1, a: 1}
     - _RippleColor: {r: 0.4210573, g: 1.016486, b: 1.566038, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _WaterColor: {r: 0.103729084, g: 0.39743167, b: 0.5943396, a: 1}
+    - _WaterColor: {r: 0.06541474, g: 0.3733833, b: 0.6603774, a: 1}
     - _testcolor: {r: 0.8113207, g: 0.15690637, b: 0.15690637, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

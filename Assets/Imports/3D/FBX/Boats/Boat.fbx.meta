@@ -7,11 +7,6 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material.001
-    second: {fileID: 2100000, guid: e8514653115e7fb48847bff3d0367966, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
       name: barca
     second: {fileID: 2100000, guid: e8514653115e7fb48847bff3d0367966, type: 2}
   materials:
