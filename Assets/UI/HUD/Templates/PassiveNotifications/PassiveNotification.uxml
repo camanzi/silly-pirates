@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Templates/PassiveNotifications/PassiveNotification.uss?fileID=7433441132597879392&amp;guid=f11bad7e89e141b46a5c6bba48319f28&amp;type=3#PassiveNotification"/>
+    <Style src="project://database/Assets/UI/HUD/Shared/STL_WorldSpace.uss?fileID=7433441132597879392&amp;guid=982a6fb71843d3b45a6a8beb69b25ab0&amp;type=3#STL_WorldSpace"/>
+    <ui:VisualElement name="passive-popup" picking-mode="Ignore" class="passive-popup">
+        <ui:Label name="passive-label" text="Passive Name" picking-mode="Ignore" class="passive-label"/>
+    </ui:VisualElement>
+</ui:UXML>

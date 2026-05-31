@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 159bdde7f6be4294b87c7c2536eb0980, type: 3}
-  m_Name: EquipmentMovementBoostPassive
+  m_Name: Equipment Movement Boost Passive
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentMovementBoostPassiveSO
+  _displayName: Potenziamento Movimento
   _equipmentAwakenedChannel: {fileID: 11400000, guid: 4bd5ee5a30e30f94c80c8cea0ea486d0, type: 2}
   _turnChangedChannel: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
   _uiTemplate: {fileID: 9197481963319205126, guid: 4fc7741a27beee44aade00a69653bee3, type: 3}

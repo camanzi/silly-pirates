@@ -8,6 +8,7 @@ public class PassiveAbilityController : MonoBehaviour
     [Header("Configurazioni")]
     [SerializeField] private List<PassiveAbilitySO> _basePassivesSO;
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
+    [SerializeField] private PassiveNotificationEventChannel _passiveNotificationChannel;
     private List<PassiveAbilitySO> _instantiatedPassives = new();
     private readonly List<IOnGlobalTurnStart> _globalTurnHandlers = new();
 
@@ -50,12 +51,26 @@ public class PassiveAbilityController : MonoBehaviour
         _instantiatedPassives.Add(instance);
         instance.OnEquip(this);
         OnPassivesChanged?.Invoke();
+        _passiveNotificationChannel?.RaiseEvent(new PassiveNotificationEvent
+        {
+            DisplayName = instance.DisplayName,
+            WasAdded = true,
+            WorldPosition = transform.position,
+            Source = transform,
+        });
     }
 
     public void RemovePassive(PassiveAbilitySO instance)
     {
         instance.OnUnequip(this);
         _instantiatedPassives.Remove(instance);
+        _passiveNotificationChannel?.RaiseEvent(new PassiveNotificationEvent
+        {
+            DisplayName = instance.DisplayName,
+            WasAdded = false,
+            WorldPosition = transform.position,
+            Source = transform,
+        });
         Destroy(instance);
         OnPassivesChanged?.Invoke();
     }

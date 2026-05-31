@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d71f1ae5388ac14cb76ac8f51812013, type: 3}
   m_Name: Slimy Curse Passive
   m_EditorClassIdentifier: Assembly-CSharp::SlimyCursePassiveSO
+  _displayName: Slimy Curse
   _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}
   _durationInTurns: 1

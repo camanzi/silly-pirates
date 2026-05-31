@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 993901f54d3b77741ac3694ac97862b4, type: 3}
   m_Name: Walking Star Ability
   m_EditorClassIdentifier: Assembly-CSharp::WalkingStarPassiveSO
+  _displayName: Walking Star
   _pathTracker: {fileID: 11400000, guid: 377649c3550f3fa44a6b43aede9383aa, type: 2}

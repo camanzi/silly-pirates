@@ -255,14 +255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 5960824841770569986}
   _animations:
-  - animationName: human_idle
-    frameCount: 2
-    frameRate: 3.5
-    loop: 1
-  - animationName: human_walk
-    frameCount: 2
-    frameRate: 3.5
-    loop: 1
+    _serializedList: []
   _directionUpdateRate: 10
   _minAngleChange: 15
 --- !u!114 &2110638255548067988
@@ -472,6 +465,7 @@ MonoBehaviour:
   _basePassivesSO:
   - {fileID: 11400000, guid: 2731b8e86265abc46ab6b367e1176471, type: 2}
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
+  _passiveNotificationChannel: {fileID: 11400000, guid: f34e6cbc31ae5d74485d162d04d6fd21, type: 2}
 --- !u!114 &7415223762041215643
 MonoBehaviour:
   m_ObjectHideFlags: 0

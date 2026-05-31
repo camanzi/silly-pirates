@@ -1,0 +1,12 @@
+.passive-popup {
+    position: absolute;
+    translate: -50% -100%;
+}
+
+.passive-label {
+    font-size: 48px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 0, 0, 255);
+}

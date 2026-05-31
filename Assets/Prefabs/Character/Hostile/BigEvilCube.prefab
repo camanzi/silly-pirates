@@ -314,6 +314,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigEvilCube
       objectReference: {fileID: 0}
+    - target: {fileID: 3596544409351883156, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _passiveNotificationChannel
+      value: 
+      objectReference: {fileID: 11400000, guid: f34e6cbc31ae5d74485d162d04d6fd21, type: 2}
     - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.57

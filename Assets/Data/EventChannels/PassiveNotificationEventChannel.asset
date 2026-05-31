@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19de1bab58668a447be991c6d3a8b332, type: 3}
-  m_Name: SpeedBoostPassive
-  m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostPassiveSO
-  _flatBonus: 50
-  _percentBonus: 15
-  _durationInTurns: 6
+  m_Script: {fileID: 11500000, guid: 6516cce7696769b42bc6f6e802dd7518, type: 3}
+  m_Name: PassiveNotificationEventChannel
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveNotificationEventChannel

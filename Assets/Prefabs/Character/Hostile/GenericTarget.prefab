@@ -327,6 +327,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PassiveAbilityController
   _basePassivesSO: []
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
+  _passiveNotificationChannel: {fileID: 11400000, guid: f34e6cbc31ae5d74485d162d04d6fd21, type: 2}
 --- !u!114 &7951698253977833827
 MonoBehaviour:
   m_ObjectHideFlags: 0
