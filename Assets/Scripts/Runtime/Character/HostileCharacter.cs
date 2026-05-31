@@ -3,6 +3,8 @@ using PrimeTween;
 using UnityEngine;
 
 [RequireComponent(typeof(OutlinerHelper))]
+[RequireComponent(typeof(HealthController))]
+[RequireComponent(typeof(DirectionalSpriteController))]
 public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement, ITargettable, ITurnAgent, IHealthOwner, IPartOwner
 {
     [Header("General configurations")]
@@ -86,6 +88,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     private EnemyTurnDriver _enemyTurnDriver;
     private EnemyPartController _partController;
     private PassiveAbilityController _passiveAbilityController;
+    private DirectionalSpriteController _directionalSpriteController;
     private readonly List<IAgilityModifier> _agilityModifiers = new();
     private readonly List<IOnTurnStart> _turnStartHandlers = new();
 
@@ -96,6 +99,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         _enemyTurnDriver = GetComponent<EnemyTurnDriver>();
         _partController = GetComponent<EnemyPartController>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
+        _directionalSpriteController = GetComponent<DirectionalSpriteController>();
     }
 
     public bool IsPartFunctional(EnemyPartSO part)
@@ -146,7 +150,21 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public void OnCombatJoin() => this.HandleCombatJoin();
 
-    public void OnCombatLeave() => this.HandleCombatLeave();
+    public void OnCombatLeave()
+    {
+        _directionalSpriteController?.PlayAnimation(EAnimation.Death);
+        _directionalSpriteController?.SetDeadVisual();
+        if (_directionalSpriteController != null)
+            _directionalSpriteController.OnAnimationComplete += OnDeathAnimationComplete;
+        this.HandleCombatLeave();
+    }
+
+    private void OnDeathAnimationComplete(EAnimation anim)
+    {
+        if (anim != EAnimation.Death) return;
+        _directionalSpriteController.OnAnimationComplete -= OnDeathAnimationComplete;
+        gameObject.SetActive(false);
+    }
 
     public async void OnStartingTurn()
     {

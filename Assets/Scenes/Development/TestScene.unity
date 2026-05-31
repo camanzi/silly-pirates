@@ -1500,6 +1500,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!212 &1654570302 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8571508024438827890, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
+  m_PrefabInstance: {fileID: 6075810720408160684}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1720819990
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2057,10 +2062,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1803626211452743749, guid: 7d39d4e790500c040b99dc894ae8cf44, type: 3}
-      propertyPath: _damageEventChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 5133798879767350915, guid: 7d39d4e790500c040b99dc894ae8cf44, type: 3}
       propertyPath: m_Name
       value: PF_Character (blue)
@@ -2175,10 +2176,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2503714713132231036, guid: a7c15f3f14af1e848ade611685fb12cd, type: 3}
-      propertyPath: _damageEventChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 7638007545298146974, guid: a7c15f3f14af1e848ade611685fb12cd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.27
@@ -2451,6 +2448,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2916763371089267902, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
+      propertyPath: _spriteRenderer
+      value: 
+      objectReference: {fileID: 1654570302}
+    - target: {fileID: 2916763371089267902, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
+      propertyPath: _animations._serializedList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2916763371089267902, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
+      propertyPath: _animations._serializedList.Array.data[0].Value.loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2916763371089267902, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
+      propertyPath: _animations._serializedList.Array.data[0].Value.frameRate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2916763371089267902, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
+      propertyPath: _animations._serializedList.Array.data[0].Value.frameCount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5568008685441221319, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
       propertyPath: _turnController
       value: 
@@ -2525,10 +2542,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 266792915406944289, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
-      propertyPath: _damageEventChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.26
@@ -2647,10 +2660,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4443768023617402375, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
-      propertyPath: _damageEventChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
     - target: {fileID: 7174869599670356161, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_Name
       value: PF_Character (green)

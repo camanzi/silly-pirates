@@ -156,7 +156,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     {
         _moveTween.Stop();
 
-        _directionalSpriteController.PlayAnimation("walk");
+        _directionalSpriteController.PlayAnimation(EAnimation.Walk);
 
         foreach (Vector3 node in path)
         {
@@ -172,7 +172,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
             RemainingMovementPoints -= costGetter?.Invoke(Vector3Int.FloorToInt(node)) ?? 1;
         }
 
-        _directionalSpriteController.PlayAnimation("idle");
+        _directionalSpriteController.PlayAnimation(EAnimation.Idle);
     }
 
     protected override void OnGridPositionChanged()

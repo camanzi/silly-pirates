@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 1937fa380dc6f27438b7d54690368487, type: 2}
     - target: {fileID: 3290291399933896057, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.24
+      value: -6.86
       objectReference: {fileID: 0}
     - target: {fileID: 3290291399933896057, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3290291399933896057, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.01
+      value: -8.52
       objectReference: {fileID: 0}
     - target: {fileID: 3290291399933896057, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -77,12 +77,48 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: _animations.Array.data[0].animationName
       value: idle
       objectReference: {fileID: 0}
     - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: _animations.Array.data[1].animationName
       value: walk
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Key
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.data[0].Value.loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.data[0].Value.frameRate
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.animation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.frameRate
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.data[0].Value.frameCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960090281698417887, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.frameCount
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5960824841770569986, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_Size.x

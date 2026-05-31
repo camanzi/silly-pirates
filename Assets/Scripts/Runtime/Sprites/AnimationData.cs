@@ -1,10 +1,9 @@
 using System;
-using UnityEngine;
 
 [Serializable]
-public class AnimationData
+public class AnimationConfig
 {
-    public string animationName;
+    public EAnimation animation;
     public int frameCount;
     public float frameRate = 12f;
     public bool loop = true;

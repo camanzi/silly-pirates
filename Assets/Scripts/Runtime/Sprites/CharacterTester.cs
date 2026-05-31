@@ -7,8 +7,8 @@ public class CharacterTester : MonoBehaviour
     [SerializeField] private InputActionAsset _playerInput;
     
     [Header("Animation testing")]
-    [SerializeField] private string firstAnim;
-    [SerializeField] private string secondAnim;
+    [SerializeField] private EAnimation firstAnim;
+    [SerializeField] private EAnimation secondAnim;
 
     private DirectionalSpriteController _spriteController;
     private bool isPlayingNewAnimation = false;

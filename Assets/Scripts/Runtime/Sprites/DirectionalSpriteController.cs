@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using AYellowpaper.SerializedCollections;
 using PrimeTween;
 using UnityEngine;
 
@@ -7,20 +9,20 @@ public class DirectionalSpriteController : MonoBehaviour
 {
     [Header("Sprite Configuration")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private AnimationData[] _animations;
+    [SerializeField] private SerializedDictionary<EAnimation, AnimationConfig> _animations;
 
     [Header("Performance Settings")]
     [SerializeField] private float _directionUpdateRate = 10f;
     [SerializeField] private float _minAngleChange = 15f;
 
+    public event Action<EAnimation> OnAnimationComplete;
+
     private Camera _mainCamera;
     private Transform _characterTransform;
 
-    // Cache 3D: [animazione][frame][direzione] = Sprite
-    private Dictionary<string, Sprite[,]> _spriteCache;
+    private Dictionary<EAnimation, Sprite[,]> _spriteCache;
 
-    // Sistema di animazione
-    private string _currentAnimation = "";
+    private EAnimation? _currentAnimation;
     private int _currentFrame = 0;
     private int _currentDirection = 0;
     private float _animationTimer = 0f;
@@ -37,8 +39,8 @@ public class DirectionalSpriteController : MonoBehaviour
         InitializeComponents();
         InitializeSpriteCache();
 
-        if (_animations.Length > 0)
-            PlayAnimation(_animations[0].animationName);
+        if (_animations.Count > 0)
+            PlayAnimation(_animations.Keys.First());
     }
 
     #region Initializations
@@ -47,46 +49,41 @@ public class DirectionalSpriteController : MonoBehaviour
         _mainCamera = Camera.main;
         _characterTransform = transform;
         _atlasHelper = GetComponent<SpriteAtlasHelper>();
-        _spriteCache = new Dictionary<string, Sprite[,]>();
+        _spriteCache = new Dictionary<EAnimation, Sprite[,]>();
     }
 
     private void InitializeSpriteCache()
     {
-        foreach (AnimationData animData in _animations)
+        foreach (var kvp in _animations)
         {
-            LoadAnimationToCache(animData);
+            LoadAnimationToCache(kvp.Key, kvp.Value);
         }
 
         Debug.Log($"Cache inizializzata con {_spriteCache.Count} animazioni");
     }
 
-    private void LoadAnimationToCache(AnimationData animData)
+    private void LoadAnimationToCache(EAnimation anim, AnimationConfig config)
     {
-        // Crea matrice [frame][direzione]
-        Sprite[,] animationSprites = new Sprite[animData.frameCount, 8];
+        Sprite[,] animationSprites = new Sprite[config.frameCount, 8];
 
-        // Carica tutte le sprite per questa animazione
-        for (int frame = 0; frame < animData.frameCount; frame++)
+        for (int frame = 0; frame < config.frameCount; frame++)
         {
-            foreach (EDirection direction in Enum.GetValues(typeof(EDirection))) 
+            foreach (EDirection direction in Enum.GetValues(typeof(EDirection)))
             {
-                string spriteName = GetSpriteName(animData.animationName, frame, direction);
-                animationSprites[frame, (int) direction] = _atlasHelper.GetSprite(spriteName);
+                string spriteName = GetSpriteName(anim, frame, direction);
+                animationSprites[frame, (int)direction] = _atlasHelper.GetSprite(spriteName);
 
-                if (animationSprites[frame, (int) direction] == null)
-                {
+                if (animationSprites[frame, (int)direction] == null)
                     Debug.LogWarning($"Sprite mancante: {spriteName}");
-                }
             }
         }
 
-        _spriteCache[animData.animationName] = animationSprites;
+        _spriteCache[anim] = animationSprites;
     }
 
-    private string GetSpriteName(string animation, int frame, EDirection direction)
+    private string GetSpriteName(EAnimation animation, int frame, EDirection direction)
     {
-        // Convezione: "idle_dir_N_0", "walk_dir_SE_0", ecc.
-        return $"{animation}_dir_{direction.GetCode()}_{frame}";
+        return $"{animation.GetCode()}_dir_{direction.GetCode()}_{frame}";
     }
     #endregion
 
@@ -100,7 +97,6 @@ public class DirectionalSpriteController : MonoBehaviour
     #region Update
     private void UpdateDirection()
     {
-        // Throttling per l'update della direzione
         if (Time.time - _lastDirectionUpdate < 1f / _directionUpdateRate)
             return;
 
@@ -111,7 +107,6 @@ public class DirectionalSpriteController : MonoBehaviour
 
         float angle = GetAngleWithAtan2(directionToCamera, characterForward);
 
-        // Controlla se il cambiamento � significativo
         if (Mathf.Abs(angle - _lastAngle) < _minAngleChange)
             return;
 
@@ -132,28 +127,22 @@ public class DirectionalSpriteController : MonoBehaviour
         Vector2 charForward2D = new Vector2(characterForward.x, characterForward.z).normalized;
 
         float angle = Mathf.Atan2(cameraDir2D.x, cameraDir2D.y) - Mathf.Atan2(charForward2D.x, charForward2D.y);
-
         angle *= Mathf.Rad2Deg;
-
         if (angle < 0) angle += 360f;
-
         return angle;
     }
 
     private int GetDirectionFromAngle(float angle)
     {
-        // Metodo veloce: divide in 8 settori
         float normalizedAngle = (angle + 22.5f) % 360f;
-        int intDirection = Mathf.FloorToInt(normalizedAngle / 45f);
-        return intDirection;
+        return Mathf.FloorToInt(normalizedAngle / 45f);
     }
 
     private void UpdateAnimation()
     {
-        if (!_isPlaying || string.IsNullOrEmpty(_currentAnimation)) return;
+        if (!_isPlaying || !_currentAnimation.HasValue) return;
 
-        AnimationData currentAnimData = GetAnimationData(_currentAnimation);
-        if (currentAnimData == null) return;
+        if (!_animations.TryGetValue(_currentAnimation.Value, out var currentAnimData)) return;
 
         _animationTimer += Time.deltaTime;
         float frameDuration = 1f / currentAnimData.frameRate;
@@ -173,6 +162,7 @@ public class DirectionalSpriteController : MonoBehaviour
                 {
                     _currentFrame = currentAnimData.frameCount - 1;
                     _isPlaying = false;
+                    OnAnimationComplete?.Invoke(_currentAnimation.Value);
                 }
             }
         }
@@ -180,37 +170,30 @@ public class DirectionalSpriteController : MonoBehaviour
 
     private void UpdateSprite()
     {
-        if (_spriteCache.ContainsKey(_currentAnimation))
+        if (!_currentAnimation.HasValue) return;
+        if (!_spriteCache.TryGetValue(_currentAnimation.Value, out var animationSprites)) return;
+
+        if (_currentFrame < animationSprites.GetLength(0) && _currentDirection < animationSprites.GetLength(1))
         {
-            Sprite[,] animationSprites = _spriteCache[_currentAnimation];
-
-            // Bounds checking
-            if (_currentFrame < animationSprites.GetLength(0) && _currentDirection < animationSprites.GetLength(1))
-            {
-                Sprite targetSprite = animationSprites[_currentFrame, _currentDirection];
-
-                if (targetSprite != null && _spriteRenderer.sprite != targetSprite)
-                {
-                    _spriteRenderer.sprite = targetSprite;
-                }
-            }
+            Sprite targetSprite = animationSprites[_currentFrame, _currentDirection];
+            if (targetSprite != null && _spriteRenderer.sprite != targetSprite)
+                _spriteRenderer.sprite = targetSprite;
         }
     }
     #endregion
 
     #region Public APIs
-    // API pubblica per controllare le animazioni
-    public void PlayAnimation(string animationName)
+    public void PlayAnimation(EAnimation animation)
     {
-        if (!_spriteCache.ContainsKey(animationName))
+        if (!_spriteCache.ContainsKey(animation))
         {
-            Debug.LogError($"Animazione '{animationName}' non trovata nella cache!");
+            Debug.LogError($"Animazione '{animation}' non trovata nella cache!");
             return;
         }
 
-        if (_currentAnimation != animationName)
+        if (_currentAnimation != animation)
         {
-            _currentAnimation = animationName;
+            _currentAnimation = animation;
             _currentFrame = 0;
             _animationTimer = 0f;
         }
@@ -218,40 +201,16 @@ public class DirectionalSpriteController : MonoBehaviour
         _isPlaying = true;
     }
 
-    public void StopAnimation()
-    {
-        _isPlaying = false;
-    }
-
-    public void PauseAnimation()
-    {
-        _isPlaying = false;
-    }
-
-    public void ResumeAnimation()
-    {
-        _isPlaying = true;
-    }
+    public void StopAnimation()  => _isPlaying = false;
+    public void PauseAnimation() => _isPlaying = false;
+    public void ResumeAnimation() => _isPlaying = true;
 
     public bool IsPlaying() => _isPlaying;
-    public string GetCurrentAnimation() => _currentAnimation;
+    public EAnimation? GetCurrentAnimation() => _currentAnimation;
     public int GetCurrentFrame() => _currentFrame;
     public int GetCurrentDirection() => _currentDirection;
 
-    AnimationData GetAnimationData(string animName)
-    {
-        foreach (var anim in _animations)
-        {
-            if (anim.animationName == animName)
-                return anim;
-        }
-        return null;
-    }
-
-    public void SetActive(bool active)
-    {
-        enabled = active;
-    }
+    public void SetActive(bool active) => enabled = active;
 
     public void SetDeadVisual()
     {

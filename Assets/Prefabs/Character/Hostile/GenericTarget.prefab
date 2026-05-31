@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 1123212999449217133}
   - component: {fileID: 6697091672470467953}
   - component: {fileID: 3596544409351883156}
+  - component: {fileID: 7951698253977833827}
   m_Layer: 0
   m_Name: GenericTarget
   m_TagString: Untagged
@@ -326,6 +327,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PassiveAbilityController
   _basePassivesSO: []
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
+--- !u!114 &7951698253977833827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566868596823550263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eadc78fe144157142832477d2669d360, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DirectionalSpriteController
+  _spriteRenderer: {fileID: 2611006998671086757}
+  _animations:
+    _serializedList:
+    - Key: 0
+      Value:
+        animation: 0
+        frameCount: 1
+        frameRate: 1
+        loop: 1
+  _directionUpdateRate: 10
+  _minAngleChange: 15
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0

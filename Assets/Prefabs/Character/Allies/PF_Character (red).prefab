@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 230925858, guid: 1608dbfe4d421b348ba6b2a668bd50f5, type: 3}
+    - target: {fileID: 2276149686978261059, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.frameRate
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5613693586704230231, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: _activeAbility
       value: 
@@ -34,7 +38,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8568717694107503077, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.02
+      value: -2.26
       objectReference: {fileID: 0}
     - target: {fileID: 8568717694107503077, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_LocalPosition.y
@@ -42,7 +46,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8568717694107503077, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -14.75
+      value: -13.53
       objectReference: {fileID: 0}
     - target: {fileID: 8568717694107503077, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_LocalRotation.w

@@ -8,13 +8,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2417935830378823269, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.frameRate
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4027034574308799416, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 917256955, guid: c0c940b7f1c8ea54abd4d68896288448, type: 3}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.43
+      value: 6.73
       objectReference: {fileID: 0}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -22,7 +26,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -14.82
+      value: -13.57
       objectReference: {fileID: 0}
     - target: {fileID: 5256416131026929603, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: m_LocalRotation.w
