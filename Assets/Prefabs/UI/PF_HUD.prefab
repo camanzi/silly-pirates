@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 7381703322447710225}
   - component: {fileID: 5171537186858070485}
   - component: {fileID: 3295622904169205070}
+  - component: {fileID: 2483941724954213434}
   m_Layer: 5
   m_Name: PF_HUD
   m_TagString: Untagged
@@ -347,6 +348,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossHealthBarController
   _hudDocument: {fileID: 2617577189569630218}
 --- !u!114 &3295622904169205070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bf6988c4daa0bf489f1fe0a2b01e5d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIDocumentRegistrar
+--- !u!114 &2483941724954213434
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

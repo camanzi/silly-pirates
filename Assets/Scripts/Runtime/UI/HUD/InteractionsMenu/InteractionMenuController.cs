@@ -43,6 +43,7 @@ public class InteractionMenuController : WorldSpaceContainer
     public void BuildMenu()
     {
         Container.Clear();
+        _activeButtons.Clear();
         float delay = 0f;
 
         foreach (InteractionActionSO action in _interactionSet.AvailableActions)

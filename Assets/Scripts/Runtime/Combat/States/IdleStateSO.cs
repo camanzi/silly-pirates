@@ -10,6 +10,9 @@ public class IdleStateSO : CombatStateSO
     {
         base.OnEnter();
         manager.TurnController.ClearPreview();
+
+        if (manager.CurrentTurnStateData.ActiveAgent is GridCharacter gc && gc.AgentData != null)
+            gc.EmitProximityCheck(new ProximityPayload(gc, gc.AgentData.InteractionRange));
     }
     public override void OnExit() { }
 

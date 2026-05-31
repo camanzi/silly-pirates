@@ -88,7 +88,8 @@ public class WorldSpaceContainer : MonoBehaviour
         if (finalVisibility)
         {
             ShowUI();
-            _visibilityTween = Tween.Custom(0f, 1f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
+            float startOpacity = Container.style.opacity.value;
+            _visibilityTween = Tween.Custom(startOpacity, 1f, duration: .25f, ease: Ease.OutQuad, onValueChange: newVal => {
                 Container.style.opacity = new StyleFloat(newVal);
             }).OnComplete(() => OnCompleteShow());
         }
@@ -106,7 +107,8 @@ public class WorldSpaceContainer : MonoBehaviour
 
     protected virtual void OnCompleteHide()
     {
-        Container.style.display = DisplayStyle.None;
+        if (!_isVisible)
+            Container.style.display = DisplayStyle.None;
     }
 
     protected virtual void OnCompleteShow()
