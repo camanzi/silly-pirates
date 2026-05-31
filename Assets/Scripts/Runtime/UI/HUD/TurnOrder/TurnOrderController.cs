@@ -69,7 +69,9 @@ public class TurnOrderController : MonoBehaviour
 
         turnListView.itemsSource = _displayList;
 
-        turnListView.unbindItem = (element, index) => {};
+        turnListView.unbindItem = (element, index) => {
+            if (element is TurnCard card) card.Unbind();
+        };
 
         turnListView.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
         turnListView.selectionType = SelectionType.None;
