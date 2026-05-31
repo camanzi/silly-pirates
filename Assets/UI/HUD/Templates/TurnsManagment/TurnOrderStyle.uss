@@ -6,6 +6,19 @@
     --icon-size-waiting: 75px;
 }
 
+.turn-order-container {
+    flex-grow: 1;
+    flex-shrink: 0;
+    background-color: rgba(135, 135, 135, 0.39);
+    height: 70%;
+    overflow: hidden;
+}
+
+.turn-order-list {
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+
 .card-container {
     margin-top: 10px;
 }

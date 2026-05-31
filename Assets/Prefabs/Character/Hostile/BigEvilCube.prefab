@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7023914574854259847}
   - component: {fileID: 4327804586347686111}
   - component: {fileID: 6697128437399591281}
+  - component: {fileID: 2916763371089267902}
   m_Layer: 0
   m_Name: ExtraTargetablePart
   m_TagString: Untagged
@@ -104,6 +105,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPartBehavior
   _selectionContextSO: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
+--- !u!114 &2916763371089267902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497144870230621051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eadc78fe144157142832477d2669d360, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DirectionalSpriteController
+  _spriteRenderer: {fileID: 0}
+  _animations:
+    _serializedList: []
+  _directionUpdateRate: 10
+  _minAngleChange: 15
 --- !u!1 &3589971052624078795
 GameObject:
   m_ObjectHideFlags: 0
@@ -149,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: e52617c2db1cfb44db5cd5d43158168e, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: b0f1f18d10d37fd4a8b1dfe37cbb59d7, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 4164c6d8dc49f684598afeb2fa77fb87, type: 3}
   m_SortingOrder: 0

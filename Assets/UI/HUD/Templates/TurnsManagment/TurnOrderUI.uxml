@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Resources/UI/Templates/TurnCard/TurnOrderStyle.uss?fileID=7433441132597879392&amp;guid=b3a55f0f4ae6f4945b227f3dc457e74f&amp;type=3#TurnOrderStyle" />
-    <ui:VisualElement name="turn-order-container" class="turn-order-container" style="flex-grow: 1; flex-shrink: 0; background-color: rgba(135, 135, 135, 0.39); height: 70%;">
-        <ui:ListView name="turn-list" show-border="false" focusable="false" selection-type="None" item-template="project://database/Assets/Resources/UI/Templates/TurnCard/TurnCardTemplate.uxml?fileID=9197481963319205126&amp;guid=9cde3d66e09a68d49acbd54768449e27&amp;type=3#TurnCardTemplate" style="flex-shrink: 0; flex-grow: 1;" />
+    <ui:VisualElement name="turn-order-container" class="turn-order-container">
+        <ui:ListView name="turn-list" class="turn-order-list" show-border="false" focusable="false" selection-type="None" item-template="project://database/Assets/Resources/UI/Templates/TurnCard/TurnCardTemplate.uxml?fileID=9197481963319205126&amp;guid=9cde3d66e09a68d49acbd54768449e27&amp;type=3#TurnCardTemplate" />
     </ui:VisualElement>
 </ui:UXML>

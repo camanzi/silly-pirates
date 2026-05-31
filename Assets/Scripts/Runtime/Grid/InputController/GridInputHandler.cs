@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
 public class GridInputHandler : MonoBehaviour
@@ -78,8 +77,5 @@ public class GridInputHandler : MonoBehaviour
         _latestMousePosition = screenPosition;
         _hasMouseMoved = true;
     }
-    private bool IsPointerOverUI()
-    {
-        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
-    }
+    private bool IsPointerOverUI() => UIPointerTracker.IsPointerOverUI(_latestMousePosition);
 }

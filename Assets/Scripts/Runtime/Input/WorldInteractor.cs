@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class WorldInteractor : MonoBehaviour
 {
@@ -30,7 +29,7 @@ public class WorldInteractor : MonoBehaviour
 
     private void HandleClick()
     {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+        if (UIPointerTracker.IsPointerOverUI(_mousePosition)) return;
 
         _currentHovered?.OnClick();
     }
@@ -42,7 +41,7 @@ public class WorldInteractor : MonoBehaviour
 
     private void PerformHoverCheck()
     {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        if (UIPointerTracker.IsPointerOverUI(_mousePosition))
         {
             ResetHover();
             return;

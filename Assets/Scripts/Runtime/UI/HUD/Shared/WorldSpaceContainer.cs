@@ -23,9 +23,13 @@ public class WorldSpaceContainer : MonoBehaviour
     {
         _mainCamera = Camera.main;
         UpdateUIPosition();
+        UIPointerTracker.Register(_uiDocument);
     }
 
-    protected virtual void OnDisable() { }
+    protected virtual void OnDisable()
+    {
+        UIPointerTracker.Unregister(_uiDocument);
+    }
 
     protected virtual void Awake()
     {
@@ -36,7 +40,14 @@ public class WorldSpaceContainer : MonoBehaviour
         root.style.position = Position.Absolute;
         root.pickingMode = PickingMode.Ignore;
 
-        if (_container != null) _container.pickingMode = PickingMode.Position;
+        if (_container != null)
+        {
+            _container.pickingMode = PickingMode.Position;
+            _container.RegisterCallback<GeometryChangedEvent>(evt => {
+                if (evt.oldRect.size != evt.newRect.size)
+                    UpdateUIPosition();
+            });
+        }
     }
 
     // Use when combat state changes and the element should hide his UI
