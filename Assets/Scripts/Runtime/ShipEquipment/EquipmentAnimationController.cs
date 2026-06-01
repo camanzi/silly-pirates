@@ -1,7 +1,7 @@
 using PrimeTween;
 using UnityEngine;
 
-[RequireComponent(typeof(ShootingEquipment))]
+[RequireComponent(typeof(ShipEquipment))]
 public class EquipmentAnimationController : MonoBehaviour
 {
     [Header("References")]

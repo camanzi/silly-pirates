@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthController
   _agentData: {fileID: 0}
-  _standaloneMaxHp: 10
+  _standaloneMaxHp: 3000
   _baseBehaviors:
   - {fileID: 11400000, guid: dd3e6e05ac952954180b300691ba818f, type: 2}
   _showDamageUIEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
@@ -117,9 +117,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eadc78fe144157142832477d2669d360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DirectionalSpriteController
-  _spriteRenderer: {fileID: 0}
+  _spriteRenderer: {fileID: 8571508024438827890}
   _animations:
-    _serializedList: []
+    _serializedList:
+    - Key: 0
+      Value:
+        animation: 0
+        frameCount: 1
+        frameRate: 1
+        loop: 1
   _directionUpdateRate: 10
   _minAngleChange: 15
 --- !u!1 &3589971052624078795
@@ -310,6 +316,26 @@ PrefabInstance:
       propertyPath: _agentData
       value: 
       objectReference: {fileID: 11400000, guid: 87e5e3dec7488154499e58a9cbe64c94, type: 2}
+    - target: {fileID: 1228960839652886534, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _baseBehaviors.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1228960839652886534, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: '_baseBehaviors.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b217d9799c5387f488af47459e6bff77, type: 2}
+    - target: {fileID: 1228960839652886534, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: '_baseBehaviors.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bc452d55d4f004daa843af6d3c620a, type: 2}
+    - target: {fileID: 1228960839652886534, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: '_baseBehaviors.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b992fda6e3b8ca741a3fcd32ee9c1c6c, type: 2}
+    - target: {fileID: 1228960839652886534, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: '_baseBehaviors.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 054e664cd853cc54a89bfddccde66fbe, type: 2}
     - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_Name
       value: BigEvilCube

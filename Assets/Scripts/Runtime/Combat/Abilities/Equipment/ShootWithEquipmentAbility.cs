@@ -6,7 +6,7 @@ public class ShootWithEquipmentAbility : AbilityBase
 {
     [Header("Cannon ability configs")]
     [SerializeField] private int _maxTargets = 1;
-    [SerializeField] private GameObject _projectile;
+    [SerializeField] private DamageTypeProjectileConfigSO _projectileConfig;
     [SerializeField] private int _cooldown = 2;
 
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
@@ -28,7 +28,7 @@ public class ShootWithEquipmentAbility : AbilityBase
 
         Debug.Log($"[ShootCommand] Overcap crit bonus: +{overcapCritBonus}% (extraPoints: {(caster is IAwakable aw ? Mathf.Max(0, aw.CurrentAwakeningPoints - aw.MaxAwakeningPoints) : 0)})");
 
-        return new ShootCommand(caster, _selectionCtx.CurrentTargets, _projectile, _cooldown,
+        return new ShootCommand(caster, _selectionCtx.CurrentTargets, _projectileConfig, _cooldown,
                                 offStats, trajectoryConfigData, overcapCritBonus);
     }
 

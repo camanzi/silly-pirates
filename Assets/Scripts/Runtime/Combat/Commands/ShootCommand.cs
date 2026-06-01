@@ -6,7 +6,7 @@ public class ShootCommand : ICommand
 {
     private IInteractableElement _caster;
     private List<ITargettable> _targets;
-    private GameObject _projectilePrefab;
+    private DamageTypeProjectileConfigSO _projectileConfig;
     private int _cooldown;
 
     private TrajectoryConfigsSO _trajectoryConfigData;
@@ -18,11 +18,11 @@ public class ShootCommand : ICommand
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, GameObject prefab, int cooldown, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData, int overcapCritBonus = 0)
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData, int overcapCritBonus = 0)
     {
         _caster = caster;
         _targets = targets;
-        _projectilePrefab = prefab;
+        _projectileConfig = projectileConfig;
         _cooldown = cooldown;
         _stats = stats;
         _trajectoryConfigData = trajectoryConfigData;
@@ -65,13 +65,16 @@ public class ShootCommand : ICommand
 
     private async Awaitable LaunchProjectile(ITargettable target)
     {
-        var projectile = GameObject.Instantiate(_projectilePrefab, _caster.Transform.position, Quaternion.identity);
+        DamageType effectiveType = _caster is IDMGTypeOwner dmgOwner
+            ? dmgOwner.EffectiveDMGType
+            : _stats.DMGType;
+        var projectile = GameObject.Instantiate(_projectileConfig.GetPrefab(effectiveType), _caster.Transform.position, Quaternion.identity);
 
         Vector3 start = _caster.Transform.position;
         Vector3 end = target.Transform.position;
         Vector3 controlPoint = (start + end) / 2 + Vector3.up * _trajectoryConfigData.Height;
 
-        if (_caster is ShootingEquipment shootingEquipment) shootingEquipment.OnShootEffects?.Invoke();
+        if (_caster is ShipEquipment equipment) equipment.OnCommandExecuted?.Invoke();
 
         var state = new ProjectileState(projectile.transform, start, controlPoint, end);
         await Tween.Custom(state, 0f, 1f, duration: _trajectoryConfigData.TravelDuration, ease: Ease.Linear,
@@ -93,12 +96,12 @@ public class ShootCommand : ICommand
             float damage   = _stats.BaseDMG;
             int   critRate = _stats.CritRate + _overcapCritBonus;
 
-            int effectiveCritDMG = (_caster as ShootingEquipment)?.EffectiveCritDMG ?? _stats.CritDMG;
+            int effectiveCritDMG = _caster is ICritDMGOwner critOwner ? critOwner.EffectiveCritDMG : _stats.CritDMG;
             bool isCrit = UnityEngine.Random.Range(0, 100) < critRate;
             if (isCrit)
                 damage += damage * effectiveCritDMG / 100f;
 
-            DamageType dmgType = (_caster as ShootingEquipment)?.EffectiveDMGType ?? _stats.DMGType;
+            DamageType dmgType = _caster is IDMGTypeOwner dmgOwner ? dmgOwner.EffectiveDMGType : _stats.DMGType;
             healthOwner.Health.TakeDamage(new DamagePayload(damage, dmgType) { IsCritical = isCrit });
             Debug.Log($"[ShootCommand] Hit — crit: {isCrit}, damage: {damage}, dmgType: {dmgType}, critRate: {critRate}%, critDMG: {effectiveCritDMG}%");
         }

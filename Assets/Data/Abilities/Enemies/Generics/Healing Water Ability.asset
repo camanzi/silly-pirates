@@ -20,7 +20,7 @@ MonoBehaviour:
   _requiredPart: {fileID: 0}
   _basePriority: 5
   _unlimitedUse: 0
-  _fixedHeal: 20
+  _fixedHeal: 1000
   _percentHeal: 0.1
   _healThreshold: 0.75
   _requiredAlternateTurns: 2

@@ -7,7 +7,7 @@ public class FireActionSO : InteractionActionSO
     [SerializeField] private InteractableElementEventChannel _selectedAbilityChannel;
     public override bool ExecuteAction(IInteractableElement element, ITurnAgent interactingAgent)
     {
-        if (element is not ShootingEquipment shooter) return false;
+        if (element is not ShipEquipment shooter) return false;
 
         _selectedAbilityChannel.RaiseEvent(shooter);
         return true;

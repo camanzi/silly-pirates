@@ -1,11 +1,11 @@
 public class StellarDMGModifier : IDMGTypeModifier
 {
-    private readonly ShootingEquipment _equipment;
+    private readonly OffensiveEquipment _equipment;
     private readonly TurnAgentEventChannel _channel;
     private readonly ITurnAgent _owner;
     private bool _active = true;
 
-    public StellarDMGModifier(ShootingEquipment equipment, TurnAgentEventChannel channel, ITurnAgent owner)
+    public StellarDMGModifier(OffensiveEquipment equipment, TurnAgentEventChannel channel, ITurnAgent owner)
     {
         _equipment = equipment;
         _channel = channel;

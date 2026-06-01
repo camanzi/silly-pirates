@@ -1,7 +1,6 @@
 using UnityEngine;
 
-// FIXME Later, sarebbe da far diventare piú universale, tipo EquipmentController
-[RequireComponent(typeof(ShootingEquipment))]
+[RequireComponent(typeof(ShipEquipment))]
 public class EquipmentStateMachine : MonoBehaviour
 {
     [SerializeField] private VoidEventChannel _onEquipmentAwakenedEventChannel;

@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(EquipmentStateMachine))]
-public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentStats, ITargettable
+public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquipmentStats, ITargettable
 {
     [Header("Equipment Stats")]
     [SerializeField] private EquipmentType _equipmentType;
@@ -18,8 +17,8 @@ public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentS
     [SerializeField] [Min(1)] private int _overcapMultiplier = 2;
 
     [Header("Feedback Events")]
-    [SerializeField] private UnityEvent _onShootEffects;
-    public UnityEvent OnShootEffects => _onShootEffects;
+    [SerializeField] private UnityEvent _onCommandExecuted;
+    public UnityEvent OnCommandExecuted => _onCommandExecuted;
 
     public int MaxAwakeningPoints => _toAwakePoints;
     public int OvercapLimit => _toAwakePoints * _overcapMultiplier;
@@ -35,8 +34,8 @@ public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentS
     }
     public bool IsAwake => _stateMachine.IsActive;
     public bool IsOnCooldown => _stateMachine.IsOnCooldown;
-    public int Cooldown 
-    { 
+    public int Cooldown
+    {
         get => _cooldown;
         set
         {
@@ -47,32 +46,6 @@ public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentS
     }
     public Action OnAwakeningCountersChanged { get; set; }
     public Action<int> OnCooldownChanged { get; set; }
-
-    private readonly List<ICritDMGModifier> _critDMGModifiers = new();
-
-    public int EffectiveCritDMG
-    {
-        get
-        {
-            int total = (_statsConfig as IOffensiveEquipmentStats)?.CritDMG ?? 0;
-            for (int i = 0; i < _critDMGModifiers.Count; i++)
-                total += _critDMGModifiers[i].GetCritDMGBonus();
-            return total;
-        }
-    }
-
-    public void AddCritDMGModifier(ICritDMGModifier modifier) => _critDMGModifiers.Add(modifier);
-    public void RemoveCritDMGModifier(ICritDMGModifier modifier) => _critDMGModifiers.Remove(modifier);
-
-    private readonly List<IDMGTypeModifier> _dmgTypeModifiers = new();
-
-    public DamageType EffectiveDMGType =>
-        _dmgTypeModifiers.Count > 0
-            ? _dmgTypeModifiers[^1].GetDMGTypeOverride()
-            : (_statsConfig as IOffensiveEquipmentStats)?.DMGType ?? DamageType.None;
-
-    public void AddDMGTypeModifier(IDMGTypeModifier m) => _dmgTypeModifiers.Add(m);
-    public void RemoveDMGTypeModifier(IDMGTypeModifier m) => _dmgTypeModifiers.Remove(m);
 
     private int _awakeningPoints = 0;
     private int _cooldown = 0;
@@ -97,9 +70,7 @@ public class ShootingEquipment : InteractableGridElement, IAwakable, IEquipmentS
         AwakeningPoints = Mathf.Max(0, AwakeningPoints - count);
 
         if (AwakeningPoints < _toAwakePoints && IsAwake)
-        {
             _stateMachine.TransitionTo(new AwakableState(_stateMachine, this));
-        }
     }
 
     public void ConsumeAllAwakeningPoints()

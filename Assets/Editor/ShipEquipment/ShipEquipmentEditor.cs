@@ -1,14 +1,14 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(ShootingEquipment))]
-public class ShootingEquipmentEditor : Editor
+[CustomEditor(typeof(ShipEquipment), true)]
+public class ShipEquipmentEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        var equipment = (ShootingEquipment)target;
+        var equipment = (ShipEquipment)target;
         var statsConfig = equipment.StatsConfig;
         var equipmentType = equipment.EquipmentType;
 

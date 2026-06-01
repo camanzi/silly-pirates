@@ -16,7 +16,7 @@ MonoBehaviour:
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   showTrajectory: 1
   trajectoryConfigData: {fileID: 11400000, guid: 3fdbbc9c379408d438ff6b483ef1f106, type: 2}
+  _icon: {fileID: 0}
   _maxTargets: 3
-  _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}
+  _projectileConfig: {fileID: 11400000, guid: 54be6d263248e094ba70b84c2f0ae0c1, type: 2}
   _cooldown: 2
-  _damagePerHit: 40

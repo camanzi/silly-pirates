@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 3247583212357469643}
   - component: {fileID: 5690526273693548628}
   m_Layer: 0
-  m_Name: PF_CannonBall
+  m_Name: PF_LightningCannonBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -115,7 +115,7 @@ TrailRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Time: 0.2
-  m_PreviewTimeScale: 1
+  m_PreviewTimeScale: 0.25
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -250,7 +250,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 89a9963d290da1e43a0450738ff245ff, type: 2}
+  - {fileID: 2100000, guid: 45280ba4209542b4f9b07f7c35d19251, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

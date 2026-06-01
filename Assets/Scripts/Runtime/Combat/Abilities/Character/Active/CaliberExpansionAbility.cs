@@ -15,8 +15,8 @@ public class CaliberExpansionAbility : AbilityBase
     private class CaliberExpansionCache
     {
         public List<Vector3> AllRangeCells;
-        public Dictionary<Vector3Int, ShootingEquipment> EquipmentByCell;
-        public HashSet<ShootingEquipment> OffensiveEquipments;
+        public Dictionary<Vector3Int, OffensiveEquipment> EquipmentByCell;
+        public HashSet<OffensiveEquipment> OffensiveEquipments;
     }
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache)
@@ -44,7 +44,7 @@ public class CaliberExpansionAbility : AbilityBase
         EnsureCache(gridElement, ref cache);
         var c = (CaliberExpansionCache)cache;
 
-        if (targetingData.Value.selectedTarget is ShootingEquipment seTarget)
+        if (targetingData.Value.selectedTarget is OffensiveEquipment seTarget)
             return c.OffensiveEquipments.Contains(seTarget);
 
         return c.EquipmentByCell.ContainsKey(targetingData.Value.cellPosition);
@@ -58,8 +58,8 @@ public class CaliberExpansionAbility : AbilityBase
         EnsureCache(gridElement, ref cache);
         var c = (CaliberExpansionCache)cache;
 
-        ShootingEquipment targetEquipment;
-        if (targetingData.Value.selectedTarget is ShootingEquipment seTarget && c.OffensiveEquipments.Contains(seTarget))
+        OffensiveEquipment targetEquipment;
+        if (targetingData.Value.selectedTarget is OffensiveEquipment seTarget && c.OffensiveEquipments.Contains(seTarget))
             targetEquipment = seTarget;
         else if (!c.EquipmentByCell.TryGetValue(targetingData.Value.cellPosition, out targetEquipment))
             return null;
@@ -76,8 +76,8 @@ public class CaliberExpansionAbility : AbilityBase
 
         Vector3Int casterPos = caster.gridPosition;
         var allRangeCells = new List<Vector3>();
-        var equipmentByCell = new Dictionary<Vector3Int, ShootingEquipment>();
-        var offensiveEquipments = new HashSet<ShootingEquipment>();
+        var equipmentByCell = new Dictionary<Vector3Int, OffensiveEquipment>();
+        var offensiveEquipments = new HashSet<OffensiveEquipment>();
 
         IAreaShape circle = ShapeFactory.GetShape(ShapeType.Circle);
         foreach (Vector3 cellV3 in circle.GetCells(casterPos, _range, casterPos))
@@ -95,7 +95,7 @@ public class CaliberExpansionAbility : AbilityBase
 
             foreach (GridElement entity in entities)
             {
-                if (entity is ShootingEquipment eq && eq.EquipmentType == EquipmentType.Offensive)
+                if (entity is OffensiveEquipment eq && eq.EquipmentType == EquipmentType.Offensive)
                 {
                     equipmentByCell[cell] = eq;
                     offensiveEquipments.Add(eq);

@@ -378,18 +378,18 @@ MonoBehaviour:
   _statsConfig: {fileID: 0}
   _toAwakePoints: 1
   _overcapMultiplier: 2
-  _onShootEffects:
+  _onCommandExecuted:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5010430319650090655}
         m_TargetAssemblyTypeName: Unity.Cinemachine.CinemachineImpulseSource, Unity.Cinemachine
-        m_MethodName: GenerateImpulseWithForce
-        m_Mode: 4
+        m_MethodName: GenerateImpulse
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
-          m_FloatArgument: 1
+          m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2

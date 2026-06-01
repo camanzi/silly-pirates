@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class CaliberExpansionCommand : ICommand
 {
-    private readonly ShootingEquipment _targetEquipment;
+    private readonly OffensiveEquipment _targetEquipment;
     private readonly ITurnAgent _caster;
     private readonly int _critDMGBonus;
     private readonly TurnAgentEventChannel _turnEndedChannel;
     private CritDMGBonusModifier _modifier;
     private bool _applied;
 
-    public CaliberExpansionCommand(ShootingEquipment targetEquipment, ITurnAgent caster, int critDMGBonus, TurnAgentEventChannel turnEndedChannel)
+    public CaliberExpansionCommand(OffensiveEquipment targetEquipment, ITurnAgent caster, int critDMGBonus, TurnAgentEventChannel turnEndedChannel)
     {
         _targetEquipment = targetEquipment;
         _caster = caster;

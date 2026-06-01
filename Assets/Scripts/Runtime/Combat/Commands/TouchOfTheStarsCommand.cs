@@ -50,7 +50,7 @@ public class TouchOfTheStarsCommand : ICommand
 
         public void OnContribution(IAwakable awakable)
         {
-            if (awakable is ShootingEquipment equipment)
+            if (awakable is OffensiveEquipment equipment)
                 equipment.AddDMGTypeModifier(new StellarDMGModifier(equipment, _channel, _owner));
         }
 
