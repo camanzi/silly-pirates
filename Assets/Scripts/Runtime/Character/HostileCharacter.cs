@@ -102,8 +102,8 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
     }
 
-    public bool IsPartFunctional(EnemyPartSO part)
-        => _partController == null || _partController.IsPartFunctional(part);
+    public bool IsPartFunctional(EnemyPartSO part) => _partController == null || _partController.IsPartFunctional(part);
+    public Transform GetPartTransform(EnemyPartSO part) => _partController?.GetPartTransform(part);
 
     protected virtual void OnEnable()
     {

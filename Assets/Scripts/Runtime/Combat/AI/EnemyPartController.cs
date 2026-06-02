@@ -14,6 +14,14 @@ public class EnemyPartController : MonoBehaviour
         return true;
     }
 
+    public Transform GetPartTransform(EnemyPartSO part)
+    {
+        for (int i = 0; i < _parts.Count; i++)
+            if (_parts[i].Part == part && _parts[i].PartHealth != null)
+                return _parts[i].PartHealth.transform;
+        return null;
+    }
+
     public void OnTurnStart()
     {
         for (int i = 0; i < _parts.Count; i++)

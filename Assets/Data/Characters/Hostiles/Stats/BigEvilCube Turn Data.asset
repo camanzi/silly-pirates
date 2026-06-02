@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697114ac8b492f04a85a19eabb834d9b, type: 3}
   m_Name: BigEvilCube Turn Data
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentDataSO
-  _initialAgility: 85
-  _maxActionPointsPerTurn: 5
+  _initialAgility: 100
+  _maxActionPointsPerTurn: 0
   _maxHp: 12000
   _maxMovementPoints: 0
   _interactionRange: 1

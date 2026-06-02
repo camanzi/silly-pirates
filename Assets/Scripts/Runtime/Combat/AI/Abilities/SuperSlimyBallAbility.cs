@@ -105,7 +105,8 @@ public class SuperSlimyBallAbility : EnemyAbilityBase
             _slimyCellData,
             targetingData.Value.cellPosition,
             _slimeRadius,
-            (caster as HostileCharacter)?.CritStats
+            (caster as HostileCharacter)?.CritStats,
+            GetRequiredPartTransform(caster)
         );
     }
 }

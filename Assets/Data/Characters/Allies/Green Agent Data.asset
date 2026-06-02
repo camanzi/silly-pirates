@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentDataSO
   _initialAgility: 150
   _maxActionPointsPerTurn: 6
-  _maxHp: 1760
+  _maxHp: 1260
   _maxMovementPoints: 6
   _interactionRange: 1
   _actionsPerTurn: 1

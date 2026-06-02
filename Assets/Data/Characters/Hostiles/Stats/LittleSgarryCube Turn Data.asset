@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LittleSgarryCube Turn Data
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentDataSO
   _initialAgility: 120
-  _maxActionPointsPerTurn: 5
+  _maxActionPointsPerTurn: 0
   _maxHp: 4000
   _maxMovementPoints: 0
   _interactionRange: 1

@@ -33,5 +33,8 @@ public abstract class EnemyAbilityBase : AbilityBase
         return (context.Caster as IPartOwner)?.IsPartFunctional(_requiredPart) ?? true;
     }
 
+    protected UnityEngine.Transform GetRequiredPartTransform(IInteractableElement caster) =>
+        (caster as IPartOwner)?.GetPartTransform(_requiredPart);
+
     protected abstract float ComputeScore(AIContext context, out TargetingData targeting);
 }

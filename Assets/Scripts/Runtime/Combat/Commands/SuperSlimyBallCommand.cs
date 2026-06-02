@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using PrimeTween;
+using Unity.AppUI.Core;
 using UnityEngine;
 
 public class SuperSlimyBallCommand : ICommand
@@ -14,6 +15,7 @@ public class SuperSlimyBallCommand : ICommand
     private readonly Vector3Int _targetCell;
     private readonly int _slimeRadius;
     private readonly EnemyCritStatsSO _critStats;
+    private readonly Transform _partTransform;
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
@@ -21,7 +23,8 @@ public class SuperSlimyBallCommand : ICommand
                                   GameObject projectilePrefab, TrajectoryConfigsSO trajectoryConfig, int damage,
                                   DamageType damageType = DamageType.Physical,
                                   SlimyCellDataSO slimyCellData = null, Vector3Int targetCell = default,
-                                  int slimeRadius = 1, EnemyCritStatsSO critStats = null)
+                                  int slimeRadius = 1, EnemyCritStatsSO critStats = null,
+                                  Transform partTransform = null)
     {
         _caster = caster;
         _target = target;
@@ -33,10 +36,14 @@ public class SuperSlimyBallCommand : ICommand
         _targetCell = targetCell;
         _slimeRadius = slimeRadius;
         _critStats = critStats;
+        _partTransform = partTransform;
     }
 
     public async Awaitable ExecuteAsync()
     {
+        var partOriginal = _partTransform.localScale;
+        await Tween.Scale(_partTransform, partOriginal * 1.1f, 1f, ease: Ease.InOutQuad);
+
         var t = _caster.Transform;
         var original = t.localScale;
 
@@ -45,6 +52,8 @@ public class SuperSlimyBallCommand : ICommand
         await Tween.Scale(t, original,        0.10f, Ease.InOutQuad);
 
         await LaunchProjectile();
+    
+        await Tween.Scale(_partTransform, partOriginal, .5f, ease: Ease.InOutCubic);
     }
 
     private async Awaitable LaunchProjectile()

@@ -23,7 +23,7 @@ public class OffensiveEquipment : ShipEquipment, ICritDMGOwner, IDMGTypeOwner
     public DamageType EffectiveDMGType =>
         _dmgTypeModifiers.Count > 0
             ? _dmgTypeModifiers[^1].GetDMGTypeOverride()
-            : (StatsConfig as IOffensiveEquipmentStats)?.DMGType ?? DamageType.None;
+            : DamageType.None;
 
     public void AddDMGTypeModifier(IDMGTypeModifier m) => _dmgTypeModifiers.Add(m);
     public void RemoveDMGTypeModifier(IDMGTypeModifier m) => _dmgTypeModifiers.Remove(m);

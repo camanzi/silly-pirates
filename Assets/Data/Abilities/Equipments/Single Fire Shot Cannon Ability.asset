@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebcdd9bb8fdb8934480082b4058b5f28, type: 3}
-  m_Name: Multi Shot Cannon Ability
+  m_Name: Single Fire Shot Cannon Ability
   m_EditorClassIdentifier: Assembly-CSharp::ShootWithEquipmentAbility
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   showTrajectory: 1
   trajectoryConfigData: {fileID: 11400000, guid: 3fdbbc9c379408d438ff6b483ef1f106, type: 2}
   _icon: {fileID: 0}
-  _maxTargets: 3
+  _maxTargets: 1
   _projectileConfig: {fileID: 11400000, guid: 54be6d263248e094ba70b84c2f0ae0c1, type: 2}
   _cooldown: 2
+  _baseDMG: 1000
+  _baseDMGType: 2

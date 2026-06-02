@@ -10,7 +10,9 @@ public class ShootCommand : ICommand
     private int _cooldown;
 
     private TrajectoryConfigsSO _trajectoryConfigData;
-    private IOffensiveEquipmentStats _stats;
+    private readonly int _baseDMG;
+    private readonly DamageType _baseDMGType;
+    private readonly IOffensiveEquipmentStats _stats;
 
     private readonly int _overcapCritBonus;
 
@@ -18,12 +20,14 @@ public class ShootCommand : ICommand
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData, int overcapCritBonus = 0)
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData, int overcapCritBonus = 0)
     {
         _caster = caster;
         _targets = targets;
         _projectileConfig = projectileConfig;
         _cooldown = cooldown;
+        _baseDMG = baseDMG;
+        _baseDMGType = baseDMGType;
         _stats = stats;
         _trajectoryConfigData = trajectoryConfigData;
         _overcapCritBonus = overcapCritBonus;
@@ -63,11 +67,19 @@ public class ShootCommand : ICommand
         { Projectile = p; Start = s; ControlPoint = cp; End = e; }
     }
 
+    private DamageType ResolveDMGType()
+    {
+        if (_caster is IDMGTypeOwner dmgOwner)
+        {
+            DamageType overridden = dmgOwner.EffectiveDMGType;
+            if (overridden != DamageType.None) return overridden;
+        }
+        return _baseDMGType;
+    }
+
     private async Awaitable LaunchProjectile(ITargettable target)
     {
-        DamageType effectiveType = _caster is IDMGTypeOwner dmgOwner
-            ? dmgOwner.EffectiveDMGType
-            : _stats.DMGType;
+        DamageType effectiveType = ResolveDMGType();
         var projectile = GameObject.Instantiate(_projectileConfig.GetPrefab(effectiveType), _caster.Transform.position, Quaternion.identity);
 
         Vector3 start = _caster.Transform.position;
@@ -91,17 +103,17 @@ public class ShootCommand : ICommand
 
     private void HandleImpact(GameObject projectile, ITargettable target)
     {
-        if (target is IHealthOwner healthOwner && _stats != null)
+        if (target is IHealthOwner healthOwner)
         {
-            float damage   = _stats.BaseDMG;
-            int   critRate = _stats.CritRate + _overcapCritBonus;
+            float damage   = _baseDMG;
+            int   critRate = (_stats?.CritRate ?? 0) + _overcapCritBonus;
 
-            int effectiveCritDMG = _caster is ICritDMGOwner critOwner ? critOwner.EffectiveCritDMG : _stats.CritDMG;
+            int effectiveCritDMG = _caster is ICritDMGOwner critOwner ? critOwner.EffectiveCritDMG : (_stats?.CritDMG ?? 0);
             bool isCrit = UnityEngine.Random.Range(0, 100) < critRate;
             if (isCrit)
                 damage += damage * effectiveCritDMG / 100f;
 
-            DamageType dmgType = _caster is IDMGTypeOwner dmgOwner ? dmgOwner.EffectiveDMGType : _stats.DMGType;
+            DamageType dmgType = ResolveDMGType();
             healthOwner.Health.TakeDamage(new DamagePayload(damage, dmgType) { IsCritical = isCrit });
             Debug.Log($"[ShootCommand] Hit — crit: {isCrit}, damage: {damage}, dmgType: {dmgType}, critRate: {critRate}%, critDMG: {effectiveCritDMG}%");
         }

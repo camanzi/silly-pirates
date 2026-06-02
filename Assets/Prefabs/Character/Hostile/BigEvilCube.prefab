@@ -75,6 +75,7 @@ MonoBehaviour:
   _standaloneMaxHp: 3000
   _baseBehaviors:
   - {fileID: 11400000, guid: dd3e6e05ac952954180b300691ba818f, type: 2}
+  - {fileID: 11400000, guid: 77bc452d55d4f004daa843af6d3c620a, type: 2}
   _showDamageUIEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
 --- !u!114 &4327804586347686111
 MonoBehaviour:
@@ -399,7 +400,7 @@ PrefabInstance:
     - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _critStats
       value: 
-      objectReference: {fileID: 11400000, guid: 1a95d8cddf02ac248b0ade2d5d85aa91, type: 2}
+      objectReference: {fileID: 11400000, guid: b4c4609d7a0bce744a37c5dc99ecdf51, type: 2}
     - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _displayName
       value: Big Evil Octopus
