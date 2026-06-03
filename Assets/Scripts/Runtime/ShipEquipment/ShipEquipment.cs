@@ -14,14 +14,14 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
 
     [Header("Awakable Configs")]
     [SerializeField] private int _toAwakePoints;
-    [SerializeField] [Min(1)] private int _overcapMultiplier = 2;
+    [SerializeField] [Min(1)] private int _maxExtraAwakeningPoints = 2;
 
     [Header("Feedback Events")]
     [SerializeField] private UnityEvent _onCommandExecuted;
     public UnityEvent OnCommandExecuted => _onCommandExecuted;
 
     public int MaxAwakeningPoints => _toAwakePoints;
-    public int OvercapLimit => _toAwakePoints * _overcapMultiplier;
+    public int OvercapLimit => _toAwakePoints + _maxExtraAwakeningPoints;
     public int CurrentAwakeningPoints => _awakeningPoints;
     public int AwakeningPoints
     {

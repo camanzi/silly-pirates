@@ -4,7 +4,7 @@ using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
-public class GridCharacter : InteractableGridElement, IMovable, ITargettable, ITurnAgent, IAbilityHolder, IHealthOwner, IAwakeningModifierHolder
+public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupant, ITargettable, ITurnAgent, IAbilityHolder, IHealthOwner, IAwakeningModifierHolder
 {
     [Header("Turn Agent configurations")]
     [SerializeField] private TurnAgentDataSO _agentData;
@@ -127,6 +127,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
         base.OnEnable();
         OnCombatJoin();
         if (_healthController != null) _healthController.OnDeath += OnCombatLeave;
+        if (_healthController != null) _healthController.OnRevive += OnCombatRevive;
         if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged += HandlePassivesChanged;
     }
 
@@ -134,6 +135,7 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     {
         base.OnDisable();
         if (_healthController != null) _healthController.OnDeath -= OnCombatLeave;
+        if (_healthController != null) _healthController.OnRevive -= OnCombatRevive;
         if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged -= HandlePassivesChanged;
     }
 
@@ -194,6 +196,13 @@ public class GridCharacter : InteractableGridElement, IMovable, ITargettable, IT
     {
         _directionalSpriteController?.SetDeadVisual();
         this.HandleCombatLeave();
+    }
+
+    public void OnCombatRevive()
+    {
+        _directionalSpriteController?.ResetVisual();
+        _directionalSpriteController?.PlayAnimation(EAnimation.Idle);
+        OnCombatJoin();
     }
 
     public void OnStartingTurn()

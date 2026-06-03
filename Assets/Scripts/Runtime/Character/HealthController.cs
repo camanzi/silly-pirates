@@ -19,6 +19,7 @@ public class HealthController : MonoBehaviour, IDamageable
 
     public event Action<float> OnHpChanged;
     public event Action OnDeath;
+    public event Action OnRevive;
     public event Action OnTakeDamage;
     public event Action OnHealReceived;
 
@@ -61,6 +62,7 @@ public class HealthController : MonoBehaviour, IDamageable
         if (IsAlive) return;
         _currentHp = Mathf.Clamp(hpAmount, 1f, MaxHp);
         OnHpChanged?.Invoke(_currentHp);
+        OnRevive?.Invoke();
     }
 
     private void ApplyDamage(DamagePayload payload)

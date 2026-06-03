@@ -135,7 +135,10 @@ public class MoveAbility : AbilityBase
         var walkabilityCheck = (Func<Vector3Int, Tilemap, bool>)((pos, tm) =>
         {
             TerrainTile tile = tm.GetTile<TerrainTile>(pos);
-            return tile != null && tile.isWalkable && !_gridStateData.IsOccupied(pos);
+            if (tile == null || !tile.isWalkable) return false;
+            if (!_gridStateData.IsOccupied(pos)) return true;
+            var entities = _gridStateData.GetEntityAt(pos);
+            return entities != null && entities.All(e => e is IPassableOccupant);
         });
 
         var reachable = costGetter != null
@@ -143,13 +146,29 @@ public class MoveAbility : AbilityBase
             : PathFindingUtils.FindReachableArea(gridElement.gridPosition, movable.RemainingMovementPoints, tilemap, walkabilityCheck);
 
         var reachableSet = new HashSet<Vector3Int>();
-        foreach (Vector3 pos in reachable) reachableSet.Add(Vector3Int.FloorToInt(pos));
+        foreach (Vector3 pos in reachable)
+        {
+            var cell = Vector3Int.FloorToInt(pos);
+            if (!_gridStateData.IsOccupied(cell) ||
+                (_gridStateData.GetEntityAt(cell) is { } ents && ents.All(e => e == gridElement)))
+                reachableSet.Add(cell);
+        }
+
+        var reachableArea = reachable
+            .Where(pos => reachableSet.Contains(Vector3Int.FloorToInt(pos)))
+            .ToList();
 
         var walkableSet = new HashSet<Vector3Int>();
         foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
         {
             TerrainTile tile = tilemap.GetTile<TerrainTile>(pos);
-            if (tile != null && tile.isWalkable) walkableSet.Add(pos);
+            if (tile == null || !tile.isWalkable) continue;
+            if (_gridStateData.IsOccupied(pos))
+            {
+                var ents = _gridStateData.GetEntityAt(pos);
+                if (ents == null || !ents.All(e => e is IPassableOccupant)) continue;
+            }
+            walkableSet.Add(pos);
         }
 
         var extensions = new List<IMovementExtension>();
@@ -162,7 +181,7 @@ public class MoveAbility : AbilityBase
 
         cache = new MoveCache
         {
-            ReachableArea = reachable,
+            ReachableArea = reachableArea,
             ReachableSet = reachableSet,
             WalkableSet = walkableSet,
             Extensions = extensions,
