@@ -164,6 +164,7 @@ MonoBehaviour:
   _uiDocument: {fileID: 4937417368071031144}
   _shownByDefault: 1
   _positionOffset: {x: 0, y: 0, z: 0}
+  _pickingMode: 1
   _bindedMenuElement: {fileID: 5587952578991430984}
 --- !u!1 &6488994046265238083
 GameObject:
@@ -377,7 +378,7 @@ MonoBehaviour:
   _equipmentType: 0
   _statsConfig: {fileID: 11400000, guid: 7bfd761a7be3ac743ba90352b1f76536, type: 2}
   _toAwakePoints: 1
-  _overcapMultiplier: 2
+  _maxExtraAwakeningPoints: 2
   _onCommandExecuted:
     m_PersistentCalls:
       m_Calls:
@@ -547,6 +548,7 @@ MonoBehaviour:
   _uiDocument: {fileID: 3165446298186797797}
   _shownByDefault: 0
   _positionOffset: {x: 0, y: 0, z: 0}
+  _pickingMode: 0
   _interactionSet: {fileID: 11400000, guid: e8b273f7149d6044490654946c36cfe9, type: 2}
   _bindedMenuElement: {fileID: 5587952578991430984}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}

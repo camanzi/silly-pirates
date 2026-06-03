@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 19101, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: PS_InteractionMenu
+  m_Name: PS_InteractableWSUI
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.PanelSettings
   themeUss: {fileID: -4733365628477956816, guid: d57e0a1c1429aeb47826496a28c081ad, type: 3}
   m_DisableNoThemeWarning: 0

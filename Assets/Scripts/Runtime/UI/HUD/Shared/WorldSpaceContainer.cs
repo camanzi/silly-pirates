@@ -9,6 +9,7 @@ public class WorldSpaceContainer : MonoBehaviour
     [Tooltip("If true try to show the menu by default without requesting it by proximity")]
     [SerializeField] private bool _shownByDefault;
     [SerializeField] protected Vector3 _positionOffset;
+    [SerializeField] protected PickingMode _pickingMode = PickingMode.Ignore;
     protected VisualElement Container => _container;
     protected Camera MainCamera => _mainCamera; 
     private VisualElement _container;
@@ -42,7 +43,7 @@ public class WorldSpaceContainer : MonoBehaviour
 
         if (_container != null)
         {
-            _container.pickingMode = PickingMode.Position;
+            _container.pickingMode = _pickingMode;
             _container.RegisterCallback<GeometryChangedEvent>(evt => {
                 if (evt.oldRect.size != evt.newRect.size)
                     UpdateUIPosition();
