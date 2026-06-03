@@ -7,7 +7,7 @@ public class CaliberExpansionAbility : AbilityBase
     [Header("Caliber Expansion Configs")]
     [SerializeField] private int _range = 1;
     [SerializeField] private int _apCost = 1;
-    [SerializeField] private int _critDMGBonus = 10;
+    [SerializeField] private CaliberExpansionPassiveSO _passiveSO;
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
 
     public override int ActionPointCost => _apCost;
@@ -44,10 +44,10 @@ public class CaliberExpansionAbility : AbilityBase
         EnsureCache(gridElement, ref cache);
         var c = (CaliberExpansionCache)cache;
 
-        if (targetingData.Value.selectedTarget is OffensiveEquipment seTarget)
-            return c.OffensiveEquipments.Contains(seTarget);
+        OffensiveEquipment targetEquipment = ResolveTarget(targetingData.Value, c);
+        if (targetEquipment == null) return false;
 
-        return c.EquipmentByCell.ContainsKey(targetingData.Value.cellPosition);
+        return targetEquipment.GetComponent<PassiveAbilityController>() != null;
     }
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
@@ -58,16 +58,21 @@ public class CaliberExpansionAbility : AbilityBase
         EnsureCache(gridElement, ref cache);
         var c = (CaliberExpansionCache)cache;
 
-        OffensiveEquipment targetEquipment;
-        if (targetingData.Value.selectedTarget is OffensiveEquipment seTarget && c.OffensiveEquipments.Contains(seTarget))
-            targetEquipment = seTarget;
-        else if (!c.EquipmentByCell.TryGetValue(targetingData.Value.cellPosition, out targetEquipment))
-            return null;
+        OffensiveEquipment targetEquipment = ResolveTarget(targetingData.Value, c);
+        if (targetEquipment == null) return null;
 
         if (caster is ITurnAgent turnAgent)
             turnAgent.RemainingActionPoints -= _apCost;
 
-        return new CaliberExpansionCommand(targetEquipment, caster as ITurnAgent, _critDMGBonus, _onAnyTurnEnded);
+        return new CaliberExpansionCommand(targetEquipment.PassiveAbilityController, caster as ITurnAgent, _passiveSO, _onAnyTurnEnded);
+    }
+
+    private OffensiveEquipment ResolveTarget(TargetingData targetingData, CaliberExpansionCache c)
+    {
+        if (targetingData.selectedTarget is OffensiveEquipment seTarget && c.OffensiveEquipments.Contains(seTarget))
+            return seTarget;
+        c.EquipmentByCell.TryGetValue(targetingData.cellPosition, out var equipment);
+        return equipment;
     }
 
     private void EnsureCache(GridElement caster, ref object cache)

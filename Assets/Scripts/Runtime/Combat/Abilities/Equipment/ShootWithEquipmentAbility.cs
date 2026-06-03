@@ -24,8 +24,7 @@ public class ShootWithEquipmentAbility : AbilityBase
         if (caster is IAwakable awakable)
         {
             int extraPoints = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
-            if (extraPoints > 0)
-                overcapCritBonus = (int)Mathf.Pow(2, extraPoints + 1) - 2;
+            overcapCritBonus = (int)MathUtils.CalculateOvercapBonus(extraPoints);
         }
 
         Debug.Log($"[ShootCommand] Overcap crit bonus: +{overcapCritBonus}% (extraPoints: {(caster is IAwakable aw ? Mathf.Max(0, aw.CurrentAwakeningPoints - aw.MaxAwakeningPoints) : 0)})");

@@ -63,8 +63,7 @@ public class RestoringAuraAbility : AbilityBase
         if (caster is IAwakable awakable)
         {
             int extraPoints = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
-            if (extraPoints > 0)
-                overcapBonus = Mathf.Pow(2, extraPoints + 1) - 2f;
+            overcapBonus = MathUtils.CalculateOvercapBonus(extraPoints);
         }
 
         float effectiveHpPercentage = (_reviveHpPercentage + overcapBonus) / 100f;

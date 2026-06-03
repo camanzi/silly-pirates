@@ -13,10 +13,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 67e2949a13350ee47ada446d88efe38d, type: 2}
     - target: {fileID: 5587952578991430984, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
-      propertyPath: _toAwakePoints
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5587952578991430984, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: _overcapMultiplier
       value: 4
       objectReference: {fileID: 0}

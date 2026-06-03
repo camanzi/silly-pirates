@@ -284,6 +284,7 @@ MonoBehaviour:
   _uiDocument: {fileID: 2409093282305401874}
   _shownByDefault: 0
   _positionOffset: {x: 0, y: 0, z: 0}
+  _pickingMode: 1
   _interactionSet: {fileID: 11400000, guid: d834af5b9decc0a448ccc4a472995577, type: 2}
   _bindedMenuElement: {fileID: 9201985177974873206}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
@@ -555,7 +556,7 @@ MonoBehaviour:
   _equipmentType: 2
   _statsConfig: {fileID: 0}
   _toAwakePoints: 10
-  _overcapMultiplier: 6
+  _maxExtraAwakeningPoints: 10
   _onCommandExecuted:
     m_PersistentCalls:
       m_Calls: []
@@ -815,4 +816,5 @@ MonoBehaviour:
   _uiDocument: {fileID: 3479115828515589601}
   _shownByDefault: 1
   _positionOffset: {x: 0, y: 0, z: 0}
+  _pickingMode: 1
   _bindedMenuElement: {fileID: 9201985177974873206}

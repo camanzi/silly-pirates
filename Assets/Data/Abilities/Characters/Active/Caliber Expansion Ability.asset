@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CaliberExpansionAbility
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
-  _icon: {fileID: 21300000, guid: 91173ae63c285184ca8f4cb2214db1a6, type: 3}
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 91173ae63c285184ca8f4cb2214db1a6, type: 3}
   _range: 1
   _apCost: 1
-  _critDMGBonus: 10
+  _passiveSO: {fileID: 11400000, guid: 5b98b0e6694db0a499abf2f0bd79b37b, type: 2}
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}

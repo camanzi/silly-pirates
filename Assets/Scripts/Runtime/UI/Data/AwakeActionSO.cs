@@ -15,7 +15,7 @@ public class AwakeActionSO : InteractionActionSO
         if (bonus > 0)
             holder.NotifyAwakeningContribution(awakable);
 
-        awakable.AddAwakeningPoints(bonus > 0 ? bonus : 1);
+        awakable.AddAwakeningPoints(1 + bonus);
         interactingAgent.RemainingActionPoints--;
         return true;
     }

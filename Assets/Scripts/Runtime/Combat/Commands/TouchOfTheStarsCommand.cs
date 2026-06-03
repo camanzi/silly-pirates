@@ -2,71 +2,37 @@ using UnityEngine;
 
 public class TouchOfTheStarsCommand : ICommand
 {
-    private readonly IInteractableElement _caster;
+    private readonly PassiveAbilityController _passiveController;
+    private readonly ITurnAgent _caster;
+    private readonly TouchOfTheStarsPassiveSO _passiveSO;
+    private readonly StellarDMGPassiveSO _stellarPassiveSO;
+    private readonly TurnAgentEventChannel _onAnyTurnEnded;
     private readonly int _apCost;
-    private readonly TurnAgentEventChannel _turnEndedChannel;
-    private AwakeningStackModifier _modifier;
+    private TouchOfTheStarsPassiveSO _passiveInstance;
 
-    public TouchOfTheStarsCommand(IInteractableElement caster, int apCost, TurnAgentEventChannel turnEndedChannel)
+    public TouchOfTheStarsCommand(PassiveAbilityController passiveController, ITurnAgent caster, TouchOfTheStarsPassiveSO passiveSO, StellarDMGPassiveSO stellarPassiveSO, TurnAgentEventChannel onAnyTurnEnded, int apCost)
     {
+        _passiveController = passiveController;
         _caster = caster;
+        _passiveSO = passiveSO;
+        _stellarPassiveSO = stellarPassiveSO;
+        _onAnyTurnEnded = onAnyTurnEnded;
         _apCost = apCost;
-        _turnEndedChannel = turnEndedChannel;
     }
 
     public async Awaitable ExecuteAsync()
     {
-        if (_caster is IAwakeningModifierHolder holder && _caster is ITurnAgent agent)
-        {
-            _modifier = new AwakeningStackModifier(holder, _turnEndedChannel, agent);
-            holder.AddAwakeningModifier(_modifier);
-        }
+        _passiveInstance = Object.Instantiate(_passiveSO);
+        _passiveInstance.Initialize(_caster, _onAnyTurnEnded, _stellarPassiveSO);
+        _passiveController.AddPassive(_passiveInstance);
         await Awaitable.NextFrameAsync();
     }
 
     public void Undo()
     {
-        _modifier?.Remove();
-        if (_caster is ITurnAgent agent)
-            agent.RemainingActionPoints += _apCost;
+        if (_passiveInstance == null) return;
+        _passiveController.RemovePassive(_passiveInstance);
+        _passiveInstance = null;
+        _caster.RemainingActionPoints += _apCost;
     }
-
-    private sealed class AwakeningStackModifier : IAwakeningModifier, IAwakeningContributionEffect
-    {
-        private readonly IAwakeningModifierHolder _holder;
-        private readonly TurnAgentEventChannel _channel;
-        private readonly ITurnAgent _owner;
-        private bool _active = true;
-
-        public AwakeningStackModifier(IAwakeningModifierHolder holder, TurnAgentEventChannel channel, ITurnAgent owner)
-        {
-            _holder = holder;
-            _channel = channel;
-            _owner = owner;
-            _channel.OnEventRaised += OnTurnEnded;
-        }
-
-        public int GetAwakeningBonus() => 1;
-
-        public void OnContribution(IAwakable awakable)
-        {
-            if (awakable is OffensiveEquipment equipment)
-                equipment.AddDMGTypeModifier(new StellarDMGModifier(equipment, _channel, _owner));
-        }
-
-        private void OnTurnEnded(ITurnAgent agent)
-        {
-            if (agent != _owner) return;
-            Remove();
-        }
-
-        public void Remove()
-        {
-            if (!_active) return;
-            _active = false;
-            _holder.RemoveAwakeningModifier(this);
-            _channel.OnEventRaised -= OnTurnEnded;
-        }
-    }
-
 }

@@ -14,7 +14,7 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
 
     [Header("Awakable Configs")]
     [SerializeField] private int _toAwakePoints;
-    [SerializeField] [Min(1)] private int _maxExtraAwakeningPoints = 2;
+    [SerializeField] [Min(0)] private int _maxExtraAwakeningPoints = 2;
 
     [Header("Feedback Events")]
     [SerializeField] private UnityEvent _onCommandExecuted;
@@ -47,14 +47,18 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     public Action OnAwakeningCountersChanged { get; set; }
     public Action<int> OnCooldownChanged { get; set; }
 
+    public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
+
     private int _awakeningPoints = 0;
     private int _cooldown = 0;
     private EquipmentStateMachine _stateMachine;
+    private PassiveAbilityController _passiveAbilityController;
 
     protected override void Awake()
     {
         base.Awake();
         _stateMachine = GetComponent<EquipmentStateMachine>();
+        _passiveAbilityController = GetComponent<PassiveAbilityController>();
     }
 
     public void AddAwakeningPoints(int count)

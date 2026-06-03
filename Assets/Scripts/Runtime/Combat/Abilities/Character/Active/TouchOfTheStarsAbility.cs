@@ -5,6 +5,8 @@ public class TouchOfTheStarsAbility : AbilityBase
 {
     [Header("Touch Of The Stars Configs")]
     [SerializeField] private int _apCost = 1;
+    [SerializeField] private TouchOfTheStarsPassiveSO _passiveSO;
+    [SerializeField] private StellarDMGPassiveSO _stellarPassiveSO;
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
 
     public override int ActionPointCost => _apCost;
@@ -22,9 +24,10 @@ public class TouchOfTheStarsAbility : AbilityBase
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        if (caster is ITurnAgent turnAgent)
-            turnAgent.RemainingActionPoints -= _apCost;
+        if (caster is not GridCharacter character) return null;
+        if (caster is not ITurnAgent turnAgent) return null;
+        turnAgent.RemainingActionPoints -= _apCost;
 
-        return new TouchOfTheStarsCommand(caster, _apCost, _onAnyTurnEnded);
+        return new TouchOfTheStarsCommand(character.PassiveAbilityController, turnAgent, _passiveSO, _stellarPassiveSO, _onAnyTurnEnded, _apCost);
     }
 }

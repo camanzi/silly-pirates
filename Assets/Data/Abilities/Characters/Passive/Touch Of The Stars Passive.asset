@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 861396b1e95844b4aaadabff2eb5439a, type: 3}
-  m_Name: Base Cannon Stats
-  m_EditorClassIdentifier: Assembly-CSharp::OffensiveEquipmentStatsSO
-  _critRate: 45
-  _critDMG: 100
+  m_Script: {fileID: 11500000, guid: fa66b0cb33237804d9d676c9c47c6e16, type: 3}
+  m_Name: Touch Of The Stars Passive
+  m_EditorClassIdentifier: Assembly-CSharp::TouchOfTheStarsPassiveSO
+  _displayName: Touch of the Stars
