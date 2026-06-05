@@ -16,6 +16,10 @@ public abstract class EnemyAbilityBase : AbilityBase
     [Tooltip("When true, this ability is never excluded by the sub-turn deduplication filter and always acts as a fallback candidate.")]
     [SerializeField] private bool _unlimitedUse = false;
 
+    [Header("Turn gating")]
+    [Tooltip("Enemy must have taken more than this many turns before this ability is considered. 0 = available from turn 1.")]
+    [SerializeField] private int _minTurnsBeforeUse = 0;
+
     public bool UnlimitedUse => _unlimitedUse;
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache) => AbilityPreviewData.Empty;
@@ -34,6 +38,7 @@ public abstract class EnemyAbilityBase : AbilityBase
 
     protected virtual bool MeetsPreconditions(AIContext context)
     {
+        if (context.Caster.TurnCount <= _minTurnsBeforeUse) return false;
         if (_requiredPart == null) return true;
         return (context.Caster as IPartOwner)?.IsPartFunctional(_requiredPart) ?? true;
     }

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8516fb81c23b65745bdb251422024cc1, type: 3}
+  m_Name: Spawn Slimes Ability
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnAlliesAbility
+  _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  showTrajectory: 0
+  trajectoryConfigData: {fileID: 0}
+  _icon: {fileID: 0}
+  _requiredPart: {fileID: 0}
+  _flavorText: The Boss is screaming for help!
+  _basePriority: 10
+  _unlimitedUse: 0
+  _minTurnsBeforeUse: 5
+  _spawnPointManager: {fileID: 11400000, guid: 34165e78748d78f4ca1f1951af415f06, type: 2}
+  _allyPool:
+  - {fileID: 4489845312767025257, guid: a001c013c0d5479469fae94c8159b2d2, type: 3}
+  - {fileID: 5879834906850785746, guid: 6e576a828c802154aba3540e9d113db0, type: 3}
+  _maxSpawns: 2
+  _cooldownTurns: 5

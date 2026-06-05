@@ -8,6 +8,12 @@ public class EnemyTurnDriver : MonoBehaviour
     [SerializeField] private TurnStateSO _currentTurnStateData;
     [SerializeField] private TurnController _turnController;
 
+    public TurnController TurnController
+    {
+        get => _turnController;
+        set => _turnController = value;
+    }
+
     private BehaviorGraphAgent _agent;
     private HostileCharacter _hostile;
 

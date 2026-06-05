@@ -18,7 +18,7 @@ MonoBehaviour:
   trajectoryConfigData: {fileID: 11400000, guid: ef232f08ea2afcd448a72b4afc59923c, type: 2}
   _icon: {fileID: 0}
   _requiredPart: {fileID: 0}
-  _flavorText: The BBEG performes a weird dance
+  _flavorText: A character is being cursed!
   _basePriority: 1
   _unlimitedUse: 0
   _cursePassive: {fileID: 11400000, guid: 1f5b98cd91e555d4a888a8f0e6bbfe95, type: 2}

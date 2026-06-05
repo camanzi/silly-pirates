@@ -19,12 +19,10 @@
 
 .flavor-label {
     color: rgb(255, 69, 61);
-    font-size: 30px;
+    font-size: 35px;
     -unity-text-align: middle-center;
     white-space: nowrap;
-    max-width: 600px;
-    -unity-text-outline-width: 1px;
-    text-shadow: -1px 2px 1px rgb(0, 0, 0);
+    -unity-text-outline-width: 2px;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -33,7 +31,9 @@
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
-    -unity-text-outline-color: rgba(0, 0, 0, 0.392);
+    -unity-text-outline-color: rgba(251, 68, 60, 0.686);
     -unity-font-style: bold;
     -unity-font-definition: url("project://database/Assets/Fonts/Jaini-Regular.ttf?fileID=12800000&guid=f87297ce785d8694c9876678ba95904d&type=3#Jaini-Regular");
+    text-shadow: -5px 10px 0 rgb(0, 0, 0);
+    letter-spacing: 0;
 }

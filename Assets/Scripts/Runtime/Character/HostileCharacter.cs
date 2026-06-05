@@ -50,6 +50,8 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public TurnAgentEventChannel OnAgentLeave => _onAgentLeave;
     public IntEventChannel OnAPChanged => _onAPConsumedEventChannel;
 
+    public void SetSpawnPoint(SpawnPoint spawnPoint) => _spawnPoint = spawnPoint;
+
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
     public int RemainingActionPoints
     {
@@ -78,6 +80,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public HealthController Health => _healthController;
     
+    public int TurnCount { get; private set; }
     public readonly List<EnemyAbilityBase> UsedAbilitiesThisTurn = new();
     public readonly Dictionary<EnemyAbilityBase, int> AbilityCooldowns = new();
 
@@ -91,6 +94,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     private DirectionalSpriteController _directionalSpriteController;
     private readonly List<IAgilityModifier> _agilityModifiers = new();
     private readonly List<IOnTurnStart> _turnStartHandlers = new();
+    private SpawnPoint _spawnPoint;
 
     void Awake()
     {
@@ -152,6 +156,8 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public void OnCombatLeave()
     {
+        _spawnPoint?.Release();
+        _spawnPoint = null;
         _directionalSpriteController?.PlayAnimation(EAnimation.Death);
         _directionalSpriteController?.SetDeadVisual();
         if (_directionalSpriteController != null)
@@ -168,6 +174,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public async void OnStartingTurn()
     {
+        TurnCount++;
         var cooldownKeys = new List<EnemyAbilityBase>(AbilityCooldowns.Keys);
         foreach (var k in cooldownKeys)
             if (AbilityCooldowns[k] > 0) AbilityCooldowns[k]--;

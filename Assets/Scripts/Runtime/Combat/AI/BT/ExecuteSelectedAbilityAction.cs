@@ -20,7 +20,7 @@ public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
     private float _flavorTextStartTime = -1f;
     private ICommand _pendingCommand;
     private TurnController _pendingTurnController;
-    private const float FlavorTextDelay = 2f;
+    private const float FlavorTextDelay = .5f;
 
     protected override Status OnStart()
     {
