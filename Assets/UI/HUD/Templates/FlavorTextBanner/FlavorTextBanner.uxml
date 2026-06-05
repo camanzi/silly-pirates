@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Templates/FlavorTextBanner/FlavorTextBanner.uss?fileID=7433441132597879392&amp;guid=c5ab02b98a58ba2439590b7528e8fa2a&amp;type=3#FlavorTextBanner"/>
+    <ui:VisualElement name="flavor-root" picking-mode="Ignore" class="flavor-root">
+        <ui:VisualElement name="flavor-panel" picking-mode="Ignore" class="flavor-panel">
+            <ui:Label name="flavor-label" picking-mode="Ignore" class="flavor-label"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1634,11 +1634,192 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_Actions
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_DefaultActionMap
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_ActionId
+      value: 351f2ccd-1f9f-44bf-9bec-d62ac5c5f408
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_ActionId
+      value: 491a483c-58bc-43f5-9a57-5bf885998ace
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_ActionId
+      value: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_ActionId
+      value: 7607c7b6-cd76-4816-beef-bd0341cfe950
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_ActionId
+      value: 15cef263-9014-4fd5-94d9-4e4a6234a6ef
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[5].m_ActionId
+      value: 32b35790-4ed0-4e9a-aa41-69ac6d629449
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[6].m_ActionId
+      value: 3c7022bf-7922-4f7c-a998-c437916075ad
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_ActionId
+      value: 44b200b1-1557-4083-816c-b22cbdf77ddf
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[8].m_ActionId
+      value: dad70c86-b58c-4b17-88ad-f5e53adf419e
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[9].m_ActionId
+      value: 0489e84a-4833-4c40-bfae-cea84b696689
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[10].m_ActionId
+      value: 24908448-c609-4bc3-a128-ea258674378a
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_ActionId
+      value: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_ActionId
+      value: 87cd85dc-d470-404c-bc51-7863124aa091
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_ActionName
+      value: 'Player/MoveCamera[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_ActionName
+      value: 'Player/TacticalView[/Keyboard/o]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_ActionName
+      value: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_ActionName
+      value: 'UI/Submit[/Keyboard/enter]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_ActionName
+      value: 'UI/Cancel[/Keyboard/escape]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[5].m_ActionName
+      value: 'UI/Point[/Mouse/position]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[6].m_ActionName
+      value: 'UI/Click[/Mouse/leftButton]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_ActionName
+      value: 'UI/RightClick[/Mouse/rightButton]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[8].m_ActionName
+      value: 'UI/MiddleClick[/Mouse/middleButton]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[9].m_ActionName
+      value: 'UI/ScrollWheel[/Mouse/scroll]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[10].m_ActionName
+      value: UI/TrackedDevicePosition
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_ActionName
+      value: UI/TrackedDeviceOrientation
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477637522146471612, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_ActionName
+      value: 'CM Overrides/LookCamera[/Mouse/middleButton,/Mouse/delta]'
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3295622904169205070, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 707104960796648776}
+    - targetCorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 707104960796648777}
   m_SourcePrefab: {fileID: 100100000, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+--- !u!1 &707104960796648774 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+  m_PrefabInstance: {fileID: 707104960796648773}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &707104960796648775 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2617577189569630218, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+  m_PrefabInstance: {fileID: 707104960796648773}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707104960796648774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+--- !u!114 &707104960796648776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707104960796648774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd7c6c2ef9158ee4da75c191d9adf43f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlavorTextBannerController
+  _uiDocument: {fileID: 707104960796648775}
+  _animationDuration: 0.5
+--- !u!114 &707104960796648777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707104960796648774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433cf56d2b4d0624bb32ba647129c261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StringChannelListener
+  eventChannel: {fileID: 11400000, guid: 25f72ae43ecf3d94f87959b2120cf83c, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 707104960796648776}
+        m_TargetAssemblyTypeName: FlavorTextBannerController, Assembly-CSharp
+        m_MethodName: Enqueue
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &2434508970417764651
 PrefabInstance:
   m_ObjectHideFlags: 0

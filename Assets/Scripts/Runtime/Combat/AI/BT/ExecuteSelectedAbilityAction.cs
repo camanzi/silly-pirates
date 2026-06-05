@@ -15,6 +15,12 @@ public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
     [SerializeReference] public BlackboardVariable<AbilityBase> SelectedAbility;
     [SerializeReference] public BlackboardVariable<MonoBehaviour> SelectedTarget;
     [SerializeReference] public BlackboardVariable<MonoBehaviour> TurnControllerRef;
+    [SerializeReference] public BlackboardVariable<StringEventChannel> FlavorTextChannel;
+
+    private float _flavorTextStartTime = -1f;
+    private ICommand _pendingCommand;
+    private TurnController _pendingTurnController;
+    private const float FlavorTextDelay = 2f;
 
     protected override Status OnStart()
     {
@@ -38,15 +44,35 @@ public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
             return Status.Failure;
         }
 
-        ICommand command = ability.CreateCommand(hostile, targeting, ref cache);
-        if (command == null)
+        _pendingCommand = ability.CreateCommand(hostile, targeting, ref cache);
+        if (_pendingCommand == null)
         {
             LogFailure("CreateCommand returned null.");
             return Status.Failure;
         }
 
-        turnController.AddCommand(command);
+        _pendingTurnController = turnController;
+
+        var channel = FlavorTextChannel?.Value;
+        if (ShouldShowFlavorText(ability, out string flavorText) && channel != null)
+        {
+            channel.RaiseEvent(flavorText);
+            _flavorTextStartTime = Time.time;
+            return Status.Running;
+        }
+
+        turnController.AddCommand(_pendingCommand);
         return Status.Success;
+    }
+
+    protected override Status OnUpdate()
+    {
+        if (Time.time - _flavorTextStartTime >= FlavorTextDelay)
+        {
+            _pendingTurnController.AddCommand(_pendingCommand);
+            return Status.Success;
+        }
+        return Status.Running;
     }
 
     private static TargetingData BuildTargetingData(ITargettable target)
@@ -58,5 +84,15 @@ public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
         Vector3Int cellPos = (target as GridElement)?.gridPosition ?? Vector3Int.FloorToInt(worldPos);
 
         return new TargetingData(worldPos, cellPos, isOverValidGrid: true, selectedTarget: target);
+    }
+
+    private bool ShouldShowFlavorText(AbilityBase ability, out string flavorText)
+    {
+        flavorText = null;
+
+        if (ability is not EnemyAbilityBase enemyAbility) return false;
+
+        flavorText = enemyAbility.FlavorText;
+        return !string.IsNullOrEmpty(flavorText);
     }
 }

@@ -18,6 +18,7 @@ MonoBehaviour:
   trajectoryConfigData: {fileID: 11400000, guid: ef232f08ea2afcd448a72b4afc59923c, type: 2}
   _icon: {fileID: 0}
   _requiredPart: {fileID: 11400000, guid: 8a73a37bf5ec4e84394146f22fc9651d, type: 2}
+  _flavorText: The BBEG use the power of the crawn
   _basePriority: 2
   _unlimitedUse: 0
   _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}
