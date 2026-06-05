@@ -11,14 +11,23 @@ public class ActionPointController : MonoBehaviour
 
     [Header("Dependences")]
     [SerializeField] private UIDocument _hudDocument;
+    [SerializeField] private BoolEventChannel _targetingStateChannel;
 
     private VisualElement _apContainer;
     private List<ActionPointElement> _apElements = new();
+    private int _currentHoverCost = 0;
+    private bool _isInTargetingState = false;
 
     private void Awake()
     {
         var root = _hudDocument.rootVisualElement;
         _apContainer = root.Q<VisualElement>("action-points-container");
+    }
+
+    public void OnTargetingStateChanged(bool isTargeting)
+    {
+        _isInTargetingState = isTargeting;
+        if (!isTargeting) HandleAbilityHoverPreview(0);
     }
 
     public void HandleAgentActivated(ITurnAgent agent)
@@ -62,10 +71,10 @@ public class ActionPointController : MonoBehaviour
         for (int i = 0; i < _apElements.Count; i++)
         {
             bool shouldBeConsumed = i >= newCurrentAp;
-            
+
             if (_apElements[i].IsConsumed != shouldBeConsumed)
             {
-                var apElement = _apElements[i]; 
+                var apElement = _apElements[i];
 
                 apElement.SetState(shouldBeConsumed);
 
@@ -78,11 +87,35 @@ public class ActionPointController : MonoBehaviour
                 else
                 {
                     apElement.style.scale = new StyleScale(new Scale(Vector3.zero));
-                    
+
                     Tween.Custom(Vector3.zero, Vector3.one, duration: 0.3f, ease: Ease.OutBack, onValueChange: newVal => {
                         apElement.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
                     });
                 }
+            }
+        }
+
+        HandleAbilityHoverPreview(_currentHoverCost);
+    }
+
+    public void HandleAbilityHoverPreview(int apCost)
+    {
+        if (apCost == 0 && _isInTargetingState) return;
+        _currentHoverCost = apCost;
+
+        foreach (var el in _apElements)
+            el.StopHoverGlow();
+
+        if (apCost <= 0) return;
+
+        int glowCount = 0;
+        for (int i = _apElements.Count - 1; i >= 0; i--)
+        {
+            var el = _apElements[i];
+            if (!el.IsConsumed && glowCount < apCost)
+            {
+                el.StartHoverGlow();
+                glowCount++;
             }
         }
     }

@@ -568,6 +568,7 @@ MonoBehaviour:
   _interactionSet: {fileID: 11400000, guid: e8b273f7149d6044490654946c36cfe9, type: 2}
   _bindedMenuElement: {fileID: 5587952578991430984}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+  _abilityHoverChannel: {fileID: 11400000, guid: 8cf6cd7d2d0d0b147832c2687cc0ceac, type: 2}
 --- !u!114 &2957332148682020349
 MonoBehaviour:
   m_ObjectHideFlags: 0

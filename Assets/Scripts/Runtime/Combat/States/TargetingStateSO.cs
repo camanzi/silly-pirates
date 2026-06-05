@@ -5,10 +5,12 @@ public class TargetingStateSO : CombatStateSO
 {
     [SerializeField] private CombatStateSO _idleStateTemplate;
     [SerializeField] private CombatStateSO _executionStateTemplate;
+    [SerializeField] private BoolEventChannel _targetingStateChannel;
 
     public override void OnEnter()
     {
         base.OnEnter();
+        _targetingStateChannel?.RaiseEvent(true);
         CombatContext ctx = manager.CombatCtx;
         IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
 
@@ -20,6 +22,7 @@ public class TargetingStateSO : CombatStateSO
 
     public override void OnExit()
     {
+        _targetingStateChannel?.RaiseEvent(false);
         Debug.Log($"Sono uscito da Targeting state");
     }
 

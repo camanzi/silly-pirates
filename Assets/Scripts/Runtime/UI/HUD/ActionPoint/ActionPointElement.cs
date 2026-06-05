@@ -1,3 +1,4 @@
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -9,6 +10,7 @@ public partial class ActionPointElement : VisualElement
 
     private Sprite _availableSprite;
     private Sprite _consumedSprite;
+    private Tween _hoverGlowTween;
     public bool IsConsumed { get; private set; }
 
     public ActionPointElement() { }
@@ -26,5 +28,20 @@ public partial class ActionPointElement : VisualElement
     {
         IsConsumed = isConsumed;
         style.backgroundImage = new StyleBackground(isConsumed ? _consumedSprite : _availableSprite);
+    }
+
+    public void StartHoverGlow()
+    {
+        _hoverGlowTween.Stop();
+        style.unityBackgroundImageTintColor = new StyleColor(Color.white);
+        _hoverGlowTween = Tween.Custom(this, Color.white, Color.red, duration: 1f,
+            cycles: -1, cycleMode: CycleMode.Rewind,
+            onValueChange: (target, val) => target.style.unityBackgroundImageTintColor = new StyleColor(val));
+    }
+
+    public void StopHoverGlow()
+    {
+        _hoverGlowTween.Stop();
+        style.unityBackgroundImageTintColor = new StyleColor(Color.white);
     }
 }

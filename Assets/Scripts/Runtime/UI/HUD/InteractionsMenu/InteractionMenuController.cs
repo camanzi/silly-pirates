@@ -14,6 +14,7 @@ public class InteractionMenuController : WorldSpaceContainer
     // Dove sei Odin inspector editor....
     [SerializeField] private InteractableGridElement _bindedMenuElement;
     [SerializeField] private TurnStateSO _currentTurnState;
+    [SerializeField] private IntEventChannel _abilityHoverChannel;
 
     private Dictionary<InteractionActionSO, InteractionButton> _activeButtons = new();
 
@@ -64,6 +65,7 @@ public class InteractionMenuController : WorldSpaceContainer
     {
         base.OnCompleteHide();
         _activeButtons.Clear();
+        _abilityHoverChannel?.RaiseEvent(0);
     }
 
     protected override void OnCompleteShow()
@@ -129,7 +131,7 @@ public class InteractionMenuController : WorldSpaceContainer
     private void CreateInteractionButton(InteractionActionSO action, float delay)
     {
         InteractionButton btn = new InteractionButton();
-        btn.SetData(action, _bindedMenuElement, _currentTurnState.ActiveAgent, RefreshUI);
+        btn.SetData(action, _bindedMenuElement, _currentTurnState.ActiveAgent, RefreshUI, _abilityHoverChannel);
         
         btn.style.scale = new StyleScale(new Scale(Vector3.zero));
         Container.Add(btn);

@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95e12fc82e91baf469c1a19d29fab9f0, type: 3}
   m_Name: CombatTargetingState
   m_EditorClassIdentifier: Assembly-CSharp::TargetingStateSO
+  _shouldShowUI: 0
   _idleStateTemplate: {fileID: 11400000, guid: 479618e8b15bfd849afd6ee5b349a2a9, type: 2}
   _executionStateTemplate: {fileID: 11400000, guid: 8e1473c037eb70e48ade90d96f167fcc, type: 2}
+  _targetingStateChannel: {fileID: 11400000, guid: 6f1fa2ed8868153429257ab38092494b, type: 2}

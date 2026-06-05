@@ -15,6 +15,7 @@ public partial class InteractionButton : VisualElement
     private ITurnAgent _interactingAgent;
     private Tween _hoverTween;
     private Action _onClickAction;
+    private IntEventChannel _hoverChannel;
 
     public InteractionButton()
     {
@@ -30,13 +31,14 @@ public partial class InteractionButton : VisualElement
         RegisterCallback<PointerDownEvent>(OnPointerClick);
     }
 
-    public void SetData(InteractionActionSO data, IInteractableElement bindedElement, ITurnAgent interactingAgent, Action onClickAction)
+    public void SetData(InteractionActionSO data, IInteractableElement bindedElement, ITurnAgent interactingAgent, Action onClickAction, IntEventChannel hoverChannel = null)
     {
         _data = data;
         _bindedElement = bindedElement;
         _interactingAgent = interactingAgent;
         _iconElement.style.backgroundImage = new StyleBackground(data.Icon);
         _onClickAction = onClickAction;
+        _hoverChannel = hoverChannel;
 
         tooltip = data.ActionName;
     }
@@ -57,10 +59,12 @@ public partial class InteractionButton : VisualElement
     private void OnPointerEnter(PointerEnterEvent evt)
     {
         _hoverTween.Stop();
-        
+
         Tween.Custom(Vector3.one, new Vector3(1.15f, 1.15f), duration: 0.15f, ease: Ease.OutBack, onValueChange: newVal => {
             _iconElement.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
         });
+
+        _hoverChannel?.RaiseEvent(_data.GetHoverApCost(_bindedElement, _interactingAgent));
     }
 
     private void OnPointerLeave(PointerLeaveEvent evt)
@@ -70,6 +74,8 @@ public partial class InteractionButton : VisualElement
         Tween.Custom(_iconElement.resolvedStyle.scale.value, Vector3.one, duration: 0.15f, ease: Ease.OutQuad, onValueChange: newVal => {
             _iconElement.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
         });
+
+        _hoverChannel?.RaiseEvent(0);
     }
 
     private void OnPointerClick(PointerDownEvent evt)

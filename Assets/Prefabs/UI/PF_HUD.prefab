@@ -16,14 +16,16 @@ GameObject:
   - component: {fileID: 1294292137182766719}
   - component: {fileID: 6642396514423168827}
   - component: {fileID: 8886951184808175055}
+  - component: {fileID: 4447381025614422379}
   - component: {fileID: 5944741646544662516}
   - component: {fileID: 5085973386943220704}
   - component: {fileID: 3946868697030411871}
   - component: {fileID: 7381703322447710225}
   - component: {fileID: 5171537186858070485}
-  - component: {fileID: 3295622904169205070}
   - component: {fileID: 2483941724954213434}
   - component: {fileID: 1200223341479785065}
+  - component: {fileID: 6346294301681519480}
+  - component: {fileID: 7835154963700887336}
   m_Layer: 5
   m_Name: PF_HUD
   m_TagString: Untagged
@@ -81,7 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: e3538580865544449a64090292e1a12b, type: 3}
+  m_Actions: {fileID: 0}
   m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -96,11 +98,59 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: f97041ec-0d41-4d41-b58a-be083668edfc
-    m_ActionName: 'Test/ButtonTest[/Keyboard/space]'
+    m_ActionId: 351f2ccd-1f9f-44bf-9bec-d62ac5c5f408
+    m_ActionName: 'Player/MoveCamera[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 491a483c-58bc-43f5-9a57-5bf885998ace
+    m_ActionName: 'Player/TacticalView[/Keyboard/o]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
+    m_ActionName: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7607c7b6-cd76-4816-beef-bd0341cfe950
+    m_ActionName: 'UI/Submit[/Keyboard/enter]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 15cef263-9014-4fd5-94d9-4e4a6234a6ef
+    m_ActionName: 'UI/Cancel[/Keyboard/escape]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 32b35790-4ed0-4e9a-aa41-69ac6d629449
+    m_ActionName: 'UI/Point[/Mouse/position]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3c7022bf-7922-4f7c-a998-c437916075ad
+    m_ActionName: 'UI/Click[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 44b200b1-1557-4083-816c-b22cbdf77ddf
+    m_ActionName: 'UI/RightClick[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dad70c86-b58c-4b17-88ad-f5e53adf419e
+    m_ActionName: 'UI/MiddleClick[/Mouse/middleButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0489e84a-4833-4c40-bfae-cea84b696689
+    m_ActionName: 'UI/ScrollWheel[/Mouse/scroll]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 24908448-c609-4bc3-a128-ea258674378a
+    m_ActionName: UI/TrackedDevicePosition
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
+    m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 87cd85dc-d470-404c-bc51-7863124aa091
+    m_ActionName: 'CM Overrides/LookCamera[/Mouse/middleButton,/Mouse/delta]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Test
+  m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &8269550459025187014
@@ -238,6 +288,34 @@ MonoBehaviour:
   _apAvailableSprite: {fileID: 21300000, guid: 5c58abe18d5354b43a9ceea71768b988, type: 3}
   _apConsumedSprite: {fileID: 21300000, guid: deeef6a86e46eef46bf096ff95e03b72, type: 3}
   _hudDocument: {fileID: 2617577189569630218}
+--- !u!114 &4447381025614422379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba0df8afe5cf9e40bf0880768f9c8e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IntChannelListener
+  eventChannel: {fileID: 11400000, guid: 8cf6cd7d2d0d0b147832c2687cc0ceac, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8886951184808175055}
+        m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
+        m_MethodName: HandleAbilityHoverPreview
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5944741646544662516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,6 +413,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActiveAbilityButtonController
   _hudDocument: {fileID: 2617577189569630218}
   _activeAbilityRequestChannel: {fileID: 11400000, guid: c7156c5950647164d90f40bc57c23d25, type: 2}
+  _hoverChannel: {fileID: 11400000, guid: 8cf6cd7d2d0d0b147832c2687cc0ceac, type: 2}
 --- !u!114 &5171537186858070485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,18 +427,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossHealthBarController
   _hudDocument: {fileID: 2617577189569630218}
---- !u!114 &3295622904169205070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871551424322025804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bf6988c4daa0bf489f1fe0a2b01e5d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIDocumentRegistrar
 --- !u!114 &2483941724954213434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +462,48 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6346294301681519480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd7c6c2ef9158ee4da75c191d9adf43f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlavorTextBannerController
+  _uiDocument: {fileID: 2617577189569630218}
+  _animationDuration: 0.5
+--- !u!114 &7835154963700887336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433cf56d2b4d0624bb32ba647129c261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StringChannelListener
+  eventChannel: {fileID: 11400000, guid: 25f72ae43ecf3d94f87959b2120cf83c, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6346294301681519480}
+        m_TargetAssemblyTypeName: FlavorTextBannerController, Assembly-CSharp
+        m_MethodName: Enqueue
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

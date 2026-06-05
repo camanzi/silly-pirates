@@ -34,4 +34,6 @@ public class AwakeActionSO : InteractionActionSO
         if (element is not IAwakable awakable) return false;
         return !awakable.IsOnCooldown && !awakable.IsAwake;
     }
+
+    public override int GetHoverApCost(IInteractableElement element, ITurnAgent agent) => _actionCost;
 }

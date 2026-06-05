@@ -5,6 +5,7 @@ public class ActiveAbilityButtonController : MonoBehaviour
 {
     [SerializeField] private UIDocument _hudDocument;
     [SerializeField] private ActiveAbilityRequestEventChannel _activeAbilityRequestChannel;
+    [SerializeField] private IntEventChannel _hoverChannel;
 
     private ActiveAbilityButton _abilityButton;
     private AbilityController _cachedAbilityCtrl;
@@ -14,14 +15,21 @@ public class ActiveAbilityButtonController : MonoBehaviour
     private void Start()
     {
         _abilityButton = _hudDocument.rootVisualElement.Q<ActiveAbilityButton>("active-ability-button");
-        _abilityButton.clicked += OnButtonClicked;
+        _abilityButton.RegisterCallback<ClickEvent>(OnButtonClicked);
+        _abilityButton.RegisterCallback<MouseEnterEvent>(OnMouseHover);
+        _abilityButton.RegisterCallback<MouseLeaveEvent>(OnMouseLeave);
+
         _abilityButton.style.display = DisplayStyle.None;
     }
 
     private void OnDestroy()
     {
         if (_abilityButton != null)
-            _abilityButton.clicked -= OnButtonClicked;
+        {
+            _abilityButton.UnregisterCallback<ClickEvent>(OnButtonClicked);
+            _abilityButton.UnregisterCallback<MouseEnterEvent>(OnMouseHover);
+            _abilityButton.UnregisterCallback<MouseLeaveEvent>(OnMouseLeave);
+        }
         UnsubscribeFromAgent();
     }
 
@@ -58,11 +66,15 @@ public class ActiveAbilityButtonController : MonoBehaviour
         _abilityButton.SetEnabled(remainingAp >= _cachedAbilityCtrl.ActiveAbility.ActionPointCost);
     }
 
-    private void OnButtonClicked()
+    private void OnButtonClicked(ClickEvent clickEvent)
     {
         if (_cachedAbilityCtrl == null) return;
         _requestData.Ability = _cachedAbilityCtrl.ActiveAbility;
         _requestData.Caster  = _cachedAgent as IInteractableElement;
         _activeAbilityRequestChannel.RaiseEvent(_requestData);
     }
+
+    private void OnMouseHover(MouseEnterEvent mouseEnterEvent) => _hoverChannel?.RaiseEvent(_cachedAbilityCtrl.ActiveAbility.ActionPointCost);
+
+    private void OnMouseLeave(MouseLeaveEvent mouseLeaveEvent) => _hoverChannel?.RaiseEvent(0);
 }

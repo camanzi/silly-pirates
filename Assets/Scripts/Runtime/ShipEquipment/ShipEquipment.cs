@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(EquipmentStateMachine))]
-public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquipmentStats, ITargettable
+public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquipmentStats, ITargettable, IAbilityHolder
 {
     [Header("Equipment Stats")]
     [SerializeField] private EquipmentType _equipmentType;
@@ -53,12 +53,16 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     private int _cooldown = 0;
     private EquipmentStateMachine _stateMachine;
     private PassiveAbilityController _passiveAbilityController;
+    private AbilityController _abilityController;
+
+    public AbilityController ActiveAbilityController => _abilityController;
 
     protected override void Awake()
     {
         base.Awake();
         _stateMachine = GetComponent<EquipmentStateMachine>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
+        _abilityController = GetComponent<AbilityController>();
     }
 
     public void AddAwakeningPoints(int count)

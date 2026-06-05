@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[CreateAssetMenu(fileName = "FireActionSO", menuName = "UI/Interactions/Equipment/Fire Action")]
-public class FireActionSO : InteractionActionSO
+[CreateAssetMenu(fileName = "ActiveAbilityActionSO", menuName = "UI/Interactions/Equipment/Active Ability Action")]
+public class ActiveAbilityActionSO : InteractionActionSO
 {
     [SerializeField] private InteractableElementEventChannel _selectedAbilityChannel;
     public override bool ExecuteAction(IInteractableElement element, ITurnAgent interactingAgent)
@@ -16,7 +16,14 @@ public class FireActionSO : InteractionActionSO
     public override bool CanExecute(IInteractableElement element, ITurnAgent interactingAgent)
     {
         if (element is not IAwakable awakable) return false;
-        
+
         return awakable.IsAwake;
+    }
+
+    public override int GetHoverApCost(IInteractableElement element, ITurnAgent agent)
+    {
+        if (element is IAbilityHolder holder)
+            return holder.ActiveAbilityController?.ActiveAbility?.ActionPointCost ?? 0;
+        return 0;
     }
 }
