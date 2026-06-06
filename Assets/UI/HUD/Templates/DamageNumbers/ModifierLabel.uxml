@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Shared/STL_WorldSpace.uss?fileID=7433441132597879392&amp;guid=982a6fb71843d3b45a6a8beb69b25ab0&amp;type=3#STL_WorldSpace"/>
+    <Style src="ModifierLabel.uss"/>
+    <ui:VisualElement name="modifier-popup" class="modifier-popup">
+        <ui:Label name="modifier-label" text="Resist" class="modifier-label"/>
+    </ui:VisualElement>
+</ui:UXML>

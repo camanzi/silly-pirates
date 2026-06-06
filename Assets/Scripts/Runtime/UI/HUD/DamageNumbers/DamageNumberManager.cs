@@ -7,10 +7,13 @@ public class DamageNumberManager : MonoBehaviour
 {
     [SerializeField] private DamageEventChannel _damageEventChannel;
     [SerializeField] private VisualTreeAsset _damageNumberTemplate;
+    [SerializeField] private VisualTreeAsset _modifierLabelTemplate;
+    [SerializeField] private DamageTypeColorConfigSO _colorConfig;
 
     [Header("Animation Settings")]
     [SerializeField] private float _normalFontSize = 80f;
     [SerializeField] private float _critFontSize = 100f;
+    [SerializeField] private float _modifierFontSize = 60f;
     [SerializeField] private float _shrinkAmount = 20f;
     [SerializeField] private float _growDuration = 0.2f;
     [SerializeField] private float _shrinkDuration = 1f;
@@ -18,6 +21,7 @@ public class DamageNumberManager : MonoBehaviour
     [SerializeField] private float _critFadeInDuration = 0.5f;
     [SerializeField] private float _critFadeInDelay = 0.5f;
     [SerializeField] [Range(0.2f, 1f)] private float _critLabelSizeRatio = 0.5f;
+    [SerializeField] private float _spawnRadius = 1.5f;
 
     private readonly List<(VisualElement popup, Vector3 worldPos)> _activePopups = new();
     private VisualElement _root;
@@ -51,9 +55,17 @@ public class DamageNumberManager : MonoBehaviour
         }
     }
 
+    private Vector3 ScatteredPosition(Vector3 center)
+    {
+        Vector2 r = Random.insideUnitCircle * _spawnRadius;
+        return center + new Vector3(r.x, 0f, r.y);
+    }
+
     public void SpawnDamageNumber(DamageEvent evt)
     {
         if (_root == null) return;
+
+        Color elementColor = _colorConfig != null ? _colorConfig.GetColor(evt.Payload.Type) : Color.white;
 
         var popup = _damageNumberTemplate.CloneTree();
         popup.pickingMode = PickingMode.Ignore;
@@ -65,11 +77,13 @@ public class DamageNumberManager : MonoBehaviour
         var critLabel = popup.Q<Label>("crit-label");
 
         damageLabel.text = Mathf.RoundToInt(evt.Payload.Amount).ToString();
+        damageLabel.style.color = new StyleColor(elementColor);
+        critLabel.style.color = new StyleColor(elementColor);
         popup.style.fontSize = 0;
         critLabel.style.fontSize = startFontSize * _critLabelSizeRatio;
 
         _root.Add(popup);
-        _activePopups.Add((popup, evt.WorldPosition));
+        _activePopups.Add((popup, ScatteredPosition(evt.WorldPosition)));
 
         Sequence.Create()
             .Chain(Tween.Custom(popup, 0f, startFontSize, _growDuration,
@@ -86,7 +100,35 @@ public class DamageNumberManager : MonoBehaviour
                 static (el, v) => el.style.opacity = v, Ease.Linear,
                 startDelay: _critFadeInDelay);
         }
+
+        const float epsilon = 0.01f;
+        float ratio = evt.Payload.ResistanceMultiplier;
+        if (Mathf.Abs(ratio - 1f) > epsilon)
+            SpawnModifierLabel(ratio < 1f ? "Resist" : "Effective", elementColor, evt.WorldPosition);
     }
 
+    private void SpawnModifierLabel(string text, Color color, Vector3 center)
+    {
+        if (_modifierLabelTemplate == null) return;
 
+        var popup = _modifierLabelTemplate.CloneTree();
+        popup.pickingMode = PickingMode.Ignore;
+
+        var label = popup.Q<Label>("modifier-label");
+        label.text = text;
+        label.style.color = new StyleColor(color);
+        popup.style.fontSize = 0;
+
+        _root.Add(popup);
+        _activePopups.Add((popup, ScatteredPosition(center)));
+
+        Sequence.Create()
+            .Chain(Tween.Custom(popup, 0f, _modifierFontSize, _growDuration,
+                static (el, v) => el.style.fontSize = v, Ease.OutBack))
+            .Chain(Tween.Custom(popup, _modifierFontSize, _modifierFontSize - _shrinkAmount, _shrinkDuration,
+                static (el, v) => el.style.fontSize = v, Ease.Linear))
+            .Chain(Tween.Custom(popup, 1f, 0f, _fadeOutDuration,
+                static (el, v) => el.style.opacity = v, Ease.Linear))
+            .OnComplete(popup, static el => el.RemoveFromHierarchy());
+    }
 }

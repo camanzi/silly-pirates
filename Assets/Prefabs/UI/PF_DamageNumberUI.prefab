@@ -71,8 +71,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageNumberManager
   _damageEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
   _damageNumberTemplate: {fileID: 9197481963319205126, guid: c5027c0da943c3046a71cef51c74e7df, type: 3}
+  _modifierLabelTemplate: {fileID: 9197481963319205126, guid: 137fb170c1ac21b40a2f08e9eb3a37e6, type: 3}
+  _colorConfig: {fileID: 11400000, guid: 69f89a3d144652e44b4dc5327e3bf2e7, type: 2}
   _normalFontSize: 100
   _critFontSize: 120
+  _modifierFontSize: 60
   _shrinkAmount: 40
   _growDuration: 0.2
   _shrinkDuration: 1
@@ -80,6 +83,7 @@ MonoBehaviour:
   _critFadeInDuration: 0.3
   _critFadeInDelay: 0.2
   _critLabelSizeRatio: 0.35
+  _spawnRadius: 5
 --- !u!114 &499078951675751305
 MonoBehaviour:
   m_ObjectHideFlags: 0
