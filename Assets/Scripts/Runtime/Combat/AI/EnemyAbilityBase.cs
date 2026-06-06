@@ -46,5 +46,7 @@ public abstract class EnemyAbilityBase : AbilityBase
     protected UnityEngine.Transform GetRequiredPartTransform(IInteractableElement caster) =>
         (caster as IPartOwner)?.GetPartTransform(_requiredPart);
 
+    protected bool IsRequiredPart(EnemyPartSO part) => _requiredPart != null && part == _requiredPart;
+
     protected abstract float ComputeScore(AIContext context, out TargetingData targeting);
 }

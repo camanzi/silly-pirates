@@ -6,6 +6,18 @@ public class EnemyPartController : MonoBehaviour
 {
     [SerializeField] private List<PartBinding> _parts;
 
+    public event Action<EnemyPartSO> OnPartBroken;
+
+    private void Awake()
+    {
+        foreach (var binding in _parts)
+        {
+            if (binding.PartHealth == null) continue;
+            var part = binding.Part;
+            binding.PartHealth.OnDeath += () => OnPartBroken?.Invoke(part);
+        }
+    }
+
     public bool IsPartFunctional(EnemyPartSO part)
     {
         for (int i = 0; i < _parts.Count; i++)

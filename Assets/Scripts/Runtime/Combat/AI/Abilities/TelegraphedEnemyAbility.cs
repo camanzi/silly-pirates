@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
     [SerializeField] private TurnOrderDataSO _turnOrderData;
 
     private readonly Dictionary<HostileCharacter, TelegraphState> _pendingStates = new();
+    private readonly Dictionary<HostileCharacter, Action<EnemyPartSO>> _partBrokenHandlers = new();
     private HostileCharacter _lastScoredCaster;
 
     public class TelegraphState
@@ -23,6 +25,9 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
 
     protected virtual void OnEnable()
     {
+        foreach (var (hostile, handler) in _partBrokenHandlers)
+            if (hostile is IPartOwner partOwner) partOwner.OnPartBroken -= handler;
+        _partBrokenHandlers.Clear();
         _pendingStates.Clear();
         _lastScoredCaster = null;
     }
@@ -44,13 +49,33 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
     protected override bool MeetsPreconditions(AIContext context)
     {
         bool meets = base.MeetsPreconditions(context);
-        if (!meets && _pendingStates.TryGetValue(context.Caster, out var state))
-        {
-            _pendingStates.Remove(context.Caster);
-            _cellEffectChannel?.RaiseEvent(new CellEffectPayload { Key = ThreatKey, Cells = null });
-            OnPendingStateRolledBack(context.Caster, state);
-        }
+        if (!meets && _pendingStates.ContainsKey(context.Caster))
+            RollbackPending(context.Caster);
         return meets;
+    }
+
+    private void SubscribePartBreak(HostileCharacter hostile)
+    {
+        if (hostile is not IPartOwner partOwner) return;
+        void handler(EnemyPartSO part) { if (IsRequiredPart(part)) RollbackPending(hostile); }
+        _partBrokenHandlers[hostile] = handler;
+        partOwner.OnPartBroken += handler;
+    }
+
+    private void UnsubscribePartBreak(HostileCharacter hostile)
+    {
+        if (!_partBrokenHandlers.TryGetValue(hostile, out var handler)) return;
+        if (hostile is IPartOwner partOwner) partOwner.OnPartBroken -= handler;
+        _partBrokenHandlers.Remove(hostile);
+    }
+
+    private void RollbackPending(HostileCharacter hostile)
+    {
+        UnsubscribePartBreak(hostile);
+        if (!_pendingStates.TryGetValue(hostile, out var state)) return;
+        _pendingStates.Remove(hostile);
+        _cellEffectChannel?.RaiseEvent(new CellEffectPayload { Key = ThreatKey, Cells = null });
+        OnPendingStateRolledBack(hostile, state);
     }
 
     protected virtual void OnPendingStateRolledBack(HostileCharacter caster, TelegraphState state) { }
@@ -78,6 +103,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
         if (_pendingStates.TryGetValue(hostile, out var existing))
         {
             _pendingStates.Remove(hostile);
+            UnsubscribePartBreak(hostile);
             return CreateStrikeCommand(hostile, existing);
         }
 
@@ -88,6 +114,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
             return null;
 
         _pendingStates[hostile] = newState;
+        SubscribePartBreak(hostile);
         return CreateTelegraphCommand(hostile, newState);
     }
 }
