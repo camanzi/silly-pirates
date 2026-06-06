@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 1200223341479785065}
   - component: {fileID: 6346294301681519480}
   - component: {fileID: 7835154963700887336}
+  - component: {fileID: 7704358137498408958}
   m_Layer: 5
   m_Name: PF_HUD
   m_TagString: Untagged
@@ -288,6 +289,7 @@ MonoBehaviour:
   _apAvailableSprite: {fileID: 21300000, guid: 5c58abe18d5354b43a9ceea71768b988, type: 3}
   _apConsumedSprite: {fileID: 21300000, guid: deeef6a86e46eef46bf096ff95e03b72, type: 3}
   _hudDocument: {fileID: 2617577189569630218}
+  _targetingStateChannel: {fileID: 0}
 --- !u!114 &4447381025614422379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -500,6 +502,34 @@ MonoBehaviour:
       - m_Target: {fileID: 6346294301681519480}
         m_TargetAssemblyTypeName: FlavorTextBannerController, Assembly-CSharp
         m_MethodName: Enqueue
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7704358137498408958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0122c6eede3494548afd80e954026be6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoolChannelListener
+  eventChannel: {fileID: 11400000, guid: 6f1fa2ed8868153429257ab38092494b, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8886951184808175055}
+        m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
+        m_MethodName: OnTargetingStateChanged
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

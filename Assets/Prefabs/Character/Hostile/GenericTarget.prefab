@@ -312,7 +312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTurnDriver
   _aiData: {fileID: 0}
   _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
-  _turnController: {fileID: 0}
+  _commandQueue: {fileID: 11400000, guid: 2bb0156ed80382545b45f1646e47397c, type: 2}
 --- !u!114 &3596544409351883156
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable, GeneratePropertyBag]
 [NodeDescription(
     name: "Execute Selected Ability",
-    story: "[Agent] executes [SelectedAbility] on [SelectedTarget] via [TurnControllerRef]",
+    story: "[Agent] executes [SelectedAbility] on [SelectedTarget] via [CommandQueueRef]",
     category: "Enemy AI",
     id: "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7")]
 public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
@@ -14,23 +14,23 @@ public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
     [SerializeReference] public BlackboardVariable<MonoBehaviour> Agent;
     [SerializeReference] public BlackboardVariable<AbilityBase> SelectedAbility;
     [SerializeReference] public BlackboardVariable<MonoBehaviour> SelectedTarget;
-    [SerializeReference] public BlackboardVariable<MonoBehaviour> TurnControllerRef;
+    [SerializeReference] public BlackboardVariable<CommandQueueSO> CommandQueueRef;
     [SerializeReference] public BlackboardVariable<StringEventChannel> FlavorTextChannel;
 
     private float _flavorTextStartTime = -1f;
     private ICommand _pendingCommand;
-    private TurnController _pendingTurnController;
+    private CommandQueueSO _pendingCommandQueue;
     private const float FlavorTextDelay = .5f;
 
     protected override Status OnStart()
     {
         var hostile = Agent?.Value as HostileCharacter;
         var ability = SelectedAbility?.Value;
-        var turnController = TurnControllerRef?.Value as TurnController;
+        var commandQueue = CommandQueueRef?.Value;
 
-        if (hostile == null || ability == null || turnController == null)
+        if (hostile == null || ability == null || commandQueue == null)
         {
-            LogFailure("Missing agent, ability, or turn controller.");
+            LogFailure("Missing agent, ability, or command queue.");
             return Status.Failure;
         }
 
@@ -51,7 +51,7 @@ public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
             return Status.Failure;
         }
 
-        _pendingTurnController = turnController;
+        _pendingCommandQueue = commandQueue;
 
         var channel = FlavorTextChannel?.Value;
         if (ShouldShowFlavorText(ability, out string flavorText) && channel != null)
@@ -61,7 +61,7 @@ public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
             return Status.Running;
         }
 
-        turnController.AddCommand(_pendingCommand);
+        commandQueue.AddCommand(_pendingCommand);
         return Status.Success;
     }
 
@@ -69,7 +69,7 @@ public partial class ExecuteSelectedAbilityAction : Unity.Behavior.Action
     {
         if (Time.time - _flavorTextStartTime >= FlavorTextDelay)
         {
-            _pendingTurnController.AddCommand(_pendingCommand);
+            _pendingCommandQueue.AddCommand(_pendingCommand);
             return Status.Success;
         }
         return Status.Running;

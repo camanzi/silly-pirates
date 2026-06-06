@@ -49,7 +49,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 538d9d099f0aa4d49af67dfaaa5b8474, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatStateManager
-  _turnController: {fileID: 0}
+  _commandQueue: {fileID: 11400000, guid: 2bb0156ed80382545b45f1646e47397c, type: 2}
+  _abilityRenderer: {fileID: 11400000, guid: 9f983ae5c70f09e49a4e37d388731a58, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _inputReader: {fileID: 11400000, guid: 7e56d5efef3525e478b22e3e6ac7bb2d, type: 2}
   _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}

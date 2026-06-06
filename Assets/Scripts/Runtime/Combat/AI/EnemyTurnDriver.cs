@@ -6,13 +6,7 @@ public class EnemyTurnDriver : MonoBehaviour
 {
     [SerializeField] private EnemyAIDataSO _aiData;
     [SerializeField] private TurnStateSO _currentTurnStateData;
-    [SerializeField] private TurnController _turnController;
-
-    public TurnController TurnController
-    {
-        get => _turnController;
-        set => _turnController = value;
-    }
+    [SerializeField] private CommandQueueSO _commandQueue;
 
     private BehaviorGraphAgent _agent;
     private HostileCharacter _hostile;
@@ -29,7 +23,7 @@ public class EnemyTurnDriver : MonoBehaviour
         try
         {
             _agent.SetVariableValue("Agent", (MonoBehaviour)_hostile);
-            _agent.SetVariableValue("TurnControllerRef", (MonoBehaviour)_turnController);
+            _agent.SetVariableValue("CommandQueueRef", _commandQueue);
             _agent.SetVariableValue("AIData", _aiData);
 
             _agent.Restart();
@@ -40,7 +34,7 @@ public class EnemyTurnDriver : MonoBehaviour
                 await Awaitable.NextFrameAsync(token);
             }
 
-            await _turnController.ProcessQueueAsync();
+            await _commandQueue.ProcessQueueAsync();
         }
         finally
         {

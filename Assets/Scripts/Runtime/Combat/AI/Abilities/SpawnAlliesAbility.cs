@@ -50,8 +50,7 @@ public class SpawnAlliesAbility : EnemyAbilityBase
         for (int i = 0; i < pairCount; i++)
             pairs.Add((shuffled[i], freePoints[i]));
 
-        var driver = hostile.GetComponent<EnemyTurnDriver>();
-        return new SpawnAlliesCommand(hostile, pairs, driver.TurnController);
+        return new SpawnAlliesCommand(hostile, pairs);
     }
 
     public override bool RequiresTargeting => false;

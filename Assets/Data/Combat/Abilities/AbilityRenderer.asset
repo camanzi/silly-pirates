@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bad4e5df8b8de4a4abadaa611c705c83, type: 3}
+  m_Name: AbilityRenderer
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityRendererSO
+  _hoverFloorAllowTile: {fileID: 11400000, guid: 0b394c1747cfbbe45bef10a1e0acd657, type: 2}
+  _hoverFloorNotAllowTile: {fileID: 11400000, guid: 5f621e8e9e9f3534eabcd3564495ae09, type: 2}
+  _inRangePreviewTile: {fileID: 11400000, guid: 18540c01d1f6bea4b8483291e346db97, type: 2}
+  _highlightCellsEventChannel: {fileID: 11400000, guid: df2fb029b3fe4924b879f6cd65e1d5a8, type: 2}
+  _targetTransformEventChannel: {fileID: 11400000, guid: c8b4aaa8ffe0e8e449b1f092a61a0160, type: 2}

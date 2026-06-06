@@ -4,7 +4,8 @@ using UnityEngine;
 public class CombatStateManager : MonoBehaviour
 {
     [Header("Dependencies")]
-    [SerializeField] private TurnController _turnController;
+    [SerializeField] private CommandQueueSO _commandQueue;
+    [SerializeField] private AbilityRendererSO _abilityRenderer;
     [SerializeField] private SelectionContextSO _selectionCtx;
     [SerializeField] private InputReader _inputReader;
     [SerializeField] private TurnStateSO _currentTurnStateData;
@@ -16,7 +17,8 @@ public class CombatStateManager : MonoBehaviour
 
     private CombatContext _combatContext = new CombatContext();
     private int _lastTransitionFrame;
-    public TurnController TurnController => _turnController;
+    public CommandQueueSO CommandQueue => _commandQueue;
+    public AbilityRendererSO AabilityRenderer => _abilityRenderer;
     public SelectionContextSO SelectionCtx => _selectionCtx;
     public CombatContext CombatCtx => _combatContext;
     public TurnStateSO CurrentTurnStateData => _currentTurnStateData;

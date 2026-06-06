@@ -484,17 +484,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!114 &435965747 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3365122536592145621, guid: a3b1178f0617d1342acd8a5143a3be00, type: 3}
-  m_PrefabInstance: {fileID: 6011743194702439395}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d34b9ffc41c799f41945463c8cfa86b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TurnController
 --- !u!1 &511849064
 GameObject:
   m_ObjectHideFlags: 0
@@ -2040,55 +2029,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 707104960796648793}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
---- !u!1 &707104960796648774 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1871551424322025804, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
-  m_PrefabInstance: {fileID: 707104960796648773}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &707104960796648785 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8886951184808175055, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
-  m_PrefabInstance: {fileID: 707104960796648773}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 707104960796648774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad1425f86d305cb4387268d85c86c8b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActionPointController
---- !u!114 &707104960796648793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 707104960796648774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0122c6eede3494548afd80e954026be6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BoolChannelListener
-  eventChannel: {fileID: 11400000, guid: 6f1fa2ed8868153429257ab38092494b, type: 2}
-  response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 707104960796648785}
-        m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
-        m_MethodName: OnTargetingStateChanged
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1001 &1190960423066078620
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2154,10 +2096,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5020568918102610953, guid: 9a86b14de3a764a41983f9ab08d9d924, type: 3}
-      propertyPath: _turnController
-      value: 
-      objectReference: {fileID: 435965747}
     - target: {fileID: 6430928358923379667, guid: 9a86b14de3a764a41983f9ab08d9d924, type: 3}
       propertyPath: m_Name
       value: PF_CombatStateManager
@@ -2601,10 +2539,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5568008685441221319, guid: ffc0353b29c79fc4484a67b7d761b17c, type: 3}
-      propertyPath: _turnController
-      value: 
-      objectReference: {fileID: 435965747}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3030,6 +2964,8 @@ SceneRoots:
   - {fileID: 3782858197976530919}
   - {fileID: 2434508970417764651}
   - {fileID: 6075810720408160684}
+  - {fileID: 258392198}
+  - {fileID: 984909081}
   - {fileID: 171171695064951625}
   - {fileID: 691837565392743147}
   - {fileID: 7117208062272271728}
@@ -3043,5 +2979,3 @@ SceneRoots:
   - {fileID: 239716037}
   - {fileID: 7753184057949623804}
   - {fileID: 1125234528}
-  - {fileID: 258392198}
-  - {fileID: 984909081}

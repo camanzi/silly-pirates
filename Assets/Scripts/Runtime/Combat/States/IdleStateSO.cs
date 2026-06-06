@@ -9,7 +9,7 @@ public class IdleStateSO : CombatStateSO
     public override void OnEnter()
     {
         base.OnEnter();
-        manager.TurnController.ClearPreview();
+        manager.AabilityRenderer.ClearPreview();
 
         if (manager.CurrentTurnStateData.ActiveAgent is GridCharacter gc && gc.AgentData != null)
             gc.EmitProximityCheck(new ProximityPayload(gc, gc.AgentData.InteractionRange));
@@ -55,7 +55,7 @@ public class IdleStateSO : CombatStateSO
             if (data.Ability.CanExecute(data.Caster, null, ref cache))
             {
                 ICommand cmd = data.Ability.CreateCommand(data.Caster, null, ref cache);
-                manager.TurnController.AddCommand(cmd);
+                manager.CommandQueue.AddCommand(cmd);
             }
             manager.TransitionToState(_executionStateTemplate);
             return;

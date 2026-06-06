@@ -17,7 +17,7 @@ public class TargetingStateSO : CombatStateSO
         TargetingData essentialTD = new TargetingData(caster);
 
         AbilityPreviewData previewData = ctx.SelectedAbility.GetPreviewData(caster, essentialTD, ref ctx.AbilityCache);
-        manager.TurnController.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, essentialTD, false);
+        manager.AabilityRenderer.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, essentialTD, false);
     }
 
     public override void OnExit()
@@ -53,7 +53,7 @@ public class TargetingStateSO : CombatStateSO
         AbilityPreviewData previewData = ctx.SelectedAbility.GetPreviewData(caster, data, ref ctx.AbilityCache);
         bool canExecute = ctx.SelectedAbility.CanExecute(caster, data, ref ctx.AbilityCache);
         
-        manager.TurnController.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, data, canExecute);
+        manager.AabilityRenderer.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, data, canExecute);
     }
 
     public override void HandleGlobalClick(TargetingData data) => OnClickBehavior(data);
@@ -71,7 +71,7 @@ public class TargetingStateSO : CombatStateSO
             if (selectedAbility.IsPhaseCommand(command))
                 return;
 
-            manager.TurnController.AddCommand(command);
+            manager.CommandQueue.AddCommand(command);
             manager.TransitionToState(_executionStateTemplate);
         }
     }

@@ -71,6 +71,7 @@ MonoBehaviour:
   _uiDocument: {fileID: 1286947998093485756}
   _shownByDefault: 1
   _positionOffset: {x: 0, y: 1.5, z: 0}
+  _pickingMode: 1
   _healthController: {fileID: 1079392768869426619}
 --- !u!1001 &2302715304305110461
 PrefabInstance:
@@ -81,9 +82,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1123212999449217133, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: m_BlackboardVariableOverridesList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1123212999449217133, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: managedReferences[3650710072783274354].m_Value
       value: 
       objectReference: {fileID: 11400000, guid: 6d729e7b22b861a4f9c936b404d3fd18, type: 2}
+    - target: {fileID: 1123212999449217133, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[1]'
+      value: 3650710072783274354
+      objectReference: {fileID: 0}
     - target: {fileID: 1228960839652886534, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _agentData
       value: 
@@ -110,7 +119,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_Name
-      value: LittleSgarryCube
+      value: Sgarry
       objectReference: {fileID: 0}
     - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_LocalPosition.x
@@ -151,6 +160,30 @@ PrefabInstance:
     - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5911253517186705203, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: m_Size.x
+      value: 2.87247
+      objectReference: {fileID: 0}
+    - target: {fileID: 5911253517186705203, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: m_Size.y
+      value: 2.918977
+      objectReference: {fileID: 0}
+    - target: {fileID: 5911253517186705203, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: m_Size.z
+      value: 0.9007206
+      objectReference: {fileID: 0}
+    - target: {fileID: 5911253517186705203, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: m_Center.x
+      value: -0.07688379
+      objectReference: {fileID: 0}
+    - target: {fileID: 5911253517186705203, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: m_Center.y
+      value: -0.059928775
+      objectReference: {fileID: 0}
+    - target: {fileID: 5911253517186705203, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: m_Center.z
+      value: -0.1402359
       objectReference: {fileID: 0}
     - target: {fileID: 6697091672470467953, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _aiData

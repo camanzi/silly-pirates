@@ -6,16 +6,13 @@ public class SpawnAlliesCommand : ICommand
 {
     private readonly HostileCharacter _caster;
     private readonly List<(HostileCharacter prefab, SpawnPoint point)> _spawnPairs;
-    private readonly TurnController _turnController;
 
     public SpawnAlliesCommand(
         HostileCharacter caster,
-        List<(HostileCharacter prefab, SpawnPoint point)> spawnPairs,
-        TurnController turnController)
+        List<(HostileCharacter prefab, SpawnPoint point)> spawnPairs)
     {
         _caster = caster;
         _spawnPairs = spawnPairs;
-        _turnController = turnController;
     }
 
     public async Awaitable ExecuteAsync()
@@ -34,9 +31,6 @@ public class SpawnAlliesCommand : ICommand
         {
             var spawnedGO = Object.Instantiate(prefab.gameObject, spawnPoint.Position, Quaternion.identity);
             var spawned = spawnedGO.GetComponent<HostileCharacter>();
-
-            var driver = spawnedGO.GetComponent<EnemyTurnDriver>();
-            if (driver != null) driver.TurnController = _turnController;
 
             spawnPoint.Claim(spawned);
 

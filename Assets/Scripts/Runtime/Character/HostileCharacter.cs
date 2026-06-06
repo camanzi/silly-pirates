@@ -160,8 +160,11 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         _spawnPoint = null;
         _directionalSpriteController?.PlayAnimation(EAnimation.Death);
         _directionalSpriteController?.SetDeadVisual();
-        if (_directionalSpriteController != null)
-            _directionalSpriteController.OnAnimationComplete += OnDeathAnimationComplete;
+        // FIXME Later
+        // Da sbloccare quando avremo animazioni di morte per i nemici, per ora è più semplice disattivare direttamente l'oggetto
+        // if (_directionalSpriteController != null)
+        //     _directionalSpriteController.OnAnimationComplete += OnDeathAnimationComplete;
+        gameObject.SetActive(false);
         this.HandleCombatLeave();
     }
 

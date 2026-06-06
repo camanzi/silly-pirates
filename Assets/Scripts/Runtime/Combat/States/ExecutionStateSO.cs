@@ -8,9 +8,9 @@ public class ExecutionStateSO : CombatStateSO
     public async override void OnEnter()
     {
         base.OnEnter();
-        await manager.TurnController.ProcessQueueAsync();
+        await manager.CommandQueue.ProcessQueueAsync();
 
-        manager.TurnController.ClearPreview();
+        manager.AabilityRenderer.ClearPreview();
         manager.ClearCtxs(_idleStateTemplate);
         Debug.Log($"Sono entrato da Execution state");
     }
