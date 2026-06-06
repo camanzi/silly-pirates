@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Entangled Passive
   m_EditorClassIdentifier: Assembly-CSharp::SlowPassiveSO
   _displayName: Entangled
+  _removalTiming: 1
   _flatPenalty: 35
   _percentPenalty: 5
   _durationInTurns: 3

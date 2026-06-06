@@ -14,5 +14,6 @@ public interface ITurnAgent
     public void OnCombatLeave();
     public void OnStartingTurn();
     public void OnContinuingTurn();
+    public void OnEndingTurn();
     public bool CompareTag(string tag);
 }

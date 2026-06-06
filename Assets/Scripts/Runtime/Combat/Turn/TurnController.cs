@@ -57,6 +57,7 @@ public class TurnController : MonoBehaviour
                     if (!agentStillActive) break;
                 }
 
+                nextEntity.OnEndingTurn();
                 _onAnyTurnEnded?.RaiseEvent(nextEntity);
                 if (agentStillActive)
                     _turnOrderData.CompleteActiveTurn();

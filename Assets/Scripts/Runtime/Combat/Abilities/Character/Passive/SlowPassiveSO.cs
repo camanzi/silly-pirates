@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Slow Passive", menuName = "Abilities/Character/Passives/Slow")]
-public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnStart
+public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEnd, IOnTurnStart, IOnTurnEnd
 {
     [Header("Slow configs")]
     [SerializeField] private int _flatPenalty = 0;
@@ -10,11 +10,13 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnSt
 
     private PassiveAbilityController _controller;
     private int _turnCount;
+    private bool _isExpired;
 
     public override void OnEquip(PassiveAbilityController controller)
     {
         _controller = controller;
-        _turnCount = 0;
+        _turnCount  = 0;
+        _isExpired  = false;
     }
 
     public override void OnUnequip(PassiveAbilityController controller)
@@ -26,10 +28,27 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnSt
 
     float IAgilityModifier.GetPercentageAgilityBonus() => -_percentPenalty;
 
-    void IOnGlobalTurnStart.OnGlobalTurnStart()
+    void IOnGlobalTurnEnd.OnGlobalTurnEnd()
     {
         _turnCount++;
         if (_turnCount >= _durationInTurns)
+        {
+            if (RemovalTiming == PassiveRemovalTiming.AnyTurn)
+                _controller.RemovePassive(this);
+            else
+                _isExpired = true;
+        }
+    }
+
+    void IOnTurnStart.OnTurnStart()
+    {
+        if (_isExpired && RemovalTiming == PassiveRemovalTiming.OwnerTurnStart)
+            _controller.RemovePassive(this);
+    }
+
+    void IOnTurnEnd.OnTurnEnd()
+    {
+        if (_isExpired && RemovalTiming == PassiveRemovalTiming.OwnerTurnEnd)
             _controller.RemovePassive(this);
     }
 }

@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 6697091672470467953}
   - component: {fileID: 3596544409351883156}
   - component: {fileID: 7951698253977833827}
+  - component: {fileID: 5210823321150407132}
   m_Layer: 0
   m_Name: GenericTarget
   m_TagString: Untagged
@@ -266,7 +267,6 @@ MonoBehaviour:
   m_Graph: {fileID: 2726540222924974965, guid: 14fa562a46303ae4aaffb6532feef807, type: 2}
   m_BlackboardVariableOverridesList:
   - rid: 3650710072783274352
-  - rid: 3650710072783274353
   - rid: 3650710072783274354
   m_OriginalGraph: {fileID: 0}
   m_IsInitialised: 0
@@ -282,14 +282,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 3566868596823550263}
-    - rid: 3650710072783274353
-      type: {class: 'BlackboardVariable`1[[TurnController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 17068495676152405424
-          m_Value1: 17560698402883109620
-        Name: TurnControllerRef
-        m_Value: {fileID: 0}
     - rid: 3650710072783274354
       type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -326,7 +318,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PassiveAbilityController
   _basePassivesSO: []
-  _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
   _passiveNotificationChannel: {fileID: 11400000, guid: f34e6cbc31ae5d74485d162d04d6fd21, type: 2}
 --- !u!114 &7951698253977833827
 MonoBehaviour:
@@ -351,6 +342,34 @@ MonoBehaviour:
         loop: 1
   _directionUpdateRate: 10
   _minAngleChange: 15
+--- !u!114 &5210823321150407132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566868596823550263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9185637d73040fb4cbaf157a02014a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnAgentChannelListener
+  eventChannel: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3596544409351883156}
+        m_TargetAssemblyTypeName: PassiveAbilityController, Assembly-CSharp
+        m_MethodName: HandleGlobalTurnEnd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0

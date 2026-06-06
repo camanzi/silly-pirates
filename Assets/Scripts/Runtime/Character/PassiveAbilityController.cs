@@ -7,10 +7,11 @@ public class PassiveAbilityController : MonoBehaviour
     public event Action OnPassivesChanged;
     [Header("Configurazioni")]
     [SerializeField] private List<PassiveAbilitySO> _basePassivesSO;
-    [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
     [SerializeField] private PassiveNotificationEventChannel _passiveNotificationChannel;
     private List<PassiveAbilitySO> _instantiatedPassives = new();
-    private readonly List<IOnGlobalTurnStart> _globalTurnHandlers = new();
+    private readonly List<IOnGlobalTurnStart> _globalTurnHandlers    = new();
+    private readonly List<IOnGlobalTurnEnd>   _globalTurnEndHandlers = new();
+    private readonly List<IOnTurnEnd>         _turnEndHandlers       = new();
 
     private void Awake()
     {
@@ -24,13 +25,11 @@ public class PassiveAbilityController : MonoBehaviour
     private void OnEnable()
     {
         foreach (var passive in _instantiatedPassives) passive.OnEquip(this);
-        if (_onAnyTurnEnded != null) _onAnyTurnEnded.OnEventRaised += HandleGlobalTurn;
     }
 
     private void OnDisable()
     {
         foreach (var passive in _instantiatedPassives) passive.OnUnequip(this);
-        if (_onAnyTurnEnded != null) _onAnyTurnEnded.OnEventRaised -= HandleGlobalTurn;
     }
 
     public IEnumerable<T> GetModifiers<T>()
@@ -82,9 +81,18 @@ public class PassiveAbilityController : MonoBehaviour
         return false;
     }
 
-    private void HandleGlobalTurn(ITurnAgent _)
+    public void HandleGlobalTurnEnd()
     {
         GetModifiers(_globalTurnHandlers);
         foreach (var h in _globalTurnHandlers) h.OnGlobalTurnStart();
+
+        GetModifiers(_globalTurnEndHandlers);
+        foreach (var h in _globalTurnEndHandlers) h.OnGlobalTurnEnd();
+    }
+
+    public void HandleOwnerTurnEnd()
+    {
+        GetModifiers(_turnEndHandlers);
+        foreach (var h in _turnEndHandlers) h.OnTurnEnd();
     }
 }

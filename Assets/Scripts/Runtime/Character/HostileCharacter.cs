@@ -200,6 +200,14 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         await _enemyTurnDriver.ExecuteTurnAsync(destroyCancellationToken);
     }
 
+    public void OnEndingTurn()
+    {
+        if (_passiveAbilityController != null)
+        {
+            _passiveAbilityController.HandleOwnerTurnEnd();
+        }
+    }
+
     private void OnTakeDamageFeedbackEffect()
     {
         Tween.PunchLocalPosition(_spriteRenderer.transform, strength: Vector3.one * .5f, duration: .5f);

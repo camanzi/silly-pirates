@@ -233,4 +233,9 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
     }
 
     public void OnContinuingTurn() { }
+
+    public void OnEndingTurn()
+    {
+        _passiveAbilityController?.HandleOwnerTurnEnd();
+    }
 }
