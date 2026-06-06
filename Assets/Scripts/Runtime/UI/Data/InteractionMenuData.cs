@@ -17,4 +17,6 @@ public abstract class InteractionActionSO : ScriptableObject
         => CanExecute(element, interactingAgent);
 
     public virtual int GetHoverApCost(IInteractableElement element, ITurnAgent agent) => 0;
+
+    public virtual int GetHoverAwakeningPreview(IInteractableElement element, ITurnAgent agent) => 0;
 }

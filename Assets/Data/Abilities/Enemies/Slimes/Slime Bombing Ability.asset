@@ -19,7 +19,7 @@ MonoBehaviour:
   _icon: {fileID: 0}
   _requiredPart: {fileID: 11400000, guid: 8a73a37bf5ec4e84394146f22fc9651d, type: 2}
   _flavorText: The Big Octopus spit on board!
-  _basePriority: 0
+  _basePriority: 2
   _unlimitedUse: 0
   _minTurnsBeforeUse: 0
   _cellEffectChannel: {fileID: 11400000, guid: cccfa9f09a7271f4a86b5b07bcdf1881, type: 2}

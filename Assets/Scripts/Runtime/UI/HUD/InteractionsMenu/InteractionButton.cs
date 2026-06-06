@@ -65,6 +65,10 @@ public partial class InteractionButton : VisualElement
         });
 
         _hoverChannel?.RaiseEvent(_data.GetHoverApCost(_bindedElement, _interactingAgent));
+
+        int awakePreview = _data.GetHoverAwakeningPreview(_bindedElement, _interactingAgent);
+        if (awakePreview > 0 && _bindedElement is IAwakable awakable)
+            awakable.OnAwakeningHoverPreview?.Invoke(awakePreview);
     }
 
     private void OnPointerLeave(PointerLeaveEvent evt)
@@ -76,6 +80,7 @@ public partial class InteractionButton : VisualElement
         });
 
         _hoverChannel?.RaiseEvent(0);
+        (_bindedElement as IAwakable)?.OnAwakeningHoverPreview?.Invoke(0);
     }
 
     private void OnPointerClick(PointerDownEvent evt)

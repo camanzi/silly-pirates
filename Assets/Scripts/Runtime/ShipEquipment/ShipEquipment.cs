@@ -46,6 +46,7 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     }
     public Action OnAwakeningCountersChanged { get; set; }
     public Action<int> OnCooldownChanged { get; set; }
+    public Action<int> OnAwakeningHoverPreview { get; set; }
 
     public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
 

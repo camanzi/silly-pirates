@@ -36,4 +36,10 @@ public class AwakeActionSO : InteractionActionSO
     }
 
     public override int GetHoverApCost(IInteractableElement element, ITurnAgent agent) => _actionCost;
+
+    public override int GetHoverAwakeningPreview(IInteractableElement element, ITurnAgent agent)
+    {
+        var holder = agent as IAwakeningModifierHolder;
+        return 1 + (holder?.TotalAwakeningBonus ?? 0);
+    }
 }

@@ -66,6 +66,7 @@ public class InteractionMenuController : WorldSpaceContainer
         base.OnCompleteHide();
         _activeButtons.Clear();
         _abilityHoverChannel?.RaiseEvent(0);
+        (_bindedMenuElement as IAwakable)?.OnAwakeningHoverPreview?.Invoke(0);
     }
 
     protected override void OnCompleteShow()

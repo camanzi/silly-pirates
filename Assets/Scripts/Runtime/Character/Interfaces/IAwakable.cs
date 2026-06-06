@@ -16,4 +16,5 @@ public interface IAwakable
     public void ConsumeAllAwakeningPoints();
     Action OnAwakeningCountersChanged { get; set; }
     Action<int> OnCooldownChanged { get; set; }
+    Action<int> OnAwakeningHoverPreview { get; set; }
 }
