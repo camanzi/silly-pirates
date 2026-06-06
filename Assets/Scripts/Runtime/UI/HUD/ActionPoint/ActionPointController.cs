@@ -100,7 +100,7 @@ public class ActionPointController : MonoBehaviour
 
     public void HandleAbilityHoverPreview(int apCost)
     {
-        if (apCost == 0 && _isInTargetingState) return;
+        if (_isInTargetingState) return;
         _currentHoverCost = apCost;
 
         foreach (var el in _apElements)

@@ -6,7 +6,7 @@ public class ConstellationFragment : MonoBehaviour
     [SerializeField] private float _fallDuration = 0.8f;
     [SerializeField] private float _fallHeight = 5f;
     [SerializeField] private int _movementPointsRestored = 2;
-    [SerializeField] private WalkingStarPassiveSO _walkingStarPassive;
+    [SerializeField] private PassiveAbilitySO _passiveOnPickup;
 
     private void OnEnable()
     {
@@ -17,17 +17,16 @@ public class ConstellationFragment : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var character = other.GetComponentInParent<GridCharacter>();
-        if (character != null)
+        if (other.TryGetComponent<GridCharacter>(out GridCharacter character))
         {
             character.RemainingMovementPoints += _movementPointsRestored;
 
-            if (_walkingStarPassive != null)
+            if (_passiveOnPickup != null)
             {
                 var passiveController = character.GetComponent<PassiveAbilityController>();
                 if (passiveController != null)
                 {
-                    var instance = Instantiate(_walkingStarPassive);
+                    var instance = Instantiate(_passiveOnPickup);
                     passiveController.AddPassive(instance);
                 }
             }

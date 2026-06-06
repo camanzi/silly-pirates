@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3297773731015392738}
   - component: {fileID: 9142586797971730558}
   m_Layer: 0
-  m_Name: PF_ConstellationFragment
+  m_Name: PF_ConstellationFragment V2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,7 +49,7 @@ MonoBehaviour:
   _fallDuration: 0.8
   _fallHeight: 5
   _movementPointsRestored: 2
-  _passiveOnPickup: {fileID: 11400000, guid: 8a37389ef9626d84b929783088850933, type: 2}
+  _passiveOnPickup: {fileID: 11400000, guid: afbe3861354d86942893a287cb05aacf, type: 2}
 --- !u!135 &9142586797971730558
 SphereCollider:
   m_ObjectHideFlags: 0

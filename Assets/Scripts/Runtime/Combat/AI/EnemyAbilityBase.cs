@@ -8,7 +8,7 @@ public abstract class EnemyAbilityBase : AbilityBase
     [Header("Flavor Text")]
     [SerializeField][TextArea] private string _flavorText;
 
-    public string FlavorText => _flavorText;
+    public virtual string FlavorText => _flavorText;
 
     [Header("AI Scoring")]
     [Tooltip("Base priority of this ability. Higher values make it more likely to be chosen over other abilities, all else equal.")]

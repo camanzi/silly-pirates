@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConstellationFallAbility
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
-  _icon: {fileID: 21300000, guid: 2f05809c6c651054ca17b547490c32fa, type: 3}
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 2f05809c6c651054ca17b547490c32fa, type: 3}
   _range: 4
-  _apCost: 1
-  _constellationPiecePrefab: {fileID: 3297773731015392738, guid: da3f77b145824bb4a838d67b887020b2, type: 3}
+  _apCost: 2
+  _constellationPiecePrefab: {fileID: 3297773731015392738, guid: 37a7b6b5091ebf34ba4031226d42ea19, type: 3}
