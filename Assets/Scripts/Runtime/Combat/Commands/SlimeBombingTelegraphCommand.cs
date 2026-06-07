@@ -31,12 +31,10 @@ public class SlimeBombingTelegraphCommand : ICommand
         _state.PartOriginalScale   = _state.PartTransform != null ? _state.PartTransform.localScale : Vector3.one;
 
         if (_state.PartTransform != null)
+        {
             await Tween.Scale(_state.PartTransform, _state.PartOriginalScale * 1.2f, 0.5f, Ease.InOutQuad);
-
-        Vector3 targetScale = _state.CasterOriginalScale * 1.25f;
-        await Tween.Scale(_caster.Transform, targetScale, 1f, Ease.InOutQuad);
-
-        _state.ActiveShakeTween = Tween.ShakeLocalPosition(_caster.Transform, strength: new Vector3(0.5f, 0.0f, 0.5f), duration: 0.12f, cycles: -1);
+            _state.ActiveShakeTween = Tween.ShakeLocalPosition(_state.PartTransform, strength: new Vector3(0.5f, 0.0f, 0.0f), duration: 0.12f, cycles: -1);
+        }
 
         await Awaitable.NextFrameAsync();
     }
@@ -44,9 +42,6 @@ public class SlimeBombingTelegraphCommand : ICommand
     public void Undo()
     {
         if (_state.ActiveShakeTween.isAlive) _state.ActiveShakeTween.Stop();
-
-        if (_caster != null && _state.CasterOriginalScale != Vector3.zero)
-            _caster.Transform.localScale = _state.CasterOriginalScale;
 
         if (_state.PartTransform != null && _state.PartOriginalScale != Vector3.zero)
             _state.PartTransform.localScale = _state.PartOriginalScale;

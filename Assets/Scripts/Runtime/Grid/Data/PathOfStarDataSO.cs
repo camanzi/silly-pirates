@@ -2,18 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Path Of Star Data", menuName = "Grid/Path Of Star Data")]
-public class PathOfStarDataSO : ScriptableObject
+public class PathOfStarDataSO : ScriptableObject, ICellCostModifier
 {
     [Header("Dependencies")]
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
-    [SerializeField] private GridStateDataSO _gridStateData;
     [SerializeField] private CellEffectEventChannel _effectChannel;
+    [SerializeField] private CellCostRegistrySO _cellCostRegistry;
 
     [Header("Visual")]
     [SerializeField] private Material _material;
 
     [Header("Config")]
-    [SerializeField] private float _avDiscountPercentage = 20f;
     [SerializeField] private int _cellDurationInTurns = 3;
 
     private readonly Dictionary<Vector3Int, int> _cellCountdowns = new();
@@ -24,12 +23,14 @@ public class PathOfStarDataSO : ScriptableObject
         _cellCountdowns.Clear();
         if (_onAnyTurnEnded != null)
             _onAnyTurnEnded.OnEventRaised += OnTurnEnded;
+        _cellCostRegistry?.Register(this);
     }
 
     private void OnDisable()
     {
         if (_onAnyTurnEnded != null)
             _onAnyTurnEnded.OnEventRaised -= OnTurnEnded;
+        _cellCostRegistry?.Unregister(this);
         RaiseEffectEvent(null);
     }
 
@@ -39,8 +40,12 @@ public class PathOfStarDataSO : ScriptableObject
         RaiseEffectEvent(new List<Vector3Int>(_cellCountdowns.Keys));
     }
 
+    public int GetAdditionalCost(Vector3Int cell) =>
+        _cellCountdowns.ContainsKey(cell) ? -1 : 0;
+
     private void OnTurnEnded(ITurnAgent agent)
     {
+        if (!agent.CompareTag("Player")) return;
         _toRemove.Clear();
         var cellKeys = new List<Vector3Int>(_cellCountdowns.Keys);
         foreach (var cell in cellKeys)
@@ -50,29 +55,6 @@ public class PathOfStarDataSO : ScriptableObject
         }
         foreach (var cell in _toRemove)
             _cellCountdowns.Remove(cell);
-
-        bool agentInStarCell = false;
-        GridElement agentElement = agent as GridElement;
-        if (agentElement != null)
-        {
-            foreach (var cell in _cellCountdowns.Keys)
-            {
-                var entities = _gridStateData.GetEntityAt(cell);
-                if (entities == null) continue;
-                if (entities.Contains(agentElement))
-                {
-                    agentInStarCell = true;
-                    break;
-                }
-            }
-        }
-
-        if (agentInStarCell && agent is IAbilityHolder holder)
-        {
-            var bonus = CreateInstance<StarNextActionPassiveSO>();
-            bonus.DiscountPercentage = _avDiscountPercentage;
-            holder.PassiveAbilityController.AddPassive(bonus);
-        }
 
         RaiseEffectEvent(new List<Vector3Int>(_cellCountdowns.Keys));
     }

@@ -568,7 +568,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9185637d73040fb4cbaf157a02014a72, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentChannelListener
   eventChannel: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
   response:
@@ -577,7 +577,7 @@ MonoBehaviour:
       - m_Target: {fileID: 4935043052338271917}
         m_TargetAssemblyTypeName: ShootingEquipment, Assembly-CSharp
         m_MethodName: OnTurnChange
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

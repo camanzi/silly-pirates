@@ -17,7 +17,7 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 11400000, guid: 041f85ec16603f74c97c8fd7661bd980, type: 2}
   _icon: {fileID: 0}
-  _requiredPart: {fileID: 11400000, guid: 8a73a37bf5ec4e84394146f22fc9651d, type: 2}
+  _requiredPart: {fileID: 11400000, guid: 3bdb3d57b68ab7d4fb57115e3e059b75, type: 2}
   _flavorText: The Big Octopus spit on board!
   _basePriority: 2
   _unlimitedUse: 0

@@ -15,6 +15,6 @@ public class CellCostRegistrySO : ScriptableObject
         int cost = 1;
         for (int i = 0; i < _modifiers.Count; i++)
             cost += _modifiers[i].GetAdditionalCost(cell);
-        return cost;
+        return Mathf.Max(0, cost);
     }
 }

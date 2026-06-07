@@ -87,8 +87,9 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
         AwakeningPoints = 0;
     }
 
-    public void OnTurnChange()
+    public void OnTurnChange(ITurnAgent agent)
     {
+        if (!agent.CompareTag("Player")) return;
         _stateMachine.OnTurnChange();
     }
 }

@@ -81,11 +81,14 @@ public class PassiveAbilityController : MonoBehaviour
         return false;
     }
 
-    public void HandleGlobalTurnEnd()
+    public void HandleGlobalTurnStart()
     {
         GetModifiers(_globalTurnHandlers);
         foreach (var h in _globalTurnHandlers) h.OnGlobalTurnStart();
+    }
 
+    public void HandleGlobalTurnEnd()
+    {
         GetModifiers(_globalTurnEndHandlers);
         foreach (var h in _globalTurnEndHandlers) h.OnGlobalTurnEnd();
     }

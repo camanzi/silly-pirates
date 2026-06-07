@@ -13,13 +13,13 @@ public class GridElement : MonoBehaviour
         set
         {
             _gridStateData.UnregisterOccupancy(_gridPosition, this);
+            OnGridPositionChanged(_gridPosition, value);
             _gridPosition = value;
             _gridStateData.RegisterOccupancy(gridPosition, this);
-            OnGridPositionChanged();
         }
     }
 
-    protected virtual void OnGridPositionChanged() { }
+    protected virtual void OnGridPositionChanged(Vector3Int prevPosition, Vector3Int newPosition) { }
 
     public Vector3 worldPosition => _floorTilemap.CellToWorld(gridPosition);
     public Tilemap activeTilemap =>_floorTilemap;

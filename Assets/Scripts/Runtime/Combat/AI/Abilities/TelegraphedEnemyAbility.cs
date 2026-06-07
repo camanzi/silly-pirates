@@ -16,6 +16,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
 
     private readonly Dictionary<HostileCharacter, TelegraphState> _pendingStates = new();
     private readonly Dictionary<HostileCharacter, Action<EnemyPartSO>> _partBrokenHandlers = new();
+    private readonly Dictionary<HostileCharacter, Action> _deathHandlers = new();
     private HostileCharacter _lastScoredCaster;
 
     public class TelegraphState
@@ -28,6 +29,9 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
         foreach (var (hostile, handler) in _partBrokenHandlers)
             if (hostile is IPartOwner partOwner) partOwner.OnPartBroken -= handler;
         _partBrokenHandlers.Clear();
+        foreach (var (hostile, handler) in _deathHandlers)
+            if (hostile.Health != null) hostile.Health.OnDeath -= handler;
+        _deathHandlers.Clear();
         _pendingStates.Clear();
         _lastScoredCaster = null;
     }
@@ -56,17 +60,31 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
 
     private void SubscribePartBreak(HostileCharacter hostile)
     {
-        if (hostile is not IPartOwner partOwner) return;
-        void handler(EnemyPartSO part) { if (IsRequiredPart(part)) RollbackPending(hostile); }
-        _partBrokenHandlers[hostile] = handler;
-        partOwner.OnPartBroken += handler;
+        if (hostile is IPartOwner partOwner)
+        {
+            void partHandler(EnemyPartSO part) { if (IsRequiredPart(part)) RollbackPending(hostile); }
+            _partBrokenHandlers[hostile] = partHandler;
+            partOwner.OnPartBroken += partHandler;
+        }
+
+        void deathHandler() { RollbackPending(hostile); }
+        _deathHandlers[hostile] = deathHandler;
+        hostile.Health.OnDeath += deathHandler;
     }
 
     private void UnsubscribePartBreak(HostileCharacter hostile)
     {
-        if (!_partBrokenHandlers.TryGetValue(hostile, out var handler)) return;
-        if (hostile is IPartOwner partOwner) partOwner.OnPartBroken -= handler;
-        _partBrokenHandlers.Remove(hostile);
+        if (_partBrokenHandlers.TryGetValue(hostile, out var partHandler))
+        {
+            if (hostile is IPartOwner partOwner) partOwner.OnPartBroken -= partHandler;
+            _partBrokenHandlers.Remove(hostile);
+        }
+
+        if (_deathHandlers.TryGetValue(hostile, out var deathHandler))
+        {
+            if (hostile.Health != null) hostile.Health.OnDeath -= deathHandler;
+            _deathHandlers.Remove(hostile);
+        }
     }
 
     private void RollbackPending(HostileCharacter hostile)

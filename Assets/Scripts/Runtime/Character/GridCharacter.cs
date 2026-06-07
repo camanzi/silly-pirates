@@ -77,6 +77,7 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
     private readonly List<IMovementModifier> _movementModifiers = new();
     private readonly List<IAgilityModifier> _agilityModifiers = new();
     private readonly List<IOnCellEntered> _cellEnteredHandlers = new();
+    private readonly List<IOnCellExited> _cellExitedHandlers = new();
     private readonly List<IOnTurnStart> _turnStartHandlers = new();
     private readonly List<IAwakeningModifier> _awakeningModifiers = new();
 
@@ -177,16 +178,20 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
         _directionalSpriteController.PlayAnimation(EAnimation.Idle);
     }
 
-    protected override void OnGridPositionChanged()
+    protected override void OnGridPositionChanged(Vector3Int prevPosition, Vector3Int newPosition)
     {
         if (_agentData != null)
             this.EmitProximityCheck(new ProximityPayload(this, _agentData.InteractionRange));
 
         if (_passiveAbilityController)
         {
+            _passiveAbilityController.GetModifiers(_cellExitedHandlers);
+            foreach (var h in _cellExitedHandlers)
+                h.OnCellExited(prevPosition);
+
             _passiveAbilityController.GetModifiers(_cellEnteredHandlers);
             foreach (var h in _cellEnteredHandlers)
-                h.OnCellEntered(gridPosition);
+                h.OnCellEntered(newPosition);
         }
     }
 

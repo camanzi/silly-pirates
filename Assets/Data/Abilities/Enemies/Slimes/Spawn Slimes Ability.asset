@@ -17,11 +17,11 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
   _icon: {fileID: 0}
-  _requiredPart: {fileID: 0}
-  _flavorText: The Boss is screaming for help!
+  _requiredPart: {fileID: 11400000, guid: 698fa6fd3c2d87f4cac735bf863420f0, type: 2}
+  _flavorText: The Big Octopus use the scepter to invoke allies
   _basePriority: 10
   _unlimitedUse: 0
-  _minTurnsBeforeUse: 3
+  _minTurnsBeforeUse: 2
   _spawnPointManager: {fileID: 11400000, guid: 34165e78748d78f4ca1f1951af415f06, type: 2}
   _allyPool:
   - {fileID: 4489845312767025257, guid: a001c013c0d5479469fae94c8159b2d2, type: 3}

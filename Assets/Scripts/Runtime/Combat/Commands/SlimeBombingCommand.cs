@@ -49,8 +49,6 @@ public class SlimeBombingCommand : ICommand
         if (_state != null)
         {
             if (_state.ActiveShakeTween.isAlive) _state.ActiveShakeTween.Stop();
-            if (_state.CasterOriginalScale != Vector3.zero)
-                await Tween.Scale(t, _state.CasterOriginalScale, 0.3f, Ease.InOutQuad);
             if (_state.PartTransform != null && _state.PartOriginalScale != Vector3.zero)
                 await Tween.Scale(_state.PartTransform, _state.PartOriginalScale, 0.3f, Ease.InOutQuad);
         }

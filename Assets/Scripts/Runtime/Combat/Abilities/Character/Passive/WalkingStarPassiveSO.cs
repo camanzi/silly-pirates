@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Walking Star Ability", menuName = "Abilities/Character/Passives/Walking Star")]
-public class WalkingStarPassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnStart
+public class WalkingStarPassiveSO : PassiveAbilitySO, IOnCellExited, IOnTurnStart
 {
     [SerializeField] private PathOfStarDataSO _pathTracker;
 
@@ -19,7 +19,7 @@ public class WalkingStarPassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnSta
         _controller = null;
     }
 
-    void IOnCellEntered.OnCellEntered(Vector3Int cell) => _pathTracker.Apply(cell);
+    void IOnCellExited.OnCellExited(Vector3Int cell) => _pathTracker.Apply(cell);
 
     void IOnTurnStart.OnTurnStart()
     {

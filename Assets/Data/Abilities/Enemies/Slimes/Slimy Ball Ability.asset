@@ -18,9 +18,11 @@ MonoBehaviour:
   trajectoryConfigData: {fileID: 11400000, guid: ef232f08ea2afcd448a72b4afc59923c, type: 2}
   _icon: {fileID: 0}
   _requiredPart: {fileID: 0}
+  _flavorText: 
   _basePriority: 0
   _unlimitedUse: 1
+  _minTurnsBeforeUse: 0
   _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}
-  _baseDamage: 500
+  _baseDamage: 350
   _damageType: 1
   _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Slimy Curse Passive
   m_EditorClassIdentifier: Assembly-CSharp::SlimyCursePassiveSO
   _displayName: Slimy Curse
+  _removalTiming: 1
   _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}
   _durationInTurns: 1
   _vfxPrefab: {fileID: 5034920988923812493, guid: b4ddb59e398b25445bb4fb0c5ce8c526, type: 3}

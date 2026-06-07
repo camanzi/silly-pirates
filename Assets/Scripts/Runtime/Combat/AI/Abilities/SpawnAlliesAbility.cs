@@ -50,7 +50,8 @@ public class SpawnAlliesAbility : EnemyAbilityBase
         for (int i = 0; i < pairCount; i++)
             pairs.Add((shuffled[i], freePoints[i]));
 
-        return new SpawnAlliesCommand(hostile, pairs);
+        Transform partTransform = GetRequiredPartTransform(caster);
+        return new SpawnAlliesCommand(hostile, pairs, partTransform);
     }
 
     public override bool RequiresTargeting => false;

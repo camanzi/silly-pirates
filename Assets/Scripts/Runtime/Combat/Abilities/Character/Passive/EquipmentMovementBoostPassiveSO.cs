@@ -13,11 +13,11 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
     [SerializeField] private VisualTreeAsset _uiTemplate;
 
     private int _stacks = 0;
-    private int _inactiveTurns = 0;
+    private bool _awakenedThisTurn = false;
 
     public int CurrentStacks => _stacks;
     public int MaxStacks => 3;
-    public int TurnsUntilDecay => Mathf.Max(0, 2 - _inactiveTurns);
+    public int TurnsUntilDecay => _awakenedThisTurn ? 1 : 0;
 
     public event Action OnStateUpdated;
 
@@ -29,10 +29,10 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
 
     public int GetMovementBonus() => _stacks;
 
-    public override void OnEquip(PassiveAbilityController controller) 
+    public override void OnEquip(PassiveAbilityController controller)
     {
         _stacks = 0;
-        _inactiveTurns = 0;
+        _awakenedThisTurn = false;
         
         _equipmentAwakenedChannel.OnEventRaised += OnEquipmentAwakened;
         _turnChangedChannel.OnEventRaised += (agent) => OnTurnChanged(agent, controller);
@@ -44,19 +44,19 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
         _turnChangedChannel.OnEventRaised -= (agent) => OnTurnChanged(agent, controller);
     }
 
-    private void OnEquipmentAwakened() 
+    private void OnEquipmentAwakened()
     {
-        _inactiveTurns = 0; 
+        _awakenedThisTurn = true;
         if (_stacks < 3) _stacks++;
         OnStateUpdated?.Invoke();
     }
 
-    private void OnTurnChanged(ITurnAgent agent, PassiveAbilityController controller) 
+    private void OnTurnChanged(ITurnAgent agent, PassiveAbilityController controller)
     {
-        if (agent.CompareTag("Player") && agent is GridCharacter) 
+        if (agent.CompareTag("Player") && agent is GridCharacter)
         {
-            _inactiveTurns++;
-            if (_inactiveTurns >= 2 && _stacks > 0) _stacks--;
+            if (!_awakenedThisTurn && _stacks > 0) _stacks = 0;
+            _awakenedThisTurn = false;
             OnStateUpdated?.Invoke();
         }
     }

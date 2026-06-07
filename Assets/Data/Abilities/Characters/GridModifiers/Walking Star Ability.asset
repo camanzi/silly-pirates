@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Walking Star Ability
   m_EditorClassIdentifier: Assembly-CSharp::WalkingStarPassiveSO
   _displayName: Walking Star
+  _removalTiming: 2
   _pathTracker: {fileID: 11400000, guid: 377649c3550f3fa44a6b43aede9383aa, type: 2}

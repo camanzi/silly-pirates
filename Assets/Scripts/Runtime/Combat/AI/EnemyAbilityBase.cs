@@ -43,8 +43,7 @@ public abstract class EnemyAbilityBase : AbilityBase
         return (context.Caster as IPartOwner)?.IsPartFunctional(_requiredPart) ?? true;
     }
 
-    protected UnityEngine.Transform GetRequiredPartTransform(IInteractableElement caster) =>
-        (caster as IPartOwner)?.GetPartTransform(_requiredPart);
+    protected Transform GetRequiredPartTransform(IInteractableElement caster) => (caster as IPartOwner)?.GetPartTransform(_requiredPart);
 
     protected bool IsRequiredPart(EnemyPartSO part) => _requiredPart != null && part == _requiredPart;
 

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostPassiveSO
   _displayName: Slimy Speed
   _removalTiming: 1
-  _flatBonus: 50
-  _percentBonus: 15
+  _flatBonus: 5
+  _percentBonus: 7.5
   _durationInTurns: 6
