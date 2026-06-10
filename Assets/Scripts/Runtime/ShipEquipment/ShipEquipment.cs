@@ -32,8 +32,8 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
             OnAwakeningCountersChanged?.Invoke();
         }
     }
-    public bool IsAwake => _stateMachine.IsActive;
-    public bool IsOnCooldown => _stateMachine.IsOnCooldown;
+    public bool IsAwake => _stateMachine?.IsActive ?? false;
+    public bool IsOnCooldown => _stateMachine?.IsOnCooldown ?? false;
     public int Cooldown
     {
         get => _cooldown;
@@ -68,18 +68,18 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
 
     public void AddAwakeningPoints(int count)
     {
-        AwakeningPoints = Mathf.Min(AwakeningPoints + count, OvercapLimit);
-
-        if (AwakeningPoints >= _toAwakePoints && !IsAwake)
+        int newPoints = Mathf.Min(AwakeningPoints + count, OvercapLimit);
+        if (newPoints >= _toAwakePoints && !IsAwake)
             _stateMachine.TransitionTo(new ActiveState(_stateMachine, this));
+        AwakeningPoints = newPoints;
     }
 
     public void RemoveAwakeningPoints(int count)
     {
-        AwakeningPoints = Mathf.Max(0, AwakeningPoints - count);
-
-        if (AwakeningPoints < _toAwakePoints && IsAwake)
+        int newPoints = Mathf.Max(0, AwakeningPoints - count);
+        if (newPoints < _toAwakePoints && IsAwake)
             _stateMachine.TransitionTo(new AwakableState(_stateMachine, this));
+        AwakeningPoints = newPoints;
     }
 
     public void ConsumeAllAwakeningPoints()

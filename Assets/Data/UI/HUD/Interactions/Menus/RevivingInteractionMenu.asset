@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e8a38256fc62ea4994c76b69ecfb1d8, type: 3}
   m_Name: RevivingInteractionMenu
   m_EditorClassIdentifier: Assembly-CSharp::InteractionSetSO
+  _mainAction: {fileID: 11400000, guid: dbae5969af1bf264080ff3b39077c493, type: 2}
+  _cooldownIcon: {fileID: 21300000, guid: 13594b9fb9c6a5849a0990981c93b891, type: 3}
   _availableActions:
   - {fileID: 11400000, guid: 245070555524e8941b8cab7b7a438712, type: 2}
   - {fileID: 11400000, guid: 83ba390e599a8ff47a62ec88b6a0ed04, type: 2}
-  - {fileID: 11400000, guid: dbae5969af1bf264080ff3b39077c493, type: 2}

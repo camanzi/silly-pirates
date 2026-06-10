@@ -1,3 +1,16 @@
+.status-container {
+    position: absolute;
+    translate: -50% -50%;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
 .interaction-button {
     width: 150px;
     height: 150px;
@@ -5,7 +18,9 @@
     border-radius: 50%;
     justify-content: center;
     align-items: center;
-    margin: 0 25px;
+    position: absolute;
+    translate: -50% -50%;
+    margin: 0;
 }
 
 .interaction-button__icon {
@@ -18,12 +33,26 @@
     opacity: 0.4;
 }
 
-.container {
+.equipment-status {
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.equipment-status__icon {
     position: absolute;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    padding: 5px;
-    translate: -50% -50%;
+    left: 37px;
+    top: 37px;
+    width: 76px;
+    height: 76px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.equipment-status__mask {
+    position: absolute;
+    left: 37px;
+    top: 37px;
+    width: 76px;
+    height: 76px;
 }

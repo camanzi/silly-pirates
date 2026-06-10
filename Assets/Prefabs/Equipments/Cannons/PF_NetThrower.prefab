@@ -1,139 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1822160558169016135
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 794610466205024712}
-  m_Layer: 5
-  m_Name: Counters
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &794610466205024712
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1822160558169016135}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1288760928371700169}
-  m_Father: {fileID: 9186598455307771611}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1838469667982064740
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1288760928371700169}
-  - component: {fileID: 8253516696675444253}
-  - component: {fileID: 6968802535868689437}
-  - component: {fileID: 5579176954690771167}
-  m_Layer: 5
-  m_Name: UIDocument
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1288760928371700169
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1838469667982064740}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 794610466205024712}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8253516696675444253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1838469667982064740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: b0f1f18d10d37fd4a8b1dfe37cbb59d7, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 0770c15d22b271e428c21b39f5b69ebf, type: 3}
-  m_SortingOrder: 0
-  m_Position: 0
-  m_WorldSpaceSizeMode: 0
-  m_WorldSpaceWidth: 500
-  m_WorldSpaceHeight: 300
-  m_PivotReferenceSize: 0
-  m_Pivot: 7
-  m_WorldSpaceCollider: {fileID: 0}
---- !u!114 &6968802535868689437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1838469667982064740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0122c6eede3494548afd80e954026be6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BoolChannelListener
-  eventChannel: {fileID: 11400000, guid: dd8d84cf213af304b84cc6768bfc7af3, type: 2}
-  response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5579176954690771167}
-        m_TargetAssemblyTypeName: CountersController, Assembly-CSharp
-        m_MethodName: SetCombatStatePermission
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &5579176954690771167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1838469667982064740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fe48d10b1acbf74cbe7080830ca6871, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AwakeningCounterController
-  _uiDocument: {fileID: 8253516696675444253}
-  _shownByDefault: 1
-  _positionOffset: {x: 0, y: 0, z: 0}
-  _pickingMode: 1
-  _bindedMenuElement: {fileID: 4935043052338271917}
 --- !u!1 &2515964052709763939
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,8 +74,10 @@ MonoBehaviour:
   _positionOffset: {x: 0, y: 0, z: 0}
   _pickingMode: 0
   _interactionSet: {fileID: 11400000, guid: e8b273f7149d6044490654946c36cfe9, type: 2}
+  _buttonRadius: 175
   _bindedMenuElement: {fileID: 4935043052338271917}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+  _abilityHoverChannel: {fileID: 0}
 --- !u!114 &5326477748618341321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,7 +211,6 @@ Transform:
   m_Children:
   - {fileID: 855184569932106860}
   - {fileID: 1851093944110196790}
-  - {fileID: 794610466205024712}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7504488090511140511
@@ -568,7 +435,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9185637d73040fb4cbaf157a02014a72, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentChannelListener
   eventChannel: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}
   response:

@@ -8,15 +8,23 @@ public class InteractionMenuController : WorldSpaceContainer
 {
     [Header("Menu settings")]
     [SerializeField] private InteractionSetSO _interactionSet;
-    
+    [SerializeField] private float _buttonRadius = 175f;
+
     [Header("Dependences")]
-    // FIXME Later, sarebbe meglio l'interfaccia, peró non é serializzabile di default :/
-    // Dove sei Odin inspector editor....
     [SerializeField] private InteractableGridElement _bindedMenuElement;
     [SerializeField] private TurnStateSO _currentTurnState;
     [SerializeField] private IntEventChannel _abilityHoverChannel;
 
     private Dictionary<InteractionActionSO, InteractionButton> _activeButtons = new();
+    private VisualElement _statusContainer;
+    private EquipmentStatusElement _statusElement;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _statusContainer = _uiDocument.rootVisualElement.Q<VisualElement>("status-container");
+        _statusContainer.pickingMode = PickingMode.Position;
+    }
 
     protected override void OnEnable()
     {
@@ -27,11 +35,52 @@ public class InteractionMenuController : WorldSpaceContainer
             Container.style.opacity = 0f;
             Container.style.display = DisplayStyle.None;
         }
+
+        if (_statusContainer != null)
+        {
+            _statusContainer.style.display = DisplayStyle.Flex;
+            _statusElement = new EquipmentStatusElement();
+            _statusContainer.Add(_statusElement);
+            SetupStatusElement();
+        }
+
+        var awakable = _bindedMenuElement as IAwakable;
+        if (awakable != null)
+        {
+            awakable.OnAwakeningCountersChanged += OnAwakeningStateChanged;
+            awakable.OnCooldownChanged += OnCooldownStateChanged;
+            awakable.OnAwakeningHoverPreview += OnHoverPreview;
+        }
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+
+        if (_statusContainer != null && _statusElement != null)
+        {
+            _statusContainer.Remove(_statusElement);
+            _statusElement = null;
+        }
+
+        var awakable = _bindedMenuElement as IAwakable;
+        if (awakable != null)
+        {
+            awakable.OnAwakeningCountersChanged -= OnAwakeningStateChanged;
+            awakable.OnCooldownChanged -= OnCooldownStateChanged;
+            awakable.OnAwakeningHoverPreview -= OnHoverPreview;
+        }
     }
 
     protected override void LateUpdate()
     {
         base.LateUpdate();
+
+        if (MainCamera == null || _statusContainer == null || _statusContainer.panel == null) return;
+        Vector2 panelPos = RuntimePanelUtils.CameraTransformWorldToPanel(
+            _statusContainer.panel, transform.position + _positionOffset, MainCamera);
+        _statusContainer.style.left = panelPos.x;
+        _statusContainer.style.top = panelPos.y;
     }
 
     protected override void ShowUI()
@@ -58,6 +107,7 @@ public class InteractionMenuController : WorldSpaceContainer
             }
         }
 
+        RepositionButtons();
         UpdateEnabledStates();
     }
 
@@ -94,8 +144,6 @@ public class InteractionMenuController : WorldSpaceContainer
                 toAdd.Add(action);
         }
 
-        // In-place swap: se una nuova azione dichiara di sostituire una che sta per essere rimossa,
-        // aggiorna il bottone esistente invece di rimuoverlo e crearne uno nuovo.
         foreach (InteractionActionSO newAction in toAdd.ToList())
         {
             if (newAction is not IInPlaceSwappable swappable) continue;
@@ -117,7 +165,10 @@ public class InteractionMenuController : WorldSpaceContainer
 
             Tween.Custom(1f, 0f, duration: 0.2f, onValueChange: v => {
                 btn.style.scale = new StyleScale(new Scale(new Vector3(v, v, 1f)));
-            }).OnComplete(() => Container.Remove(btn));
+            }).OnComplete(() => {
+                Container.Remove(btn);
+                RepositionButtons();
+            });
         }
 
         foreach (InteractionActionSO action in toAdd)
@@ -126,6 +177,7 @@ public class InteractionMenuController : WorldSpaceContainer
             delay += 0.1f;
         }
 
+        RepositionButtons();
         UpdateEnabledStates();
     }
 
@@ -133,7 +185,8 @@ public class InteractionMenuController : WorldSpaceContainer
     {
         InteractionButton btn = new InteractionButton();
         btn.SetData(action, _bindedMenuElement, _currentTurnState.ActiveAgent, RefreshUI, _abilityHoverChannel);
-        
+
+        btn.style.position = Position.Absolute;
         btn.style.scale = new StyleScale(new Scale(Vector3.zero));
         Container.Add(btn);
         _activeButtons.Add(action, btn);
@@ -141,6 +194,59 @@ public class InteractionMenuController : WorldSpaceContainer
         Tween.Custom(0f, 1f, duration: 0.3f, startDelay: delay, ease: Ease.OutBack, onValueChange: v => {
             btn.style.scale = new StyleScale(new Scale(new Vector3(v, v, 1f)));
         });
+    }
+
+    private void RepositionButtons()
+    {
+        var buttons = _activeButtons.Values.ToList();
+        int count = buttons.Count;
+        if (count == 0) return;
+
+        float angleStep = 360f / count;
+        for (int i = 0; i < count; i++)
+        {
+            float rad = (-90f + i * angleStep) * Mathf.Deg2Rad;
+            buttons[i].style.left = _buttonRadius * Mathf.Cos(rad);
+            buttons[i].style.top = _buttonRadius * Mathf.Sin(rad);
+        }
+    }
+
+    private void SetupStatusElement()
+    {
+        if (_statusElement == null || _interactionSet == null) return;
+        _statusElement.SetData(
+            _interactionSet.MainAction,
+            _interactionSet.CooldownIcon,
+            _bindedMenuElement,
+            _currentTurnState?.ActiveAgent,
+            _bindedMenuElement as IAwakable,
+            OnStatusActionExecuted,
+            _abilityHoverChannel);
+    }
+
+    private void OnStatusActionExecuted()
+    {
+        _statusElement?.RefreshAwakening();
+        if (_isVisible) RefreshUI();
+    }
+
+    private void OnAwakeningStateChanged()
+    {
+        _statusElement?.UpdateAgent(_currentTurnState?.ActiveAgent);
+        _statusElement?.RefreshAwakening();
+        if (_isVisible) RefreshUI();
+    }
+
+    private void OnCooldownStateChanged(int cooldown)
+    {
+        _statusElement?.UpdateAgent(_currentTurnState?.ActiveAgent);
+        _statusElement?.RefreshCooldown(cooldown);
+        if (_isVisible) RefreshUI();
+    }
+
+    private void OnHoverPreview(int amount)
+    {
+        _statusElement?.SetHoverPreview(amount);
     }
 
     private bool ShouldShowAction(InteractionActionSO action)

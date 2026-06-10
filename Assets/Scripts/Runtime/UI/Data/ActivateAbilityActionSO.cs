@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[CreateAssetMenu(fileName = "ActiveAbilityActionSO", menuName = "UI/Interactions/Equipment/Active Ability Action")]
-public class ActiveAbilityActionSO : InteractionActionSO
+[CreateAssetMenu(fileName = "ActivateAbilityActionSO", menuName = "UI/Interactions/Equipment/Activate Ability Action")]
+public class ActivateAbilityActionSO : InteractionActionSO
 {
     [SerializeField] private InteractableElementEventChannel _selectedAbilityChannel;
     public override bool ExecuteAction(IInteractableElement element, ITurnAgent interactingAgent)
