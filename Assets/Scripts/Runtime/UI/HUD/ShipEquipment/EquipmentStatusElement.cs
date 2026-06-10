@@ -14,9 +14,9 @@ public partial class EquipmentStatusElement : VisualElement
     private static readonly Color RedFull  = new Color(1f, 0.2f, 0.2f, 1f);
     private static readonly Color RedEmpty = new Color(1f, 0.2f, 0.2f, 0.2f);
 
-    private const float OuterRingRadius = 62f;
-    private const float InnerRingRadius = 48f;
-    private const float OuterRingWidth = 10f;
+    private const float OuterRingRadius = 55f;
+    private const float InnerRingRadius = 40f;
+    private const float OuterRingWidth = 8f;
     private const float InnerRingWidth = 8f;
     private const float SegmentGapDeg = 6f;
 
@@ -105,9 +105,8 @@ public partial class EquipmentStatusElement : VisualElement
         if (icon != null)
             _iconElement.style.backgroundImage = new StyleBackground(icon);
 
-        _canExecute = _data != null && _interactingAgent != null
-                      && _data.CanExecute(_bindedElement, _interactingAgent);
-        _iconElement.style.opacity = _canExecute ? 1f : 0.4f;
+        _canExecute = _data.CanExecute(_bindedElement, _interactingAgent);
+        _iconElement.style.opacity = _canExecute ? 1f : 0.7f;
         _radialMaskElement.MarkDirtyRepaint();
         MarkDirtyRepaint();
     }
@@ -182,24 +181,47 @@ public partial class EquipmentStatusElement : VisualElement
         var center = new Vector2(cx, cy);
         painter.fillColor = new Color(0f, 0f, 0f, 0.75f);
 
-        if (revealedDeg <= 0f)
+        if (_awakable.IsOnCooldown)
         {
+            // Mask covers the remaining cooldown arc (top, clockwise) so it clears
+            // counter-clockwise, matching how red segments empty in OnGenerateVisualContent.
+            float remainingDeg = 360f - revealedDeg;
+            if (remainingDeg >= 360f)
+            {
+                painter.BeginPath();
+                painter.Arc(center, radius, 0f, 360f);
+                painter.Fill();
+                return;
+            }
+            float unrevealedEnd = -90f + remainingDeg;
             painter.BeginPath();
-            painter.Arc(center, radius, 0f, 360f);
+            painter.MoveTo(center);
+            painter.LineTo(new Vector2(cx, cy - radius));
+            painter.Arc(center, radius, -90f, unrevealedEnd, ArcDirection.Clockwise);
+            painter.ClosePath();
             painter.Fill();
-            return;
         }
+        else
+        {
+            if (revealedDeg <= 0f)
+            {
+                painter.BeginPath();
+                painter.Arc(center, radius, 0f, 360f);
+                painter.Fill();
+                return;
+            }
 
-        float unrevealedStart = -90f + revealedDeg;
-        float arcStartX = cx + radius * Mathf.Cos(unrevealedStart * Mathf.Deg2Rad);
-        float arcStartY = cy + radius * Mathf.Sin(unrevealedStart * Mathf.Deg2Rad);
+            float unrevealedStart = -90f + revealedDeg;
+            float arcStartX = cx + radius * Mathf.Cos(unrevealedStart * Mathf.Deg2Rad);
+            float arcStartY = cy + radius * Mathf.Sin(unrevealedStart * Mathf.Deg2Rad);
 
-        painter.BeginPath();
-        painter.MoveTo(center);
-        painter.LineTo(new Vector2(arcStartX, arcStartY));
-        painter.Arc(center, radius, unrevealedStart, 270f, ArcDirection.Clockwise);
-        painter.ClosePath();
-        painter.Fill();
+            painter.BeginPath();
+            painter.MoveTo(center);
+            painter.LineTo(new Vector2(arcStartX, arcStartY));
+            painter.Arc(center, radius, unrevealedStart, 270f, ArcDirection.Clockwise);
+            painter.ClosePath();
+            painter.Fill();
+        }
     }
 
     private void DrawRing(Painter2D painter, float cx, float cy, float radius, float width,
