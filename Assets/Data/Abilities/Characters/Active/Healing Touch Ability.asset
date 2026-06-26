@@ -18,6 +18,6 @@ MonoBehaviour:
   trajectoryConfigData: {fileID: 0}
   _icon: {fileID: 21300000, guid: efa9f7af19933a54d998b0d232d453fc, type: 3}
   _range: 1
-  _apCost: 1
-  _flatHealAmount: 250
+  _apCost: 2
+  _flatHealAmount: 100
   _healPercentage: 10

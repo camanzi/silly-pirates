@@ -40,8 +40,14 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
         set
         {
             _cooldown = value;
-            OnCooldownChanged?.Invoke(_cooldown);
-            if (_cooldown > 0) _stateMachine.TransitionTo(new CooldownState(_stateMachine, this));
+            if (_cooldown > 0)
+            {
+                OnCooldownChanged?.Invoke(_cooldown);
+                _stateMachine.TransitionTo(new CooldownState(_stateMachine, this));
+            } else
+            {
+                OnAwakeningCountersChanged?.Invoke();
+            }
         }
     }
     public Action OnAwakeningCountersChanged { get; set; }

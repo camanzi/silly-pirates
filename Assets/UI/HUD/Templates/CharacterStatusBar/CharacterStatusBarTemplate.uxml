@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Templates/CharacterStatusBar/CharacterStatusBarStyle.uss?fileID=7433441132597879392&amp;guid=2885f0687c5c55142bb7873e693c848b&amp;type=3#CharacterStatusBarStyle"/>
+    <ui:VisualElement name="container" picking-mode="Ignore" class="container">
+        <ui:VisualElement name="floating-icons-zone" picking-mode="Ignore" class="floating-icons-zone"/>
+        <ui:VisualElement name="health-bar-bg" picking-mode="Ignore" class="health-bar-bg">
+            <ui:VisualElement name="health-bar-fill" picking-mode="Ignore" class="health-bar-fill"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="settled-passives" picking-mode="Ignore" class="settled-passives"/>
+    </ui:VisualElement>
+</ui:UXML>

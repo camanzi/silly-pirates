@@ -404,7 +404,7 @@ MonoBehaviour:
   OnProximityChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 7824246908159508280}
         m_TargetAssemblyTypeName: InteractionMenuController, Assembly-CSharp
         m_MethodName: ToggleRequested
         m_Mode: 0
@@ -617,3 +617,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6906660384636376223, guid: eb1b2a49845b4c840b19bbdf22760799, type: 3}
   m_PrefabInstance: {fileID: 4354527518027250583}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7824246908159508280 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5835306874188514479, guid: eb1b2a49845b4c840b19bbdf22760799, type: 3}
+  m_PrefabInstance: {fileID: 4354527518027250583}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ae390e57d06ef44ea3da2d75e374c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractionMenuController
