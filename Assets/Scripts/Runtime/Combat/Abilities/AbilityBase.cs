@@ -29,4 +29,6 @@ public abstract class AbilityBase : ScriptableObject {
 
     public virtual bool RequiresTargeting => true;
 
+    public virtual float? GetHitChance(IInteractableElement caster, TargetingData targetingData) => null;
+
 }

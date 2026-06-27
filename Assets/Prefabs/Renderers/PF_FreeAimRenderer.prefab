@@ -46,7 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FreeAimRenderer
   _trajectoryRenderer: {fileID: 8755939049875059875, guid: 6a2cc5aab878851409a54056804f70a6, type: 3}
-  _defaultTajectoryConfigData: {fileID: 11400000, guid: ef232f08ea2afcd448a72b4afc59923c, type: 2}
 --- !u!114 &1314692050074711171
 MonoBehaviour:
   m_ObjectHideFlags: 0

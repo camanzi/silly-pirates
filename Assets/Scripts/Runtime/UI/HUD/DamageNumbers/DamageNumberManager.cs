@@ -65,6 +65,12 @@ public class DamageNumberManager : MonoBehaviour
     {
         if (_root == null) return;
 
+        if (evt.Payload.IsMiss)
+        {
+            SpawnModifierLabel("Miss", new Color(0.8f, 0.8f, 0.8f), evt.WorldPosition);
+            return;
+        }
+
         Color elementColor = _colorConfig != null ? _colorConfig.GetColor(evt.Payload.Type) : Color.white;
 
         var popup = _damageNumberTemplate.CloneTree();

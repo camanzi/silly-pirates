@@ -1,0 +1,13 @@
+.hit-chance-container {
+    position: absolute;
+    translate: -50% -100%;
+    margin-bottom: 12px;
+}
+
+.hit-chance-label {
+    font-size: 52px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(0, 0, 0, 255);
+}

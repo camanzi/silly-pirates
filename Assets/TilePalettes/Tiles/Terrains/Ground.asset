@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cfab931c89df084e8125fe3c3379a0c, type: 3}
   m_Name: Ground
   m_EditorClassIdentifier: Assembly-CSharp::TerrainTile
-  m_Sprite: {fileID: 21300000, guid: fcc3bd485692c6349914abda1cb48903, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ca4419c226463244dacef2513b11cc56, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

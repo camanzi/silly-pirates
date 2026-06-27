@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.170001
+      value: 11.15
       objectReference: {fileID: 0}
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.46
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10.4
+      value: 12.91
       objectReference: {fileID: 0}
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3347567919140684938, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Name
-      value: SpeederSgarry Variant
+      value: SpeederSgarry
       objectReference: {fileID: 0}
     - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Color.b

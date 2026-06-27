@@ -46,6 +46,11 @@ public class HealthController : MonoBehaviour, IDamageable
     public void TakeDamage(DamagePayload payload)
     {
         if (!IsAlive) return;
+        if (payload.IsMiss)
+        {
+            _showDamageUIEventChannel?.RaiseEvent(new DamageEvent { Payload = payload, WorldPosition = transform.position });
+            return;
+        }
         float originalAmount = payload.Amount;
         for (int i = 0; i < _behaviors.Count; i++) payload = _behaviors[i].ModifyIncomingDamage(payload);
         payload.ResistanceMultiplier = originalAmount > 0f ? payload.Amount / originalAmount : 1f;

@@ -1,5 +1,4 @@
 public interface IOffensiveEquipmentStats
 {
-    int CritRate { get; }
-    int CritDMG { get; }
+    int BaseHitPercentage { get; }
 }

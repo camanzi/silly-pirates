@@ -4,6 +4,8 @@ using UnityEngine;
 public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
 {
     [SerializeField] private AwakeActionSO _baseAction;
+    [SerializeField] private AccuracyOvercapPassiveSO _accuracyPassiveTemplate;
+
     public InteractionActionSO BaseAction => _baseAction;
 
     public override bool CanExecute(IInteractableElement element, ITurnAgent interactingAgent)
@@ -22,5 +24,25 @@ public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
         return !awakable.IsOnCooldown
             && awakable.IsAwake
             && awakable.CurrentAwakeningPoints < awakable.OvercapLimit;
+    }
+
+    public override bool ExecuteAction(IInteractableElement element, ITurnAgent interactingAgent)
+    {
+        bool success = base.ExecuteAction(element, interactingAgent);
+        if (!success) return false;
+
+        if (_accuracyPassiveTemplate == null) return true;
+        if (element is not IAwakable awakable) return true;
+        if (element is not Component comp) return true;
+        if (!comp.TryGetComponent<PassiveAbilityController>(out var controller)) return true;
+
+        int extra = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
+        int bonus = (int)MathUtils.CalculateOvercapBonus(extra);
+
+        controller.RemovePassive<AccuracyOvercapPassiveSO>();
+        var instance = Instantiate(_accuracyPassiveTemplate);
+        instance.Initialize(bonus);
+        controller.AddPassive(instance);
+        return true;
     }
 }

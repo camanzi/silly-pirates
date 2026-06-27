@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.6299999
+      value: -3.85
       objectReference: {fileID: 0}
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.56
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10.099999
+      value: 12.91
       objectReference: {fileID: 0}
     - target: {fileID: 3008812009850778354, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3347567919140684938, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Name
-      value: HealerSgarry Variant
+      value: HealerSgarry
       objectReference: {fileID: 0}
     - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Color.b

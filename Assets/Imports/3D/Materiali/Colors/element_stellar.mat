@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: element
+  m_Name: element_stellar
   m_Shader: {fileID: -6465566751694194690, guid: 2aa6a7e7d9e78324d94accdb7ab540b8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -112,7 +112,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Light_point: 0.48
+    - _Light_point: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -131,15 +131,15 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     - _light_cutoff: 0.313
-    - _noise_size: 2
+    - _noise_size: 1
     - _shadow_brightness: 0.3
     - _speed: 0.1
     m_Colors:
     - _BaseColor: {r: 0.21568626, g: 0.61392343, b: 0.90588236, a: 1}
-    - _Color: {r: 0.28773582, g: 0.5296011, b: 1, a: 1}
+    - _Color: {r: 0.82940257, g: 0.5613208, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0.37233517, b: 1.6311817, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _color_2: {r: 1, g: 1, b: 1, a: 1}
+    - _color_2: {r: 0.24056602, g: 1, b: 0.32751998, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &3415569286565316298

@@ -14,13 +14,13 @@ public class ShootCommand : ICommand
     private readonly DamageType _baseDMGType;
     private readonly IOffensiveEquipmentStats _stats;
 
-    private readonly int _overcapCritBonus;
+    private readonly int _overcapAccuracyBonus;
 
     private readonly List<Awaitable> _flightTasks = new();
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData, int overcapCritBonus = 0)
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData, int overcapAccuracyBonus = 0)
     {
         _caster = caster;
         _targets = targets;
@@ -30,7 +30,7 @@ public class ShootCommand : ICommand
         _baseDMGType = baseDMGType;
         _stats = stats;
         _trajectoryConfigData = trajectoryConfigData;
-        _overcapCritBonus = overcapCritBonus;
+        _overcapAccuracyBonus = overcapAccuracyBonus;
     }
 
     public async Awaitable ExecuteAsync()
@@ -86,7 +86,7 @@ public class ShootCommand : ICommand
         Vector3 end = target.Transform.position;
         Vector3 controlPoint = (start + end) / 2 + Vector3.up * _trajectoryConfigData.Height;
 
-        if (_caster is ShipEquipment equipment) equipment.OnCommandExecuted?.Invoke();
+        if (_caster is ShipEquipment equipment) equipment.OnCommandExecuted.Invoke();
 
         var state = new ProjectileState(projectile.transform, start, controlPoint, end);
         await Tween.Custom(state, 0f, 1f, duration: _trajectoryConfigData.TravelDuration, ease: Ease.Linear,
@@ -105,17 +105,11 @@ public class ShootCommand : ICommand
     {
         if (target is IHealthOwner healthOwner)
         {
-            float damage   = _baseDMG;
-            int   critRate = (_stats?.CritRate ?? 0) + _overcapCritBonus;
-
-            int effectiveCritDMG = _caster is ICritDMGOwner critOwner ? critOwner.EffectiveCritDMG : (_stats?.CritDMG ?? 0);
-            bool isCrit = UnityEngine.Random.Range(0, 100) < critRate;
-            if (isCrit)
-                damage += damage * effectiveCritDMG / 100f;
+            int effectiveHitChance = Mathf.Min(100, (_stats?.BaseHitPercentage ?? 100) + _overcapAccuracyBonus);
+            bool isHit = effectiveHitChance >= 100 || UnityEngine.Random.Range(0, 100) < effectiveHitChance;
 
             DamageType dmgType = ResolveDMGType();
-            healthOwner.Health.TakeDamage(new DamagePayload(damage, dmgType) { IsCritical = isCrit });
-            Debug.Log($"[ShootCommand] Hit — crit: {isCrit}, damage: {damage}, dmgType: {dmgType}, critRate: {critRate}%, critDMG: {effectiveCritDMG}%");
+            healthOwner.Health.TakeDamage(new DamagePayload(_baseDMG, dmgType) { IsMiss = !isHit });
         }
         GameObject.Destroy(projectile);
     }

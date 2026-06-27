@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Templates/HitChance/HitChanceIndicator.uss"/>
+    <Style src="project://database/Assets/UI/HUD/Shared/STL_WorldSpace.uss"/>
+    <ui:VisualElement name="container" picking-mode="Ignore" class="hit-chance-container">
+        <ui:Label name="hit-chance-label" text="100%" picking-mode="Ignore" class="hit-chance-label"/>
+    </ui:VisualElement>
+</ui:UXML>

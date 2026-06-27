@@ -32,7 +32,12 @@ public class AbilityRendererSO : ScriptableObject
         }
 
         if (arcs != null)
-            _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, arcs));
+        {
+            ITargettable hovered = targetingData.selectedTarget;
+            float? hitChance = hovered != null ? ability.GetHitChance(caster, targetingData) : null;
+            _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, arcs)
+                { HoveredTarget = hovered, HitChance = hitChance });
+        }
 
         var layers = new List<CellOverlayLayer>();
         if (data.InteractionArea != null)

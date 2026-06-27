@@ -1,22 +1,22 @@
 using System.Collections.Generic;
 
-public class OffensiveEquipment : ShipEquipment, ICritDMGOwner, IDMGTypeOwner
+public class OffensiveEquipment : ShipEquipment, IHitRateOwner, IDMGTypeOwner
 {
-    private readonly List<ICritDMGModifier> _critDMGModifiers = new();
+    private readonly List<IHitRateModifier> _hitRateModifiers = new();
 
-    public int EffectiveCritDMG
+    public int EffectiveHitBonus
     {
         get
         {
-            int total = (StatsConfig as IOffensiveEquipmentStats)?.CritDMG ?? 0;
-            for (int i = 0; i < _critDMGModifiers.Count; i++)
-                total += _critDMGModifiers[i].GetCritDMGBonus();
+            int total = 0;
+            for (int i = 0; i < _hitRateModifiers.Count; i++)
+                total += _hitRateModifiers[i].GetHitRateBonus();
             return total;
         }
     }
 
-    public void AddCritDMGModifier(ICritDMGModifier modifier) => _critDMGModifiers.Add(modifier);
-    public void RemoveCritDMGModifier(ICritDMGModifier modifier) => _critDMGModifiers.Remove(modifier);
+    public void AddHitRateModifier(IHitRateModifier modifier) => _hitRateModifiers.Add(modifier);
+    public void RemoveHitRateModifier(IHitRateModifier modifier) => _hitRateModifiers.Remove(modifier);
 
     private readonly List<IDMGTypeModifier> _dmgTypeModifiers = new();
 

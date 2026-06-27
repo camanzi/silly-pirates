@@ -81,6 +81,19 @@ public class PassiveAbilityController : MonoBehaviour
         return false;
     }
 
+    public bool RemovePassive<T>() where T : PassiveAbilitySO
+    {
+        for (int i = 0; i < _instantiatedPassives.Count; i++)
+        {
+            if (_instantiatedPassives[i] is T t)
+            {
+                RemovePassive(t);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void HandleGlobalTurnStart()
     {
         GetModifiers(_globalTurnHandlers);

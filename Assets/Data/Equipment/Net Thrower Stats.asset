@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 861396b1e95844b4aaadabff2eb5439a, type: 3}
   m_Name: Net Thrower Stats
   m_EditorClassIdentifier: Assembly-CSharp::OffensiveEquipmentStatsSO
-  _critRate: 0
-  _critDMG: 0
+  _baseHitPercentage: 85
