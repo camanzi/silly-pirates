@@ -3,7 +3,12 @@ guid: a1f0c3de524d2f14992963bae21f8c98
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cannon_balls
+    second: {fileID: 2100000, guid: 44cb52a380b5c9441a578985cd4c4b7c, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

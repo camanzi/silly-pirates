@@ -1,24 +1,9 @@
 fileFormatVersion: 2
-guid: e6202430c34ebf04c9fcedaf7b3784bd
+guid: c1c2dd406eb6228478eaed489536cd8d
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Cannon_Base
-    second: {fileID: 2100000, guid: abf4118d4a5e1f448a7fa9a920c89465, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Cannon_Body
-    second: {fileID: 2100000, guid: 4c6668a85972ac34686f0356f615a2c5, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: element
-    second: {fileID: 2100000, guid: 869073fb34b869c499695c171f0153c5, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

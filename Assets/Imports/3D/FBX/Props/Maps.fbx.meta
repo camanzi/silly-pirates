@@ -3,7 +3,17 @@ guid: 6a97f7ede6a93c64eb1260e9616ab71b
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: barca
+    second: {fileID: 2100000, guid: 316780557eca6bc42b32f7745f616713, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: props
+    second: {fileID: 2100000, guid: a19358f977c27e5489c50a572b6da6b9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
