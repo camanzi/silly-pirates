@@ -37,7 +37,9 @@ public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
         if (!comp.TryGetComponent<PassiveAbilityController>(out var controller)) return true;
 
         int extra = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
-        int bonus = (int)MathUtils.CalculateOvercapBonus(extra);
+        int bonus = (element is IEquipmentStats eq2)
+            ? (eq2.StatsConfig as IOffensiveEquipmentStats)?.GetOvercapAccuracyBonus(extra) ?? (int)MathUtils.CalculateOvercapBonus(extra)
+            : (int)MathUtils.CalculateOvercapBonus(extra);
 
         controller.RemovePassive<AccuracyOvercapPassiveSO>();
         var instance = Instantiate(_accuracyPassiveTemplate);

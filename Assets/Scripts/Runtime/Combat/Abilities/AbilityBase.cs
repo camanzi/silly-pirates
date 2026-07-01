@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AbilityBase : ScriptableObject {
-
+public abstract class AbilityBase : ScriptableObject
+{
     [Header("Dependences")]
     [SerializeField] protected GridStateDataSO _gridStateData;
     [SerializeField] protected SelectionContextSO _selectionCtx;

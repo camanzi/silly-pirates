@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Net Throwing Ability", menuName = "Abilities/Equipment/Net Throwing Ability")]
-public class NetThrowingAbility : AbilityBase
+public class NetThrowingAbility : OffensiveAbilityBase
 {
     [Header("Net Throwing configs")]
     [SerializeField] private int _maxTargets = 1;

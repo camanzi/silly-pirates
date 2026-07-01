@@ -197,6 +197,14 @@ PrefabInstance:
       propertyPath: _positionOffset.y
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5073046980944684326, guid: 8ca2630da05f6de478483b54f678837c, type: 3}
+      propertyPath: _baseEvasion
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5073046980944684326, guid: 8ca2630da05f6de478483b54f678837c, type: 3}
+      propertyPath: _overrideEvasion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -226,6 +234,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2846489129807784185}
     m_Modifications:
+    - target: {fileID: 459156994923114985, guid: ddcfb53c195b8e043850e04664b6516a, type: 3}
+      propertyPath: _baseEvasion
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 459156994923114985, guid: ddcfb53c195b8e043850e04664b6516a, type: 3}
+      propertyPath: _overrideEvasion
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5650143268143191011, guid: ddcfb53c195b8e043850e04664b6516a, type: 3}
       propertyPath: m_Name
       value: PF_VolcanoHat

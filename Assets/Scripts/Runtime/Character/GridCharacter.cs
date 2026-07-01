@@ -67,6 +67,21 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
             return Mathf.Max(1, Mathf.RoundToInt(modified));
         }
     }
+    public int EffectiveEvasion
+    {
+        get
+        {
+            int total = 0;
+            if (_passiveAbilityController)
+            {
+                _passiveAbilityController.GetModifiers(_evasionModifiers);
+                for (int i = 0; i < _evasionModifiers.Count; i++)
+                    total += _evasionModifiers[i].GetEvasionBonus();
+            }
+            return AgentData.BaseEvasion + total;
+        }
+    }
+
     private int _remainingMovementPoints;
     private int _remainingActionPoints;
     private int _lastKnownEffectiveAgility;
@@ -76,6 +91,7 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
     private Tween _moveTween;
     private readonly List<IMovementModifier> _movementModifiers = new();
     private readonly List<IAgilityModifier> _agilityModifiers = new();
+    private readonly List<IEvasionModifier> _evasionModifiers = new();
     private readonly List<IOnCellEntered> _cellEnteredHandlers = new();
     private readonly List<IOnCellExited> _cellExitedHandlers = new();
     private readonly List<IOnTurnStart> _turnStartHandlers = new();

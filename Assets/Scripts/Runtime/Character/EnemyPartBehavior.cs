@@ -7,12 +7,16 @@ public class EnemyPartBehavior : MonoBehaviour, ITargettable, IInteractableEleme
 {
     [SerializeField] private SelectionContextSO _selectionContextSO;
     [SerializeField] private InteractableElementEventChannel _elementClickedChannel;
+    [SerializeField] private bool _overrideEvasion;
+    [SerializeField] private int _baseEvasion;
 
     private OutlinerHelper _outlinerHelper;
     private HealthController _healthController;
     private DirectionalSpriteController _directionalSpriteController;
+    private HostileCharacter _parentHostile;
 
     public Transform Transform => transform;
+    public int EffectiveEvasion => _overrideEvasion ? _baseEvasion : _parentHostile?.EffectiveEvasion ?? 0;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
     public SelectionContextSO SelectionContext => _selectionContextSO;
     public InteractableElementEventChannel ClickChannel => _elementClickedChannel;
@@ -23,6 +27,7 @@ public class EnemyPartBehavior : MonoBehaviour, ITargettable, IInteractableEleme
         _outlinerHelper = GetComponent<OutlinerHelper>();
         _healthController = GetComponent<HealthController>();
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
+        _parentHostile = GetComponentInParent<HostileCharacter>();
     }
 
     private void OnEnable()

@@ -1,4 +1,5 @@
 public interface IOffensiveEquipmentStats
 {
-    int BaseHitPercentage { get; }
+    int BaseAccuracy { get; }
+    int GetOvercapAccuracyBonus(int extraPoints);
 }

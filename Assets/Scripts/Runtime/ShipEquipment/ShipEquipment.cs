@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -55,6 +56,23 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     public Action<int> OnAwakeningHoverPreview { get; set; }
 
     public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
+
+    private readonly List<IEvasionModifier> _evasionModifiers = new();
+
+    public int EffectiveEvasion
+    {
+        get
+        {
+            int total = 0;
+            if (_passiveAbilityController != null)
+            {
+                _passiveAbilityController.GetModifiers(_evasionModifiers);
+                for (int i = 0; i < _evasionModifiers.Count; i++)
+                    total += _evasionModifiers[i].GetEvasionBonus();
+            }
+            return (StatsConfig?.BaseEvasion ?? 0) + total;
+        }
+    }
 
     private int _awakeningPoints = 0;
     private int _cooldown = 0;

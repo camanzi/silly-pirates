@@ -3,8 +3,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Offensive Equipment Stats", menuName = "Equipment/Offensive Stats")]
 public class OffensiveEquipmentStatsSO : EquipmentStatsSO, IOffensiveEquipmentStats
 {
-    [SerializeField] [Range(0, 100)] private int _baseHitPercentage = 100;
+    [SerializeField] private int _baseAccuracy = 100;
+    [SerializeField] private int _accuracyPerOvercap = 10;
 
     public override EquipmentType EquipmentType => EquipmentType.Offensive;
-    public int BaseHitPercentage => _baseHitPercentage;
+    public int BaseAccuracy => _baseAccuracy;
+    public int GetOvercapAccuracyBonus(int extraPoints) => extraPoints * _accuracyPerOvercap;
 }

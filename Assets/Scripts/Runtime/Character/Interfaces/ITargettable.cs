@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public interface ITargettable: IClickable
+public interface ITargettable : IClickable, IEvasionOwner
 {
     public Transform Transform { get; }
-
 }

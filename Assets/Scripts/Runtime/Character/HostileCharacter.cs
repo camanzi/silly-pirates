@@ -79,8 +79,21 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         }
     }
 
+    public int EffectiveEvasion
+    {
+        get
+        {
+            if (_passiveAbilityController == null) return AgentData.BaseEvasion;
+            int total = 0;
+            _passiveAbilityController.GetModifiers(_evasionModifiers);
+            for (int i = 0; i < _evasionModifiers.Count; i++)
+                total += _evasionModifiers[i].GetEvasionBonus();
+            return AgentData.BaseEvasion + total;
+        }
+    }
+
     public HealthController Health => _healthController;
-    
+
     public int TurnCount { get; private set; }
     public readonly List<EnemyAbilityBase> UsedAbilitiesThisTurn = new();
     public readonly Dictionary<EnemyAbilityBase, int> AbilityCooldowns = new();
@@ -94,6 +107,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     private PassiveAbilityController _passiveAbilityController;
     private DirectionalSpriteController _directionalSpriteController;
     private readonly List<IAgilityModifier> _agilityModifiers = new();
+    private readonly List<IEvasionModifier> _evasionModifiers = new();
     private readonly List<IOnTurnStart> _turnStartHandlers = new();
     private SpawnPoint _spawnPoint;
 

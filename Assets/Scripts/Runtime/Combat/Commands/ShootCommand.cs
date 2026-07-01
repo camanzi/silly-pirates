@@ -12,15 +12,13 @@ public class ShootCommand : ICommand
     private TrajectoryConfigsSO _trajectoryConfigData;
     private readonly int _baseDMG;
     private readonly DamageType _baseDMGType;
-    private readonly IOffensiveEquipmentStats _stats;
-
-    private readonly int _overcapAccuracyBonus;
+    private readonly int _effectiveAccuracy;
 
     private readonly List<Awaitable> _flightTasks = new();
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, IOffensiveEquipmentStats stats, TrajectoryConfigsSO trajectoryConfigData, int overcapAccuracyBonus = 0)
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, TrajectoryConfigsSO trajectoryConfigData, int effectiveAccuracy)
     {
         _caster = caster;
         _targets = targets;
@@ -28,9 +26,8 @@ public class ShootCommand : ICommand
         _cooldown = cooldown;
         _baseDMG = baseDMG;
         _baseDMGType = baseDMGType;
-        _stats = stats;
         _trajectoryConfigData = trajectoryConfigData;
-        _overcapAccuracyBonus = overcapAccuracyBonus;
+        _effectiveAccuracy = effectiveAccuracy;
     }
 
     public async Awaitable ExecuteAsync()
@@ -105,8 +102,8 @@ public class ShootCommand : ICommand
     {
         if (target is IHealthOwner healthOwner)
         {
-            int effectiveHitChance = Mathf.Min(100, (_stats?.BaseHitPercentage ?? 100) + _overcapAccuracyBonus);
-            bool isHit = effectiveHitChance >= 100 || UnityEngine.Random.Range(0, 100) < effectiveHitChance;
+            int hitChance = MathUtils.CalculateHitChance(_effectiveAccuracy, target.EffectiveEvasion);
+            bool isHit = UnityEngine.Random.Range(0, 100) < hitChance;
 
             DamageType dmgType = ResolveDMGType();
             healthOwner.Health.TakeDamage(new DamagePayload(_baseDMG, dmgType) { IsMiss = !isHit });
