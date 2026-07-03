@@ -1,5 +1,3 @@
-using PrimeTween;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -19,15 +17,6 @@ public partial class TurnCard : VisualElement
 
     private CharacterTurnData _data;
     private bool _isActive;
-    private bool _isHovered;
-    private Tween _wobbleTween;
-    private Tween _shakeTween;
-
-    private const float WobbleAmount = 15f;
-    private const float WobbleDuration = .75f;
-    private const float ShakeAmplitude = 20f;
-    private const float ShakeDuration = 0.8f;
-    private const int ShakeCycles = 4;
 
     public TurnCard()
     {
@@ -55,11 +44,7 @@ public partial class TurnCard : VisualElement
         get => _data;
         set
         {
-            if (_data?.Agent?.Health != null)
-                _data.Agent.Health.OnTakeDamage -= PlayDamageShake;
             _data = value;
-            if (_data?.Agent?.Health != null)
-                _data.Agent.Health.OnTakeDamage += PlayDamageShake;
             UpdateDisplay();
             UpdateActionValueDisplay();
         }
@@ -79,9 +64,6 @@ public partial class TurnCard : VisualElement
 
     public void Unbind()
     {
-        if (_data?.Agent?.Health != null)
-            _data.Agent.Health.OnTakeDamage -= PlayDamageShake;
-        Tween.StopAll(this);
         _cardWrapper.style.translate = StyleKeyword.Initial;
     }
 
@@ -122,27 +104,5 @@ public partial class TurnCard : VisualElement
     private void UpdateActionValueDisplay()
     {
         _avLabel.text = _isActive ? string.Empty : _data.ActionValue.ToString();;
-    }
-
-    public void SetHovered(bool hovered)
-    {
-        _isHovered = hovered;
-        if (_shakeTween.isAlive) return;
-        Tween.StopAll(this);
-        _cardWrapper.style.translate = StyleKeyword.Initial;
-        if (!hovered) return;
-        _wobbleTween = Tween.Custom(this, 0, WobbleAmount, WobbleDuration,
-            (self, v) => self._cardWrapper.style.translate = new StyleTranslate(new Translate(v, 0f)),
-            cycles: -1, cycleMode: CycleMode.Rewind, ease: Ease.InOutSine);
-    }
-
-    private void PlayDamageShake()
-    {
-        Tween.StopAll(this);
-        _shakeTween = Tween.Custom(this, 0f, 1f, ShakeDuration, (self, t) =>
-        {
-            float shake = Mathf.Sin(t * Mathf.PI * 2f * ShakeCycles) * (1f - t) * ShakeAmplitude;
-            self._cardWrapper.style.translate = new StyleTranslate(new Translate(shake, 0f));
-        }, ease: Ease.Linear).OnComplete(() => SetHovered(_isHovered));
     }
 }

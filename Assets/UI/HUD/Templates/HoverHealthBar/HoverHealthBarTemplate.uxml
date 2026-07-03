@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/HUD/Templates/HoverHealthBar/HoverHealthBarStyle.uss?fileID=7433441132597879392&amp;guid=f495a9c41ec049d42905234a61826674&amp;type=3#HoverHealthBarStyle"/>
+    <ui:VisualElement name="hover-health-container" class="hover-health-container">
+        <ui:Label name="hover-name-label" text="" class="hover-name-label"/>
+        <ui:VisualElement name="hover-bar-wrapper" class="hover-bar-wrapper">
+            <ui:VisualElement name="hover-bar-bg" class="hover-bar-bg">
+                <ui:VisualElement name="hover-bar-fill" class="hover-bar-fill"/>
+                <ui:Label name="hover-hp-label" text="" class="hover-hp-label"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
