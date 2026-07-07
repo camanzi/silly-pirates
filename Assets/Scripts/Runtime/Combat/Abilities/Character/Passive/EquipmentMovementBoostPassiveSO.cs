@@ -1,16 +1,12 @@
 using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "Equipment Movement Boost", menuName = "Abilities/Character/Passives/Equipment Movement Boost")]
-public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifier, IMovementBoostUIReporter, IPassiveUIProvider
+public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifier, IPassiveStateNotifier
 {
     [Header("Event Channels")]
-    [SerializeField] private VoidEventChannel _equipmentAwakenedChannel; 
+    [SerializeField] private VoidEventChannel _equipmentAwakenedChannel;
     [SerializeField] private TurnAgentEventChannel _turnChangedChannel;
-
-    [Header("UI Configs")]
-    [SerializeField] private VisualTreeAsset _uiTemplate;
 
     private int _stacks = 0;
     private bool _awakenedThisTurn = false;
@@ -21,13 +17,15 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
 
     public event Action OnStateUpdated;
 
-    public VisualTreeAsset GetTemplate() => _uiTemplate;
-
-    public VisualElement CreateUIElement(VisualTreeAsset template) {
-        return new MovementBoostIndicator(this, template);
+    event Action IPassiveStateNotifier.OnStateChanged
+    {
+        add => OnStateUpdated += value;
+        remove => OnStateUpdated -= value;
     }
 
     public int GetMovementBonus() => _stacks;
+
+    public override bool IsCurrentlyActive(PassiveAbilityController controller) => _stacks > 0;
 
     public override void OnEquip(PassiveAbilityController controller)
     {

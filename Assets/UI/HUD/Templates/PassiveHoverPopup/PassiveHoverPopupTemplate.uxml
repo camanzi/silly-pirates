@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="PassiveHoverPopupStyle.uss"/>
+    <ui:VisualElement name="passive-popup-container" class="passive-popup-container" picking-mode="Ignore">
+        <ui:VisualElement name="passive-popup-icon" class="passive-popup-icon"/>
+        <ui:VisualElement name="passive-popup-text" class="passive-popup-text">
+            <ui:Label name="passive-popup-name" text="" class="passive-popup-name"/>
+            <ui:Label name="passive-popup-description" text="" class="passive-popup-description"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

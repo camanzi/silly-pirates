@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Ocean Currents Passive
   m_EditorClassIdentifier: Assembly-CSharp::OceanCurrentsPassiveSO
   _displayName: Correnti Oceaniche
+  _icon: {fileID: 21300000, guid: f6eb7f139e9f7904baa9ac69898b1529, type: 3}
+  _description: Once per turn, ride an ocean current to jump between connected
+    water cells.
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
-  _uiTemplate: {fileID: 9197481963319205126, guid: a7141ddab9fd69c4fb1a7a06f51afad6, type: 3}
   _currentCellCount: 5
   _exitRange: 2
   _jumpPeakHeight: 10

@@ -1,4 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="MovementBoostindicator.uss" />
-    <ui:VisualElement name="shoe-icon" class="shoe-icon shoe-inactive" />
-</ui:UXML>

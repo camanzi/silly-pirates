@@ -7,6 +7,8 @@ public class CrewOverviewController : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private UIDocument _uiDocument;
     [SerializeField] private VisualTreeAsset _crewMemberTemplate;
+    [SerializeField] private VisualTreeAsset _passiveIndicatorTemplate;
+    [SerializeField] private PassiveHoverPopupController _passiveHoverPopup;
 
     [Header("Events & State")]
     [SerializeField] private TurnStateSO _turnState;
@@ -39,7 +41,7 @@ public class CrewOverviewController : MonoBehaviour
 
         var newIndicator = new CrewMemberIndicator();
         
-        newIndicator.Initialize(agent, _crewMemberTemplate);
+        newIndicator.Initialize(agent, _crewMemberTemplate, _passiveIndicatorTemplate, _passiveHoverPopup);
 
         if (_crewContainer != null)
             _crewContainer.Add(newIndicator);

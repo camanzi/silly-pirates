@@ -4,10 +4,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "Ocean Currents Passive", menuName = "Abilities/Character/Passives/Ocean Currents")]
-public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPassiveUIProvider, IOceanCurrentsUIReporter
+public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPassiveStateNotifier
 {
     private static readonly Vector3Int[] OddRowNeighbors =
     {
@@ -22,9 +21,6 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
 
     [Header("Dependencies")]
     [SerializeField] private GridStateDataSO _gridStateData;
-
-    [Header("UI")]
-    [SerializeField] private VisualTreeAsset _uiTemplate;
 
     [Header("Configs")]
     [SerializeField] private int _currentCellCount = 5;
@@ -56,6 +52,14 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
 
     public bool IsAvailable => _isMyTurn && !_usedThisTurn && s_sharedCurrentCells.Count > 0;
     public event Action OnStateUpdated;
+
+    event Action IPassiveStateNotifier.OnStateChanged
+    {
+        add => OnStateUpdated += value;
+        remove => OnStateUpdated -= value;
+    }
+
+    public override bool IsCurrentlyActive(PassiveAbilityController controller) => IsAvailable;
 
     private readonly List<Vector3> _previewAffectedCells = new(1);
     private static readonly List<Vector3> _emptyInteractionArea = new();
@@ -125,12 +129,6 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
         OnStateUpdated?.Invoke();
     }
 
-
-    // --- IPassiveUIProvider ---
-
-    public VisualTreeAsset GetTemplate() => _uiTemplate;
-
-    public VisualElement CreateUIElement(VisualTreeAsset template) => new OceanCurrentsIndicator(this, template);
 
     // --- IMovementExtension ---
 
