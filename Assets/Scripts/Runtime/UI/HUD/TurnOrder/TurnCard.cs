@@ -1,3 +1,5 @@
+using PrimeTween;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -14,9 +16,12 @@ public partial class TurnCard : VisualElement
     private VisualElement _iconContainer;
     private Label _avLabel;
     private VisualElement _characterIcon;
+    private VisualElement _healthFill;
 
     private CharacterTurnData _data;
     private bool _isActive;
+    private Tween _healthTween;
+    private float _healthFillPercent;
 
     public TurnCard()
     {
@@ -36,6 +41,7 @@ public partial class TurnCard : VisualElement
         _card = this.Q<VisualElement>("card");
         _iconContainer = this.Q<VisualElement>("icon-container");
         _characterIcon = this.Q<VisualElement>("character-icon");
+        _healthFill = this.Q<VisualElement>("health-fill");
         _avLabel = this.Q<Label>("AV-label");
     }
 
@@ -65,6 +71,21 @@ public partial class TurnCard : VisualElement
     public void Unbind()
     {
         _cardWrapper.style.translate = StyleKeyword.Initial;
+        _healthTween.Stop();
+    }
+
+    public void UpdateHealth(float currentHp, float maxHp)
+    {
+        float ratio = maxHp > 0f ? Mathf.Clamp01((maxHp - currentHp) / maxHp) : 1f;
+        float targetPercent = ratio * 100f;
+
+        _healthTween.Stop();
+        _healthTween = Tween.Custom(_healthFill, _healthFillPercent, targetPercent, duration: 0.3f,
+            onValueChange: (target, val) =>
+            {
+                _healthFillPercent = val;
+                target.style.height = Length.Percent(val);
+            });
     }
 
     private void UpdateDisplay()

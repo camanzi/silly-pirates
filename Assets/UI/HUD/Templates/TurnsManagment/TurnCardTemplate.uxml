@@ -6,6 +6,7 @@
             <ui:VisualElement name="icon-container" class="turn-card__icon-container">
                 <ui:VisualElement name="character-icon" class="turn-card__icon" style="background-image: resource(&quot;Sprites/Pirates/pixel_pirate&quot;); -unity-background-scale-mode: scale-and-crop; background-position-y: bottom 0;"/>
             </ui:VisualElement>
+            <ui:VisualElement name="health-fill" class="turn-card__health-fill"/>
             <ui:Label text="9999" name="AV-label" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="av-label"/>
         </ui:VisualElement>
     </ui:VisualElement>

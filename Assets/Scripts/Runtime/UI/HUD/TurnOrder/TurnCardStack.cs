@@ -35,7 +35,10 @@ public partial class TurnCardStack : VisualElement
     public void Bind(EntityTurnState state, int subTurnCount, bool isActive, VisualTreeAsset cardTemplate)
     {
         if (Agent?.Health != null)
+        {
             Agent.Health.OnTakeDamage -= PlayDamageShake;
+            Agent.Health.OnHpChanged -= HandleHpChanged;
+        }
 
         Agent = state.Agent;
 
@@ -92,7 +95,11 @@ public partial class TurnCardStack : VisualElement
         style.marginRight = subTurnCount * SubCardOffsetX;
 
         if (Agent?.Health != null)
+        {
             Agent.Health.OnTakeDamage += PlayDamageShake;
+            Agent.Health.OnHpChanged += HandleHpChanged;
+            HandleHpChanged(Agent.Health.CurrentHp);
+        }
     }
 
     public void Unbind()
@@ -102,7 +109,10 @@ public partial class TurnCardStack : VisualElement
         _slideTween.Stop();
 
         if (Agent?.Health != null)
+        {
             Agent.Health.OnTakeDamage -= PlayDamageShake;
+            Agent.Health.OnHpChanged -= HandleHpChanged;
+        }
         Agent = null;
 
         style.translate = StyleKeyword.Initial;
@@ -144,6 +154,14 @@ public partial class TurnCardStack : VisualElement
         _slideTween = Tween.Custom(this, offsetX, 0f, SlideDuration,
             (self, v) => self.style.translate = new StyleTranslate(new Translate(v, 0f)),
             ease: Ease.OutQuad);
+    }
+
+    private void HandleHpChanged(float currentHp)
+    {
+        float maxHp = Agent.Health.MaxHp;
+        _mainCard?.UpdateHealth(currentHp, maxHp);
+        foreach (var subCard in _subCards)
+            subCard.UpdateHealth(currentHp, maxHp);
     }
 
     private void PlayDamageShake()
