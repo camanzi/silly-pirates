@@ -2,13 +2,12 @@
     display: none;
     align-items: center;
     width: 100%;
-    max-width: 20%;
 }
 
 .hover-name-label {
     color: white;
     -unity-font-style: bold;
-    font-size: 14px;
+    font-size: 20px;
     -unity-text-align: middle-center;
     margin-bottom: 4px;
 }
@@ -31,16 +30,4 @@
     width: 100%;
     background-color: rgb(220, 20, 20);
     border-radius: 4px;
-}
-
-.hover-hp-label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    -unity-text-align: middle-center;
-    color: white;
-    -unity-font-style: bold;
-    font-size: 13px;
 }

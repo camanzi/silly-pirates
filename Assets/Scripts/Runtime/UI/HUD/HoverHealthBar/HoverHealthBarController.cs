@@ -7,7 +7,6 @@ public class HoverHealthBarController : MonoBehaviour
 
     private VisualElement _container;
     private VisualElement _fill;
-    private Label _hpLabel;
     private Label _nameLabel;
     private HealthController _boundHealth;
 
@@ -19,7 +18,6 @@ public class HoverHealthBarController : MonoBehaviour
         var root = _hudDocument.rootVisualElement;
         _container = root.Q<VisualElement>("hover-health-container");
         _fill = root.Q<VisualElement>("hover-bar-fill");
-        _hpLabel = root.Q<Label>("hover-hp-label");
         _nameLabel = root.Q<Label>("hover-name-label");
     }
 
@@ -73,6 +71,5 @@ public class HoverHealthBarController : MonoBehaviour
         if (_boundHealth == null) return;
         float ratio = Mathf.Clamp01(_boundHealth.CurrentHp / _boundHealth.MaxHp);
         _fill.style.width = new StyleLength(new Length(ratio * 100f, LengthUnit.Percent));
-        _hpLabel.text = $"{(int)_boundHealth.CurrentHp}/{(int)_boundHealth.MaxHp}";
     }
 }

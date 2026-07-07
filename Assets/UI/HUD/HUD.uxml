@@ -8,7 +8,7 @@
     <ui:Instance template="FlavorTextBanner" name="FlavorTextBannerInstance" picking-mode="Ignore" style="top: 20%; width: 50%; -unity-text-align: middle-center; position: absolute; align-items: center; align-self: center; height: 100px;"/>
     <ui:VisualElement name="action-points-container" class="ap-container"/>
     <ui:Instance template="TurnOrderUI" name="TemplateContainer" style="position: absolute; width: 50%; height: auto; top: 0; left: 50%; translate: -50% 0; flex-shrink: 0; padding-left: 0; margin-left: 0; flex-grow: 0; background-image: url(&quot;project://database/Assets/Imports/2D/UI%20Icons/HUD/TurnRendering/turns_background.png?fileID=2800000&amp;guid=b9835dafe4829254696b0128bd09e84b&amp;type=3#turns_background&quot;); aspect-ratio: 6.333333;"/>
-    <ui:Instance template="HoverHealthBar" name="HoverHealthBarInstance" picking-mode="Ignore" style="position: absolute; top: 24%; left: 50%; translate: -50% 0; width: 30%;"/>
+    <ui:Instance template="HoverHealthBar" name="HoverHealthBarInstance" picking-mode="Ignore" style="position: absolute; top: 16%; left: 50%; translate: -50% 0; width: 20%;"/>
     <ui:Instance template="PassiveHoverPopup" name="PassiveHoverPopupInstance" picking-mode="Ignore" style="position: absolute;"/>
     <ActiveAbilityButton name="active-ability-button" focusable="false" style="display: none;"/>
     <ui:Button text="End Turn" name="end-turn-button" focusable="false" data-source="" style="right: 0; bottom: 0; position: absolute;"/>

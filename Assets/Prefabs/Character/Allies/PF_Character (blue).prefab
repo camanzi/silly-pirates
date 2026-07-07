@@ -73,6 +73,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 2261ccdefb017a14a83927472f959990, type: 2}
     - target: {fileID: 6873813400482898272, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
+      propertyPath: _displayName
+      value: Blue Guy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6873813400482898272, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: _renderingAgentData
       value: 
       objectReference: {fileID: 11400000, guid: 015c43e11489ecb4e8c3b6cc94477508, type: 2}

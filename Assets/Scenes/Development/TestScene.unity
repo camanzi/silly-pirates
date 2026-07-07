@@ -2195,10 +2195,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5030699024551307524, guid: 7d39d4e790500c040b99dc894ae8cf44, type: 3}
-      propertyPath: _displayName
-      value: Blue Guy
-      objectReference: {fileID: 0}
     - target: {fileID: 5133798879767350915, guid: 7d39d4e790500c040b99dc894ae8cf44, type: 3}
       propertyPath: m_Name
       value: PF_Character (blue)
@@ -2413,10 +2409,6 @@ PrefabInstance:
     - target: {fileID: 8973375932132218810, guid: a7c15f3f14af1e848ade611685fb12cd, type: 3}
       propertyPath: m_Name
       value: PF_Character (human)
-      objectReference: {fileID: 0}
-    - target: {fileID: 9108984501364322365, guid: a7c15f3f14af1e848ade611685fb12cd, type: 3}
-      propertyPath: _displayName
-      value: Naked Guy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2873,10 +2865,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Character (red)
       objectReference: {fileID: 0}
-    - target: {fileID: 6873813400482898272, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
-      propertyPath: _displayName
-      value: Red Guy
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2947,10 +2935,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7024499523859115846, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
-      propertyPath: _displayName
-      value: Green guy
-      objectReference: {fileID: 0}
     - target: {fileID: 7174869599670356161, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_Name
       value: PF_Character (green)

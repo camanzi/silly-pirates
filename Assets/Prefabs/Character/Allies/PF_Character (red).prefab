@@ -25,6 +25,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: a460d7eec2e20764a927c642ea09002a, type: 2}
     - target: {fileID: 7024499523859115846, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
+      propertyPath: _displayName
+      value: Red Guy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7024499523859115846, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: _renderingAgentData
       value: 
       objectReference: {fileID: 11400000, guid: 8f397fce0ffffb641b3147205fe5cf54, type: 2}

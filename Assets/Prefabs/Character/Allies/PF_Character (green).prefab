@@ -65,6 +65,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 67d92a1aad9ec544db56e47e4d4096ae, type: 2}
     - target: {fileID: 4197157872790995930, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _displayName
+      value: Green guy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4197157872790995930, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: _renderingAgentData
       value: 
       objectReference: {fileID: 11400000, guid: 55908b2f3fab6e44baf6f245f78d09ff, type: 2}
