@@ -20,11 +20,10 @@ public class TargetingStateSO : CombatStateSO
 
         TargetingData essentialTD = new TargetingData(caster);
 
-        AbilityPreviewData previewData = ctx.SelectedAbility.GetPreviewData(caster, essentialTD, ref ctx.AbilityCache);
+        DrawAbilityPreview(ctx.SelectedAbility, caster, essentialTD, ref ctx.AbilityCache, computeCanExecute: false);
         _activeAbility = ctx.SelectedAbility;
         _activeCaster = caster;
         _activeCache = ctx.AbilityCache;
-        manager.AabilityRenderer.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, essentialTD, false);
     }
 
     public override void OnExit()
@@ -60,13 +59,10 @@ public class TargetingStateSO : CombatStateSO
         CombatContext ctx = manager.CombatCtx;
         IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
 
-        AbilityPreviewData previewData = ctx.SelectedAbility.GetPreviewData(caster, data, ref ctx.AbilityCache);
-        bool canExecute = ctx.SelectedAbility.CanExecute(caster, data, ref ctx.AbilityCache);
+        DrawAbilityPreview(ctx.SelectedAbility, caster, data, ref ctx.AbilityCache, computeCanExecute: true);
         _activeAbility = ctx.SelectedAbility;
         _activeCaster = caster;
         _activeCache = ctx.AbilityCache;
-
-        manager.AabilityRenderer.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, data, canExecute);
     }
 
     public override void HandleGlobalClick(TargetingData data) => OnClickBehavior(data);
@@ -77,16 +73,7 @@ public class TargetingStateSO : CombatStateSO
         AbilityBase selectedAbility = combatCtx.SelectedAbility;
         IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
 
-        if (selectedAbility.CanExecute(caster, data, ref combatCtx.AbilityCache))
-        {
-            ICommand command = selectedAbility.CreateCommand(caster, data, ref combatCtx.AbilityCache);
-
-            if (selectedAbility.IsPhaseCommand(command))
-                return;
-
-            manager.CommandQueue.AddCommand(command);
-            manager.TransitionToState(_executionStateTemplate);
-        }
+        TryExecuteAbilityOnClick(selectedAbility, caster, data, ref combatCtx.AbilityCache, _executionStateTemplate);
     }
 
     public override void HandleSelectAbility(IInteractableElement element) { }

@@ -19,4 +19,23 @@ public abstract class CombatStateSO : ScriptableObject
     public virtual void HandleActiveAbilityRequest(ActiveAbilityRequestData data) { }
     public abstract void HandlePointerMove(TargetingData data);
     public abstract void HandleGlobalClick(TargetingData data);
+
+    protected void DrawAbilityPreview(AbilityBase ability, IInteractableElement caster, TargetingData data, ref object cache, bool computeCanExecute)
+    {
+        AbilityPreviewData previewData = ability.GetPreviewData(caster, data, ref cache);
+        bool canExecute = computeCanExecute && ability.CanExecute(caster, data, ref cache);
+        manager.AabilityRenderer.DrawAbilityPreview(previewData, ability, caster, data, canExecute);
+    }
+
+    protected bool TryExecuteAbilityOnClick(AbilityBase ability, IInteractableElement caster, TargetingData? data, ref object cache, CombatStateSO executionStateTemplate)
+    {
+        if (!ability.CanExecute(caster, data, ref cache)) return false;
+
+        ICommand command = ability.CreateCommand(caster, data, ref cache);
+        if (ability.IsPhaseCommand(command)) return false;
+
+        manager.CommandQueue.AddCommand(command);
+        manager.TransitionToState(executionStateTemplate);
+        return true;
+    }
 }

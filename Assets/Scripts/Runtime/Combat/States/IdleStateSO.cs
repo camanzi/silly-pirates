@@ -6,6 +6,33 @@ public class IdleStateSO : CombatStateSO
     [SerializeField] private CombatStateSO _targetingStateTemplate;
     [SerializeField] private CombatStateSO _executionStateTemplate;
 
+    private AbilityBase _armedAbility;
+    private InteractableGridElement _armedCaster;
+    private object _armedCache;
+
+    public override void Init(CombatStateManager manager)
+    {
+        base.Init(manager);
+        manager.CurrentTurnStateData.OnAgentActivated.OnEventRaised += HandleAgentActivated;
+    }
+
+    private void OnDestroy()
+    {
+        if (manager != null && manager.CurrentTurnStateData != null)
+            manager.CurrentTurnStateData.OnAgentActivated.OnEventRaised -= HandleAgentActivated;
+    }
+
+    private void HandleAgentActivated(ITurnAgent agent)
+    {
+        _armedAbility?.OnTargetingExit(_armedCaster, ref _armedCache);
+
+        _armedCaster = agent as InteractableGridElement;
+        _armedAbility = _armedCaster != null ? _armedCaster.DefaultCharacterAbility : null;
+        _armedCache = null;
+
+        manager.SelectionCtx.CurrentCaster = _armedAbility != null ? _armedCaster : null;
+    }
+
     public override void OnEnter()
     {
         base.OnEnter();
@@ -13,22 +40,27 @@ public class IdleStateSO : CombatStateSO
 
         if (manager.CurrentTurnStateData.ActiveAgent is GridCharacter gc && gc.AgentData != null)
             gc.EmitProximityCheck(new ProximityPayload(gc, gc.AgentData.InteractionRange));
+
+        if (_armedAbility != null)
+            DrawAbilityPreview(_armedAbility, _armedCaster, new TargetingData(_armedCaster), ref _armedCache, computeCanExecute: false);
     }
-    public override void OnExit() { }
+
+    public override void OnExit()
+    {
+        _armedAbility?.OnTargetingExit(_armedCaster, ref _armedCache);
+        _armedCache = null;
+    }
 
     public override void OnUpdate() { }
 
     public override void HandleElementClick(IInteractableElement element)
     {
-        // FIXME Later, attenzione da capire cosa far fare quando seleziono un personaggio e non é il suo turno
-        // Per il momento non faccio niente
-        if (element is not ITurnAgent clickedAgent || clickedAgent != manager.CurrentTurnStateData.ActiveAgent)
-            return;
-        
-        // Il prossimo step lo decide quindi la UI e non si selezionerá di base l'abilitá
-        if (element is not InteractableGridElement interactable) return;
-        
-        EnterTargetingState(interactable);
+        if (_armedAbility == null) return;
+
+        if (element is ITargettable targettable) manager.SelectionCtx.CurrentTargets.Add(targettable);
+
+        manager.CombatCtx.SelectedAbility = _armedAbility;
+        TryExecuteAbilityOnClick(_armedAbility, _armedCaster, null, ref _armedCache, _executionStateTemplate);
     }
 
     public override void HandleSelectAbility(IInteractableElement element)
@@ -38,9 +70,21 @@ public class IdleStateSO : CombatStateSO
         EnterTargetingState(interactable);
     }
 
-    public override void HandlePointerMove(TargetingData data) { }
+    public override void HandlePointerMove(TargetingData data)
+    {
+        if (_armedAbility == null) { manager.AabilityRenderer.ClearPreview(); return; }
 
-    public override void HandleGlobalClick(TargetingData data) { }
+        manager.CombatCtx.SelectedAbility = _armedAbility;
+        DrawAbilityPreview(_armedAbility, _armedCaster, data, ref _armedCache, computeCanExecute: true);
+    }
+
+    public override void HandleGlobalClick(TargetingData data)
+    {
+        if (_armedAbility == null) return;
+
+        manager.CombatCtx.SelectedAbility = _armedAbility;
+        TryExecuteAbilityOnClick(_armedAbility, _armedCaster, data, ref _armedCache, _executionStateTemplate);
+    }
 
     public override void HandleRightClick() { }
 

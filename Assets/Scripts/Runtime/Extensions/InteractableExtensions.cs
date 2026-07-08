@@ -10,9 +10,13 @@ public static class InteractableExtensions
         element.ClickChannel.RaiseEvent(element);
     }
 
-    public static void HandlePointerExit(this IInteractableElement element) 
-    {        
-        if (element.SelectionContext == null || !element.SelectionContext.IsElementSelected(element))
+    public static void HandlePointerExit(this IInteractableElement element)
+    {
+        bool isSelectedTarget = element.SelectionContext != null
+            && element is ITargettable targettable
+            && element.SelectionContext.CurrentTargets.Contains(targettable);
+
+        if (!isSelectedTarget)
         {
             element.OutlinerHelper.RemoveFromOutline();
         }
