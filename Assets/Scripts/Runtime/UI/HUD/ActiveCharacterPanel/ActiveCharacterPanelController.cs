@@ -10,6 +10,7 @@ public class ActiveCharacterPanelController : MonoBehaviour
     [SerializeField] private VisualTreeAsset _passiveIndicatorTemplate;
     [SerializeField] private PassiveHoverPopupController _hoverPopup;
 
+    private VisualElement _root;
     private VisualElement _portrait;
     private VisualElement _nativePassiveSlot;
     private VisualElement _hpBarFill;
@@ -27,6 +28,7 @@ public class ActiveCharacterPanelController : MonoBehaviour
     private void Awake()
     {
         var root = _hudDocument.rootVisualElement;
+        _root = root.Q<VisualElement>("active-character-panel");
         _portrait = root.Q<VisualElement>("acp-portrait");
         _nativePassiveSlot = root.Q<VisualElement>("native-passive-slot");
         _hpBarFill = root.Q<VisualElement>("hp-bar-fill");
@@ -38,11 +40,14 @@ public class ActiveCharacterPanelController : MonoBehaviour
     {
         UnsubscribeFromAgent();
 
-        if (agent == null)
+        if (agent == null || !agent.CompareTag("Player"))
         {
+            _root.style.display = DisplayStyle.None;
             _nativePassiveSlot.Clear();
             return;
         }
+
+        _root.style.display = DisplayStyle.Flex;
 
         if (agent.RenderingData != null && agent.RenderingData.TurnAgentIcon != null)
             _portrait.style.backgroundImage = new StyleBackground(agent.RenderingData.TurnAgentIcon);

@@ -5,7 +5,7 @@
         <ui:VisualElement name="portrait" class="character-portrait" style="background-image: resource(&quot;Sprites/Characters/Human/SpriteSheets/idle_dir_N&quot;);"/>
         <ui:VisualElement name="info-column" class="info-column" style="width: 50%;">
             <ui:Label text="Character Name" name="name-label" class="name-label" style="font-size: 25%;"/>
-            <ui:VisualElement name="health-bar-bg" class="health-bar" style="aspect-ratio: auto; height: 25px; width: 100%;">
+            <ui:VisualElement name="health-bar-bg" class="health-bar" style="aspect-ratio: auto; height: 20px; width: 100%;">
                 <ui:VisualElement name="health-bar-fill" class="health-bar-fill"/>
             </ui:VisualElement>
             <ui:VisualElement name="passives-container" class="passives-container"/>

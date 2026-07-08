@@ -8,7 +8,7 @@
     <ui:Instance template="TurnOrderUI" name="TemplateContainer" style="position: absolute; width: 50%; height: auto; top: 0; left: 50%; translate: -50% 0; flex-shrink: 0; padding-left: 0; margin-left: 0; flex-grow: 0; background-image: url(&quot;project://database/Assets/Imports/2D/UI%20Icons/HUD/TurnRendering/turns_background.png?fileID=2800000&amp;guid=b9835dafe4829254696b0128bd09e84b&amp;type=3#turns_background&quot;); aspect-ratio: 6.333333;"/>
     <ui:Instance template="HoverHealthBar" name="HoverHealthBarInstance" picking-mode="Ignore" style="position: absolute; top: 16%; left: 50%; translate: -50% 0; width: 20%;"/>
     <ui:Instance template="PassiveHoverPopup" name="PassiveHoverPopupInstance" picking-mode="Ignore" style="position: absolute;"/>
-    <ui:Instance template="ActiveCharacterPanel" name="ActiveCharacterPanelInstance" style="position: absolute; width: 45%; height: 15%; left: 50%; bottom: 0; translate: -50% 0;"/>
-    <ui:Button text="End Turn" name="end-turn-button" focusable="false" data-source="" style="right: 0; bottom: 0; position: absolute;"/>
+    <ui:Instance template="ActiveCharacterPanel" name="ActiveCharacterPanelInstance" style="position: absolute; width: 50%; height: auto; left: 50%; bottom: 0; translate: -50% 0; aspect-ratio: 5;"/>
+    <ui:Button text="End Turn" name="end-turn-button" focusable="false" data-source="" style="right: 0; bottom: 0; position: absolute; background-image: none;"/>
     <ui:VisualElement name="crew-container" style="position: absolute; top: 50%; left: 20px; translate: 0 -50%; flex-direction: column; align-items: stretch; justify-content: center; overflow: visible; min-width: 15%; max-width: 30%;"/>
 </ui:UXML>
