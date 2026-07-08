@@ -2865,6 +2865,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Character (red)
       objectReference: {fileID: 0}
+    - target: {fileID: 8358506446995548529, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
+      propertyPath: _activeAbility
+      value: 
+      objectReference: {fileID: 11400000, guid: 1d9049e0667f93e42b0f4004ee954729, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

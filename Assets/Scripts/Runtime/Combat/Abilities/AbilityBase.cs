@@ -31,4 +31,6 @@ public abstract class AbilityBase : ScriptableObject
 
     public virtual float? GetHitChance(IInteractableElement caster, TargetingData targetingData) => null;
 
+    public virtual void OnTargetingExit(IInteractableElement caster, ref object cache) { }
+
 }

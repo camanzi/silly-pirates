@@ -15,3 +15,4 @@ MonoBehaviour:
   _baseEvasion: 0
   _baseAccuracy: 90
   _accuracyPerOvercap: 0
+  _overcapPassiveTemplate: {fileID: 11400000, guid: 83d2b6fb2b9586a40862bb3843856a09, type: 2}

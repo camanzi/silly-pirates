@@ -160,7 +160,7 @@ public partial class EquipmentStatusElement : VisualElement
             int overcapFilled = Mathf.Max(0, _awakable.CurrentAwakeningPoints - _awakable.MaxAwakeningPoints);
             if (overcapTotal > 0)
                 DrawRing(painter, cx, cy, InnerRingRadius, InnerRingWidth,
-                         overcapTotal, overcapFilled, 0,
+                         overcapTotal, overcapFilled, _hoverPreviewSegments,
                          GoldFull, GoldEmpty, GoldFull);
         }
     }

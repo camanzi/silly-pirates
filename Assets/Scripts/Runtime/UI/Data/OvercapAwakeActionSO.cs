@@ -4,7 +4,6 @@ using UnityEngine;
 public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
 {
     [SerializeField] private AwakeActionSO _baseAction;
-    [SerializeField] private AccuracyOvercapPassiveSO _accuracyPassiveTemplate;
 
     public InteractionActionSO BaseAction => _baseAction;
 
@@ -31,19 +30,18 @@ public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
         bool success = base.ExecuteAction(element, interactingAgent);
         if (!success) return false;
 
-        if (_accuracyPassiveTemplate == null) return true;
         if (element is not IAwakable awakable) return true;
+        var template = (element as IEquipmentStats)?.StatsConfig?.OvercapPassiveTemplate;
+        if (template == null) return true;
         if (element is not Component comp) return true;
         if (!comp.TryGetComponent<PassiveAbilityController>(out var controller)) return true;
 
         int extra = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
-        int bonus = (element is IEquipmentStats eq2)
-            ? (eq2.StatsConfig as IOffensiveEquipmentStats)?.GetOvercapAccuracyBonus(extra) ?? (int)MathUtils.CalculateOvercapBonus(extra)
-            : (int)MathUtils.CalculateOvercapBonus(extra);
+        int bonus = ((IEquipmentStats)element).StatsConfig.GetOvercapBonus(extra);
 
-        controller.RemovePassive<AccuracyOvercapPassiveSO>();
-        var instance = Instantiate(_accuracyPassiveTemplate);
-        instance.Initialize(bonus);
+        controller.RemovePassiveOfType<IOvercapPassive>();
+        var instance = Instantiate(template);
+        (instance as IOvercapPassive)?.Initialize(bonus);
         controller.AddPassive(instance);
         return true;
     }

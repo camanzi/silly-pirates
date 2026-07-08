@@ -19,7 +19,7 @@ PrefabInstance:
     - target: {fileID: 5613693586704230231, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: _activeAbility
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 1d9049e0667f93e42b0f4004ee954729, type: 2}
     - target: {fileID: 7024499523859115846, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: _agentData
       value: 

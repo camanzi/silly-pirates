@@ -106,6 +106,19 @@ public class PassiveAbilityController : MonoBehaviour
         return false;
     }
 
+    public bool RemovePassiveOfType<TMarker>() where TMarker : class
+    {
+        for (int i = 0; i < _instantiatedPassives.Count; i++)
+        {
+            if (_instantiatedPassives[i] is TMarker)
+            {
+                RemovePassive(_instantiatedPassives[i]);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void HandleGlobalTurnStart()
     {
         GetModifiers(_globalTurnHandlers);

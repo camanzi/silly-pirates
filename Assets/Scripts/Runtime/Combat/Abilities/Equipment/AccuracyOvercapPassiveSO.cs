@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Accuracy Overcap Passive", menuName = "Abilities/Equipment/Accuracy Overcap Passive")]
-public class AccuracyOvercapPassiveSO : PassiveAbilitySO, IAccuracyModifier
+public class AccuracyOvercapPassiveSO : PassiveAbilitySO, IAccuracyModifier, IOvercapPassive
 {
     private int _accuracyBonus;
     private PassiveAbilityController _controller;

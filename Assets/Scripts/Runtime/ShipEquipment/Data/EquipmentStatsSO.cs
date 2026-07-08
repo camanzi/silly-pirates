@@ -6,4 +6,7 @@ public abstract class EquipmentStatsSO : ScriptableObject
 
     public abstract EquipmentType EquipmentType { get; }
     public int BaseEvasion => _baseEvasion;
+
+    public virtual PassiveAbilitySO OvercapPassiveTemplate => null;
+    public virtual int GetOvercapBonus(int extraPoints) => (int)MathUtils.CalculateOvercapBonus(extraPoints);
 }

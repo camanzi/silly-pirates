@@ -7,6 +7,10 @@ public class TargetingStateSO : CombatStateSO
     [SerializeField] private CombatStateSO _executionStateTemplate;
     [SerializeField] private BoolEventChannel _targetingStateChannel;
 
+    private AbilityBase _activeAbility;
+    private IInteractableElement _activeCaster;
+    private object _activeCache;
+
     public override void OnEnter()
     {
         base.OnEnter();
@@ -17,13 +21,19 @@ public class TargetingStateSO : CombatStateSO
         TargetingData essentialTD = new TargetingData(caster);
 
         AbilityPreviewData previewData = ctx.SelectedAbility.GetPreviewData(caster, essentialTD, ref ctx.AbilityCache);
+        _activeAbility = ctx.SelectedAbility;
+        _activeCaster = caster;
+        _activeCache = ctx.AbilityCache;
         manager.AabilityRenderer.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, essentialTD, false);
     }
 
     public override void OnExit()
     {
         _targetingStateChannel?.RaiseEvent(false);
-        Debug.Log($"Sono uscito da Targeting state");
+        _activeAbility?.OnTargetingExit(_activeCaster, ref _activeCache);
+        _activeAbility = null;
+        _activeCaster = null;
+        _activeCache = null;
     }
 
     public override void OnUpdate() { }
@@ -52,7 +62,10 @@ public class TargetingStateSO : CombatStateSO
 
         AbilityPreviewData previewData = ctx.SelectedAbility.GetPreviewData(caster, data, ref ctx.AbilityCache);
         bool canExecute = ctx.SelectedAbility.CanExecute(caster, data, ref ctx.AbilityCache);
-        
+        _activeAbility = ctx.SelectedAbility;
+        _activeCaster = caster;
+        _activeCache = ctx.AbilityCache;
+
         manager.AabilityRenderer.DrawAbilityPreview(previewData, ctx.SelectedAbility, caster, data, canExecute);
     }
 
