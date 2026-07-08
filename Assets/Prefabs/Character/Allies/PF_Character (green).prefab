@@ -12,6 +12,14 @@ PrefabInstance:
       propertyPath: _activeAbility
       value: 
       objectReference: {fileID: 11400000, guid: 1937fa380dc6f27438b7d54690368487, type: 2}
+    - target: {fileID: 3005545097045729255, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _nativePassiveSO
+      value: 
+      objectReference: {fileID: 11400000, guid: 2731b8e86265abc46ab6b367e1176471, type: 2}
+    - target: {fileID: 3005545097045729255, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
+      propertyPath: _basePassivesSO.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3290291399933896057, guid: f49af1ef1e32c704ea4908e6a5c237a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.97

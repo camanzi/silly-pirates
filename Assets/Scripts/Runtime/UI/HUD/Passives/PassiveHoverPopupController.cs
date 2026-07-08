@@ -27,6 +27,7 @@ public class PassiveHoverPopupController : MonoBehaviour
         _nameLabel.text = passive.DisplayName;
         _descriptionLabel.text = passive.Description;
         _container.style.display = DisplayStyle.Flex;
+        _container.parent.BringToFront();
         PositionNear(anchor);
     }
 

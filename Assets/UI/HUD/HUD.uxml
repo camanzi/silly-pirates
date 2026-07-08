@@ -1,16 +1,14 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="ActiveCharacterPanel" src="project://database/Assets/UI/HUD/Templates/ActiveCharacterPanel/ActiveCharacterPanelTemplate.uxml?fileID=9197481963319205126&amp;guid=f5cbff711cbd22a41aa3e35dc8e29d29&amp;type=3#ActiveCharacterPanelTemplate"/>
     <ui:Template name="FlavorTextBanner" src="project://database/Assets/UI/HUD/Templates/FlavorTextBanner/FlavorTextBanner.uxml?fileID=9197481963319205126&amp;guid=5eb7ebd73b7d0d54e930922d5fe040ea&amp;type=3#FlavorTextBanner"/>
     <ui:Template name="HoverHealthBar" src="project://database/Assets/UI/HUD/Templates/HoverHealthBar/HoverHealthBarTemplate.uxml?fileID=9197481963319205126&amp;guid=00554d73ec49b4542be9eeb2e995fe55&amp;type=3#HoverHealthBarTemplate"/>
     <ui:Template name="PassiveHoverPopup" src="project://database/Assets/UI/HUD/Templates/PassiveHoverPopup/PassiveHoverPopupTemplate.uxml?fileID=9197481963319205126&amp;guid=26f783506ca318242ad3a81e3bb4d497&amp;type=3#PassiveHoverPopupTemplate"/>
     <ui:Template name="TurnOrderUI" src="project://database/Assets/UI/HUD/Templates/TurnsManagment/TurnOrderUI.uxml?fileID=9197481963319205126&amp;guid=a297f7a2ace558847ba155922d158c5d&amp;type=3#TurnOrderUI"/>
-    <Style src="project://database/Assets/UI/HUD/Templates/ActionPoints/action-points.uss?fileID=7433441132597879392&amp;guid=bed4aed701604034bbf27aa40ff73df5&amp;type=3#action-points"/>
-    <Style src="project://database/Assets/UI/HUD/Templates/ActiveAbility/active-ability-button.uss?fileID=7433441132597879392&amp;guid=8577023032f49aa4c89e7d8d08e2d034&amp;type=3#active-ability-button"/>
     <ui:Instance template="FlavorTextBanner" name="FlavorTextBannerInstance" picking-mode="Ignore" style="top: 20%; width: 50%; -unity-text-align: middle-center; position: absolute; align-items: center; align-self: center; height: 100px;"/>
-    <ui:VisualElement name="action-points-container" class="ap-container"/>
     <ui:Instance template="TurnOrderUI" name="TemplateContainer" style="position: absolute; width: 50%; height: auto; top: 0; left: 50%; translate: -50% 0; flex-shrink: 0; padding-left: 0; margin-left: 0; flex-grow: 0; background-image: url(&quot;project://database/Assets/Imports/2D/UI%20Icons/HUD/TurnRendering/turns_background.png?fileID=2800000&amp;guid=b9835dafe4829254696b0128bd09e84b&amp;type=3#turns_background&quot;); aspect-ratio: 6.333333;"/>
     <ui:Instance template="HoverHealthBar" name="HoverHealthBarInstance" picking-mode="Ignore" style="position: absolute; top: 16%; left: 50%; translate: -50% 0; width: 20%;"/>
     <ui:Instance template="PassiveHoverPopup" name="PassiveHoverPopupInstance" picking-mode="Ignore" style="position: absolute;"/>
-    <ActiveAbilityButton name="active-ability-button" focusable="false" style="display: none;"/>
+    <ui:Instance template="ActiveCharacterPanel" name="ActiveCharacterPanelInstance" style="position: absolute; width: 45%; height: 15%; left: 50%; bottom: 0; translate: -50% 0;"/>
     <ui:Button text="End Turn" name="end-turn-button" focusable="false" data-source="" style="right: 0; bottom: 0; position: absolute;"/>
     <ui:VisualElement name="crew-container" style="position: absolute; top: 50%; left: 20px; translate: 0 -50%; flex-direction: column; align-items: stretch; justify-content: center; overflow: visible; min-width: 15%; max-width: 30%;"/>
 </ui:UXML>

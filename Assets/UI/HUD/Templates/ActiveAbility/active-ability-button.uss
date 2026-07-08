@@ -1,16 +1,17 @@
 .active-ability-button {
-    width: 150px;
-    height: 150px;
-    border-radius: 75px;
-    border-width: 4px;
+    width: 50%;
+    height: auto;
+    border-radius: 50%;
+    border-width: 3px;
     border-color: rgb(0, 0, 0);
     background-color: rgba(255, 255, 255, 0.3);
     overflow: hidden;
-    padding: 20px;
+    padding: 6px;
     position: absolute;
-    right: 100px;
-    bottom: 175px;
+    right: -25%;
+    bottom: 0;
     -unity-background-scale-mode: scale-to-fit;
+    aspect-ratio: 1;
 }
 
 .active-ability-button__icon {

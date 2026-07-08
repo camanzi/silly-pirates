@@ -57,6 +57,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5543415814276300125, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
+      propertyPath: _nativePassiveSO
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b50460d971b65b499c461689a3faeaf, type: 2}
+    - target: {fileID: 5543415814276300125, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
+      propertyPath: _basePassivesSO.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5543415814276300125, guid: 307859e54afd8c44e97b1266928566b9, type: 3}
       propertyPath: '_basePassivesSO.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 4b50460d971b65b499c461689a3faeaf, type: 2}

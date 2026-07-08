@@ -40,6 +40,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Character (red)
       objectReference: {fileID: 0}
+    - target: {fileID: 8283969742044607355, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
+      propertyPath: _nativePassiveSO
+      value: 
+      objectReference: {fileID: 11400000, guid: 2731b8e86265abc46ab6b367e1176471, type: 2}
+    - target: {fileID: 8283969742044607355, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
+      propertyPath: _basePassivesSO.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8568717694107503077, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.95

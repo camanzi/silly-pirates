@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Templates/ActionPoints/action-points.uss?fileID=7433441132597879392&amp;guid=bed4aed701604034bbf27aa40ff73df5&amp;type=3#action-points"/>
+    <Style src="project://database/Assets/UI/HUD/Templates/ActiveAbility/active-ability-button.uss?fileID=7433441132597879392&amp;guid=8577023032f49aa4c89e7d8d08e2d034&amp;type=3#active-ability-button"/>
+    <Style src="project://database/Assets/UI/HUD/Templates/ActiveCharacterPanel/ActiveCharacterPanelStyle.uss?fileID=7433441132597879392&amp;guid=56b2b3aa0b5bf62439d340d0539ee1bb&amp;type=3#ActiveCharacterPanelStyle"/>
+    <Style src="project://database/Assets/UI/HUD/Shared/STL_Overlay.uss?fileID=7433441132597879392&amp;guid=fd57d09f3b11bac48a1efb8ec56b077e&amp;type=3#STL_Overlay"/>
+    <ui:VisualElement name="active-character-panel" class="acp-root">
+        <ui:VisualElement name="acp-main-rect" class="acp-main-rect" style="background-image: url(&quot;project://database/Assets/Imports/2D/UI%20Icons/HUD/ActiveAbilityPanel/plank.png?fileID=2800000&amp;guid=6825ecdf135858c459ba01c2348735cb&amp;type=3#plank&quot;);">
+            <ui:VisualElement name="movement-points-container" class="acp-mp-container"/>
+            <ui:VisualElement name="portrait-wrapper" class="acp-portrait-wrapper" style="background-image: url(&quot;project://database/Assets/Imports/2D/UI%20Icons/HUD/ActiveAbilityPanel/shield.png?fileID=2800000&amp;guid=dd200999b6efd9a42afa258d1d33e1ad&amp;type=3#shield&quot;);">
+                <ui:VisualElement name="acp-portrait" class="acp-portrait"/>
+                <ui:VisualElement name="native-passive-slot" class="acp-native-passive-slot"/>
+                <ActiveAbilityButton name="active-ability-button" focusable="false" style="display: none;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="info-column" class="acp-info-column">
+                <ui:VisualElement name="hp-bar-bg" class="acp-hp-bar-bg">
+                    <ui:VisualElement name="hp-bar-fill" class="acp-hp-bar-fill"/>
+                    <ui:Label name="hp-label" text="100/100" class="acp-hp-label"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="action-points-container" class="ap-container"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

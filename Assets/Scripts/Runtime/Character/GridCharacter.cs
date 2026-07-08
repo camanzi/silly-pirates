@@ -15,6 +15,7 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
     [SerializeField] private TurnAgentEventChannel _onAgentJoin;
     [SerializeField] private TurnAgentEventChannel _onAgentLeave;
     [SerializeField] private IntEventChannel _onAPChangedEventChannel;
+    [SerializeField] private IntEventChannel _onMovementPointsChangedEventChannel;
     [SerializeField] private AgentAVDeltaEventChannel _onAgilityChangedChannel;
 
     public TurnAgentDataSO AgentData => _agentData;
@@ -27,15 +28,21 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
 
     public IntEventChannel OnAPChanged => _onAPChangedEventChannel;
 
+    public IntEventChannel OnMovementPointsChanged => _onMovementPointsChangedEventChannel;
+
     public InteractableProximityEventChannel ProximityChannel => _proximityChannel;
 
     public AbilityController ActiveAbilityController => AbilityController;
     public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
 
-    public int RemainingMovementPoints 
+    public int RemainingMovementPoints
     {
-        get => _remainingMovementPoints; 
-        set => _remainingMovementPoints = value;
+        get => _remainingMovementPoints;
+        set
+        {
+            _remainingMovementPoints = value;
+            OnMovementPointsChanged?.RaiseEvent(_remainingMovementPoints);
+        }
     }
 
     public int RemainingActionPoints
@@ -240,7 +247,7 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
 #endif
         }
 
-        _remainingMovementPoints = AgentData.MaxMovementPoints + bonusMovement;
+        RemainingMovementPoints = AgentData.MaxMovementPoints + bonusMovement;
         _healthController?.OnTurnStart();
 
         if (_passiveAbilityController)

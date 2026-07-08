@@ -8,6 +8,12 @@ public class PassiveAbilityController : MonoBehaviour
     [Header("Configurazioni")]
     [SerializeField] private List<PassiveAbilitySO> _basePassivesSO;
     [SerializeField] private PassiveNotificationEventChannel _passiveNotificationChannel;
+
+    [Header("Native Passive")]
+    [SerializeField] private PassiveAbilitySO _nativePassiveSO;
+    private PassiveAbilitySO _nativePassiveInstance;
+    public PassiveAbilitySO NativePassive => _nativePassiveInstance;
+
     private List<PassiveAbilitySO> _instantiatedPassives = new();
     private readonly List<IOnGlobalTurnStart> _globalTurnHandlers    = new();
     private readonly List<IOnGlobalTurnEnd>   _globalTurnEndHandlers = new();
@@ -19,6 +25,12 @@ public class PassiveAbilityController : MonoBehaviour
         {
             var instance = Instantiate(passiveSO);
             _instantiatedPassives.Add(instance);
+        }
+
+        if (_nativePassiveSO != null)
+        {
+            _nativePassiveInstance = Instantiate(_nativePassiveSO);
+            _instantiatedPassives.Add(_nativePassiveInstance);
         }
     }
 

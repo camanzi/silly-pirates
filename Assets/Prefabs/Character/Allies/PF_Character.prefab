@@ -385,6 +385,7 @@ MonoBehaviour:
   _onAgentJoin: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
   _onAgentLeave: {fileID: 11400000, guid: 4c6b429f294d38043a95fa576ef2b83c, type: 2}
   _onAPChangedEventChannel: {fileID: 11400000, guid: 066571a1e47dfaa48b2fe2b5ed844848, type: 2}
+  _onMovementPointsChangedEventChannel: {fileID: 11400000, guid: 3f2a9c81b4d6e0f57a92c1d3e8b4f602, type: 2}
   _onAgilityChangedChannel: {fileID: 11400000, guid: 63c2b4e4503f0c04083fedc24ccd57b5, type: 2}
 --- !u!65 &5111650344878243217
 BoxCollider:

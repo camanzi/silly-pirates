@@ -1,0 +1,130 @@
+using System;
+using PrimeTween;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+public class ActiveCharacterPanelController : MonoBehaviour
+{
+    [Header("Dependences")]
+    [SerializeField] private UIDocument _hudDocument;
+    [SerializeField] private VisualTreeAsset _passiveIndicatorTemplate;
+    [SerializeField] private PassiveHoverPopupController _hoverPopup;
+
+    private VisualElement _portrait;
+    private VisualElement _nativePassiveSlot;
+    private VisualElement _hpBarFill;
+    private Label _hpLabel;
+    private VisualElement _hpBarBg;
+
+    private HealthController _cachedHealth;
+    private PassiveIndicator _nativePassiveIndicator;
+    private IPassiveStateNotifier _nativePassiveNotifier;
+    private Action _nativePassiveHandler;
+    private PassiveAbilityController _cachedPassiveController;
+
+    private Tween _hpTween;
+
+    private void Awake()
+    {
+        var root = _hudDocument.rootVisualElement;
+        _portrait = root.Q<VisualElement>("acp-portrait");
+        _nativePassiveSlot = root.Q<VisualElement>("native-passive-slot");
+        _hpBarFill = root.Q<VisualElement>("hp-bar-fill");
+        _hpLabel = root.Q<Label>("hp-label");
+        _hpBarBg = root.Q<VisualElement>("hp-bar-bg");
+    }
+
+    public void HandleAgentActivated(ITurnAgent agent)
+    {
+        UnsubscribeFromAgent();
+
+        if (agent == null)
+        {
+            _nativePassiveSlot.Clear();
+            return;
+        }
+
+        if (agent.RenderingData != null && agent.RenderingData.TurnAgentIcon != null)
+            _portrait.style.backgroundImage = new StyleBackground(agent.RenderingData.TurnAgentIcon);
+
+        _cachedHealth = agent.Health;
+        if (_cachedHealth != null)
+        {
+            _cachedHealth.OnHpChanged += HandleHpChanged;
+            HandleHpChanged(_cachedHealth.CurrentHp);
+        }
+
+        RefreshNativePassive(agent);
+    }
+
+    private void RefreshNativePassive(ITurnAgent agent)
+    {
+        _nativePassiveSlot.Clear();
+        _nativePassiveIndicator = null;
+
+        if (agent is Component comp && comp.TryGetComponent<PassiveAbilityController>(out var pc) && pc.NativePassive != null)
+        {
+            _cachedPassiveController = pc;
+
+            _nativePassiveIndicator = new PassiveIndicator(pc.NativePassive, _passiveIndicatorTemplate, _hoverPopup, PassiveIndicatorSize.Large);
+            _nativePassiveSlot.Add(_nativePassiveIndicator);
+            ApplyNativePassiveVisualState(pc.NativePassive, pc);
+
+            if (pc.NativePassive is IPassiveStateNotifier notifier)
+            {
+                _nativePassiveNotifier = notifier;
+                _nativePassiveHandler = () => ApplyNativePassiveVisualState(pc.NativePassive, pc);
+                _nativePassiveNotifier.OnStateChanged += _nativePassiveHandler;
+            }
+        }
+        else
+        {
+            _cachedPassiveController = null;
+        }
+    }
+
+    private void ApplyNativePassiveVisualState(PassiveAbilitySO passive, PassiveAbilityController controller)
+    {
+        if (_nativePassiveIndicator == null) return;
+        bool isActive = passive.IsCurrentlyActive(controller);
+        _nativePassiveIndicator.style.opacity = isActive ? 1f : 0.4f;
+    }
+
+    private void HandleHpChanged(float currentHp)
+    {
+        if (_cachedHealth == null) return;
+        UpdateHealth(currentHp, _cachedHealth.MaxHp);
+    }
+
+    private void UpdateHealth(float currentHp, float maxHp)
+    {
+        float ratio = maxHp > 0f ? currentHp / maxHp : 0f;
+        _hpLabel.text = $"{Mathf.CeilToInt(currentHp)}/{Mathf.CeilToInt(maxHp)}";
+
+        _hpTween.Stop();
+        _hpTween = Tween.Custom(_hpBarFill, _hpBarFill.resolvedStyle.width, ratio * 100f, duration: 0.3f,
+            onValueChange: (target, val) => target.style.width = Length.Percent(val));
+    }
+
+    private void UnsubscribeFromAgent()
+    {
+        if (_cachedHealth != null)
+        {
+            _cachedHealth.OnHpChanged -= HandleHpChanged;
+            _cachedHealth = null;
+        }
+
+        if (_nativePassiveNotifier != null && _nativePassiveHandler != null)
+        {
+            _nativePassiveNotifier.OnStateChanged -= _nativePassiveHandler;
+        }
+        _nativePassiveNotifier = null;
+        _nativePassiveHandler = null;
+        _cachedPassiveController = null;
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeFromAgent();
+    }
+}
