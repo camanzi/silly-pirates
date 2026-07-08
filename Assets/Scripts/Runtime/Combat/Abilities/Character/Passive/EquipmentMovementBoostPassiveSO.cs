@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "Equipment Movement Boost", menuName = "Abilities/Character/Passives/Equipment Movement Boost")]
 public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifier, IPassiveStateNotifier
@@ -10,6 +11,7 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
 
     private int _stacks = 0;
     private bool _awakenedThisTurn = false;
+    private UnityAction<ITurnAgent> _onTurnChangedHandler;
 
     public int CurrentStacks => _stacks;
     public int MaxStacks => 3;
@@ -33,13 +35,14 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
         _awakenedThisTurn = false;
         
         _equipmentAwakenedChannel.OnEventRaised += OnEquipmentAwakened;
-        _turnChangedChannel.OnEventRaised += (agent) => OnTurnChanged(agent, controller);
+        _onTurnChangedHandler = agent => OnTurnChanged(agent, controller);
+        _turnChangedChannel.OnEventRaised += _onTurnChangedHandler;
     }
 
-    public override void OnUnequip(PassiveAbilityController controller) 
+    public override void OnUnequip(PassiveAbilityController controller)
     {
         _equipmentAwakenedChannel.OnEventRaised -= OnEquipmentAwakened;
-        _turnChangedChannel.OnEventRaised -= (agent) => OnTurnChanged(agent, controller);
+        _turnChangedChannel.OnEventRaised -= _onTurnChangedHandler;
     }
 
     private void OnEquipmentAwakened()

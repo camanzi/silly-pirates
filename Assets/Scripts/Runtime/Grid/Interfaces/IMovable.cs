@@ -9,4 +9,5 @@ public interface IMovable
     public IntEventChannel OnMovementPointsChanged { get; }
 
     public Awaitable MoveTo(IEnumerable<Vector3> path, CancellationToken token);
+    public int EvaluateMovementBonus();
 }

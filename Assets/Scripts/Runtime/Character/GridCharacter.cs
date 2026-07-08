@@ -235,19 +235,7 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
 
     public void OnStartingTurn()
     {
-        int bonusMovement = 0;
-        if (_passiveAbilityController)
-        {
-            _passiveAbilityController.GetModifiers(_movementModifiers);
-            for (int i = 0; i < _movementModifiers.Count; i++)
-                bonusMovement += _movementModifiers[i].GetMovementBonus();
-
-#if UNITY_EDITOR
-            Debug.Log($"Bonus Movement: {bonusMovement}");
-#endif
-        }
-
-        RemainingMovementPoints = AgentData.MaxMovementPoints + bonusMovement;
+        RemainingMovementPoints = AgentData.MaxMovementPoints + EvaluateMovementBonus();
         _healthController?.OnTurnStart();
 
         if (_passiveAbilityController)
@@ -265,5 +253,22 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
     public void OnEndingTurn()
     {
         _passiveAbilityController?.HandleOwnerTurnEnd();
+    }
+
+    public int EvaluateMovementBonus()
+    {
+        int bonusMovement = 0;
+        if (_passiveAbilityController)
+        {
+            _passiveAbilityController.GetModifiers(_movementModifiers);
+            for (int i = 0; i < _movementModifiers.Count; i++)
+                bonusMovement += _movementModifiers[i].GetMovementBonus();
+
+#if UNITY_EDITOR
+            Debug.Log($"Bonus Movement: {bonusMovement}");
+#endif
+        }
+
+        return bonusMovement;
     }
 }
