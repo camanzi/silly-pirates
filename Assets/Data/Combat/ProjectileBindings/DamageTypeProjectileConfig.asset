@@ -22,6 +22,4 @@ MonoBehaviour:
       Value: {fileID: 7377031095278769717, guid: 38cb888a1a8f24e43b0a4eb7b6fa858e, type: 3}
     - Key: 4
       Value: {fileID: 7377031095278769717, guid: 3e14c0940b5c6a54c8e0a5227bad246a, type: 3}
-    - Key: 5
-      Value: {fileID: 7377031095278769717, guid: eff8a863b43a9704797e11ce708672aa, type: 3}
   _fallbackPrefab: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}

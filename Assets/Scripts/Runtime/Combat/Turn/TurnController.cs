@@ -49,6 +49,7 @@ public class TurnController : MonoBehaviour
                     _currentTurnState.SetActiveCharacter(nextEntity, action);
                     if (action == 0) nextEntity.OnStartingTurn();
                     else nextEntity.OnContinuingTurn();
+                    _currentTurnState.NotifyAgentActivated();
 
                     await _currentTurnState.WaitUntilTurnFinished();
 

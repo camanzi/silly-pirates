@@ -73,8 +73,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealthController
   _agentData: {fileID: 0}
   _standaloneMaxHp: 7000
-  _baseBehaviors:
-  - {fileID: 11400000, guid: 77bc452d55d4f004daa843af6d3c620a, type: 2}
+  _baseBehaviors: []
   _showDamageUIEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
 --- !u!114 &2781145230433490056
 MonoBehaviour:
@@ -105,6 +104,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPartBehavior
   _selectionContextSO: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
+  _overrideEvasion: 0
+  _baseEvasion: 0
 --- !u!114 &3669733687402459369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +202,7 @@ MonoBehaviour:
   _positionOffset: {x: 0, y: -3, z: 0}
   _pickingMode: 1
   _healthController: {fileID: 8930104359928035536}
+  _passiveAbilityController: {fileID: 0}
 --- !u!1 &7753860087919245855
 GameObject:
   m_ObjectHideFlags: 0

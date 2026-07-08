@@ -22,6 +22,4 @@ MonoBehaviour:
       Value: {r: 0.3915094, g: 0.9094729, b: 1, a: 1}
     - Key: 4
       Value: {r: 0.9245283, g: 0.8050834, b: 0.12646852, a: 1}
-    - Key: 5
-      Value: {r: 1, g: 1, b: 1, a: 1}
   _fallbackColor: {r: 1, g: 1, b: 1, a: 1}

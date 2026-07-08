@@ -1,4 +1,4 @@
-public enum DamageType { None, Physical, Fire, Ice, Lightning, Stellar }
+public enum DamageType { None, Physical, Fire, Ice, Lightning }
 
 public struct DamagePayload
 {

@@ -23,8 +23,9 @@ public class TurnStateSO : ScriptableObject
         _turnTaskSource = new AwaitableCompletionSource();
 
         _isPlayerTurn = _activeAgent.CompareTag("Player");
-        _onAgentActivated?.RaiseEvent(agent);
     }
+
+    public void NotifyAgentActivated() => _onAgentActivated?.RaiseEvent(_activeAgent);
 
     public void SignalTurnEnd() => _turnTaskSource?.SetResult();
 

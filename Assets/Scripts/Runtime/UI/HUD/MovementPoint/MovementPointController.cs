@@ -34,7 +34,7 @@ public class MovementPointController : MonoBehaviour
 
         _cachedMovable = movable;
 
-        int maxMp = agent.AgentData.MaxMovementPoints + (_cachedMovable?.EvaluateMovementBonus() ?? 0);
+        int maxMp = movable.RemainingMovementPoints;
         int currentMp = movable.RemainingMovementPoints;
 
         SpawnMovementPoints(maxMp, currentMp);

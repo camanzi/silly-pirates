@@ -5,17 +5,15 @@ public class TouchOfTheStarsCommand : ICommand
     private readonly PassiveAbilityController _passiveController;
     private readonly ITurnAgent _caster;
     private readonly TouchOfTheStarsPassiveSO _passiveSO;
-    private readonly StellarDMGPassiveSO _stellarPassiveSO;
     private readonly TurnAgentEventChannel _onAnyTurnEnded;
     private readonly int _apCost;
     private TouchOfTheStarsPassiveSO _passiveInstance;
 
-    public TouchOfTheStarsCommand(PassiveAbilityController passiveController, ITurnAgent caster, TouchOfTheStarsPassiveSO passiveSO, StellarDMGPassiveSO stellarPassiveSO, TurnAgentEventChannel onAnyTurnEnded, int apCost)
+    public TouchOfTheStarsCommand(PassiveAbilityController passiveController, ITurnAgent caster, TouchOfTheStarsPassiveSO passiveSO, TurnAgentEventChannel onAnyTurnEnded, int apCost)
     {
         _passiveController = passiveController;
         _caster = caster;
         _passiveSO = passiveSO;
-        _stellarPassiveSO = stellarPassiveSO;
         _onAnyTurnEnded = onAnyTurnEnded;
         _apCost = apCost;
     }
@@ -23,7 +21,7 @@ public class TouchOfTheStarsCommand : ICommand
     public async Awaitable ExecuteAsync()
     {
         _passiveInstance = Object.Instantiate(_passiveSO);
-        _passiveInstance.Initialize(_caster, _onAnyTurnEnded, _stellarPassiveSO);
+        _passiveInstance.Initialize(_caster, _onAnyTurnEnded);
         _passiveController.AddPassive(_passiveInstance);
         await Awaitable.NextFrameAsync();
     }

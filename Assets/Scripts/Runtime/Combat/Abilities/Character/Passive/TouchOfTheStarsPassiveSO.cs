@@ -1,18 +1,16 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Touch Of The Stars Passive", menuName = "Abilities/Character/Passives/Touch Of The Stars Passive")]
-public class TouchOfTheStarsPassiveSO : PassiveAbilitySO, IAwakeningModifier, IAwakeningContributionEffect
+public class TouchOfTheStarsPassiveSO : PassiveAbilitySO, IAwakeningModifier
 {
     private PassiveAbilityController _controller;
     private ITurnAgent _caster;
     private TurnAgentEventChannel _onAnyTurnEnded;
-    private StellarDMGPassiveSO _stellarPassiveSO;
 
-    public void Initialize(ITurnAgent caster, TurnAgentEventChannel onAnyTurnEnded, StellarDMGPassiveSO stellarPassiveSO)
+    public void Initialize(ITurnAgent caster, TurnAgentEventChannel onAnyTurnEnded)
     {
         _caster = caster;
         _onAnyTurnEnded = onAnyTurnEnded;
-        _stellarPassiveSO = stellarPassiveSO;
     }
 
     public override void OnEquip(PassiveAbilityController controller)
@@ -32,17 +30,6 @@ public class TouchOfTheStarsPassiveSO : PassiveAbilitySO, IAwakeningModifier, IA
     }
 
     int IAwakeningModifier.GetAwakeningBonus() => 1;
-
-    void IAwakeningContributionEffect.OnContribution(IAwakable awakable)
-    {
-        if (awakable is not ShipEquipment equipment) return;
-        var ctrl = equipment.PassiveAbilityController;
-        if (ctrl == null) return;
-        if (ctrl.HasPassive<StellarDMGPassiveSO>()) return;
-        var passive = Object.Instantiate(_stellarPassiveSO);
-        passive.Initialize(_caster, _onAnyTurnEnded);
-        ctrl.AddPassive(passive);
-    }
 
     private void OnTurnEnded(ITurnAgent agent)
     {
