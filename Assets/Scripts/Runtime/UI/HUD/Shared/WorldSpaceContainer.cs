@@ -76,7 +76,7 @@ public class WorldSpaceContainer : MonoBehaviour
     {
        bool finalVisibility = _isRequested && _isAllowedByCombatState && _isAllowedByElementState;
 
-        if (finalVisibility == _isVisible) 
+        if (finalVisibility == _isVisible)
         {
             if (finalVisibility) 
                 RefreshUI();

@@ -140,7 +140,7 @@ public class InteractionMenuController : WorldSpaceContainer
         var toAdd = new List<InteractionActionSO>();
         foreach (InteractionActionSO action in available)
         {
-            if (ShouldShowAction(action) && !_activeButtons.ContainsKey(action))
+            if (ShouldShowAction(action) && !_activeButtons.ContainsKey(action) && !toAdd.Contains(action))
                 toAdd.Add(action);
         }
 

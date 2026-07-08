@@ -22,7 +22,8 @@ public class CooldownState : EquipmentState
     public override void OnTurnChanged()
     {
         base.OnTurnChanged();
-        _context.Cooldown--;
-        if (_context.Cooldown <= 0) _stateMachine.TransitionTo(new AwakableState(_stateMachine, _context));
+        int newCooldown = _context.Cooldown - 1;
+        if (newCooldown <= 0) _stateMachine.TransitionTo(new AwakableState(_stateMachine, _context));
+        _context.Cooldown = newCooldown;
     }
 }
