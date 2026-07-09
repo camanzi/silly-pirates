@@ -25,6 +25,11 @@ public abstract class CombatStateSO : ScriptableObject
         AbilityPreviewData previewData = ability.GetPreviewData(caster, data, ref cache);
         bool canExecute = computeCanExecute && ability.CanExecute(caster, data, ref cache);
 
+        if (computeCanExecute && data.selectedTarget is IInteractableElement targetElement)
+        {
+            targetElement.OutlinerHelper?.SetOutline(canExecute ? OutlineState.ValidTarget : OutlineState.InvalidTarget);
+        }
+
         var costPayload = canExecute
             ? new AbilityCostPayload(ability.ActionPointCost, ability.GetMovementPointCost(previewData, ref cache))
             : AbilityCostPayload.Empty;

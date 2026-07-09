@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WalkingStarPassiveSO
   _displayName: Walking Star
   _removalTiming: 2
+  _icon: {fileID: 21300000, guid: 386f41bd61c03a943bc2a4d92c16a770, type: 3}
+  _description: Walking produces "Path Of The Star "cells movement with costs -1
+    MP
   _pathTracker: {fileID: 11400000, guid: 377649c3550f3fa44a6b43aede9383aa, type: 2}

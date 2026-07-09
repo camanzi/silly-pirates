@@ -34,11 +34,11 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
   color2:
-    m_OverrideState: 0
-    m_Value: {r: 0.3, g: 0.75, b: 1, a: 1}
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0.8301887, b: 0, a: 1}
   color3:
-    m_OverrideState: 0
-    m_Value: {r: 0.3, g: 0.75, b: 1, a: 1}
+    m_OverrideState: 1
+    m_Value: {r: 0.6886792, g: 0, b: 0, a: 1}
   color4:
     m_OverrideState: 0
     m_Value: {r: 0.3, g: 0.75, b: 1, a: 1}

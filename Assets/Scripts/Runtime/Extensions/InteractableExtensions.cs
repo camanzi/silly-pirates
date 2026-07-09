@@ -1,8 +1,8 @@
 public static class InteractableExtensions 
 {
-    public static void HandlePointerEnter(this IInteractableElement element) 
+    public static void HandlePointerEnter(this IInteractableElement element)
     {
-        element.OutlinerHelper.AddToOutline();
+        element.OutlinerHelper.SetOutline(OutlineState.Default);
     }
 
     public static void HandlePointerClick(this IInteractableElement element) 
@@ -18,7 +18,7 @@ public static class InteractableExtensions
 
         if (!isSelectedTarget)
         {
-            element.OutlinerHelper.RemoveFromOutline();
+            element.OutlinerHelper.ClearOutline();
         }
     }
 }

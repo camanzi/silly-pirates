@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: Touch Of The Stars Passive
   m_EditorClassIdentifier: Assembly-CSharp::TouchOfTheStarsPassiveSO
   _displayName: Touch of the Stars
+  _removalTiming: 0
+  _icon: {fileID: 21300000, guid: f93bc1578d46a1d49b30a7703d76bcdb, type: 3}
+  _description: Increase the amount of contribution when awakening equipments by
+    each stack

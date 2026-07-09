@@ -4,30 +4,37 @@ using UnityEngine;
 public class OutlinerHelper : MonoBehaviour
 {
     [Header("Configs")]
-    [SerializeField] private RenderingLayerMask _outlineLayer;
+    [SerializeField] private OutlineLayerConfigSO _layerConfig;
 
     private Renderer[] _objectRenderers;
+    private uint _currentMask;
 
     void OnEnable()
     {
         _objectRenderers = GetComponentsInChildren<Renderer>();
     }
 
-    public void AddToOutline()
+    public void SetOutline(OutlineState state)
     {
-        uint maskToAdd = _outlineLayer.value;   
+        uint newMask = _layerConfig.GetLayer(state).value;
+        if (newMask == _currentMask) return;
+
         foreach (Renderer renderer in _objectRenderers)
         {
-            renderer.renderingLayerMask |= maskToAdd;
+            renderer.renderingLayerMask &= ~_currentMask;
+            renderer.renderingLayerMask |= newMask;
         }
+
+        _currentMask = newMask;
     }
 
-    public void RemoveFromOutline()
+    public void ClearOutline()
     {
-        uint maskToRemove = _outlineLayer.value;
         foreach (Renderer renderer in _objectRenderers)
         {
-            renderer.renderingLayerMask &= ~maskToRemove;
+            renderer.renderingLayerMask &= ~_currentMask;
         }
+
+        _currentMask = 0;
     }
 }
