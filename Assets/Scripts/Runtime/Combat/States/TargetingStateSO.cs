@@ -56,6 +56,12 @@ public class TargetingStateSO : CombatStateSO
 
     public override void HandlePointerMove(TargetingData data)
     {
+        if (!data.worldPosition.HasValue)
+        {
+            ClearAbilityPreview();
+            return;
+        }
+
         CombatContext ctx = manager.CombatCtx;
         IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
 

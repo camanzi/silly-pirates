@@ -36,6 +36,11 @@ public class GridInputHandler : MonoBehaviour
         if (IsPointerOverUI())
         {
             _wasClickPressedThisFrame = false;
+            if (_lastHoveredCell.HasValue)
+            {
+                _lastHoveredCell = null;
+                _onPointerMoved.RaiseEvent(TargetingData.Empty);
+            }
             return;
         }
 

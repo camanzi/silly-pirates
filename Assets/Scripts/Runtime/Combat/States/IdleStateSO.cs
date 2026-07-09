@@ -72,7 +72,7 @@ public class IdleStateSO : CombatStateSO
 
     public override void HandlePointerMove(TargetingData data)
     {
-        if (_armedAbility == null) { ClearAbilityPreview(); return; }
+        if (_armedAbility == null || !data.worldPosition.HasValue) { ClearAbilityPreview(); return; }
 
         manager.CombatCtx.SelectedAbility = _armedAbility;
         DrawAbilityPreview(_armedAbility, _armedCaster, data, ref _armedCache, computeCanExecute: true);
