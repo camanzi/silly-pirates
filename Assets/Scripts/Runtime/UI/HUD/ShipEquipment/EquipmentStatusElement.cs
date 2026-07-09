@@ -28,7 +28,7 @@ public partial class EquipmentStatusElement : VisualElement
     private ITurnAgent _interactingAgent;
     private IAwakable _awakable;
     private Action _onClickAction;
-    private IntEventChannel _hoverChannel;
+    private AbilityCostEventChannel _hoverChannel;
     private Tween _hoverTween;
 
     private int _hoverPreviewSegments;
@@ -62,7 +62,7 @@ public partial class EquipmentStatusElement : VisualElement
     public void SetData(InteractionActionSO mainAction, Sprite cooldownIcon,
                         IInteractableElement bindedElement, ITurnAgent agent,
                         IAwakable awakable, Action onClickAction,
-                        IntEventChannel hoverChannel = null)
+                        AbilityCostEventChannel hoverChannel = null)
     {
         _data = mainAction;
         _cooldownIcon = cooldownIcon;
@@ -262,7 +262,7 @@ public partial class EquipmentStatusElement : VisualElement
         Tween.Custom(Vector3.one, new Vector3(1.15f, 1.15f, 1f), duration: 0.15f, ease: Ease.OutBack,
             onValueChange: v => _iconElement.style.scale = new StyleScale(new Scale(v)));
 
-        _hoverChannel?.RaiseEvent(_data.GetHoverApCost(_bindedElement, _interactingAgent));
+        _hoverChannel?.RaiseEvent(_data.GetHoverCost(_bindedElement, _interactingAgent));
         int awakePreview = _data.GetHoverAwakeningPreview(_bindedElement, _interactingAgent);
         if (awakePreview > 0)
             (_bindedElement as IAwakable)?.OnAwakeningHoverPreview?.Invoke(awakePreview);
@@ -274,7 +274,7 @@ public partial class EquipmentStatusElement : VisualElement
         Tween.Custom(_iconElement.resolvedStyle.scale.value, Vector3.one, duration: 0.15f, ease: Ease.OutQuad,
             onValueChange: v => _iconElement.style.scale = new StyleScale(new Scale(v)));
 
-        _hoverChannel?.RaiseEvent(0);
+        _hoverChannel?.RaiseEvent(AbilityCostPayload.Empty);
         (_bindedElement as IAwakable)?.OnAwakeningHoverPreview?.Invoke(0);
     }
 

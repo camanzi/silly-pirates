@@ -18,6 +18,7 @@ public abstract class AbilityBase : ScriptableObject
     public bool ShowTrajectory => showTrajectory;
     public TrajectoryConfigsSO TrajectoryConfigData => trajectoryConfigData;
     public virtual int ActionPointCost => 0;
+    public virtual int GetMovementPointCost(AbilityPreviewData previewData, ref object cache) => 0;
 
     public abstract AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache);
 

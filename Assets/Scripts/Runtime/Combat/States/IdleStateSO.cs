@@ -36,7 +36,7 @@ public class IdleStateSO : CombatStateSO
     public override void OnEnter()
     {
         base.OnEnter();
-        manager.AabilityRenderer.ClearPreview();
+        ClearAbilityPreview();
 
         if (manager.CurrentTurnStateData.ActiveAgent is GridCharacter gc && gc.AgentData != null)
             gc.EmitProximityCheck(new ProximityPayload(gc, gc.AgentData.InteractionRange));
@@ -72,7 +72,7 @@ public class IdleStateSO : CombatStateSO
 
     public override void HandlePointerMove(TargetingData data)
     {
-        if (_armedAbility == null) { manager.AabilityRenderer.ClearPreview(); return; }
+        if (_armedAbility == null) { ClearAbilityPreview(); return; }
 
         manager.CombatCtx.SelectedAbility = _armedAbility;
         DrawAbilityPreview(_armedAbility, _armedCaster, data, ref _armedCache, computeCanExecute: true);

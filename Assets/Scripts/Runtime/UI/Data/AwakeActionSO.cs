@@ -35,7 +35,7 @@ public class AwakeActionSO : InteractionActionSO
         return !awakable.IsOnCooldown && !awakable.IsAwake;
     }
 
-    public override int GetHoverApCost(IInteractableElement element, ITurnAgent agent) => _actionCost;
+    public override AbilityCostPayload GetHoverCost(IInteractableElement element, ITurnAgent agent) => new AbilityCostPayload(_actionCost, 0);
 
     public override int GetHoverAwakeningPreview(IInteractableElement element, ITurnAgent agent)
     {

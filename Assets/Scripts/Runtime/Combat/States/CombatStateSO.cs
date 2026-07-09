@@ -24,7 +24,19 @@ public abstract class CombatStateSO : ScriptableObject
     {
         AbilityPreviewData previewData = ability.GetPreviewData(caster, data, ref cache);
         bool canExecute = computeCanExecute && ability.CanExecute(caster, data, ref cache);
+
+        var costPayload = canExecute
+            ? new AbilityCostPayload(ability.ActionPointCost, ability.GetMovementPointCost(previewData, ref cache))
+            : AbilityCostPayload.Empty;
+        manager.AbilityCostChannel?.RaiseEvent(costPayload);
+
         manager.AabilityRenderer.DrawAbilityPreview(previewData, ability, caster, data, canExecute);
+    }
+
+    protected void ClearAbilityPreview()
+    {
+        manager.AabilityRenderer.ClearPreview();
+        manager.AbilityCostChannel?.RaiseEvent(AbilityCostPayload.Empty);
     }
 
     protected bool TryExecuteAbilityOnClick(AbilityBase ability, IInteractableElement caster, TargetingData? data, ref object cache, CombatStateSO executionStateTemplate)

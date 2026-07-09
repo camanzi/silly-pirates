@@ -15,6 +15,7 @@ public class MovementPointController : MonoBehaviour
     private VisualElement _mpContainer;
     private List<ActionPointElement> _mpElements = new();
     private IMovable _cachedMovable;
+    private int _currentHoverCost = 0;
 
     private void Awake()
     {
@@ -90,6 +91,29 @@ public class MovementPointController : MonoBehaviour
                         mpElement.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
                     });
                 }
+            }
+        }
+
+        HandleAbilityHoverPreview(new AbilityCostPayload(0, _currentHoverCost));
+    }
+
+    public void HandleAbilityHoverPreview(AbilityCostPayload payload)
+    {
+        _currentHoverCost = payload.MpCost;
+
+        foreach (var el in _mpElements)
+            el.StopHoverGlow();
+
+        if (payload.MpCost <= 0) return;
+
+        int glowCount = 0;
+        for (int i = _mpElements.Count - 1; i >= 0; i--)
+        {
+            var el = _mpElements[i];
+            if (!el.IsConsumed && glowCount < payload.MpCost)
+            {
+                el.StartHoverGlow();
+                glowCount++;
             }
         }
     }

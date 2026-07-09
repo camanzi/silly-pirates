@@ -6,6 +6,7 @@ public class CombatStateManager : MonoBehaviour
     [Header("Dependencies")]
     [SerializeField] private CommandQueueSO _commandQueue;
     [SerializeField] private AbilityRendererSO _abilityRenderer;
+    [SerializeField] private AbilityCostEventChannel _abilityCostChannel;
     [SerializeField] private SelectionContextSO _selectionCtx;
     [SerializeField] private InputReader _inputReader;
     [SerializeField] private TurnStateSO _currentTurnStateData;
@@ -19,6 +20,7 @@ public class CombatStateManager : MonoBehaviour
     private int _lastTransitionFrame;
     public CommandQueueSO CommandQueue => _commandQueue;
     public AbilityRendererSO AabilityRenderer => _abilityRenderer;
+    public AbilityCostEventChannel AbilityCostChannel => _abilityCostChannel;
     public SelectionContextSO SelectionCtx => _selectionCtx;
     public CombatContext CombatCtx => _combatContext;
     public TurnStateSO CurrentTurnStateData => _currentTurnStateData;

@@ -56,6 +56,7 @@ MonoBehaviour:
   _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _showUIEventChannel: {fileID: 11400000, guid: dd8d84cf213af304b84cc6768bfc7af3, type: 2}
   _initialState: {fileID: 11400000, guid: 479618e8b15bfd849afd6ee5b349a2a9, type: 2}
+  _abilityCostChannel: {fileID: 11400000, guid: 8cad665092ecc53409f79697988b1022, type: 2}
 --- !u!114 &7905440404563248050
 MonoBehaviour:
   m_ObjectHideFlags: 0

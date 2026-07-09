@@ -27,7 +27,7 @@ public class ActionPointController : MonoBehaviour
     public void OnTargetingStateChanged(bool isTargeting)
     {
         _isInTargetingState = isTargeting;
-        if (!isTargeting) HandleAbilityHoverPreview(0);
+        if (!isTargeting) HandleAbilityHoverPreview(AbilityCostPayload.Empty);
     }
 
     public void HandleAgentActivated(ITurnAgent agent)
@@ -95,24 +95,24 @@ public class ActionPointController : MonoBehaviour
             }
         }
 
-        HandleAbilityHoverPreview(_currentHoverCost);
+        HandleAbilityHoverPreview(new AbilityCostPayload(_currentHoverCost, 0));
     }
 
-    public void HandleAbilityHoverPreview(int apCost)
+    public void HandleAbilityHoverPreview(AbilityCostPayload payload)
     {
         if (_isInTargetingState) return;
-        _currentHoverCost = apCost;
+        _currentHoverCost = payload.ApCost;
 
         foreach (var el in _apElements)
             el.StopHoverGlow();
 
-        if (apCost <= 0) return;
+        if (payload.ApCost <= 0) return;
 
         int glowCount = 0;
         for (int i = _apElements.Count - 1; i >= 0; i--)
         {
             var el = _apElements[i];
-            if (!el.IsConsumed && glowCount < apCost)
+            if (!el.IsConsumed && glowCount < payload.ApCost)
             {
                 el.StartHoverGlow();
                 glowCount++;

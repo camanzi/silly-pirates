@@ -326,10 +326,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1871551424322025804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ba0df8afe5cf9e40bf0880768f9c8e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IntChannelListener
-  eventChannel: {fileID: 11400000, guid: 8cf6cd7d2d0d0b147832c2687cc0ceac, type: 2}
+  m_Script: {fileID: 11500000, guid: a6cc2998a5a52654e8b1c8c22146aac0, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityCostChannelListener
+  eventChannel: {fileID: 11400000, guid: 8cad665092ecc53409f79697988b1022, type: 2}
   response:
     m_PersistentCalls:
       m_Calls:
@@ -342,7 +342,19 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3217598463108275502}
+        m_TargetAssemblyTypeName: MovementPointController, Assembly-CSharp
+        m_MethodName: HandleAbilityHoverPreview
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &5944741646544662516

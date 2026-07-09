@@ -13,7 +13,7 @@ public class InteractionMenuController : WorldSpaceContainer
     [Header("Dependences")]
     [SerializeField] private InteractableGridElement _bindedMenuElement;
     [SerializeField] private TurnStateSO _currentTurnState;
-    [SerializeField] private IntEventChannel _abilityHoverChannel;
+    [SerializeField] private AbilityCostEventChannel _abilityHoverChannel;
 
     private Dictionary<InteractionActionSO, InteractionButton> _activeButtons = new();
     private VisualElement _statusContainer;
@@ -115,7 +115,7 @@ public class InteractionMenuController : WorldSpaceContainer
     {
         base.OnCompleteHide();
         _activeButtons.Clear();
-        _abilityHoverChannel?.RaiseEvent(0);
+        _abilityHoverChannel?.RaiseEvent(AbilityCostPayload.Empty);
         (_bindedMenuElement as IAwakable)?.OnAwakeningHoverPreview?.Invoke(0);
     }
 

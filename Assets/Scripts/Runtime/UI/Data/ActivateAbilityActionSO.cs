@@ -20,10 +20,10 @@ public class ActivateAbilityActionSO : InteractionActionSO
         return awakable.IsAwake;
     }
 
-    public override int GetHoverApCost(IInteractableElement element, ITurnAgent agent)
+    public override AbilityCostPayload GetHoverCost(IInteractableElement element, ITurnAgent agent)
     {
         if (element is IAbilityHolder holder)
-            return holder.ActiveAbilityController?.ActiveAbility?.ActionPointCost ?? 0;
-        return 0;
+            return new AbilityCostPayload(holder.ActiveAbilityController?.ActiveAbility?.ActionPointCost ?? 0, 0);
+        return AbilityCostPayload.Empty;
     }
 }

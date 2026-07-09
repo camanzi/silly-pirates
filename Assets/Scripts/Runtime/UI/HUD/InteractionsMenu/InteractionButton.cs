@@ -15,7 +15,7 @@ public partial class InteractionButton : VisualElement
     private ITurnAgent _interactingAgent;
     private Tween _hoverTween;
     private Action _onClickAction;
-    private IntEventChannel _hoverChannel;
+    private AbilityCostEventChannel _hoverChannel;
 
     public InteractionButton()
     {
@@ -31,7 +31,7 @@ public partial class InteractionButton : VisualElement
         RegisterCallback<PointerDownEvent>(OnPointerClick);
     }
 
-    public void SetData(InteractionActionSO data, IInteractableElement bindedElement, ITurnAgent interactingAgent, Action onClickAction, IntEventChannel hoverChannel = null)
+    public void SetData(InteractionActionSO data, IInteractableElement bindedElement, ITurnAgent interactingAgent, Action onClickAction, AbilityCostEventChannel hoverChannel = null)
     {
         _data = data;
         _bindedElement = bindedElement;
@@ -64,7 +64,7 @@ public partial class InteractionButton : VisualElement
             _iconElement.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
         });
 
-        _hoverChannel?.RaiseEvent(_data.GetHoverApCost(_bindedElement, _interactingAgent));
+        _hoverChannel?.RaiseEvent(_data.GetHoverCost(_bindedElement, _interactingAgent));
 
         int awakePreview = _data.GetHoverAwakeningPreview(_bindedElement, _interactingAgent);
         if (awakePreview > 0 && _bindedElement is IAwakable awakable)
@@ -79,7 +79,7 @@ public partial class InteractionButton : VisualElement
             _iconElement.style.scale = new StyleScale(new Scale(new Vector3(newVal.x, newVal.y, 1f)));
         });
 
-        _hoverChannel?.RaiseEvent(0);
+        _hoverChannel?.RaiseEvent(AbilityCostPayload.Empty);
         (_bindedElement as IAwakable)?.OnAwakeningHoverPreview?.Invoke(0);
     }
 

@@ -22,6 +22,19 @@ public class MoveAbility : AbilityBase
     }
 
 
+    public override int GetMovementPointCost(AbilityPreviewData previewData, ref object cache)
+    {
+        if (previewData.AffectedCells == null) return 0;
+
+        var moveCache = cache as MoveCache;
+        if (moveCache?.CostGetter == null) return previewData.AffectedCells.Count;
+
+        int total = 0;
+        foreach (Vector3 cell in previewData.AffectedCells)
+            total += moveCache.CostGetter(Vector3Int.FloorToInt(cell));
+        return total;
+    }
+
     public override bool IsPhaseCommand(ICommand command)
     {
         if (command is not SelectOceanCurrentEntryCommand) return false;
