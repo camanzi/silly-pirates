@@ -15,6 +15,12 @@ public class NetThrowingAbility : OffensiveAbilityBase
         return _selectionCtx.CurrentTargets.Count == _maxTargets;
     }
 
+    public override bool IsValidTarget(IInteractableElement caster, TargetingData? targetingData, ref object cache)
+    {
+        if (targetingData?.selectedTarget is not IHealthOwner ho || ho.Health == null || !ho.Health.IsAlive) return false;
+        return targetingData.Value.selectedTarget is ITurnAgent;
+    }
+
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
         return new NetThrowCommand(caster, _selectionCtx.CurrentTargets, _projectilePrefab, _cooldown, _slowPassiveSO, trajectoryConfigData);

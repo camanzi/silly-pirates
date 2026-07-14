@@ -37,6 +37,14 @@ public class RestoringAuraAbility : AbilityBase
 
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
+        if (caster is not GridElement) return false;
+        if (!targetingData.HasValue) return false;
+
+        return true;
+    }
+
+    public override bool IsValidTarget(IInteractableElement caster, TargetingData? targetingData, ref object cache)
+    {
         if (caster is not GridElement gridElement) return false;
         if (!targetingData.HasValue) return false;
 

@@ -23,11 +23,12 @@ public abstract class CombatStateSO : ScriptableObject
     protected void DrawAbilityPreview(AbilityBase ability, IInteractableElement caster, TargetingData data, ref object cache, bool computeCanExecute)
     {
         AbilityPreviewData previewData = ability.GetPreviewData(caster, data, ref cache);
-        bool canExecute = computeCanExecute && ability.CanExecute(caster, data, ref cache);
+        bool isValidTarget = computeCanExecute && ability.IsValidTarget(caster, data, ref cache);
+        bool canExecute = computeCanExecute && ability.CanExecute(caster, data, ref cache) && isValidTarget;
 
         if (computeCanExecute && data.selectedTarget is IInteractableElement targetElement)
         {
-            targetElement.OutlinerHelper?.SetOutline(canExecute ? OutlineState.ValidTarget : OutlineState.InvalidTarget);
+            targetElement.OutlinerHelper?.SetOutline(isValidTarget ? OutlineState.ValidTarget : OutlineState.InvalidTarget);
         }
 
         var costPayload = canExecute
@@ -47,6 +48,7 @@ public abstract class CombatStateSO : ScriptableObject
     protected bool TryExecuteAbilityOnClick(AbilityBase ability, IInteractableElement caster, TargetingData? data, ref object cache, CombatStateSO executionStateTemplate)
     {
         if (!ability.CanExecute(caster, data, ref cache)) return false;
+        if (data.HasValue && !ability.IsValidTarget(caster, data, ref cache)) return false;
 
         ICommand command = ability.CreateCommand(caster, data, ref cache);
         if (ability.IsPhaseCommand(command)) return false;

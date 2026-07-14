@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Maximize Contribution Ability", menuName = "Abilities/Character/Actives/Maximize Contribution Ability")]
 public class MaximizeContributionAbility : AbilityBase
@@ -60,10 +61,18 @@ public class MaximizeContributionAbility : AbilityBase
 
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        if (caster is not GridElement gridElement) return false;
+        if (caster is not GridElement) return false;
         if (!targetingData.HasValue) return false;
 
         if (caster is ITurnAgent turnAgent && turnAgent.RemainingActionPoints < _apCost) return false;
+
+        return true;
+    }
+
+    public override bool IsValidTarget(IInteractableElement caster, TargetingData? targetingData, ref object cache)
+    {
+        if (caster is not GridElement gridElement) return false;
+        if (!targetingData.HasValue) return false;
 
         EnsureCache(gridElement, ref cache);
         var mcCache = (MaximizeContributionCache)cache;
@@ -102,12 +111,20 @@ public class MaximizeContributionAbility : AbilityBase
         if (cache is MaximizeContributionCache) return;
 
         Vector3Int casterPos = caster.gridPosition;
+        Tilemap tilemap = caster.activeTilemap;
         var validCells = new HashSet<Vector3Int>();
 
         IAreaShape circle = ShapeFactory.GetShape(ShapeType.Circle);
         foreach (Vector3 cellV3 in circle.GetCells(casterPos, _range, casterPos))
         {
             Vector3Int cell = Vector3Int.FloorToInt(cellV3);
+
+            if (tilemap != null)
+            {
+                TerrainTile tile = tilemap.GetTile<TerrainTile>(cell);
+                if (tile == null || !tile.isWalkable) continue;
+            }
+
             validCells.Add(cell);
         }
 

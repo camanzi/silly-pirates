@@ -40,9 +40,12 @@ public class TargetingStateSO : CombatStateSO
     public override void HandleElementClick(IInteractableElement element)
     {
         SelectionContextSO selectionCtx = manager.SelectionCtx;
+        CombatContext ctx = manager.CombatCtx;
 
         if (element is ITargettable targettable)
         {
+            var td = new TargetingData { selectedTarget = targettable };
+            if (!ctx.SelectedAbility.IsValidTarget(selectionCtx.CurrentCaster, td, ref ctx.AbilityCache)) return;
             selectionCtx.CurrentTargets.Add(targettable);
         }
 

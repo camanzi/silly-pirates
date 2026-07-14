@@ -26,6 +26,8 @@ public abstract class AbilityBase : ScriptableObject
 
     public abstract bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache);
 
+    public virtual bool IsValidTarget(IInteractableElement caster, TargetingData? targetingData, ref object cache) => true;
+
     public virtual bool IsPhaseCommand(ICommand command) => false;
 
     public virtual bool RequiresTargeting => true;

@@ -57,7 +57,12 @@ public class IdleStateSO : CombatStateSO
     {
         if (_armedAbility == null) return;
 
-        if (element is ITargettable targettable) manager.SelectionCtx.CurrentTargets.Add(targettable);
+        if (element is ITargettable targettable)
+        {
+            var td = new TargetingData { selectedTarget = targettable };
+            if (!_armedAbility.IsValidTarget(_armedCaster, td, ref _armedCache)) return;
+            manager.SelectionCtx.CurrentTargets.Add(targettable);
+        }
 
         manager.CombatCtx.SelectedAbility = _armedAbility;
         TryExecuteAbilityOnClick(_armedAbility, _armedCaster, null, ref _armedCache, _executionStateTemplate);

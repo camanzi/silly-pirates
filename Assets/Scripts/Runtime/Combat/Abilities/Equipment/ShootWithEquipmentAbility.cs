@@ -16,6 +16,11 @@ public class ShootWithEquipmentAbility : OffensiveAbilityBase
         return _selectionCtx.CurrentTargets.Count == _maxTargets;
     }
 
+    public override bool IsValidTarget(IInteractableElement caster, TargetingData? targetingData, ref object cache)
+    {
+        return targetingData?.selectedTarget is IHealthOwner ho && ho.Health != null && ho.Health.IsAlive;
+    }
+
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
         int effectiveAccuracy = (caster as IAccuracyOwner)?.EffectiveAccuracy ?? 50;

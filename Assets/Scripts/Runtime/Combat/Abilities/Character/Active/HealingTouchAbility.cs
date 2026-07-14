@@ -40,10 +40,18 @@ public class HealingTouchAbility : AbilityBase
 
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        if (caster is not GridElement gridElement) return false;
+        if (caster is not GridElement) return false;
         if (!targetingData.HasValue) return false;
 
         if (caster is ITurnAgent turnAgent && turnAgent.RemainingActionPoints < _apCost) return false;
+
+        return true;
+    }
+
+    public override bool IsValidTarget(IInteractableElement caster, TargetingData? targetingData, ref object cache)
+    {
+        if (caster is not GridElement gridElement) return false;
+        if (!targetingData.HasValue) return false;
 
         EnsureCache(gridElement, ref cache);
         var healCache = (HealingTouchCache)cache;
