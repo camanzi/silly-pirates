@@ -14,7 +14,13 @@ public abstract class AbilityBase : ScriptableObject
     [Header("UI Rendering")]
     [SerializeField] private Sprite _icon;
 
+    [Header("Camera Direction")]
+    [SerializeField] private CameraCueType _cameraCue = CameraCueType.FramePair;
+    [SerializeField] private CameraCueProfileSO _cameraCueProfile;
+
     public Sprite Icon => _icon;
+    public CameraCueType CameraCue => _cameraCue;
+    public CameraCueProfileSO CameraCueProfile => _cameraCueProfile;
     public bool ShowTrajectory => showTrajectory;
     public TrajectoryConfigsSO TrajectoryConfigData => trajectoryConfigData;
     public virtual int ActionPointCost => 0;

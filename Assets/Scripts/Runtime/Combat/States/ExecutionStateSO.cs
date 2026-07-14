@@ -8,7 +8,24 @@ public class ExecutionStateSO : CombatStateSO
     public async override void OnEnter()
     {
         base.OnEnter();
-        await manager.CommandQueue.ProcessQueueAsync();
+
+        CameraDirectorStateSO cameraState = manager.CameraDirectorState;
+        try
+        {
+            AbilityExecutionCue? cue = manager.CombatCtx.PendingCue;
+            if (cue.HasValue && cameraState != null && manager.CameraCueChannel != null)
+            {
+                cameraState.BeginFocus();
+                manager.CameraCueChannel.RaiseEvent(cue.Value);
+                await cameraState.WaitUntilFocused();
+            }
+
+            await manager.CommandQueue.ProcessQueueAsync();
+        }
+        finally
+        {
+            cameraState?.EndFocus();
+        }
 
         manager.AabilityRenderer.ClearPreview();
         manager.ClearCtxs(_idleStateTemplate);

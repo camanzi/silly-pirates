@@ -108,6 +108,7 @@ Project-specific agents are in `.claude/agents/` — invoke with `@<name>` in th
 | `@ui-builder` | Build new HUD or world-space UI elements, including from Figma — knows the UXML/USS/UxmlElement patterns and PrimeTween conventions |
 | `@system-builder` | Design and implement a new game system — enforces SO-first data, event channels, `Awaitable` async, and interface contracts |
 | `@ability-designer` | Create new combat abilities — knows the `AbilityBase` three-method contract, shape system, command pattern, and asset wiring |
+| `@camera-director` | Decide/tune how abilities are framed on screen — owns the camera cue system (`CameraCueType`, `CameraCueProfileSO`, `CameraDirector`), assigns cues to ability assets, extends it (FrameArea, shake, FollowProjectile) |
 
 ## Coding Conventions
 

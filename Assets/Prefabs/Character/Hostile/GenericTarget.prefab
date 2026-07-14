@@ -303,6 +303,8 @@ MonoBehaviour:
   _aiData: {fileID: 0}
   _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _commandQueue: {fileID: 11400000, guid: 2bb0156ed80382545b45f1646e47397c, type: 2}
+  _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
+  _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
 --- !u!114 &3596544409351883156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -317,6 +319,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PassiveAbilityController
   _basePassivesSO: []
   _passiveNotificationChannel: {fileID: 11400000, guid: f34e6cbc31ae5d74485d162d04d6fd21, type: 2}
+  _nativePassiveSO: {fileID: 0}
 --- !u!114 &7951698253977833827
 MonoBehaviour:
   m_ObjectHideFlags: 0

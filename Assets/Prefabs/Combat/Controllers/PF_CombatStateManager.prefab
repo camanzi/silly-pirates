@@ -51,12 +51,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatStateManager
   _commandQueue: {fileID: 11400000, guid: 2bb0156ed80382545b45f1646e47397c, type: 2}
   _abilityRenderer: {fileID: 11400000, guid: 9f983ae5c70f09e49a4e37d388731a58, type: 2}
+  _abilityCostChannel: {fileID: 11400000, guid: 8cad665092ecc53409f79697988b1022, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _inputReader: {fileID: 11400000, guid: 7e56d5efef3525e478b22e3e6ac7bb2d, type: 2}
   _currentTurnStateData: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _showUIEventChannel: {fileID: 11400000, guid: dd8d84cf213af304b84cc6768bfc7af3, type: 2}
+  _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
+  _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
   _initialState: {fileID: 11400000, guid: 479618e8b15bfd849afd6ee5b349a2a9, type: 2}
-  _abilityCostChannel: {fileID: 11400000, guid: 8cad665092ecc53409f79697988b1022, type: 2}
 --- !u!114 &7905440404563248050
 MonoBehaviour:
   m_ObjectHideFlags: 0

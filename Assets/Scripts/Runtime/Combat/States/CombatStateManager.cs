@@ -11,6 +11,8 @@ public class CombatStateManager : MonoBehaviour
     [SerializeField] private InputReader _inputReader;
     [SerializeField] private TurnStateSO _currentTurnStateData;
     [SerializeField] private BoolEventChannel _showUIEventChannel;
+    [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
+    [SerializeField] private AbilityExecutionCueEventChannel _cameraCueChannel;
 
     [Header("State Settings")]
     [SerializeField] private CombatStateSO _initialState;
@@ -25,6 +27,8 @@ public class CombatStateManager : MonoBehaviour
     public CombatContext CombatCtx => _combatContext;
     public TurnStateSO CurrentTurnStateData => _currentTurnStateData;
     public BoolEventChannel ShowUIEventChannel => _showUIEventChannel;
+    public CameraDirectorStateSO CameraDirectorState => _cameraDirectorState;
+    public AbilityExecutionCueEventChannel CameraCueChannel => _cameraCueChannel;
 
     private Dictionary<CombatStateSO, CombatStateSO> _stateInstances = new Dictionary<CombatStateSO, CombatStateSO>();
 

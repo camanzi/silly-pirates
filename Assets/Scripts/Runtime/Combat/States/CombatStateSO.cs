@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class CombatStateSO : ScriptableObject
@@ -54,7 +55,22 @@ public abstract class CombatStateSO : ScriptableObject
         if (ability.IsPhaseCommand(command)) return false;
 
         manager.CommandQueue.AddCommand(command);
+        manager.CombatCtx.PendingCue = BuildExecutionCue(ability, caster, data, ref cache);
         manager.TransitionToState(executionStateTemplate);
         return true;
+    }
+
+    private AbilityExecutionCue BuildExecutionCue(AbilityBase ability, IInteractableElement caster, TargetingData? data, ref object cache)
+    {
+        AbilityPreviewData previewData = ability.GetPreviewData(caster, data ?? new TargetingData(caster), ref cache);
+
+        List<ITargettable> targets = new();
+        if (data?.selectedTarget != null) targets.Add(data.Value.selectedTarget);
+        foreach (ITargettable target in manager.SelectionCtx.CurrentTargets)
+        {
+            if (!targets.Contains(target)) targets.Add(target);
+        }
+
+        return new AbilityExecutionCue(ability, caster, targets, previewData.AffectedCells, data?.worldPosition);
     }
 }
