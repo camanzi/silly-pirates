@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Slow Passive", menuName = "Abilities/Character/Passives/Slow")]
-public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEnd, IOnTurnStart, IOnTurnEnd
+public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEnd, IOnTurnStart, IOnTurnEnd, IStackCountProvider, IPassiveStateNotifier, IStackablePassive
 {
     [Header("Slow configs")]
     [SerializeField] private int _flatPenalty = 0;
@@ -11,12 +12,25 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
     private PassiveAbilityController _controller;
     private int _turnCount;
     private bool _isExpired;
+    private int _stacks;
+
+    public int CurrentStacks => _stacks;
+    public int MaxStacks => int.MaxValue;
+
+    public event Action OnStateUpdated;
+
+    event Action IPassiveStateNotifier.OnStateChanged
+    {
+        add => OnStateUpdated += value;
+        remove => OnStateUpdated -= value;
+    }
 
     public override void OnEquip(PassiveAbilityController controller)
     {
         _controller = controller;
         _turnCount  = 0;
         _isExpired  = false;
+        _stacks     = 1;
     }
 
     public override void OnUnequip(PassiveAbilityController controller)
@@ -24,9 +38,17 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
         _controller = null;
     }
 
-    int IAgilityModifier.GetFlatAgilityBonus() => -_flatPenalty;
+    void IStackablePassive.OnReapplied(PassiveAbilityController controller)
+    {
+        _stacks++;
+        _turnCount = 0;
+        _isExpired = false;
+        OnStateUpdated?.Invoke();
+    }
 
-    float IAgilityModifier.GetPercentageAgilityBonus() => -_percentPenalty;
+    int IAgilityModifier.GetFlatAgilityBonus() => -_flatPenalty * _stacks;
+
+    float IAgilityModifier.GetPercentageAgilityBonus() => -_percentPenalty * _stacks;
 
     void IOnGlobalTurnEnd.OnGlobalTurnEnd()
     {

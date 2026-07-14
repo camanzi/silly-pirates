@@ -102,7 +102,6 @@ public class MoveAbility : AbilityBase
         return new MoveCommand((GridCharacter)caster, preview.AffectedCells, moveCache.CostGetter);
     }
 
-
     private AbilityPreviewData GetPhase1Preview(
         GridElement gridElement, IMovable movable, MoveCache moveCache, TargetingData targetingData)
     {

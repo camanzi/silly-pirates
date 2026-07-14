@@ -91,8 +91,17 @@ public class ActiveCharacterPanelController : MonoBehaviour
     private void ApplyNativePassiveVisualState(PassiveAbilitySO passive, PassiveAbilityController controller)
     {
         if (_nativePassiveIndicator == null) return;
-        bool isActive = passive.IsCurrentlyActive(controller);
-        _nativePassiveIndicator.style.opacity = isActive ? 1f : 0.4f;
+
+        if (passive is IStackCountProvider stackProvider)
+        {
+            _nativePassiveIndicator.style.opacity = 1f;
+            _nativePassiveIndicator.UpdateStackBadge(stackProvider.CurrentStacks, stackProvider.MaxStacks, alwaysShow: true);
+        }
+        else
+        {
+            bool isActive = passive.IsCurrentlyActive(controller);
+            _nativePassiveIndicator.style.opacity = isActive ? 1f : 0.4f;
+        }
     }
 
     private void HandleHpChanged(float currentHp)

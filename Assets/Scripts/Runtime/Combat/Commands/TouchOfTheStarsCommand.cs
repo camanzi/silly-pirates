@@ -8,6 +8,7 @@ public class TouchOfTheStarsCommand : ICommand
     private readonly TurnAgentEventChannel _onAnyTurnEnded;
     private readonly int _apCost;
     private TouchOfTheStarsPassiveSO _passiveInstance;
+    private bool _createdInstance;
 
     public TouchOfTheStarsCommand(PassiveAbilityController passiveController, ITurnAgent caster, TouchOfTheStarsPassiveSO passiveSO, TurnAgentEventChannel onAnyTurnEnded, int apCost)
     {
@@ -20,16 +21,19 @@ public class TouchOfTheStarsCommand : ICommand
 
     public async Awaitable ExecuteAsync()
     {
-        _passiveInstance = Object.Instantiate(_passiveSO);
-        _passiveInstance.Initialize(_caster, _onAnyTurnEnded);
-        _passiveController.AddPassive(_passiveInstance);
+        var candidate = Object.Instantiate(_passiveSO);
+        candidate.Initialize(_caster, _onAnyTurnEnded);
+        var result = _passiveController.AddPassive(candidate);
+        _createdInstance = ReferenceEquals(result, candidate);
+        _passiveInstance = (TouchOfTheStarsPassiveSO)result;
         await Awaitable.NextFrameAsync();
     }
 
     public void Undo()
     {
         if (_passiveInstance == null) return;
-        _passiveController.RemovePassive(_passiveInstance);
+        if (_createdInstance) _passiveController.RemovePassive(_passiveInstance);
+        else _passiveInstance.RemoveStack();
         _passiveInstance = null;
         _caster.RemainingActionPoints += _apCost;
     }

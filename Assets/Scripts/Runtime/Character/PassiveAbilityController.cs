@@ -57,8 +57,24 @@ public class PassiveAbilityController : MonoBehaviour
             if (_instantiatedPassives[i] is T t) results.Add(t);
     }
 
-    public void AddPassive(PassiveAbilitySO instance)
+    public PassiveAbilitySO AddPassive(PassiveAbilitySO instance)
     {
+        var type = instance.GetType();
+        for (int i = 0; i < _instantiatedPassives.Count; i++)
+        {
+            if (_instantiatedPassives[i].GetType() != type) continue;
+
+            var existing = _instantiatedPassives[i];
+            if (existing is IStackablePassive stackable)
+                stackable.OnReapplied(this);
+            else
+                Debug.LogWarning($"[PassiveAbilityController] {name} already has passive '{instance.DisplayName}' ({type.Name}); duplicate application ignored.");
+
+            Destroy(instance);
+            OnPassivesChanged?.Invoke();
+            return existing;
+        }
+
         _instantiatedPassives.Add(instance);
         instance.OnEquip(this);
         OnPassivesChanged?.Invoke();
@@ -69,6 +85,7 @@ public class PassiveAbilityController : MonoBehaviour
             WorldPosition = transform.position,
             Source = transform,
         });
+        return instance;
     }
 
     public void RemovePassive(PassiveAbilitySO instance)
@@ -90,6 +107,16 @@ public class PassiveAbilityController : MonoBehaviour
     {
         for (int i = 0; i < _instantiatedPassives.Count; i++)
             if (_instantiatedPassives[i] is T) return true;
+        return false;
+    }
+
+    public bool TryGetPassive<T>(out T passive) where T : PassiveAbilitySO
+    {
+        for (int i = 0; i < _instantiatedPassives.Count; i++)
+        {
+            if (_instantiatedPassives[i] is T t) { passive = t; return true; }
+        }
+        passive = null;
         return false;
     }
 

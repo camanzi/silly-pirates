@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "Equipment Movement Boost", menuName = "Abilities/Character/Passives/Equipment Movement Boost")]
-public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifier, IPassiveStateNotifier
+public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifier, IPassiveStateNotifier, IStackCountProvider, IStackablePassive
 {
     [Header("Event Channels")]
     [SerializeField] private VoidEventChannel _equipmentAwakenedChannel;
@@ -44,6 +44,8 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
         _equipmentAwakenedChannel.OnEventRaised -= OnEquipmentAwakened;
         _turnChangedChannel.OnEventRaised -= _onTurnChangedHandler;
     }
+
+    void IStackablePassive.OnReapplied(PassiveAbilityController controller) => OnEquipmentAwakened();
 
     private void OnEquipmentAwakened()
     {

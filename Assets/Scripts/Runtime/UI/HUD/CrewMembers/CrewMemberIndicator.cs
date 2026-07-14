@@ -22,7 +22,10 @@ public partial class CrewMemberIndicator : VisualElement
     private PassiveHoverPopupController _hoverPopup;
     private PassiveAbilityController _passiveController;
     private readonly Dictionary<PassiveAbilitySO, PassiveIndicator> _passiveIndicators = new();
-    private readonly List<(IPassiveStateNotifier notifier, Action handler)> _passiveSubscriptions = new();
+    private readonly Dictionary<PassiveAbilitySO, (IPassiveStateNotifier notifier, Action handler)> _passiveSubscriptions = new();
+    private readonly HashSet<PassiveAbilitySO> _trackedPassives = new();
+    private readonly List<PassiveAbilitySO> _currentPassivesBuffer = new();
+    private readonly List<PassiveAbilitySO> _removedPassivesBuffer = new();
     private HealthController _health;
 
     public void Initialize(ITurnAgent agent, VisualTreeAsset templateAsset, VisualTreeAsset passiveIndicatorTemplate, PassiveHoverPopupController hoverPopup)
@@ -58,7 +61,12 @@ public partial class CrewMemberIndicator : VisualElement
             UpdateHealth(_health.CurrentHp, _health.MaxHp);
         }
 
-        InjectPassiveUI();
+        if (LinkedAgent is Component comp && comp.TryGetComponent<PassiveAbilityController>(out var controller))
+        {
+            _passiveController = controller;
+            _passiveController.OnPassivesChanged += SyncPassiveIndicators;
+            SyncPassiveIndicators();
+        }
     }
 
     public void UpdateTurnState(ITurnAgent activeAgent)
@@ -99,24 +107,52 @@ public partial class CrewMemberIndicator : VisualElement
             onValueChange: (target, val) => target.style.width = Length.Percent(val));
     }
 
-    private void InjectPassiveUI()
+    private void SyncPassiveIndicators()
     {
-        if (LinkedAgent is Component comp && comp.TryGetComponent<PassiveAbilityController>(out var controller))
+        if (_passiveController == null) return;
+
+        _passiveController.GetModifiers(_currentPassivesBuffer);
+
+        foreach (var passive in _currentPassivesBuffer)
         {
-            _passiveController = controller;
-            foreach (var passive in controller.GetModifiers<PassiveAbilitySO>())
+            if (_trackedPassives.Contains(passive)) continue;
+
+            _trackedPassives.Add(passive);
+
+            if (passive.Icon == null) continue;
+
+            if (passive is IPassiveStateNotifier notifier)
             {
-                if (passive.Icon == null) continue;
+                PassiveAbilitySO capturedPassive = passive;
+                Action handler = () => RefreshPassiveVisibility(capturedPassive);
+                notifier.OnStateChanged += handler;
+                _passiveSubscriptions[passive] = (notifier, handler);
+            }
 
-                if (passive is IPassiveStateNotifier notifier)
-                {
-                    PassiveAbilitySO capturedPassive = passive;
-                    Action handler = () => RefreshPassiveVisibility(capturedPassive);
-                    notifier.OnStateChanged += handler;
-                    _passiveSubscriptions.Add((notifier, handler));
-                }
+            RefreshPassiveVisibility(passive);
+        }
 
-                RefreshPassiveVisibility(passive);
+        _removedPassivesBuffer.Clear();
+        foreach (var passive in _trackedPassives)
+        {
+            if (!_currentPassivesBuffer.Contains(passive))
+                _removedPassivesBuffer.Add(passive);
+        }
+
+        foreach (var passive in _removedPassivesBuffer)
+        {
+            _trackedPassives.Remove(passive);
+
+            if (_passiveSubscriptions.TryGetValue(passive, out var subscription))
+            {
+                subscription.notifier.OnStateChanged -= subscription.handler;
+                _passiveSubscriptions.Remove(passive);
+            }
+
+            if (_passiveIndicators.TryGetValue(passive, out var existing))
+            {
+                _passivesContainer.Remove(existing);
+                _passiveIndicators.Remove(passive);
             }
         }
     }
@@ -131,12 +167,18 @@ public partial class CrewMemberIndicator : VisualElement
             var element = new PassiveIndicator(passive, _passiveIndicatorTemplate, _hoverPopup);
             _passivesContainer.Add(element);
             _passiveIndicators[passive] = element;
+            existing = element;
+            isShown = true;
         }
         else if (!shouldShow && isShown)
         {
             _passivesContainer.Remove(existing);
             _passiveIndicators.Remove(passive);
+            isShown = false;
         }
+
+        if (isShown && passive is IStackCountProvider stackProvider)
+            existing.UpdateStackBadge(stackProvider.CurrentStacks, stackProvider.MaxStacks);
     }
 
     private void OnDispose()
@@ -149,7 +191,10 @@ public partial class CrewMemberIndicator : VisualElement
             _health = null;
         }
 
-        foreach (var (notifier, handler) in _passiveSubscriptions)
+        if (_passiveController != null)
+            _passiveController.OnPassivesChanged -= SyncPassiveIndicators;
+
+        foreach (var (notifier, handler) in _passiveSubscriptions.Values)
             notifier.OnStateChanged -= handler;
         _passiveSubscriptions.Clear();
     }
