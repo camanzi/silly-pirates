@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Equipment Movement Boost Passive
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentMovementBoostPassiveSO
   _displayName: Potenziamento Movimento
-  _icon: {fileID: 21300000, guid: d023d872dbd6d1e47a3d1d8cb01388a0, type: 3}
-  _description: Gains a stack of movement speed each time equipment is awakened
-    this turn, up to 3 stacks. Resets if equipment isn't awakened.
+  _removalTiming: 0
+  _icon: {fileID: 21300000, guid: 2b75e5db22825e4479e70bb86695b68c, type: 3}
+  _description: Gains a stack of movement speed each time equipment is awakened this
+    turn, up to 3 stacks. Resets if equipment isn't awakened.
   _equipmentAwakenedChannel: {fileID: 11400000, guid: 4bd5ee5a30e30f94c80c8cea0ea486d0, type: 2}
   _turnChangedChannel: {fileID: 11400000, guid: ad59c6d4d66bf4449a89b530673c47e1, type: 2}

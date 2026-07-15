@@ -16,7 +16,9 @@ MonoBehaviour:
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
-  _icon: {fileID: 21300000, guid: efa9f7af19933a54d998b0d232d453fc, type: 3}
+  _icon: {fileID: 21300000, guid: 057b8b07dd47946499f59a8beff7d980, type: 3}
+  _cameraCue: 3
+  _cameraCueProfile: {fileID: 0}
   _range: 1
   _apCost: 2
   _flatHealAmount: 100
