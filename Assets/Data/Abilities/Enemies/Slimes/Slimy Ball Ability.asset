@@ -17,6 +17,8 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 11400000, guid: ef232f08ea2afcd448a72b4afc59923c, type: 2}
   _icon: {fileID: 0}
+  _cameraCue: 3
+  _cameraCueProfile: {fileID: 0}
   _requiredPart: {fileID: 0}
   _flavorText: 
   _basePriority: 0

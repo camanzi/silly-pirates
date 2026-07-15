@@ -17,9 +17,13 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 11400000, guid: 11444163b464dc34d864ad32b101e6c4, type: 2}
   _icon: {fileID: 0}
+  _cameraCue: 2
+  _cameraCueProfile: {fileID: 0}
   _requiredPart: {fileID: 0}
+  _flavorText: 
   _basePriority: 5
   _unlimitedUse: 0
+  _minTurnsBeforeUse: 0
   _fixedHeal: 1000
   _percentHeal: 0.1
   _healThreshold: 0.75

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f03152fcfb4bcf1479dc4473dace3173, type: 3}
-  m_Name: DefaultCameraCueProfile
+  m_Name: CannonsCameraCueProfile
   m_EditorClassIdentifier: Assembly-CSharp::CameraCueProfileSO
-  _framingSize: 0.2
+  _framingSize: 1
   _memberRadius: 1.5
   _preShotHold: 0.25
   _postShotHold: 0.4

@@ -17,6 +17,8 @@ MonoBehaviour:
   showTrajectory: 1
   trajectoryConfigData: {fileID: 11400000, guid: 3fdbbc9c379408d438ff6b483ef1f106, type: 2}
   _icon: {fileID: 0}
+  _cameraCue: 3
+  _cameraCueProfile: {fileID: 11400000, guid: 5b49ff35e353ef8448ea316a240dcc48, type: 2}
   _maxTargets: 1
   _projectilePrefab: {fileID: 7377031095278769717, guid: f96a7112b0c98144eba569a4badb621d, type: 3}
   _cooldown: 4

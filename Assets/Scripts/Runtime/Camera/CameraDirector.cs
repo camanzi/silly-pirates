@@ -51,81 +51,38 @@ public class CameraDirector : MonoBehaviour
             ? cue.Ability.CameraCueProfile
             : _defaultProfile;
 
-        if (cueType == CameraCueType.None || profile == null || _actionCamera == null || _targetGroup == null || cue.Caster == null)
+        ICameraCueHandler handler = CameraCueHandlerFactory.GetHandler(cueType);
+
+        if (handler == null || profile == null || _actionCamera == null || _targetGroup == null || cue.Caster == null)
         {
-            _directorState?.SignalFocusReady();
+            if (_directorState != null) _directorState.SignalFocusReady();
             return;
         }
 
-        PopulateTargetGroup(cueType, cue, profile);
-        RunCueAsync(profile);
+        var context = new CameraCueContext {
+            TargetGroup = _targetGroup,
+            GroupFraming = _groupFraming,
+            Brain = _brain,
+            GroundAnchor = _groundAnchor,
+            Cue = cue,
+            Profile = profile,
+            MaxBlendWait = _maxBlendWait
+        };
+
+        RunCueAsync(handler, context);
     }
 
-    private void PopulateTargetGroup(CameraCueType cueType, AbilityExecutionCue cue, CameraCueProfileSO profile)
+    private async void RunCueAsync(ICameraCueHandler handler, CameraCueContext context)
     {
-        _targetGroup.Targets.Clear();
-        _targetGroup.AddMember(cue.Caster.Transform, 1f, profile.MemberRadius);
-
-        if (cueType == CameraCueType.FocusCaster) return;
-
-        // FramePair and every not-yet-implemented cue type frame caster + resolved targets
-        bool hasTargetMember = false;
-        if (cue.Targets != null)
-        {
-            for (int i = 0; i < cue.Targets.Count; i++)
-            {
-                ITargettable target = cue.Targets[i];
-                if (target == null || target.Transform == null) continue;
-                _targetGroup.AddMember(target.Transform, 1f, profile.MemberRadius);
-                hasTargetMember = true;
-            }
-        }
-
-        if (!hasTargetMember && TryGetGroundPoint(cue, out Vector3 groundPoint))
-        {
-            _groundAnchor.position = groundPoint;
-            _targetGroup.AddMember(_groundAnchor, 1f, profile.MemberRadius);
-        }
-    }
-
-    private static bool TryGetGroundPoint(AbilityExecutionCue cue, out Vector3 point)
-    {
-        if (cue.AffectedCells != null && cue.AffectedCells.Count > 0)
-        {
-            Vector3 centroid = Vector3.zero;
-            for (int i = 0; i < cue.AffectedCells.Count; i++) centroid += cue.AffectedCells[i];
-            point = centroid / cue.AffectedCells.Count;
-            return true;
-        }
-
-        if (cue.TargetPoint.HasValue)
-        {
-            point = cue.TargetPoint.Value;
-            return true;
-        }
-
-        point = default;
-        return false;
-    }
-
-    private async void RunCueAsync(CameraCueProfileSO profile)
-    {
-        _activeProfile = profile;
+        _activeProfile = context.Profile;
         _isCueActive = true;
 
-        if (_groupFraming != null) _groupFraming.FramingSize = profile.FramingSize;
+        if (_groupFraming != null) _groupFraming.FramingSize = context.Profile.FramingSize;
         _actionCamera.enabled = true;
 
-        // Give the Brain a frame to start blending, then wait for the blend to settle
-        float deadline = Time.time + _maxBlendWait;
-        await Awaitable.NextFrameAsync();
-        while (_brain != null && _brain.IsBlending && Time.time < deadline)
-            await Awaitable.NextFrameAsync();
+        await handler.RunAsync(context);
 
-        if (profile.PreShotHold > 0f)
-            await Awaitable.WaitForSecondsAsync(profile.PreShotHold);
-
-        _directorState?.SignalFocusReady();
+        if (_directorState != null) _directorState.SignalFocusReady();
     }
 
     private void OnFocusEnded()

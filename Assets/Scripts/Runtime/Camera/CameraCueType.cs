@@ -4,6 +4,5 @@ public enum CameraCueType
     FocusCaster,
     FocusCasterThenTarget,
     FramePair,
-    FrameArea,
-    FollowProjectile
+    FrameArea
 }

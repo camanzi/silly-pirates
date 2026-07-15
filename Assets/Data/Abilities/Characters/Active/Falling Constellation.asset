@@ -17,6 +17,8 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
   _icon: {fileID: 21300000, guid: 2f05809c6c651054ca17b547490c32fa, type: 3}
+  _cameraCue: 2
+  _cameraCueProfile: {fileID: 0}
   _range: 4
   _apCost: 2
   _constellationPiecePrefab: {fileID: 3297773731015392738, guid: da3f77b145824bb4a838d67b887020b2, type: 3}

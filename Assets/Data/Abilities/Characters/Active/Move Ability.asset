@@ -17,4 +17,6 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
   _icon: {fileID: 0}
+  _cameraCue: 0
+  _cameraCueProfile: {fileID: 0}
   _cellCostRegistry: {fileID: 11400000, guid: ab568e1a11cac39458b00ef542aafea0, type: 2}
