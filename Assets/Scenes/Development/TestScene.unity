@@ -2393,14 +2393,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5020568918102610953, guid: 9a86b14de3a764a41983f9ab08d9d924, type: 3}
-      propertyPath: _cameraCueChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
-    - target: {fileID: 5020568918102610953, guid: 9a86b14de3a764a41983f9ab08d9d924, type: 3}
-      propertyPath: _cameraDirectorState
-      value: 
-      objectReference: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
     - target: {fileID: 6430928358923379667, guid: 9a86b14de3a764a41983f9ab08d9d924, type: 3}
       propertyPath: m_Name
       value: PF_CombatStateManager

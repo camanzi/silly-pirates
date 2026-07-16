@@ -9,30 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbbb3742dbb96e4498d3a496f7877d0d, type: 3}
+  m_Script: {fileID: 11500000, guid: 277221fcddcb6b649aecf7da5017275b, type: 3}
   m_Name: Slime Bombing Ability
-  m_EditorClassIdentifier: Assembly-CSharp::SlimeBombingAbility
+  m_EditorClassIdentifier: Assembly-CSharp::MultiStepAbility
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
   _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   showTrajectory: 0
-  trajectoryConfigData: {fileID: 11400000, guid: 041f85ec16603f74c97c8fd7661bd980, type: 2}
+  trajectoryConfigData: {fileID: 0}
   _icon: {fileID: 0}
   _cameraCue: 1
   _cameraCueProfile: {fileID: 11400000, guid: d434e525385a72b4b85921ea6421fa03, type: 2}
   _requiredPart: {fileID: 11400000, guid: 3bdb3d57b68ab7d4fb57115e3e059b75, type: 2}
-  _flavorText: The Big Octopus spit on board!
+  _flavorText: 
   _basePriority: 2
   _unlimitedUse: 0
   _minTurnsBeforeUse: 0
-  _cellEffectChannel: {fileID: 11400000, guid: cccfa9f09a7271f4a86b5b07bcdf1881, type: 2}
-  _threatMaterial: {fileID: 2100000, guid: eeb3bc787d57d5c45a5ea0539a2f40e7, type: 2}
-  _stepTwoFlavorText: The Big Octopus menace 2 areas
+  _steps:
+  - {fileID: 11400000, guid: 588e4241c05437e48bc3229bbb69e781, type: 2}
+  - {fileID: 11400000, guid: da017f3bb19a94049815066d0a5be7b0, type: 2}
   _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
-  _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}
-  _baseDamage: 800
-  _damageType: 1
-  _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}
-  _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
-  _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
-  _extraHeightPerExtraShot: 1.5
-  _extraDurationPerExtraShot: 0.4

@@ -21,13 +21,8 @@ public class CameraCueProfileSO : ScriptableObject
     [Min(0f)]
     [SerializeField] private float _postShotHold = 0.4f;
 
-    [Header("Impact (Phase 2)")]
-    [Tooltip("Not used yet: will fire the caster's CinemachineImpulseSource at impact time")]
-    [SerializeField] private bool _shakeOnImpact;
-
     public float FramingSize => _framingSize;
     public float MemberRadius => _memberRadius;
     public float PreShotHold => _preShotHold;
     public float PostShotHold => _postShotHold;
-    public bool ShakeOnImpact => _shakeOnImpact;
 }

@@ -15,7 +15,7 @@ public class SlimeBombingCommand : ICommand
     private readonly TrajectoryConfigsSO _trajectoryConfig;
     private readonly HostileCharacter _caster;
     private readonly EnemyCritStatsSO _critStats;
-    private readonly SlimeBombingAbility.SlimeBombingState _state;
+    private readonly StepState _state;
 
     private readonly AbilityBase _ability;
     private readonly AbilityExecutionCueEventChannel _cameraCueChannel;
@@ -32,7 +32,7 @@ public class SlimeBombingCommand : ICommand
         CellEffectEventChannel cellEffectChannel, string threatKey,
         GameObject projectilePrefab, TrajectoryConfigsSO trajectoryConfig,
         HostileCharacter caster, EnemyCritStatsSO critStats,
-        SlimeBombingAbility.SlimeBombingState state = null,
+        StepState state = null,
         AbilityBase ability = null,
         AbilityExecutionCueEventChannel cameraCueChannel = null,
         CameraDirectorStateSO cameraDirectorState = null,
@@ -64,9 +64,11 @@ public class SlimeBombingCommand : ICommand
 
         if (_state != null)
         {
-            if (_state.ActiveShakeTween.isAlive) _state.ActiveShakeTween.Stop();
-            if (_state.PartTransform != null && _state.PartOriginalScale != Vector3.zero)
-                await Tween.Scale(_state.PartTransform, _state.PartOriginalScale, 0.3f, Ease.InOutQuad);
+            if (_state.Extra.TryGetValue(MultiStepAbilityStepSO.ShakeTweenKey, out var tObj) && tObj is Tween tween && tween.isAlive)
+                tween.Stop();
+            if (_state.Extra.TryGetValue(MultiStepAbilityStepSO.RequiredPartTransformKey, out var ptObj) && ptObj is Transform pt && pt != null
+                && _state.Extra.TryGetValue(MultiStepAbilityStepSO.PartOriginalScaleKey, out var psObj) && psObj is Vector3 ps && ps != Vector3.zero)
+                await Tween.Scale(pt, ps, 0.3f, Ease.InOutQuad);
         }
 
         var original = t.localScale;
@@ -85,6 +87,8 @@ public class SlimeBombingCommand : ICommand
             float extraDuration = i == 0 ? 0f : _extraDurationPerExtraShot;
             flights.Add(LaunchProjectileAt(_zones[i].Center, _zones[i].Cells, extraHeight, extraDuration));
         }
+
+        await Tween.Delay(_extraDurationPerExtraShot * 0.5f);
 
         // Phase 2: live impact reveal — anticipate each landing in firing order so the camera is
         // already framing the zone when its (already in-flight) projectile lands.

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64725ae1312f9fe4abf79b66be4d30ca, type: 3}
+  m_Name: SlimeBombing_StrikeStep
+  m_EditorClassIdentifier: Assembly-CSharp::SlimeBombingStrikeStepSO
+  _overrideCameraCue: 1
+  _cameraCueType: 1
+  _cameraCueProfileOverride: {fileID: 11400000, guid: ac9a2fabf20a8d34bba4754f0c72deab, type: 2}
+  _flavorTextOverride: The Big Octopus spit on board!
+  _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}
+  _baseDamage: 800
+  _damageType: 1
+  _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}
+  _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _trajectoryConfig: {fileID: 11400000, guid: 041f85ec16603f74c97c8fd7661bd980, type: 2}
+  _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
+  _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
+  _extraHeightPerExtraShot: 1.5
+  _extraDurationPerExtraShot: 0.4

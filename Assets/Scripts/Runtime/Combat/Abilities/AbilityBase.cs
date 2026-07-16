@@ -19,8 +19,8 @@ public abstract class AbilityBase : ScriptableObject
     [SerializeField] private CameraCueProfileSO _cameraCueProfile;
 
     public Sprite Icon => _icon;
-    public CameraCueType CameraCue => _cameraCue;
-    public CameraCueProfileSO CameraCueProfile => _cameraCueProfile;
+    public virtual CameraCueType CameraCue => _cameraCue;
+    public virtual CameraCueProfileSO CameraCueProfile => _cameraCueProfile;
     public bool ShowTrajectory => showTrajectory;
     public TrajectoryConfigsSO TrajectoryConfigData => trajectoryConfigData;
     public virtual int ActionPointCost => 0;

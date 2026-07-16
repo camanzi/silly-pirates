@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f03152fcfb4bcf1479dc4473dace3173, type: 3}
-  m_Name: SlimeBombingCameraCueProfile
+  m_Name: ThreatenAreaCameraCueProfile
   m_EditorClassIdentifier: Assembly-CSharp::CameraCueProfileSO
   _framingSize: 1
   _memberRadius: 1.5
