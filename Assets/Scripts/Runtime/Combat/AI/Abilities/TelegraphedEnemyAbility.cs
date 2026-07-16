@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
+public abstract class TelegraphedEnemyAbility : EnemyAbilityBase, IThreatenedAreaProvider
 {
     [Header("Telegraph Visual")]
     [SerializeField] protected CellEffectEventChannel _cellEffectChannel;
@@ -15,6 +15,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
     [SerializeField] private TurnOrderDataSO _turnOrderData;
 
     private readonly Dictionary<HostileCharacter, TelegraphState> _pendingStates = new();
+    private readonly Dictionary<HostileCharacter, TelegraphState> _lastResolvedStates = new();
     private readonly Dictionary<HostileCharacter, Action<EnemyPartSO>> _partBrokenHandlers = new();
     private readonly Dictionary<HostileCharacter, Action> _deathHandlers = new();
     private HostileCharacter _lastScoredCaster;
@@ -22,6 +23,19 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
     public class TelegraphState
     {
         public List<Vector3Int> AllCells;
+        public List<Vector3> AffectedWorldPoints;
+    }
+
+    public bool TryGetThreatenedWorldPoints(HostileCharacter caster, out IReadOnlyList<Vector3> points)
+    {
+        if (_lastResolvedStates.TryGetValue(caster, out var state) && state.AffectedWorldPoints is { Count: > 0 })
+        {
+            points = state.AffectedWorldPoints;
+            return true;
+        }
+
+        points = null;
+        return false;
     }
 
     protected virtual void OnEnable()
@@ -33,6 +47,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
             if (hostile.Health != null) hostile.Health.OnDeath -= handler;
         _deathHandlers.Clear();
         _pendingStates.Clear();
+        _lastResolvedStates.Clear();
         _lastScoredCaster = null;
     }
 
@@ -90,6 +105,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
     private void RollbackPending(HostileCharacter hostile)
     {
         UnsubscribePartBreak(hostile);
+        _lastResolvedStates.Remove(hostile);
         if (!_pendingStates.TryGetValue(hostile, out var state)) return;
         _pendingStates.Remove(hostile);
         _cellEffectChannel?.RaiseEvent(new CellEffectPayload { Key = ThreatKey, Cells = null });
@@ -122,6 +138,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
         {
             _pendingStates.Remove(hostile);
             UnsubscribePartBreak(hostile);
+            _lastResolvedStates[hostile] = existing;
             return CreateStrikeCommand(hostile, existing);
         }
 
@@ -132,6 +149,7 @@ public abstract class TelegraphedEnemyAbility : EnemyAbilityBase
             return null;
 
         _pendingStates[hostile] = newState;
+        _lastResolvedStates[hostile] = newState;
         SubscribePartBreak(hostile);
         return CreateTelegraphCommand(hostile, newState);
     }

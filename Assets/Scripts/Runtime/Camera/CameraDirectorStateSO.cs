@@ -33,5 +33,17 @@ public class CameraDirectorStateSO : ScriptableObject
         IsFocused = true;
     }
 
+    /// <summary>
+    /// Raises a cue and waits for the camera to settle, for callers (e.g. a command mid-execution)
+    /// that need to trigger additional camera beats beyond the turn-start cue.
+    /// </summary>
+    public async Awaitable RaiseCueAndWaitAsync(AbilityExecutionCueEventChannel channel, AbilityExecutionCue cue)
+    {
+        if (channel == null) return;
+        BeginFocus();
+        channel.RaiseEvent(cue);
+        await WaitUntilFocused();
+    }
+
     private void OnEnable() => IsFocused = true;
 }

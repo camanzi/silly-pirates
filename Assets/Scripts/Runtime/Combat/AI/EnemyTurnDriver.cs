@@ -64,8 +64,12 @@ public class EnemyTurnDriver : MonoBehaviour
             : null;
         Vector3? targetPoint = targetMono != null ? targetMono.transform.position : null;
 
+        IReadOnlyList<Vector3> affectedCells = null;
+        if (ability is IThreatenedAreaProvider provider)
+            provider.TryGetThreatenedWorldPoints(_hostile, out affectedCells);
+
         _cameraDirectorState.BeginFocus();
-        _cameraCueChannel.RaiseEvent(new AbilityExecutionCue(ability, _hostile, targets, affectedCells: null, targetPoint));
+        _cameraCueChannel.RaiseEvent(new AbilityExecutionCue(ability, _hostile, targets, affectedCells, targetPoint));
         await _cameraDirectorState.WaitUntilFocused();
     }
 }

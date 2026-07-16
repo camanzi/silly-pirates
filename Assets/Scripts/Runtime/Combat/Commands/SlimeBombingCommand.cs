@@ -17,6 +17,12 @@ public class SlimeBombingCommand : ICommand
     private readonly EnemyCritStatsSO _critStats;
     private readonly SlimeBombingAbility.SlimeBombingState _state;
 
+    private readonly AbilityBase _ability;
+    private readonly AbilityExecutionCueEventChannel _cameraCueChannel;
+    private readonly CameraDirectorStateSO _cameraDirectorState;
+    private readonly float _extraHeightPerExtraShot;
+    private readonly float _extraDurationPerExtraShot;
+
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
     public SlimeBombingCommand(
@@ -26,7 +32,12 @@ public class SlimeBombingCommand : ICommand
         CellEffectEventChannel cellEffectChannel, string threatKey,
         GameObject projectilePrefab, TrajectoryConfigsSO trajectoryConfig,
         HostileCharacter caster, EnemyCritStatsSO critStats,
-        SlimeBombingAbility.SlimeBombingState state = null)
+        SlimeBombingAbility.SlimeBombingState state = null,
+        AbilityBase ability = null,
+        AbilityExecutionCueEventChannel cameraCueChannel = null,
+        CameraDirectorStateSO cameraDirectorState = null,
+        float extraHeightPerExtraShot = 0f,
+        float extraDurationPerExtraShot = 0f)
     {
         _zones = zones;
         _damage = damage;
@@ -40,6 +51,11 @@ public class SlimeBombingCommand : ICommand
         _caster = caster;
         _critStats = critStats;
         _state = state;
+        _ability = ability;
+        _cameraCueChannel = cameraCueChannel;
+        _cameraDirectorState = cameraDirectorState;
+        _extraHeightPerExtraShot = extraHeightPerExtraShot;
+        _extraDurationPerExtraShot = extraDurationPerExtraShot;
     }
 
     public async Awaitable ExecuteAsync()
@@ -55,30 +71,49 @@ public class SlimeBombingCommand : ICommand
 
         var original = t.localScale;
 
+        // Phase 1: the boss fires all N shots in sequence while the camera stays parked on it
+        // (held there by the turn-start FocusCaster cue). Projectiles are launched but not
+        // awaited here, so every shot is visibly fired before the camera moves to phase 2.
+        var flights = new List<Awaitable>(_zones.Count);
         for (int i = 0; i < _zones.Count; i++)
         {
             await Tween.Scale(t, original * 0.6f, 0.15f, Ease.InQuad);
             await Tween.Scale(t, original * 1.2f, 0.10f, Ease.OutQuad);
             await Tween.Scale(t, original,        0.10f, Ease.InOutQuad);
 
-            await LaunchProjectileAt(_zones[i].Center, _zones[i].Cells);
+            float extraHeight   = i == 0 ? 0f : _extraHeightPerExtraShot;
+            float extraDuration = i == 0 ? 0f : _extraDurationPerExtraShot;
+            flights.Add(LaunchProjectileAt(_zones[i].Center, _zones[i].Cells, extraHeight, extraDuration));
+        }
 
-            if (i < _zones.Count - 1)
-                await Awaitable.WaitForSecondsAsync(1f);
+        // Phase 2: live impact reveal — anticipate each landing in firing order so the camera is
+        // already framing the zone when its (already in-flight) projectile lands.
+        for (int i = 0; i < _zones.Count; i++)
+        {
+            if (_cameraDirectorState != null && _cameraCueChannel != null)
+            {
+                var cue = new AbilityExecutionCue(_ability, _caster, null, null, _zones[i].Center)
+                {
+                    CueTypeOverride = CameraCueType.FocusArea
+                };
+                await _cameraDirectorState.RaiseCueAndWaitAsync(_cameraCueChannel, cue);
+            }
+
+            await flights[i];
         }
 
         _cellEffectChannel?.RaiseEvent(new CellEffectPayload { Key = _threatKey, Cells = null });
     }
 
-    private async Awaitable LaunchProjectileAt(Vector3 target, List<Vector3Int> cells)
+    private async Awaitable LaunchProjectileAt(Vector3 target, List<Vector3Int> cells, float extraHeight, float extraDuration)
     {
         var projectile = GameObject.Instantiate(_projectilePrefab, _caster.Transform.position, Quaternion.identity);
 
         Vector3 start = _caster.Transform.position;
-        Vector3 ctrl  = (start + target) / 2f + Vector3.up * _trajectoryConfig.Height;
+        Vector3 ctrl  = (start + target) / 2f + Vector3.up * (_trajectoryConfig.Height + extraHeight);
 
         var state = new ProjectileState(projectile.transform, start, ctrl, target);
-        await Tween.Custom(state, 0f, 1f, duration: _trajectoryConfig.TravelDuration, ease: Ease.Linear,
+        await Tween.Custom(state, 0f, 1f, duration: _trajectoryConfig.TravelDuration + extraDuration, ease: Ease.Linear,
             onValueChange: static (s, progress) =>
             {
                 Vector3 cur = MathUtils.EvaluateBezierPoint(progress, s.Start, s.ControlPoint, s.End);

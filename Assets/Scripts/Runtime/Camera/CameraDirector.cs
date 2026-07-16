@@ -46,10 +46,12 @@ public class CameraDirector : MonoBehaviour
 
     public void HandleCue(AbilityExecutionCue cue)
     {
-        CameraCueType cueType = cue.Ability != null ? cue.Ability.CameraCue : CameraCueType.None;
-        CameraCueProfileSO profile = cue.Ability != null && cue.Ability.CameraCueProfile != null
-            ? cue.Ability.CameraCueProfile
-            : _defaultProfile;
+        CameraCueType cueType = cue.CueTypeOverride ?? (cue.Ability != null ? cue.Ability.CameraCue : CameraCueType.None);
+        CameraCueProfileSO profile = cue.ProfileOverride != null
+            ? cue.ProfileOverride
+            : cue.Ability != null && cue.Ability.CameraCueProfile != null
+                ? cue.Ability.CameraCueProfile
+                : _defaultProfile;
 
         ICameraCueHandler handler = CameraCueHandlerFactory.GetHandler(cueType);
 

@@ -11,6 +11,14 @@ public class SlimeBombingAbility : TelegraphedEnemyAbility
     [SerializeField] private DamageType _damageType = DamageType.Physical;
     [SerializeField] private SlimyCellDataSO _slimyCellData;
 
+    [Header("Camera Direction (Impact Reveal)")]
+    [SerializeField] private AbilityExecutionCueEventChannel _cameraCueChannel;
+    [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
+
+    [Header("Volley Timing")]
+    [SerializeField] private float _extraHeightPerExtraShot = 1.5f;
+    [SerializeField] private float _extraDurationPerExtraShot = 0.4f;
+
     protected override string ThreatKey => "slime-bombing";
 
     public sealed class SlimeBombingState : TelegraphState
@@ -60,8 +68,9 @@ public class SlimeBombingAbility : TelegraphedEnemyAbility
 
         state = new SlimeBombingState
         {
-            Zones    = zones,
-            AllCells = new List<Vector3Int>(allCells)
+            Zones              = zones,
+            AllCells           = new List<Vector3Int>(allCells),
+            AffectedWorldPoints = zones.ConvertAll(z => z.Center)
         };
 
         return targetCount;
@@ -83,7 +92,9 @@ public class SlimeBombingAbility : TelegraphedEnemyAbility
             _slimyCellData, _gridStateData,
             _cellEffectChannel, ThreatKey,
             _projectile, trajectoryConfigData,
-            caster, caster.CritStats, s);
+            caster, caster.CritStats, s,
+            this, _cameraCueChannel, _cameraDirectorState,
+            _extraHeightPerExtraShot, _extraDurationPerExtraShot);
     }
 
     protected override void OnPendingStateRolledBack(HostileCharacter caster, TelegraphState baseState)

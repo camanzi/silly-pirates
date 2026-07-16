@@ -17,8 +17,8 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 11400000, guid: 041f85ec16603f74c97c8fd7661bd980, type: 2}
   _icon: {fileID: 0}
-  _cameraCue: 4
-  _cameraCueProfile: {fileID: 0}
+  _cameraCue: 1
+  _cameraCueProfile: {fileID: 11400000, guid: d434e525385a72b4b85921ea6421fa03, type: 2}
   _requiredPart: {fileID: 11400000, guid: 3bdb3d57b68ab7d4fb57115e3e059b75, type: 2}
   _flavorText: The Big Octopus spit on board!
   _basePriority: 2
@@ -32,3 +32,7 @@ MonoBehaviour:
   _baseDamage: 800
   _damageType: 1
   _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}
+  _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
+  _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
+  _extraHeightPerExtraShot: 1.5
+  _extraDurationPerExtraShot: 0.4
