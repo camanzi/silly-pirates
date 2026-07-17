@@ -122,3 +122,12 @@ Assets/PlayMaker/Editor/Resources/EditorStartupPrefs.asset
 Assets/Contents/Asset_AutoGen/
 Assets/AssetBundles/
 .idea/
+
+# Third-party / restrictive-license assets (not for public redistribution)
+/[Aa]ssets/Fantasy Skybox FREE/
+/[Aa]ssets/Fantasy Skybox FREE.meta
+/[Aa]ssets/Proxy Games/
+/[Aa]ssets/Proxy Games.meta
+
+# Claude Code local machine-specific settings
+.claude/settings.local.json
