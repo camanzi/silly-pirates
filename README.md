@@ -60,6 +60,12 @@ This project is released under the **[PolyForm Noncommercial License 1.0.0](./LI
 
 ![In game screenshot](/Screenshots/in_game_screenshot.png?raw=true "Screenshot in game")
 
-## Contact
+## Contacts
 
-<!-- TODO: add links (GitHub profile, LinkedIn, portfolio site, etc.) -->
+### Lorenzo Camanzi
+- **[Github Profile](https://github.com/camanzi)**
+- **[Itch.io](https://lorenzo-camanzi.itch.io/)**
+- **[Linkedin](www.linkedin.com/in/lorenzocamanzi)**
+>
+- Email: lorenzo.camanzi@gmail.com
+- Cell:  +39 331 107 0892
