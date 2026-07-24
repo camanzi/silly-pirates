@@ -221,7 +221,7 @@ DefaultImporter:
             };
         }
 
-        internal const string version = "1.3.8";
+        internal const string version = "1.4.10";
     }
 
     internal static class FixedUpdateParameterMigration {
@@ -443,7 +443,12 @@ DefaultImporter:
 
             string methodAssemblyName = methodsWithBug[0].Module.Assembly.FullName;
             const BindingFlags findAll = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-            int numPotentialIssues = AppDomain.CurrentDomain.GetAssemblies()
+            int numPotentialIssues =
+                #if UNITY_6000_7_OR_NEWER
+                UnityEngine.Assemblies.CurrentAssemblies.GetLoadedAssemblies()
+                #else
+                AppDomain.CurrentDomain.GetAssemblies()
+                #endif
                 .Where(assembly => assembly.GetReferencedAssemblies().Any(dependency => dependency.FullName == methodAssemblyName))
                 .Where(assembly => !assembly.GetName().Name.StartsWith("PrimeTween.", StringComparison.Ordinal))
                 .SelectMany(assembly => assembly.GetTypes())
