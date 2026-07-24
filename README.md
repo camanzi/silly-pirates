@@ -48,6 +48,17 @@ The architecture favors **ScriptableObjects as the primary data/config layer**, 
 
 > **Note on art assets:** a portion of the 2D sprites/icons under `Assets/Imports` are temporary placeholders sourced externally during prototyping and are scheduled to be replaced with original art; not all of their licenses have been individually verified. A couple of Unity Asset Store packages used only for local prototyping (a free skybox pack and a nature asset kit) are excluded from this repository via `.gitignore` and are not part of the published source.
 
+### Getting the project fully working after cloning
+
+Two free Unity Asset Store packages are used for prototyping but excluded from this repo (their EULA doesn't allow redistributing the source files). To get scenes referencing them to resolve correctly, download and import them manually from the Asset Store, then place the extracted contents at the exact paths below:
+
+| Package | Import path |
+|---|---|
+| Fantasy Skybox FREE | `Assets/Fantasy Skybox FREE/` |
+| Proxy Games — Stylized Nature Kit Lite | `Assets/Proxy Games/` |
+
+Without them, the project still opens and the code compiles — you'll just see missing-material/pink-shader placeholders on the skybox and a few nature props in the affected scenes.
+
 ## License
 
 This project is released under the **[PolyForm Noncommercial License 1.0.0](./LICENSE)**.

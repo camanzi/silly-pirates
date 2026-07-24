@@ -15,7 +15,6 @@ public class MultiStepAbility : EnemyAbilityBase, IThreatenedAreaProvider
     private readonly Dictionary<HostileCharacter, StepState> _lastResolvedStates = new();
     private readonly Dictionary<HostileCharacter, Action<EnemyPartSO>> _partBrokenHandlers = new();
     private readonly Dictionary<HostileCharacter, Action> _deathHandlers = new();
-    private HostileCharacter _lastScoredCaster;
     private MultiStepAbilityStepSO _lastExecutedStep;
 
     public bool TryGetThreatenedWorldPoints(HostileCharacter caster, out IReadOnlyList<Vector3> points)
@@ -37,21 +36,12 @@ public class MultiStepAbility : EnemyAbilityBase, IThreatenedAreaProvider
         _stepIndex.Clear();
         _state.Clear();
         _lastResolvedStates.Clear();
-        _lastScoredCaster = null;
         _lastExecutedStep = null;
     }
 
-    public override string FlavorText
-    {
-        get
-        {
-            if (_lastScoredCaster == null) return base.FlavorText;
-            int idx = _stepIndex.TryGetValue(_lastScoredCaster, out var i) ? i : 0;
-            if (idx < 0 || idx >= _steps.Count) return base.FlavorText;
-            string ov = _steps[idx].FlavorTextOverride;
-            return !string.IsNullOrEmpty(ov) ? ov : base.FlavorText;
-        }
-    }
+    public override string FlavorText =>
+        _lastExecutedStep != null && !string.IsNullOrEmpty(_lastExecutedStep.FlavorTextOverride)
+            ? _lastExecutedStep.FlavorTextOverride : base.FlavorText;
 
     public override CameraCueType CameraCue =>
         _lastExecutedStep != null && _lastExecutedStep.CameraCueTypeOverride.HasValue
@@ -102,7 +92,6 @@ public class MultiStepAbility : EnemyAbilityBase, IThreatenedAreaProvider
 
     protected override float ComputeScore(AIContext context, out TargetingData targeting)
     {
-        _lastScoredCaster = context.Caster;
         if (_stepIndex.TryGetValue(context.Caster, out int idx) && idx > 0)
         { targeting = TargetingData.Empty; return 100f; }
         return _steps[0].ComputeScore(context, null, out targeting);

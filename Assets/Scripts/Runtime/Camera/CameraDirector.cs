@@ -9,7 +9,7 @@ public class CameraDirector : MonoBehaviour
     [SerializeField] private CinemachineBrain _brain;
     [SerializeField] private CameraDirectorStateSO _directorState;
     [SerializeField] private AbilityExecutionCueEventChannel _cueChannel;
-    [SerializeField] private CameraCueProfileSO _defaultProfile;
+    [SerializeField] private CameraCueDefaultProfilesSO _cueDefaults;
 
     [Tooltip("Anchor moved onto ground-targeted positions so the target group can frame abilities with no ITargettable")]
     [SerializeField] private Transform _groundAnchor;
@@ -51,7 +51,7 @@ public class CameraDirector : MonoBehaviour
             ? cue.ProfileOverride
             : cue.Ability != null && cue.Ability.CameraCueProfile != null
                 ? cue.Ability.CameraCueProfile
-                : _defaultProfile;
+                : _cueDefaults != null ? _cueDefaults.GetProfile(cueType) : null;
 
         ICameraCueHandler handler = CameraCueHandlerFactory.GetHandler(cueType);
 

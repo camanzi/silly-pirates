@@ -17,11 +17,13 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 11400000, guid: ef232f08ea2afcd448a72b4afc59923c, type: 2}
   _icon: {fileID: 0}
-  _cameraCue: 2
-  _cameraCueProfile: {fileID: 0}
+  _cameraCue: 1
+  _cameraCueProfile: {fileID: 11400000, guid: 389179a7eb3bb1e488c82ff0f96b5015, type: 2}
   _requiredPart: {fileID: 0}
   _flavorText: A character is being cursed!
   _basePriority: 1
   _unlimitedUse: 0
   _minTurnsBeforeUse: 0
   _cursePassive: {fileID: 11400000, guid: 1f5b98cd91e555d4a888a8f0e6bbfe95, type: 2}
+  _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
+  _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}

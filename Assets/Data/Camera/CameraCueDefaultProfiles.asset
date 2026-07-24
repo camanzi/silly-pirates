@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac50294325332b247a8f5760c6897966, type: 3}
+  m_Name: CameraCueDefaultProfiles
+  m_EditorClassIdentifier: Assembly-CSharp::CameraCueDefaultProfilesSO
+  _profilesByCueType:
+    _serializedList:
+    - Key: 1
+      Value: {fileID: 11400000, guid: ac9a2fabf20a8d34bba4754f0c72deab, type: 2}
+    - Key: 2
+      Value: {fileID: 11400000, guid: 389179a7eb3bb1e488c82ff0f96b5015, type: 2}
+    - Key: 3
+      Value: {fileID: 11400000, guid: 5829085fd3e658e488f48f31e8d1be35, type: 2}
+    - Key: 4
+      Value: {fileID: 11400000, guid: d434e525385a72b4b85921ea6421fa03, type: 2}
+    - Key: 5
+      Value: {fileID: 11400000, guid: d434e525385a72b4b85921ea6421fa03, type: 2}
+  _fallbackProfile: {fileID: 11400000, guid: a5ecdf0b138379e4bb11792e1ac5f2cf, type: 2}

@@ -7,7 +7,8 @@ public static class CameraCueHandlerFactory
         { CameraCueType.FocusCasterThenTarget, new FocusCasterThenTargetCueHandler() },
         { CameraCueType.FramePair, new FramePairCueHandler() },
         { CameraCueType.FrameCasterAndArea, new FrameCasterAndAreaCueHandler() },
-        { CameraCueType.FocusArea, new FocusAreaCueHandler() }
+        { CameraCueType.FocusArea, new FocusAreaCueHandler() },
+        { CameraCueType.FocusTarget, new FocusTargetCueHandler() }
     };
 
     public static ICameraCueHandler GetHandler(CameraCueType type)

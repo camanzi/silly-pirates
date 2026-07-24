@@ -6,6 +6,10 @@ public class SlimyCurseAbility : EnemyAbilityBase
     [Header("SlimyCurse ability configs")]
     [SerializeField] private SlimyCursePassiveSO _cursePassive;
 
+    [Header("Camera Direction (Curse Reveal)")]
+    [SerializeField] private AbilityExecutionCueEventChannel _cameraCueChannel;
+    [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
+
     protected override float ComputeScore(AIContext context, out TargetingData targeting)
     {
         GridCharacter preferredTarget = null;
@@ -56,6 +60,9 @@ public class SlimyCurseAbility : EnemyAbilityBase
         new SlimyCurseCommand(
             caster,
             (GridCharacter)targetingData.Value.selectedTarget,
-            _cursePassive
+            _cursePassive,
+            this,
+            _cameraCueChannel,
+            _cameraDirectorState
         );
 }

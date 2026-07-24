@@ -26,7 +26,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b992fda6e3b8ca741a3fcd32ee9c1c6c, type: 2}
     - target: {fileID: 1228960839652886534, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: '_baseBehaviors.Array.data[2]'
-      value:
+      value: 
       objectReference: {fileID: 11400000, guid: 054e664cd853cc54a89bfddccde66fbe, type: 2}
     - target: {fileID: 3566868596823550263, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_Name
