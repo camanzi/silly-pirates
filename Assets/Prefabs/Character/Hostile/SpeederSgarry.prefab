@@ -53,16 +53,32 @@ PrefabInstance:
       value: SpeederSgarry
       objectReference: {fileID: 0}
     - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: m_Size.x
+      value: 5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: m_Size.y
+      value: 5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 41c1de711b2abc547bafe6dbb940ac97, type: 3}
+    - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Color.g
-      value: 0.25302082
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Color.r
-      value: 0.8962264
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

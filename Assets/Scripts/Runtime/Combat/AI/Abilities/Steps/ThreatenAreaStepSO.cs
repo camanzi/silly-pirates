@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Threaten Area Step", menuName = "Abilities/Enemy/Steps/Threaten Area")]
 public class ThreatenAreaStepSO : MultiStepAbilityStepSO
@@ -33,9 +34,19 @@ public class ThreatenAreaStepSO : MultiStepAbilityStepSO
 
         foreach (var t in targets)
         {
-            Vector3Int cell = (t as GridElement)?.gridPosition ?? Vector3Int.FloorToInt(t.Transform.position);
+            var gridElement = t as GridElement;
+            Vector3Int cell = gridElement?.gridPosition ?? Vector3Int.FloorToInt(t.Transform.position);
+            Tilemap tilemap = gridElement?.activeTilemap;
+
             var rawCells = shape.GetCells(cell, _radius, cell);
-            var cells = rawCells.ConvertAll(v => Vector3Int.FloorToInt(v));
+            var cells = new List<Vector3Int>(rawCells.Count);
+            foreach (var v in rawCells)
+            {
+                Vector3Int c = Vector3Int.FloorToInt(v);
+                if (tilemap != null && !tilemap.HasTile(c)) continue;
+                cells.Add(c);
+            }
+
             zones.Add((t.Transform.position, cells));
             foreach (var c in cells) allCells.Add(c);
         }

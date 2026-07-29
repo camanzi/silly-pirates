@@ -53,16 +53,32 @@ PrefabInstance:
       value: HealerSgarry
       objectReference: {fileID: 0}
     - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: m_Size.x
+      value: 5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: m_Size.y
+      value: 5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 701c4d540924e6f4bba801c455050917, type: 3}
+    - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Color.b
-      value: 0.4598587
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Color.g
-      value: 0.8113208
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: m_Color.r
-      value: 0.34060165
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4307915516010264856, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4829048724554651852, guid: 0e53cc822c02e6f4598600a2d4e545d6, type: 3}
       propertyPath: _aiData

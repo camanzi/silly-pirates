@@ -17,7 +17,7 @@ MonoBehaviour:
   _cameraCueProfileOverride: {fileID: 11400000, guid: d434e525385a72b4b85921ea6421fa03, type: 2}
   _flavorTextOverride: The Big Octopus menace 2 areas
   _shapeType: 0
-  _radius: 3
+  _radius: 2
   _areaCount: 2
   _selectionStrategy: {fileID: 11400000, guid: 6cf7382e168c706439ef045e63dcab12, type: 2}
   _cellEffectChannel: {fileID: 11400000, guid: cccfa9f09a7271f4a86b5b07bcdf1881, type: 2}
