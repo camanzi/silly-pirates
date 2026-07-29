@@ -28,4 +28,4 @@ MonoBehaviour:
   _percentHeal: 0.1
   _healThreshold: 0.75
   _requiredAlternateTurns: 1
-  _projectile: {fileID: 7377031095278769717, guid: 9d77df458aeaca448ba27a33b5353cb6, type: 3}
+  _projectile: {fileID: 7377031095278769717, guid: 31c9d9a407ec49f485e5f50754b48c4b, type: 3}

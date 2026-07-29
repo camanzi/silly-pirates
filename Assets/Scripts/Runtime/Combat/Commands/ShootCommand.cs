@@ -78,6 +78,7 @@ public class ShootCommand : ICommand
     {
         DamageType effectiveType = ResolveDMGType();
         var projectile = GameObject.Instantiate(_projectileConfig.GetPrefab(effectiveType), _caster.Transform.position, Quaternion.identity);
+        var projectileComponent = projectile.GetComponent<Projectile>();
 
         Vector3 start = _caster.Transform.position;
         Vector3 end = target.Transform.position;
@@ -95,10 +96,10 @@ public class ShootCommand : ICommand
                 s.Projectile.localScale = ProjectileScale;
             });
 
-        HandleImpact(projectile, target);
+        HandleImpact(projectile, projectileComponent, target);
     }
 
-    private void HandleImpact(GameObject projectile, ITargettable target)
+    private void HandleImpact(GameObject projectile, Projectile projectileComponent, ITargettable target)
     {
         if (target is IHealthOwner healthOwner)
         {
@@ -108,6 +109,7 @@ public class ShootCommand : ICommand
             DamageType dmgType = ResolveDMGType();
             healthOwner.Health.TakeDamage(new DamagePayload(_baseDMG, dmgType) { IsMiss = !isHit });
         }
+        projectileComponent?.PlayImpactEffect();
         GameObject.Destroy(projectile);
     }
 

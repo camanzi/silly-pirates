@@ -47,6 +47,7 @@ public class SlimyBallCommand : ICommand
     private async Awaitable LaunchProjectile()
     {
         var projectile = GameObject.Instantiate(_projectilePrefab, _caster.Transform.position, Quaternion.identity);
+        var projectileComponent = projectile.GetComponent<Projectile>();
 
         Vector3 start = _caster.Transform.position;
         Vector3 end   = _target.Transform.position;
@@ -76,6 +77,7 @@ public class SlimyBallCommand : ICommand
 
         _slimyCellData?.Apply(_targetCell);
 
+        projectileComponent?.PlayImpactEffect();
         GameObject.Destroy(projectile);
     }
 

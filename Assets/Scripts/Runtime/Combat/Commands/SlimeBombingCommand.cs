@@ -112,6 +112,7 @@ public class SlimeBombingCommand : ICommand
     private async Awaitable LaunchProjectileAt(Vector3 target, List<Vector3Int> cells, float extraHeight, float extraDuration)
     {
         var projectile = GameObject.Instantiate(_projectilePrefab, _caster.Transform.position, Quaternion.identity);
+        var projectileComponent = projectile.GetComponent<Projectile>();
 
         Vector3 start = _caster.Transform.position;
         Vector3 ctrl  = (start + target) / 2f + Vector3.up * (_trajectoryConfig.Height + extraHeight);
@@ -127,6 +128,7 @@ public class SlimeBombingCommand : ICommand
             });
 
         ApplyDamageAndSlimy(cells);
+        projectileComponent?.PlayImpactEffect();
         GameObject.Destroy(projectile);
     }
 

@@ -68,6 +68,7 @@ public class NetThrowCommand : ICommand
     private async Awaitable LaunchProjectile(ITargettable target)
     {
         var projectile = GameObject.Instantiate(_projectilePrefab, _caster.Transform.position, Quaternion.identity);
+        var projectileComponent = projectile.GetComponent<Projectile>();
 
         Vector3 start = _caster.Transform.position;
         Vector3 end = target.Transform.position;
@@ -85,10 +86,10 @@ public class NetThrowCommand : ICommand
                 s.Projectile.localScale = ProjectileScale;
             });
 
-        HandleImpact(projectile, target);
+        HandleImpact(projectile, projectileComponent, target);
     }
 
-    private void HandleImpact(GameObject projectile, ITargettable target)
+    private void HandleImpact(GameObject projectile, Projectile projectileComponent, ITargettable target)
     {
         PassiveAbilityController passiveController = null;
 
@@ -100,6 +101,7 @@ public class NetThrowCommand : ICommand
         if (passiveController != null)
             passiveController.AddPassive(Object.Instantiate(_slowPassiveSO));
 
+        projectileComponent?.PlayImpactEffect();
         GameObject.Destroy(projectile);
     }
 

@@ -6,12 +6,12 @@ public class SlimyCursePassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnStar
 {
     [SerializeField] private SlimyCellDataSO _slimyCellData;
     [SerializeField] private int _durationInTurns = 1;
-    [SerializeField] private PassiveVFXController _vfxPrefab;
+    [SerializeField] private VFXController _vfxPrefab;
 
     private static readonly HashSet<GridCharacter> _activeCurseTargets = new();
     private PassiveAbilityController _controller;
     private int _turnStartCount;
-    private PassiveVFXController _vfxInstance;
+    private VFXController _vfxInstance;
 
     public static bool IsActiveOn(GridCharacter character) => _activeCurseTargets.Contains(character);
 
