@@ -218,6 +218,7 @@ GameObject:
   - component: {fileID: 7415223762041215643}
   - component: {fileID: 6399273607978963194}
   - component: {fileID: 3847378589007716841}
+  - component: {fileID: 8816936827652704413}
   m_Layer: 0
   m_Name: PF_Character
   m_TagString: Player
@@ -465,6 +466,7 @@ MonoBehaviour:
   _basePassivesSO:
   - {fileID: 11400000, guid: 2731b8e86265abc46ab6b367e1176471, type: 2}
   _passiveNotificationChannel: {fileID: 11400000, guid: f34e6cbc31ae5d74485d162d04d6fd21, type: 2}
+  _nativePassiveSO: {fileID: 0}
 --- !u!114 &7415223762041215643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -536,3 +538,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8816936827652704413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4094058086563390557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 149d29a88ba6c7847bfd963f3ad03a7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealVFXFeedback
+  _healVFXPrefab: {fileID: 4519361680784028135, guid: 7e6b7496d7922f74ca6e37c922195e8d, type: 3}
+  _referenceRadius: 1.7
+  _fallbackRadius: 1.7
+  _minScale: 0.6
+  _maxScale: 2.2

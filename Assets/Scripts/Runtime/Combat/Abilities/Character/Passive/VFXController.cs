@@ -39,7 +39,7 @@ public class VFXController : MonoBehaviour
         float max = 0f;
         foreach (var ps in _particles)
         {
-            float lifetime = ps.main.startLifetime.constantMax;
+            float lifetime = ps.main.startLifetime.constantMax + ps.main.duration;
             if (lifetime > max)
                 max = lifetime;
         }

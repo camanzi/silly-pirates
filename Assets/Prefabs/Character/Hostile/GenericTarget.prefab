@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 3596544409351883156}
   - component: {fileID: 7951698253977833827}
   - component: {fileID: 5210823321150407132}
+  - component: {fileID: 8499188774154488772}
   m_Layer: 0
   m_Name: GenericTarget
   m_TagString: Untagged
@@ -371,6 +372,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8499188774154488772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566868596823550263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 149d29a88ba6c7847bfd963f3ad03a7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealVFXFeedback
+  _healVFXPrefab: {fileID: 4519361680784028135, guid: 7e6b7496d7922f74ca6e37c922195e8d, type: 3}
+  _referenceRadius: 1.7
+  _fallbackRadius: 1.7
+  _minScale: 0.6
+  _maxScale: 2.2
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0
