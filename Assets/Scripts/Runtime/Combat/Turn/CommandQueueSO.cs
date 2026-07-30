@@ -20,12 +20,20 @@ public class CommandQueueSO : ScriptableObject
         if (_isProcessing) return;
         _isProcessing = true;
 
-        while (_commandQueue.Count > 0)
+        // finally obbligatorio: senza, un'eccezione da un qualsiasi comando lascerebbe _isProcessing
+        // a true per sempre e questa SO — condivisa fra tutti i turni — rifiuterebbe silenziosamente
+        // ogni comando successivo.
+        try
         {
-            ICommand cmd = _commandQueue.Dequeue();
-            await cmd.ExecuteAsync();
+            while (_commandQueue.Count > 0)
+            {
+                ICommand cmd = _commandQueue.Dequeue();
+                await cmd.ExecuteAsync();
+            }
         }
-
-        _isProcessing = false;
+        finally
+        {
+            _isProcessing = false;
+        }
     }
 }

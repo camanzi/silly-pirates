@@ -9,6 +9,8 @@ public class SlimyBallAbility : EnemyAbilityBase
     [SerializeField] private int _baseDamage = 15;
     [SerializeField] private DamageType _damageType = DamageType.Physical;
     [SerializeField] private SlimyCellDataSO _slimyCellData;
+    [Tooltip("Salto squash&stretch fuori dall'acqua prima dello sparo. Se null, si usa il vecchio squash sul posto.")]
+    [SerializeField] private JumpAnimationConfigSO _jumpConfig;
 
     protected override float ComputeScore(AIContext context, out TargetingData targeting)
     {
@@ -67,8 +69,9 @@ public class SlimyBallAbility : EnemyAbilityBase
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
+        var hostile = caster as HostileCharacter;
         return new SlimyBallCommand(
-            caster,
+            hostile,
             targetingData.Value.selectedTarget,
             _projectile,
             trajectoryConfigData,
@@ -76,7 +79,8 @@ public class SlimyBallAbility : EnemyAbilityBase
             _damageType,
             _slimyCellData,
             targetingData.Value.cellPosition,
-            (caster as HostileCharacter)?.CritStats
+            hostile?.CritStats,
+            _jumpConfig
         );
     }
 }

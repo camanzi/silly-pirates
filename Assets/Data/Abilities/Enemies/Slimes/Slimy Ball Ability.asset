@@ -28,3 +28,4 @@ MonoBehaviour:
   _baseDamage: 350
   _damageType: 1
   _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}
+  _jumpConfig: {fileID: 11400000, guid: b86ab2712c02bb84d9728e1179a0c0e6, type: 2}

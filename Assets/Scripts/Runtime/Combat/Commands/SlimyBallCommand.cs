@@ -1,9 +1,10 @@
+using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
 public class SlimyBallCommand : ICommand
 {
-    private readonly IInteractableElement _caster;
+    private readonly HostileCharacter _caster;
     private readonly ITargettable _target;
     private readonly GameObject _projectilePrefab;
     private readonly TrajectoryConfigsSO _trajectoryConfig;
@@ -12,14 +13,16 @@ public class SlimyBallCommand : ICommand
     private readonly SlimyCellDataSO _slimyCellData;
     private readonly Vector3Int _targetCell;
     private readonly EnemyCritStatsSO _critStats;
+    private readonly JumpAnimationConfigSO _jumpConfig;
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public SlimyBallCommand(IInteractableElement caster, ITargettable target,
+    public SlimyBallCommand(HostileCharacter caster, ITargettable target,
                              GameObject projectilePrefab, TrajectoryConfigsSO trajectoryConfig, int damage,
                              DamageType damageType = DamageType.Physical,
                              SlimyCellDataSO slimyCellData = null, Vector3Int targetCell = default,
-                             EnemyCritStatsSO critStats = null)
+                             EnemyCritStatsSO critStats = null,
+                             JumpAnimationConfigSO jumpConfig = null)
     {
         _caster = caster;
         _target = target;
@@ -30,9 +33,64 @@ public class SlimyBallCommand : ICommand
         _slimyCellData = slimyCellData;
         _targetCell = targetCell;
         _critStats = critStats;
+        _jumpConfig = jumpConfig;
     }
 
+    /// <summary>
+    /// Lo slime salta fuori dall'acqua fino all'altezza del ponte (la Y del target), spara mentre è
+    /// sospeso all'apice, e solo dopo ricade in acqua.
+    /// </summary>
     public async Awaitable ExecuteAsync()
+    {
+        Transform animationRoot = _caster.LifecycleAnimator != null ? _caster.LifecycleAnimator.AnimationRoot : null;
+
+        // Senza un pivot visivo dedicato (fallback su transform di griglia) o senza config non
+        // animiamo il salto: sposteremmo collider e posizione di cella, o gireremmo con parametri
+        // non pronti. Si degrada al vecchio squash-stretch sul root.
+        bool canAnimateJump = animationRoot != null && animationRoot != _caster.Transform && _jumpConfig != null;
+
+        if (!canAnimateJump)
+        {
+            await LegacySquashStretch();
+            await LaunchProjectile(_caster.Transform.position);
+            return;
+        }
+
+        Vector3 restLocalPosition = animationRoot.localPosition;
+        Vector3 restLocalScale = animationRoot.localScale;
+        // Letta prima di qualunque await: il calcolo dell'apice non può fallire più tardi.
+        float targetWorldY = _target.Transform.position.y;
+        float apexWorldHeight = _jumpConfig.ComputeApexHeight(_caster.Transform.position.y, targetWorldY);
+        Vector3 splashWorldPosition = _caster.Transform.position + Vector3.up * _jumpConfig.SplashYOffset;
+        CancellationToken token = _caster.destroyCancellationToken;
+
+        try
+        {
+            await JumpSquashStretchHelper.JumpUpAsync(
+                animationRoot, restLocalPosition, restLocalScale, apexWorldHeight, _jumpConfig, splashWorldPosition, token);
+
+            if (_jumpConfig.HangHoldDuration > 0f)
+                await Tween.Delay(_jumpConfig.HangHoldDuration);
+
+            // Il proiettile parte dalla posizione MONDO del pivot sollevato, non dal root a pelo d'acqua.
+            await LaunchProjectile(animationRoot.position);
+
+            await JumpSquashStretchHelper.FallDownAsync(
+                animationRoot, restLocalPosition, restLocalScale, _jumpConfig, splashWorldPosition, token);
+        }
+        finally
+        {
+            // Ridondante col finally interno di FallDownAsync, ma necessario: se JumpUpAsync o
+            // LaunchProjectile falliscono prima di arrivarci, il pivot non deve restare sospeso in aria.
+            JumpSquashStretchHelper.ResetToRest(animationRoot, restLocalPosition, restLocalScale);
+        }
+    }
+
+    /// <summary>
+    /// Comportamento originale, mantenuto come fallback quando non è disponibile un pivot visivo
+    /// dedicato sicuro da animare.
+    /// </summary>
+    private async Awaitable LegacySquashStretch()
     {
         var t = _caster.Transform;
         var original = t.localScale;
@@ -40,16 +98,14 @@ public class SlimyBallCommand : ICommand
         await Tween.Scale(t, original * 0.6f, 0.15f, Ease.InQuad);
         await Tween.Scale(t, original * 1.2f, 0.10f, Ease.OutQuad);
         await Tween.Scale(t, original,        0.10f, Ease.InOutQuad);
-
-        await LaunchProjectile();
     }
 
-    private async Awaitable LaunchProjectile()
+    private async Awaitable LaunchProjectile(Vector3 startPosition)
     {
-        var projectile = GameObject.Instantiate(_projectilePrefab, _caster.Transform.position, Quaternion.identity);
+        var projectile = GameObject.Instantiate(_projectilePrefab, startPosition, Quaternion.identity);
         var projectileComponent = projectile.GetComponent<Projectile>();
 
-        Vector3 start = _caster.Transform.position;
+        Vector3 start = startPosition;
         Vector3 end   = _target.Transform.position;
         Vector3 ctrl  = (start + end) / 2f + Vector3.up * _trajectoryConfig.Height;
 

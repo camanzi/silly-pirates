@@ -402,7 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d11e152c3738e48b80e5d3cd16e52b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterLifecycleAnimator
-  _animationRoot: {fileID: 3906188551014031183}
+  _animationRoot: {fileID: 4222457678788468788}
   _spriteRenderer: {fileID: 2611006998671086757}
   _animations:
     _serializedList:

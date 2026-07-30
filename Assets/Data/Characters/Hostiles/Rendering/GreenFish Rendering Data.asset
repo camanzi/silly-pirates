@@ -9,10 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f03152fcfb4bcf1479dc4473dace3173, type: 3}
-  m_Name: FramePairCameraCueProfile
-  m_EditorClassIdentifier: Assembly-CSharp::CameraCueProfileSO
-  _framingSize: 0.2
-  _memberRadius: 2
-  _preShotHold: 0.25
-  _postShotHold: 0.4
+  m_Script: {fileID: 11500000, guid: 7d875389877f46b4aabbefca08327b34, type: 3}
+  m_Name: GreenFish Rendering Data
+  m_EditorClassIdentifier: Assembly-CSharp::TurnRenderingAgentDataSO
+  _turnAgentIcon: {fileID: 21300000, guid: 701c4d540924e6f4bba801c455050917, type: 3}

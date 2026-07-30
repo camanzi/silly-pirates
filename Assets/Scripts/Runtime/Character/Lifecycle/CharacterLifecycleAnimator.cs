@@ -16,18 +16,51 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
     public bool IsPlaying { get; private set; }
 
-    private LifecycleAnimationContext _context;
-
-    private void Awake()
+    /// <summary>
+    /// Pivot visivo (es. MeshHolder) per animazioni una-tantum esterne alle <see cref="LifecyclePhase"/>,
+    /// come i salti in combattimento. Se il prefab non ha un pivot dedicato, <see cref="EnsureRestPoseCaptured"/>
+    /// ha già fatto fallback su <c>transform</c> loggando un errore: i chiamanti devono trattare
+    /// "<c>AnimationRoot == transform</c>" come "nessun pivot sicuro disponibile" e NON animarlo,
+    /// per non spostare collider e posizione di griglia.
+    /// </summary>
+    public Transform AnimationRoot
     {
-        if (_animationRoot == null) _animationRoot = transform;
-        if (_spriteRenderer == null) _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
-        CaptureRestPose();
+        get
+        {
+            EnsureRestPoseCaptured();
+            return _animationRoot;
+        }
     }
 
-    private void CaptureRestPose()
+    private LifecycleAnimationContext _context;
+    private bool _restPoseCaptured;
+
+    private void Awake() => EnsureRestPoseCaptured();
+
+    /// <summary>
+    /// Cattura una sola volta la posa a riposo, risolvendo prima i riferimenti mancanti.
+    /// Lazy e idempotente perché su <c>Object.Instantiate</c> l'<c>OnEnable</c> di un altro componente
+    /// (<see cref="HostileCharacter.OnCombatJoin"/> → <see cref="Play"/>) può girare prima di questo
+    /// <c>Awake</c>: senza la cattura lazy il contesto resterebbe <c>default</c> e l'animazione
+    /// verrebbe saltata in silenzio. Il flag garantisce che la posa non venga mai ricatturata dopo
+    /// che un'animazione l'ha spostata — requisito di <see cref="ResetToRest"/>.
+    /// </summary>
+    private void EnsureRestPoseCaptured()
     {
+        if (_restPoseCaptured) return;
+        _restPoseCaptured = true;
+
+        if (_spriteRenderer == null) _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (_animationRoot == null)
+        {
+            _animationRoot = transform;
+            Debug.LogError(
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': _animationRoot non assegnato. " +
+                "Le animazioni sposteranno il transform di griglia (collider inclusi) invece del solo " +
+                "pivot visivo. Assegnare un child pivot (es. MeshHolder).", this);
+        }
+
         Color restColor = _spriteRenderer != null ? _spriteRenderer.color : Color.white;
         _context = new LifecycleAnimationContext(
             transform,
@@ -53,19 +86,47 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
     public async Awaitable PlayAsync(LifecyclePhase phase, CancellationToken token)
     {
-        if (_animations == null || !_animations.TryGetValue(phase, out LifecycleAnimationSO animation) || animation == null)
+        EnsureRestPoseCaptured();
+
+        // [LIFECYCLE-DEBUG] blocco temporaneo — cancellare per intero dopo la diagnosi
+        {
+            LifecycleAnimationSO dbgAnim = null;
+            bool dbgFound = _animations != null && _animations.TryGetValue(phase, out dbgAnim);
+            Debug.Log(
+                $"[LIFECYCLE-DEBUG] PlayAsync({phase}) su '{name}' | entries={(_animations == null ? -1 : _animations.Count)}" +
+                $" | faseTrovata={dbgFound} | anim={(dbgAnim == null ? "NULL" : dbgAnim.name)}" +
+                $" | animationRoot={(_context.AnimationRoot == null ? "NULL" : _context.AnimationRoot.name)}" +
+                $" | rootÈIlTransformDiGriglia={_context.AnimationRoot == transform}" +
+                $" | restLocalPos={_context.RestLocalPosition} | posAttuale={transform.position}", this);
+        }
+
+        // Fase non configurata: silenzioso, è la configurazione voluta (non tutti i personaggi
+        // hanno un'animazione per ogni fase).
+        if (_animations == null || !_animations.TryGetValue(phase, out LifecycleAnimationSO animation))
             return;
 
-        // Guardia: se Awake non ha ancora catturato la posa (ordine di inizializzazione dei componenti)
-        // non c'è nulla su cui animare — meglio saltare che far esplodere un tween su un target null.
-        if (_context.AnimationRoot == null) return;
+        // Entry presente ma senza SO: quasi certamente un wiring dimenticato, non un'assenza voluta.
+        if (animation == null)
+        {
+            Debug.LogWarning(
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': la fase {phase} è nel dizionario " +
+                "ma non ha una LifecycleAnimationSO assegnata.", this);
+            return;
+        }
 
         animation.Prepare(in _context);
+
+        // [LIFECYCLE-DEBUG] temporaneo — cancellare dopo la diagnosi
+        Debug.Log($"[LIFECYCLE-DEBUG] dopo Prepare({phase}) su '{name}': animationRoot.localPos={_context.AnimationRoot.localPosition}" +
+                  $" | alpha={(_context.Renderer == null ? -1f : _context.Renderer.color.a)}", this);
 
         IsPlaying = true;
         try
         {
             await animation.PlayAsync(_context, token);
+
+            // [LIFECYCLE-DEBUG] temporaneo — cancellare dopo la diagnosi
+            Debug.Log($"[LIFECYCLE-DEBUG] {phase} COMPLETATA su '{name}': animationRoot.localPos={_context.AnimationRoot.localPosition}", this);
         }
         finally
         {
@@ -89,6 +150,8 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
     public void ResetToRest()
     {
+        EnsureRestPoseCaptured();
+
         if (_animationRoot != null)
         {
             _animationRoot.localPosition = _context.RestLocalPosition;
