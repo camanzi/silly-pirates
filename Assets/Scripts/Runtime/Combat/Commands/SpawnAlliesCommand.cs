@@ -7,6 +7,7 @@ public class SpawnAlliesCommand : ICommand
     private readonly HostileCharacter _caster;
     private readonly List<(HostileCharacter prefab, SpawnPoint point)> _spawnPairs;
     private readonly Transform _partTransform;
+    private readonly List<CharacterLifecycleAnimator> _spawnedAnimators = new();
 
     public SpawnAlliesCommand(
         HostileCharacter caster,
@@ -23,13 +24,20 @@ public class SpawnAlliesCommand : ICommand
         Vector3 origin = _partTransform.position;
         await AnimatePart(_partTransform);
 
+        _spawnedAnimators.Clear();
         foreach (var (prefab, spawnPoint) in _spawnPairs)
         {
             var spawnedGO = Object.Instantiate(prefab.gameObject, spawnPoint.Position, Quaternion.identity);
             var spawned = spawnedGO.GetComponent<HostileCharacter>();
 
             spawnPoint.Claim(spawned);
+
+            if (spawned.LifecycleAnimator != null)
+                _spawnedAnimators.Add(spawned.LifecycleAnimator);
         }
+
+        foreach (var animator in _spawnedAnimators)
+            await animator.WaitUntilIdleAsync(_caster.destroyCancellationToken);
 
         await Tween.Position(_partTransform, origin, 0.4f, Ease.InQuad);
 

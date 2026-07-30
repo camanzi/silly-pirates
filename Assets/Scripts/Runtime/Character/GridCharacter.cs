@@ -95,6 +95,7 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
     private DirectionalSpriteController _directionalSpriteController;
     private PassiveAbilityController _passiveAbilityController;
     private HealthController _healthController;
+    private CharacterLifecycleAnimator _lifecycleAnimator;
     private Tween _moveTween;
     private readonly List<IMovementModifier> _movementModifiers = new();
     private readonly List<IAgilityModifier> _agilityModifiers = new();
@@ -144,6 +145,7 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
         _healthController = GetComponent<HealthController>();
+        _lifecycleAnimator = GetComponent<CharacterLifecycleAnimator>();
     }
 
     protected override void OnEnable()
@@ -218,16 +220,22 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
         }
     }
 
-    public void OnCombatJoin() => this.HandleCombatJoin();
+    public void OnCombatJoin()
+    {
+        _lifecycleAnimator?.Play(LifecyclePhase.Spawn);
+        this.HandleCombatJoin();
+    }
 
     public void OnCombatLeave()
     {
         _directionalSpriteController?.SetDeadVisual();
+        _lifecycleAnimator?.Play(LifecyclePhase.Leave); // fire-and-forget: gli alleati non vengono disattivati
         this.HandleCombatLeave();
     }
 
     public void OnCombatRevive()
     {
+        _lifecycleAnimator?.ResetToRest();
         _directionalSpriteController?.ResetVisual();
         _directionalSpriteController?.PlayAnimation(EAnimation.Idle);
         OnCombatJoin();

@@ -43,6 +43,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     public Transform Transform => transform;
     public EnemyCritStatsSO CritStats => _critStats;
     public OutlinerHelper OutlinerHelper => _outlinerHelper;
+    public CharacterLifecycleAnimator LifecycleAnimator => _lifecycleAnimator;
     public TurnRenderingAgentDataSO RenderingData => _renderingAgentData;
     public TurnAgentDataSO AgentData => _agentData;
     public SelectionContextSO SelectionContext => _selectionContextSO;
@@ -106,6 +107,8 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     private EnemyPartController _partController;
     private PassiveAbilityController _passiveAbilityController;
     private DirectionalSpriteController _directionalSpriteController;
+    private CharacterLifecycleAnimator _lifecycleAnimator;
+    private Collider[] _colliders;
     private readonly List<IAgilityModifier> _agilityModifiers = new();
     private readonly List<IEvasionModifier> _evasionModifiers = new();
     private readonly List<IOnTurnStart> _turnStartHandlers = new();
@@ -119,6 +122,8 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         _partController = GetComponent<EnemyPartController>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
         _directionalSpriteController = GetComponent<DirectionalSpriteController>();
+        _lifecycleAnimator = GetComponent<CharacterLifecycleAnimator>();
+        _colliders = GetComponentsInChildren<Collider>();
     }
 
     public bool IsPartFunctional(EnemyPartSO part) => _partController == null || _partController.IsPartFunctional(part);
@@ -172,27 +177,41 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public void OnSelectionCtxChange() => this.HandlePointerExit();
 
-    public void OnCombatJoin() => this.HandleCombatJoin();
+    public void OnCombatJoin()
+    {
+        SetInteractable(true);                  // ripristina i collider se il GO viene riattivato dopo una morte
+        _lifecycleAnimator?.Play(LifecyclePhase.Spawn);
+        this.HandleCombatJoin();
+    }
 
-    public void OnCombatLeave()
+    public async void OnCombatLeave()
     {
         _spawnPoint?.Release();
         _spawnPoint = null;
-        _directionalSpriteController?.PlayAnimation(EAnimation.Death);
+
+        this.HandleCombatLeave();               // PRIMA di tutto: esce subito dal turn order
+        SetInteractable(false);                 // collider + outline off: non cliccabile mentre affonda
         _directionalSpriteController?.SetDeadVisual();
-        // FIXME Later
-        // Da sbloccare quando avremo animazioni di morte per i nemici, per ora è più semplice disattivare direttamente l'oggetto
-        // if (_directionalSpriteController != null)
-        //     _directionalSpriteController.OnAnimationComplete += OnDeathAnimationComplete;
+
+        try
+        {
+            if (_lifecycleAnimator != null)
+                await _lifecycleAnimator.PlayAsync(LifecyclePhase.Leave, destroyCancellationToken);
+        }
+        catch (OperationCanceledException) { return; }
+
+        if (this == null) return;               // distrutto durante l'animazione
         gameObject.SetActive(false);
-        this.HandleCombatLeave();
     }
 
-    private void OnDeathAnimationComplete(EAnimation anim)
+    private void SetInteractable(bool interactable)
     {
-        if (anim != EAnimation.Death) return;
-        _directionalSpriteController.OnAnimationComplete -= OnDeathAnimationComplete;
-        gameObject.SetActive(false);
+        if (_colliders != null)
+            foreach (var collider in _colliders)
+                if (collider != null) collider.enabled = interactable;
+
+        if (!interactable)
+            _outlinerHelper?.ClearOutline();
     }
 
     public async void OnStartingTurn()

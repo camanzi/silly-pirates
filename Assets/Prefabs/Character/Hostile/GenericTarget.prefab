@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 7951698253977833827}
   - component: {fileID: 5210823321150407132}
   - component: {fileID: 8499188774154488772}
+  - component: {fileID: 482653770692042634}
   m_Layer: 0
   m_Name: GenericTarget
   m_TagString: Untagged
@@ -389,6 +390,26 @@ MonoBehaviour:
   _fallbackRadius: 1.7
   _minScale: 0.6
   _maxScale: 2.2
+--- !u!114 &482653770692042634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566868596823550263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40d11e152c3738e48b80e5d3cd16e52b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterLifecycleAnimator
+  _animationRoot: {fileID: 3906188551014031183}
+  _spriteRenderer: {fileID: 2611006998671086757}
+  _animations:
+    _serializedList:
+    - Key: 0
+      Value: {fileID: 11400000, guid: 45dd11067ee051d4689995f75da4f35d, type: 2}
+    - Key: 1
+      Value: {fileID: 11400000, guid: 9f82236eb749d9d4abdcdafc59d7d874, type: 2}
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0
