@@ -16,3 +16,4 @@ MonoBehaviour:
   _idleStateTemplate: {fileID: 11400000, guid: 479618e8b15bfd849afd6ee5b349a2a9, type: 2}
   _executionStateTemplate: {fileID: 11400000, guid: 8e1473c037eb70e48ade90d96f167fcc, type: 2}
   _targetingStateChannel: {fileID: 11400000, guid: 6f1fa2ed8868153429257ab38092494b, type: 2}
+  _targetCounterChannel: {fileID: 11400000, guid: 7c2e9a1d4f6b4e3e9a0c8d5b2f1e6a3c, type: 2}

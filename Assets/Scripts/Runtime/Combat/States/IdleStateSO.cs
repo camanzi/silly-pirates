@@ -10,6 +10,8 @@ public class IdleStateSO : CombatStateSO
     private InteractableGridElement _armedCaster;
     private object _armedCache;
 
+    protected override bool UsesTargetValidityOutline => false;
+
     public override void Init(CombatStateManager manager)
     {
         base.Init(manager);

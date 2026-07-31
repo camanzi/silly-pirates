@@ -38,24 +38,12 @@ public class SpawnAlliesCommand : ICommand
 
             spawnPoint.Claim(spawned);
 
-            // [LIFECYCLE-DEBUG] temporaneo — cancellare dopo la diagnosi
-            Debug.Log($"[LIFECYCLE-DEBUG] spawnato '{spawnedGO.name}' a {spawnPoint.Position}" +
-                      $" | animator={(spawned.LifecycleAnimator == null ? "NULL" : "presente")}" +
-                      $" | IsPlaying={(spawned.LifecycleAnimator != null && spawned.LifecycleAnimator.IsPlaying)}", spawnedGO);
-
             if (spawned.LifecycleAnimator != null)
                 _spawnedAnimators.Add(spawned.LifecycleAnimator);
         }
 
-        // [LIFECYCLE-DEBUG] temporaneo — cancellare dopo la diagnosi
-        Debug.Log($"[LIFECYCLE-DEBUG] attesa di {_spawnedAnimators.Count} animator(i) di spawn");
-        float dbgWaitStart = Time.time;
-
         foreach (var animator in _spawnedAnimators)
             await animator.WaitUntilIdleAsync(_caster.destroyCancellationToken);
-
-        // [LIFECYCLE-DEBUG] temporaneo — cancellare dopo la diagnosi
-        Debug.Log($"[LIFECYCLE-DEBUG] attesa spawn terminata dopo {Time.time - dbgWaitStart:F2}s");
 
         if (hasPart)
             await Tween.Position(_partTransform, origin, 0.4f, Ease.InQuad);

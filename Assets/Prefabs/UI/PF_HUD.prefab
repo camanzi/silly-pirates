@@ -30,6 +30,7 @@ GameObject:
   - component: {fileID: 7615767018962701447}
   - component: {fileID: 3217598463108275501}
   - component: {fileID: 3217598463108275502}
+  - component: {fileID: 2519003588646120238}
   m_Layer: 5
   m_Name: PF_HUD
   m_TagString: Untagged
@@ -246,7 +247,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 3217598463108275501}
@@ -258,7 +259,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 3217598463108275502}
@@ -270,7 +271,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &6642396514423168827
@@ -327,7 +328,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6cc2998a5a52654e8b1c8c22146aac0, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbilityCostChannelListener
   eventChannel: {fileID: 11400000, guid: 8cad665092ecc53409f79697988b1022, type: 2}
   response:
@@ -342,7 +343,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 3217598463108275502}
@@ -354,7 +355,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &5944741646544662516
@@ -590,7 +591,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d8886459b9187d2478b1ba8b8f349605, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PassiveHoverPopupController
   _hudDocument: {fileID: 2617577189569630218}
 --- !u!114 &3217598463108275501
@@ -603,7 +604,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f13797e1e74e8c448b6b8eac9200661a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ActiveCharacterPanelController
   _hudDocument: {fileID: 2617577189569630218}
   _passiveIndicatorTemplate: {fileID: 9197481963319205126, guid: 7aea4f05c1c44914993a1c0ee2000e00, type: 3}
@@ -618,8 +619,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be460bb598e5740458719d0ebd2c531f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementPointController
   _mpAvailableSprite: {fileID: 21300000, guid: 5c58abe18d5354b43a9ceea71768b988, type: 3}
   _mpConsumedSprite: {fileID: 21300000, guid: deeef6a86e46eef46bf096ff95e03b72, type: 3}
   _hudDocument: {fileID: 2617577189569630218}
+--- !u!114 &2519003588646120238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcfc65f8ba47ae42a82acc7c7760161, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetCounterController
+  _hudDocument: {fileID: 2617577189569630218}
+  _targetCounterChannel: {fileID: 11400000, guid: 7c2e9a1d4f6b4e3e9a0c8d5b2f1e6a3c, type: 2}
+  _inputReader: {fileID: 11400000, guid: 7e56d5efef3525e478b22e3e6ac7bb2d, type: 2}
+  _cursorOffset: {x: 12, y: 0}

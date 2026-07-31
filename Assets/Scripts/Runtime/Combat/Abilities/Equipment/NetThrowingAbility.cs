@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Net Throwing Ability", menuName = "Abilities/Equipment/Net Throwing Ability")]
-public class NetThrowingAbility : OffensiveAbilityBase
+public class NetThrowingAbility : OffensiveAbilityBase, IMultiTargetAbility
 {
     [Header("Net Throwing configs")]
     [SerializeField] private int _maxTargets = 1;
@@ -10,9 +10,11 @@ public class NetThrowingAbility : OffensiveAbilityBase
     [SerializeField] private int _cooldown = 2;
     [SerializeField] private SlowPassiveSO _slowPassiveSO;
 
+    public int MaxTargets => _maxTargets;
+
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        return _selectionCtx.CurrentTargets.Count == _maxTargets;
+        return _selectionCtx.CurrentTargets.Count == MaxTargets;
     }
 
     public override bool IsValidTarget(IInteractableElement caster, TargetingData? targetingData, ref object cache)

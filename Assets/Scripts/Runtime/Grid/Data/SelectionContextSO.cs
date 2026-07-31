@@ -20,6 +20,11 @@ public class SelectionContextSO : ScriptableObject
     public void ClearCtx()
     {
         CurrentCaster = null;
+        ClearTargets();
+    }
+
+    public void ClearTargets()
+    {
         _currentTargets.Clear();
         _onSelectionCtxChangeEventChannel.RaiseEvent();
     }

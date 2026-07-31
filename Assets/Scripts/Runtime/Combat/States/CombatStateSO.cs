@@ -7,6 +7,7 @@ public abstract class CombatStateSO : ScriptableObject
     [SerializeField] private bool _shouldShowUI;
     protected CombatStateManager manager;
     public bool ShouldShowUI => _shouldShowUI;
+    protected virtual bool UsesTargetValidityOutline => true;
     public virtual void Init(CombatStateManager manager) => this.manager = manager;
     public virtual void OnEnter()
     {
@@ -29,7 +30,10 @@ public abstract class CombatStateSO : ScriptableObject
 
         if (computeCanExecute && data.selectedTarget is IInteractableElement targetElement)
         {
-            targetElement.OutlinerHelper?.SetOutline(isValidTarget ? OutlineState.ValidTarget : OutlineState.InvalidTarget);
+            OutlineState outlineState = UsesTargetValidityOutline
+                ? (isValidTarget ? OutlineState.ValidTarget : OutlineState.InvalidTarget)
+                : OutlineState.Default;
+            targetElement.OutlinerHelper?.SetOutline(outlineState);
         }
 
         var costPayload = canExecute

@@ -73,6 +73,7 @@ public class SlimyBallCommand : ICommand
                 await Tween.Delay(_jumpConfig.HangHoldDuration);
 
             // Il proiettile parte dalla posizione MONDO del pivot sollevato, non dal root a pelo d'acqua.
+            await LegacySquashStretch();
             await LaunchProjectile(animationRoot.position);
 
             await JumpSquashStretchHelper.FallDownAsync(

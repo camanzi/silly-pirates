@@ -9,10 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f03152fcfb4bcf1479dc4473dace3173, type: 3}
-  m_Name: SlimyBallsCameraCueProfile
-  m_EditorClassIdentifier: Assembly-CSharp::CameraCueProfileSO
-  _framingSize: 0.75
-  _memberRadius: 1.5
-  _preShotHold: 0.25
-  _postShotHold: 0.4
+  m_Script: {fileID: 11500000, guid: b4f45a4e74c55754baa55761008681c9, type: 3}
+  m_Name: TargetCounterEventChannel
+  m_EditorClassIdentifier:

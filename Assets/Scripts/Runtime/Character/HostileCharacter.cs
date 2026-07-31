@@ -181,10 +181,6 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     {
         SetInteractable(true);                  // ripristina i collider se il GO viene riattivato dopo una morte
 
-        // [LIFECYCLE-DEBUG] temporaneo — cancellare dopo la diagnosi
-        Debug.Log($"[LIFECYCLE-DEBUG] OnCombatJoin su '{name}' | animator={(_lifecycleAnimator == null ? "NULL" : "presente")}" +
-                  $" | pos={transform.position}", this);
-
         _lifecycleAnimator?.Play(LifecyclePhase.Spawn);
         this.HandleCombatJoin();
     }

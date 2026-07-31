@@ -1091,6 +1091,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_HUD
       objectReference: {fileID: 0}
+    - target: {fileID: 2519003588646120238, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: _cursorOffset.x
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2519003588646120238, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
+      propertyPath: _cursorOffset.y
+      value: -25
+      objectReference: {fileID: 0}
     - target: {fileID: 5327279891052958176, guid: 44e3087e0a6166640b2b4bfab66622f6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

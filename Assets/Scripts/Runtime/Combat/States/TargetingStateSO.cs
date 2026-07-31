@@ -6,6 +6,7 @@ public class TargetingStateSO : CombatStateSO
     [SerializeField] private CombatStateSO _idleStateTemplate;
     [SerializeField] private CombatStateSO _executionStateTemplate;
     [SerializeField] private BoolEventChannel _targetingStateChannel;
+    [SerializeField] private TargetCounterEventChannel _targetCounterChannel;
 
     private AbilityBase _activeAbility;
     private IInteractableElement _activeCaster;
@@ -15,6 +16,7 @@ public class TargetingStateSO : CombatStateSO
     {
         base.OnEnter();
         _targetingStateChannel?.RaiseEvent(true);
+        manager.SelectionCtx.ClearTargets();
         CombatContext ctx = manager.CombatCtx;
         IInteractableElement caster = manager.SelectionCtx.CurrentCaster;
 
@@ -24,15 +26,28 @@ public class TargetingStateSO : CombatStateSO
         _activeAbility = ctx.SelectedAbility;
         _activeCaster = caster;
         _activeCache = ctx.AbilityCache;
+        RaiseTargetCounter();
     }
 
     public override void OnExit()
     {
         _targetingStateChannel?.RaiseEvent(false);
+        _targetCounterChannel?.RaiseEvent(TargetCounterPayload.Inactive);
         _activeAbility?.OnTargetingExit(_activeCaster, ref _activeCache);
         _activeAbility = null;
         _activeCaster = null;
         _activeCache = null;
+    }
+
+    private void RaiseTargetCounter()
+    {
+        if (_targetCounterChannel == null) return;
+
+        if (manager.CombatCtx.SelectedAbility is IMultiTargetAbility multi && multi.MaxTargets > 1)
+            _targetCounterChannel.RaiseEvent(new TargetCounterPayload(
+                true, manager.SelectionCtx.CurrentTargets.Count, multi.MaxTargets));
+        else
+            _targetCounterChannel.RaiseEvent(TargetCounterPayload.Inactive);
     }
 
     public override void OnUpdate() { }
@@ -47,6 +62,7 @@ public class TargetingStateSO : CombatStateSO
             var td = new TargetingData { selectedTarget = targettable };
             if (!ctx.SelectedAbility.IsValidTarget(selectionCtx.CurrentCaster, td, ref ctx.AbilityCache)) return;
             selectionCtx.CurrentTargets.Add(targettable);
+            RaiseTargetCounter();
         }
 
         OnClickBehavior(null);

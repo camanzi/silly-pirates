@@ -88,16 +88,9 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     {
         EnsureRestPoseCaptured();
 
-        // [LIFECYCLE-DEBUG] blocco temporaneo — cancellare per intero dopo la diagnosi
         {
             LifecycleAnimationSO dbgAnim = null;
             bool dbgFound = _animations != null && _animations.TryGetValue(phase, out dbgAnim);
-            Debug.Log(
-                $"[LIFECYCLE-DEBUG] PlayAsync({phase}) su '{name}' | entries={(_animations == null ? -1 : _animations.Count)}" +
-                $" | faseTrovata={dbgFound} | anim={(dbgAnim == null ? "NULL" : dbgAnim.name)}" +
-                $" | animationRoot={(_context.AnimationRoot == null ? "NULL" : _context.AnimationRoot.name)}" +
-                $" | rootÈIlTransformDiGriglia={_context.AnimationRoot == transform}" +
-                $" | restLocalPos={_context.RestLocalPosition} | posAttuale={transform.position}", this);
         }
 
         // Fase non configurata: silenzioso, è la configurazione voluta (non tutti i personaggi
@@ -116,17 +109,10 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
         animation.Prepare(in _context);
 
-        // [LIFECYCLE-DEBUG] temporaneo — cancellare dopo la diagnosi
-        Debug.Log($"[LIFECYCLE-DEBUG] dopo Prepare({phase}) su '{name}': animationRoot.localPos={_context.AnimationRoot.localPosition}" +
-                  $" | alpha={(_context.Renderer == null ? -1f : _context.Renderer.color.a)}", this);
-
         IsPlaying = true;
         try
         {
             await animation.PlayAsync(_context, token);
-
-            // [LIFECYCLE-DEBUG] temporaneo — cancellare dopo la diagnosi
-            Debug.Log($"[LIFECYCLE-DEBUG] {phase} COMPLETATA su '{name}': animationRoot.localPos={_context.AnimationRoot.localPosition}", this);
         }
         finally
         {

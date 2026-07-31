@@ -31,7 +31,7 @@ MonoBehaviour:
   _apexScale:
     Horizontal: 0.95
     Vertical: 1.08
-  _hangHoldDuration: 0
+  _hangHoldDuration: 0.25
   _fallDuration: 0.16
   _fallScale:
     Horizontal: 0.9

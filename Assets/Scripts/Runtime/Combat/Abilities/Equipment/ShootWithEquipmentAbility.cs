@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Shoot With Equipment Ability", menuName = "Abilities/Equipment/Shoot With Equipment Ability")]
-public class ShootWithEquipmentAbility : OffensiveAbilityBase
+public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbility
 {
     [Header("Cannon ability configs")]
     [SerializeField] private int _maxTargets = 1;
@@ -11,9 +11,11 @@ public class ShootWithEquipmentAbility : OffensiveAbilityBase
     [SerializeField] private int _baseDMG;
     [SerializeField] private DamageType _baseDMGType;
 
+    public int MaxTargets => _maxTargets;
+
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        return _selectionCtx.CurrentTargets.Count == _maxTargets;
+        return _selectionCtx.CurrentTargets.Count == MaxTargets;
     }
 
     public override bool IsValidTarget(IInteractableElement caster, TargetingData? targetingData, ref object cache)
