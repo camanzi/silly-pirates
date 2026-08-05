@@ -17,6 +17,8 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
   _icon: {fileID: 0}
+  _cameraCue: 0
+  _cameraCueProfile: {fileID: 0}
   _range: 10
   _cooldown: 7
   _reviveHpPercentage: 1

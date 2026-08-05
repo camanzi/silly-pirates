@@ -34,37 +34,77 @@ public class DirectionalSpriteController : MonoBehaviour
     private SpriteAtlasHelper _atlasHelper;
     private Tween _colorTween;
 
+    private bool _isInitialized;
+
     void Start()
     {
-        InitializeComponents();
-        InitializeSpriteCache();
+        if (!InitializeComponents()) return;
+        if (!InitializeSpriteCache()) return;
+
+        _isInitialized = true;
 
         if (_animations.Count > 0)
             PlayAnimation(_animations.Keys.First());
     }
 
     #region Initializations
-    private void InitializeComponents()
+    private bool InitializeComponents()
     {
         _mainCamera = Camera.main;
         _characterTransform = transform;
-        _atlasHelper = GetComponent<SpriteAtlasHelper>();
         _spriteCache = new Dictionary<EAnimation, Sprite[,]>();
+
+        if (_spriteRenderer == null)
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (_spriteRenderer == null)
+        {
+            Debug.LogError($"[DirectionalSpriteController] SpriteRenderer mancante su '{name}': animazioni disabilitate.", this);
+            return false;
+        }
+
+        _atlasHelper = GetComponent<SpriteAtlasHelper>();
+
+        if (_atlasHelper == null)
+        {
+            Debug.LogError($"[DirectionalSpriteController] SpriteAtlasHelper mancante su '{name}': animazioni disabilitate.", this);
+            return false;
+        }
+
+        if (_animations == null || _animations.Count == 0)
+        {
+            Debug.LogWarning($"[DirectionalSpriteController] Nessuna animazione configurata su '{name}'.", this);
+            return false;
+        }
+
+        return true;
     }
 
-    private void InitializeSpriteCache()
+    private bool InitializeSpriteCache()
     {
-        foreach (var kvp in _animations)
+        try
         {
-            LoadAnimationToCache(kvp.Key, kvp.Value);
+            foreach (var kvp in _animations)
+            {
+                LoadAnimationToCache(kvp.Key, kvp.Value);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DirectionalSpriteController] Errore caricando la sprite cache su '{name}': {e}", this);
+            return false;
         }
 
         Debug.Log($"Cache inizializzata con {_spriteCache.Count} animazioni");
+        return true;
     }
 
     private void LoadAnimationToCache(EAnimation anim, AnimationConfig config)
     {
-        Sprite[,] animationSprites = new Sprite[config.frameCount, 8];
+        Sprite[,] animationSprites = new Sprite[Mathf.Max(config.frameCount, 0), 8];
+
+        int missingCount = 0;
+        string firstMissingName = null;
 
         for (int frame = 0; frame < config.frameCount; frame++)
         {
@@ -74,9 +114,15 @@ public class DirectionalSpriteController : MonoBehaviour
                 animationSprites[frame, (int)direction] = _atlasHelper.GetSprite(spriteName);
 
                 if (animationSprites[frame, (int)direction] == null)
-                    Debug.LogWarning($"Sprite mancante: {spriteName}");
+                {
+                    missingCount++;
+                    firstMissingName ??= spriteName;
+                }
             }
         }
+
+        if (missingCount > 0)
+            Debug.LogWarning($"[DirectionalSpriteController] '{name}': {missingCount}/{config.frameCount * 8} sprite mancanti per l'animazione {anim} (es. {firstMissingName}).", this);
 
         _spriteCache[anim] = animationSprites;
     }
@@ -89,6 +135,8 @@ public class DirectionalSpriteController : MonoBehaviour
 
     void Update()
     {
+        if (!_isInitialized) return;
+
         UpdateDirection();
         UpdateAnimation();
         UpdateSprite();
@@ -185,6 +233,8 @@ public class DirectionalSpriteController : MonoBehaviour
     #region Public APIs
     public void PlayAnimation(EAnimation animation)
     {
+        if (!_isInitialized) return;
+
         if (!_spriteCache.ContainsKey(animation))
         {
             Debug.LogError($"Animazione '{animation}' non trovata nella cache!");
@@ -214,12 +264,16 @@ public class DirectionalSpriteController : MonoBehaviour
 
     public void SetDeadVisual()
     {
+        if (_spriteRenderer == null) return;
+
         _colorTween.Stop();
         _colorTween = Tween.Color(_spriteRenderer, new Color(0.3f, 0.3f, 0.3f, 1f), duration: 0.3f);
     }
 
     public void ResetVisual()
     {
+        if (_spriteRenderer == null) return;
+
         _colorTween.Stop();
         _colorTween = Tween.Color(_spriteRenderer, Color.white, duration: 0.3f);
     }

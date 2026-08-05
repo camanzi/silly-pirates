@@ -5,6 +5,8 @@ public class AwakeActionSO : InteractionActionSO
 {
     [SerializeField] private int _actionCost;
 
+    protected int ActionCost => _actionCost;
+
     public override bool ExecuteAction(IInteractableElement element, ITurnAgent interactingAgent)
     {
         if (element is not IAwakable awakable) return false;
@@ -16,7 +18,7 @@ public class AwakeActionSO : InteractionActionSO
             holder.NotifyAwakeningContribution(awakable);
 
         awakable.AddAwakeningPoints(1 + bonus);
-        interactingAgent.RemainingActionPoints--;
+        interactingAgent.RemainingActionPoints -= _actionCost;
         return true;
     }
 
@@ -25,7 +27,7 @@ public class AwakeActionSO : InteractionActionSO
         if (interactingAgent == null) return false;
         if (element is not IAwakable awakable || awakable.IsOnCooldown) return false;
 
-        return interactingAgent.RemainingActionPoints > 0
+        return interactingAgent.RemainingActionPoints >= _actionCost
             && !awakable.IsAwake;
     }
 

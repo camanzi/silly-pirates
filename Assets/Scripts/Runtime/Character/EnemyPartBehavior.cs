@@ -32,18 +32,28 @@ public class EnemyPartBehavior : MonoBehaviour, ITargettable, IInteractableEleme
 
     private void OnEnable()
     {
-        if (_healthController != null) _healthController.OnDeath += OnDeath;
+        if (_healthController == null) return;
+        _healthController.OnDeath += OnDeath;
+        _healthController.OnRevive += OnRevive;
     }
 
     private void OnDisable()
     {
-        if (_healthController != null) _healthController.OnDeath -= OnDeath;
+        if (_healthController == null) return;
+        _healthController.OnDeath -= OnDeath;
+        _healthController.OnRevive -= OnRevive;
     }
 
     private void OnDeath()
     {
         _directionalSpriteController?.PlayAnimation(EAnimation.Death);
         _directionalSpriteController?.SetDeadVisual();
+    }
+
+    private void OnRevive()
+    {
+        _directionalSpriteController?.ResetVisual();
+        _directionalSpriteController?.PlayAnimation(EAnimation.Idle);
     }
 
     public void OnHoverEnter() => this.HandlePointerEnter();

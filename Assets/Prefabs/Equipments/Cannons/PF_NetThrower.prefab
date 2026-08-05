@@ -215,7 +215,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75f647544e9b0594983002c08dab68e0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShootingEquipment
+  m_EditorClassIdentifier: Assembly-CSharp::OffensiveEquipment
   floorGridLayer:
     serializedVersion: 2
     m_Bits: 256

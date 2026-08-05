@@ -12,7 +12,7 @@ public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
         if (interactingAgent == null) return false;
         if (element is not IAwakable awakable || awakable.IsOnCooldown) return false;
 
-        return interactingAgent.RemainingActionPoints > 0
+        return interactingAgent.RemainingActionPoints >= ActionCost
             && awakable.IsAwake
             && awakable.CurrentAwakeningPoints < awakable.OvercapLimit;
     }
@@ -25,23 +25,6 @@ public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
             && awakable.CurrentAwakeningPoints < awakable.OvercapLimit;
     }
 
-    public override bool ExecuteAction(IInteractableElement element, ITurnAgent interactingAgent)
-    {
-        bool success = base.ExecuteAction(element, interactingAgent);
-        if (!success) return false;
-
-        if (element is not IAwakable awakable) return true;
-        var template = (element as IEquipmentStats)?.StatsConfig?.OvercapPassiveTemplate;
-        if (template == null) return true;
-        if (element is not Component comp) return true;
-        if (!comp.TryGetComponent<PassiveAbilityController>(out var controller)) return true;
-
-        int extra = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
-        int bonus = ((IEquipmentStats)element).StatsConfig.GetOvercapBonus(extra);
-
-        var instance = Instantiate(template);
-        (instance as IOvercapPassive)?.Initialize(bonus);
-        controller.AddPassive(instance);
-        return true;
-    }
+    // ExecuteAction è quella della base: il passivo di overcap lo applica
+    // ShipEquipment.RefreshOvercapPassive in base ai punti risultanti.
 }

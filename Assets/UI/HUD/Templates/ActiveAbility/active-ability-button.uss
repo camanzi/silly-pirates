@@ -12,10 +12,30 @@
     bottom: 0;
     -unity-background-scale-mode: scale-to-fit;
     aspect-ratio: 1;
+    transition-property: border-color, background-color;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-out;
+}
+
+/* While the ability is armed the ring would read as a cage around the glow.
+   Fade the colours out instead of dropping border-width, which would reflow the icon. */
+.active-ability-button--selected {
+    border-color: rgba(0, 0, 0, 0);
+    background-color: rgba(255, 255, 255, 0);
 }
 
 .active-ability-button__icon {
     width: 100%;
     height: 100%;
     -unity-background-scale-mode: scale-to-fit;
+}
+
+.active-ability-button__glow {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    right: -35%;
+    bottom: -25%;
+    overflow: visible;
 }

@@ -30,6 +30,7 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
         set
         {
             _awakeningPoints = value;
+            RefreshOvercapPassive();
             OnAwakeningCountersChanged?.Invoke();
         }
     }
@@ -75,6 +76,7 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     }
 
     private int _awakeningPoints = 0;
+    private int _appliedOvercapExtra = 0;
     private int _cooldown = 0;
     private EquipmentStateMachine _stateMachine;
     private PassiveAbilityController _passiveAbilityController;
@@ -109,6 +111,32 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     public void ConsumeAllAwakeningPoints()
     {
         AwakeningPoints = 0;
+    }
+
+    // Il bonus di overcap dipende dallo stato dei punti, non da chi li ha aggiunti:
+    // qualunque sorgente (azione base, azione overcap, Maximize Contribution) passa di qui.
+    private void RefreshOvercapPassive()
+    {
+        if (_passiveAbilityController == null) return;
+
+        int extra = Mathf.Max(0, _awakeningPoints - _toAwakePoints);
+        if (extra == _appliedOvercapExtra) return;
+        _appliedOvercapExtra = extra;
+
+        if (extra <= 0)
+        {
+            _passiveAbilityController.RemovePassiveOfType<IOvercapPassive>();
+            return;
+        }
+
+        var template = _statsConfig?.OvercapPassiveTemplate;
+        if (template == null) return;
+
+        // AddPassive gestisce la riapplicazione: l'istanza esistente sovrascrive il proprio
+        // bonus con quello ricalcolato dal totale e questa copia viene distrutta.
+        var instance = Instantiate(template);
+        (instance as IOvercapPassive)?.Initialize(_statsConfig.GetOvercapBonus(extra));
+        _passiveAbilityController.AddPassive(instance);
     }
 
     public void OnTurnChange(ITurnAgent agent)

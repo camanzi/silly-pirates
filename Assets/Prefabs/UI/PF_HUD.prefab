@@ -446,6 +446,7 @@ MonoBehaviour:
   _hudDocument: {fileID: 2617577189569630218}
   _activeAbilityRequestChannel: {fileID: 11400000, guid: c7156c5950647164d90f40bc57c23d25, type: 2}
   _hoverChannel: {fileID: 11400000, guid: 8cf6cd7d2d0d0b147832c2687cc0ceac, type: 2}
+  _targetingStateChannel: {fileID: 11400000, guid: 6f1fa2ed8868153429257ab38092494b, type: 2}
 --- !u!114 &2483941724954213434
 MonoBehaviour:
   m_ObjectHideFlags: 0

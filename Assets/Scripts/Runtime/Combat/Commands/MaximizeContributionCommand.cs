@@ -23,8 +23,6 @@ public class MaximizeContributionCommand : ICommand
         _pointsBeforeAdd = _target.CurrentAwakeningPoints;
         _target.AddAwakeningPoints(_target.OvercapLimit - _target.CurrentAwakeningPoints);
 
-        ApplyOvercapPassive();
-
         await Awaitable.NextFrameAsync();
     }
 
@@ -33,21 +31,10 @@ public class MaximizeContributionCommand : ICommand
         if (_caster is ITurnAgent turnAgent)
             turnAgent.RemainingActionPoints += _apCost;
 
+        // Rimuovere i punti riporta l'overcap al valore precedente: il passivo lo
+        // aggiorna (o rimuove) ShipEquipment.RefreshOvercapPassive.
         int delta = _target.CurrentAwakeningPoints - _pointsBeforeAdd;
         if (delta > 0)
             _target.RemoveAwakeningPoints(delta);
-    }
-
-    private void ApplyOvercapPassive()
-    {
-        var template = _target.StatsConfig?.OvercapPassiveTemplate;
-        if (template == null || _target.PassiveAbilityController == null) return;
-
-        int extra = Mathf.Max(0, _target.CurrentAwakeningPoints - _target.MaxAwakeningPoints);
-        int bonus = _target.StatsConfig.GetOvercapBonus(extra);
-
-        var instance = Object.Instantiate(template);
-        (instance as IOvercapPassive)?.Initialize(bonus);
-        _target.PassiveAbilityController.AddPassive(instance);
     }
 }
