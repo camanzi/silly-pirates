@@ -113,7 +113,8 @@ public class PassiveNotificationManager : MonoBehaviour
         popup.pickingMode = PickingMode.Ignore;
 
         var label = popup.Q<Label>("passive-label");
-        label.text = evt.DisplayName;
+        // Stessa soglia del badge in PassiveIndicator, così i due elementi concordano.
+        label.text = evt.StackCount >= 2 ? $"{evt.DisplayName} x{evt.StackCount}" : evt.DisplayName;
         label.style.color = evt.WasAdded ? Color.white : Color.red;
 
         popup.style.opacity = 0;

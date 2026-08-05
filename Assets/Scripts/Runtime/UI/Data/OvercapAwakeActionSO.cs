@@ -39,7 +39,6 @@ public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
         int extra = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
         int bonus = ((IEquipmentStats)element).StatsConfig.GetOvercapBonus(extra);
 
-        controller.RemovePassiveOfType<IOvercapPassive>();
         var instance = Instantiate(template);
         (instance as IOvercapPassive)?.Initialize(bonus);
         controller.AddPassive(instance);

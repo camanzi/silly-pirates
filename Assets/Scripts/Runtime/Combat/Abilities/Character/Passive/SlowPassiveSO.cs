@@ -64,7 +64,7 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
         _controller = null;
     }
 
-    void IStackablePassive.OnReapplied(PassiveAbilityController controller)
+    void IStackablePassive.OnReapplied(PassiveAbilityController controller, PassiveAbilitySO incoming)
     {
         _stacks++;
         _turnCount = 0;

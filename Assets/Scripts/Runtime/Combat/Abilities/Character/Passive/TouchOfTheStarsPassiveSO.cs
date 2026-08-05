@@ -46,7 +46,7 @@ public class TouchOfTheStarsPassiveSO : PassiveAbilitySO, IAwakeningModifier, IP
 
     int IAwakeningModifier.GetAwakeningBonus() => _stacks;
 
-    void IStackablePassive.OnReapplied(PassiveAbilityController controller) => AddStack();
+    void IStackablePassive.OnReapplied(PassiveAbilityController controller, PassiveAbilitySO incoming) => AddStack();
 
     public void AddStack()
     {

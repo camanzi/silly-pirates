@@ -46,7 +46,6 @@ public class MaximizeContributionCommand : ICommand
         int extra = Mathf.Max(0, _target.CurrentAwakeningPoints - _target.MaxAwakeningPoints);
         int bonus = _target.StatsConfig.GetOvercapBonus(extra);
 
-        _target.PassiveAbilityController.RemovePassiveOfType<IOvercapPassive>();
         var instance = Object.Instantiate(template);
         (instance as IOvercapPassive)?.Initialize(bonus);
         _target.PassiveAbilityController.AddPassive(instance);

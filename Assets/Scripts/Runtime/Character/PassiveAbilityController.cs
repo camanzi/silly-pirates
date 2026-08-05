@@ -70,9 +70,16 @@ public class PassiveAbilityController : MonoBehaviour
 
             var existing = _instantiatedPassives[i];
             if (existing is IStackablePassive stackable)
-                stackable.OnReapplied(this);
+            {
+                stackable.OnReapplied(this, instance);
+                // Riapplicare non è una perdita: si mostra solo il guadagno, mai il rosso.
+                if (existing.ReapplyFeedback == PassiveReapplyFeedback.ShowGain)
+                    RaisePassiveNotification(existing, wasAdded: true);
+            }
             else
+            {
                 Debug.LogWarning($"[PassiveAbilityController] {name} already has passive '{instance.DisplayName}' ({type.Name}); duplicate application ignored.");
+            }
 
             Destroy(instance);
             OnPassivesChanged?.Invoke();
@@ -82,13 +89,7 @@ public class PassiveAbilityController : MonoBehaviour
         _instantiatedPassives.Add(instance);
         instance.OnEquip(this);
         OnPassivesChanged?.Invoke();
-        _passiveNotificationChannel?.RaiseEvent(new PassiveNotificationEvent
-        {
-            DisplayName = instance.DisplayName,
-            WasAdded = true,
-            WorldPosition = transform.position,
-            Source = transform,
-        });
+        RaisePassiveNotification(instance, wasAdded: true);
         return instance;
     }
 
@@ -96,15 +97,23 @@ public class PassiveAbilityController : MonoBehaviour
     {
         instance.OnUnequip(this);
         _instantiatedPassives.Remove(instance);
-        _passiveNotificationChannel?.RaiseEvent(new PassiveNotificationEvent
+        RaisePassiveNotification(instance, wasAdded: false);
+        Destroy(instance);
+        OnPassivesChanged?.Invoke();
+    }
+
+    private void RaisePassiveNotification(PassiveAbilitySO passive, bool wasAdded)
+    {
+        if (_passiveNotificationChannel == null) return;
+
+        _passiveNotificationChannel.RaiseEvent(new PassiveNotificationEvent
         {
-            DisplayName = instance.DisplayName,
-            WasAdded = false,
+            DisplayName = passive.DisplayName,
+            WasAdded = wasAdded,
+            StackCount = passive is IStackCountProvider stacks ? stacks.CurrentStacks : 0,
             WorldPosition = transform.position,
             Source = transform,
         });
-        Destroy(instance);
-        OnPassivesChanged?.Invoke();
     }
 
     public bool HasPassive<T>() where T : PassiveAbilitySO

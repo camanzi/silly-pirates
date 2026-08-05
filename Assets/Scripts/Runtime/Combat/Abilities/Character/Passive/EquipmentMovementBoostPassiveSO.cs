@@ -45,7 +45,7 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
         _turnChangedChannel.OnEventRaised -= _onTurnChangedHandler;
     }
 
-    void IStackablePassive.OnReapplied(PassiveAbilityController controller) => OnEquipmentAwakened();
+    void IStackablePassive.OnReapplied(PassiveAbilityController controller, PassiveAbilitySO incoming) => OnEquipmentAwakened();
 
     private void OnEquipmentAwakened()
     {
