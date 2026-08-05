@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraCueProfileSO
   _framingSize: 1
   _memberRadius: 1.5
-  _preShotHold: 0.25
-  _postShotHold: 0.4
-  _shakeOnImpact: 0
+  _preShotHold: 0
+  _postShotHold: 0.25

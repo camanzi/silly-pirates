@@ -104,11 +104,15 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 9a96dfa2d12becc4dba27106cc9befbb, type: 2}
     - target: {fileID: 5587952578991430984, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: _toAwakePoints
-      value: 6
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5587952578991430984, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: _overcapMultiplier
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5587952578991430984, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
+      propertyPath: _maxExtraAwakeningPoints
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 6488994046265238083, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: m_Name
