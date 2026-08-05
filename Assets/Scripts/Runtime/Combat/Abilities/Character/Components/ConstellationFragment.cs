@@ -8,6 +8,9 @@ public class ConstellationFragment : MonoBehaviour
     [SerializeField] private int _movementPointsRestored = 2;
     [SerializeField] private PassiveAbilitySO _passiveOnPickup;
 
+    /// <summary>How long the fall animation takes, so the spawning command can await its own VFX.</summary>
+    public float FallDuration => _fallDuration;
+
     private void OnEnable()
     {
         Vector3 target = transform.position;

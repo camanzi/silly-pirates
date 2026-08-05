@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3180649381655621847}
   - component: {fileID: 4519361680784028135}
   m_Layer: 0
-  m_Name: PH_ArrowsUp
+  m_Name: PH_ArrowsDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc67d23d7a9cf8545a2a33e8319c22aa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::VFXController
   _autoDestroy: 1
 --- !u!1 &4164231578720927208
@@ -716,8 +716,8 @@ ParticleSystem:
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 0.55
     donutRadius: 0.2
-    m_Position: {x: 0, y: -0.3, z: 0}
-    m_Rotation: {x: -90, y: 0, z: 0}
+    m_Position: {x: 0, y: 0.3, z: 0}
+    m_Rotation: {x: 90, y: 0, z: 0}
     m_Scale: {x: 1, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
@@ -1853,8 +1853,8 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 8
-      minScalar: 6
+      scalar: -6
+      minScalar: -8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5087,7 +5087,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 409d5cba66d92d04dbdbaa4d61eb1c39, type: 2}
+  - {fileID: 2100000, guid: 1c4a87861f5e65e4594edf8a2030db1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

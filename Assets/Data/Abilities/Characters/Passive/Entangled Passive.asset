@@ -19,3 +19,4 @@ MonoBehaviour:
   _flatPenalty: 35
   _percentPenalty: 5
   _durationInTurns: 3
+  _vfxPrefab: {fileID: 4519361680784028135, guid: 7f3c9e2a4b1d68f0952e7a3c1b0d4f6a, type: 3}

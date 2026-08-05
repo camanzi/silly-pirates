@@ -19,8 +19,12 @@ public class PassiveAbilityController : MonoBehaviour
     private readonly List<IOnGlobalTurnEnd>   _globalTurnEndHandlers = new();
     private readonly List<IOnTurnEnd>         _turnEndHandlers       = new();
 
+    public Collider Collider { get; private set; }
+
     private void Awake()
     {
+        Collider = GetComponent<Collider>();
+
         foreach (var passiveSO in _basePassivesSO)
         {
             var instance = Instantiate(passiveSO);

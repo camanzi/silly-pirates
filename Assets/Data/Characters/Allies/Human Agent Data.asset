@@ -15,6 +15,7 @@ MonoBehaviour:
   _initialAgility: 110
   _maxActionPointsPerTurn: 6
   _maxHp: 1030
-  _maxMovementPoints: 5
+  _maxMovementPoints: 6
   _interactionRange: 1
   _actionsPerTurn: 1
+  _baseEvasion: 50

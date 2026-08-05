@@ -1,3 +1,4 @@
+using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -11,7 +12,8 @@ public class CameraCueContext
     public CinemachineTargetGroup TargetGroup;
     public CinemachineGroupFraming GroupFraming;
     public CinemachineBrain Brain;
-    public Transform GroundAnchor;
+    /// <summary>Supplies the i-th pooled ground anchor, creating it on demand.</summary>
+    public Func<int, Transform> GroundAnchorProvider;
     public AbilityExecutionCue Cue;
     public CameraCueProfileSO Profile;
     public float MaxBlendWait;
@@ -52,8 +54,28 @@ public class CameraCueContext
 
     public void AddGroundAnchor(Vector3 point)
     {
-        GroundAnchor.position = point;
-        TargetGroup.AddMember(GroundAnchor, 1f, Profile.MemberRadius);
+        Transform anchor = GroundAnchorProvider(0);
+        anchor.position = point;
+        TargetGroup.AddMember(anchor, 1f, Profile.MemberRadius);
+    }
+
+    /// <summary>
+    /// Adds one group member for EVERY affected point in the cue, so the framing covers the AoE's real
+    /// extent instead of just its centroid. Falls back to the single centroid/TargetPoint anchor when the
+    /// cue carries no AffectedCells. Returns how many members were added.
+    /// </summary>
+    public int AddGroundAnchors()
+    {
+        if (Cue.AffectedCells == null || Cue.AffectedCells.Count == 0)
+            return TryAddGroundAnchor() ? 1 : 0;
+
+        for (int i = 0; i < Cue.AffectedCells.Count; i++)
+        {
+            Transform anchor = GroundAnchorProvider(i);
+            anchor.position = Cue.AffectedCells[i];
+            TargetGroup.AddMember(anchor, 1f, Profile.MemberRadius);
+        }
+        return Cue.AffectedCells.Count;
     }
 
     public async Awaitable WaitForBlendSettle()

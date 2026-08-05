@@ -21,7 +21,7 @@ public class SlimyCursePassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnStar
         _turnStartCount = 0;
         if (controller.TryGetComponent<GridCharacter>(out var character))
             _activeCurseTargets.Add(character);
-        if (_vfxPrefab != null)
+        if (_vfxPrefab != null && _vfxInstance == null)
             _vfxInstance = Object.Instantiate(_vfxPrefab, controller.transform);
     }
 

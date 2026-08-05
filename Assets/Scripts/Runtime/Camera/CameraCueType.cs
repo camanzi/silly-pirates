@@ -6,5 +6,6 @@ public enum CameraCueType
     FramePair,
     FrameCasterAndArea,
     FocusArea,
-    FocusTarget
+    FocusTarget,
+    FocusCasterThenArea
 }

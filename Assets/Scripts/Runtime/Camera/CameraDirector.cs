@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -22,6 +24,11 @@ public class CameraDirector : MonoBehaviour
     private CameraCueProfileSO _activeProfile;
     private bool _isCueActive;
 
+    // Pool of ground anchors, grown on demand so a cue can frame several areas at once
+    // (one member per affected point) rather than a single centroid.
+    private readonly List<Transform> _groundAnchors = new();
+    private Func<int, Transform> _groundAnchorProvider;
+
     private void Awake()
     {
         if (_actionCamera != null) _groupFraming = _actionCamera.GetComponent<CinemachineGroupFraming>();
@@ -30,6 +37,19 @@ public class CameraDirector : MonoBehaviour
             _groundAnchor = new GameObject("CueGroundAnchor").transform;
             _groundAnchor.SetParent(transform);
         }
+        _groundAnchors.Add(_groundAnchor);
+        _groundAnchorProvider = GetGroundAnchor;
+    }
+
+    private Transform GetGroundAnchor(int index)
+    {
+        while (_groundAnchors.Count <= index)
+        {
+            var anchor = new GameObject($"CueGroundAnchor_{_groundAnchors.Count}").transform;
+            anchor.SetParent(transform);
+            _groundAnchors.Add(anchor);
+        }
+        return _groundAnchors[index];
     }
 
     private void OnEnable()
@@ -65,7 +85,7 @@ public class CameraDirector : MonoBehaviour
             TargetGroup = _targetGroup,
             GroupFraming = _groupFraming,
             Brain = _brain,
-            GroundAnchor = _groundAnchor,
+            GroundAnchorProvider = _groundAnchorProvider,
             Cue = cue,
             Profile = profile,
             MaxBlendWait = _maxBlendWait

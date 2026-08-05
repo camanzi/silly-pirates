@@ -24,7 +24,10 @@ public class ConstellationFallCommand : ICommand
             turnAgent.RemainingActionPoints -= _apCost;
 
         _spawnedPiece = GameObject.Instantiate(_piecePrefab.gameObject, _worldPosition, Quaternion.identity);
-        await Awaitable.NextFrameAsync();
+
+        // Wait out the fragment's own fall so the turn doesn't end (and the action camera doesn't release)
+        // before the payoff lands. Read from the prefab, not the instance: an early pickup destroys it mid-fall.
+        await Awaitable.WaitForSecondsAsync(_piecePrefab.FallDuration);
     }
 
     public void Undo()

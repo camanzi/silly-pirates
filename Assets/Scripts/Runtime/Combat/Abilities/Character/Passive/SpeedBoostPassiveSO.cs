@@ -8,6 +8,11 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
     [SerializeField] private int _flatBonus = 10;
     [SerializeField] private float _percentBonus = 40f;
     [SerializeField] private int _durationInTurns = 6;
+    [SerializeField] private VFXController _vfxPrefab;
+
+    private const float VfxReferenceRadius = 1.7f;
+    private const float VfxMinScale = 0.6f;
+    private const float VfxMaxScale = 2.2f;
 
     private static readonly HashSet<HostileCharacter> _activeTargets = new();
 
@@ -16,6 +21,7 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
     private PassiveAbilityController _controller;
     private int _turnCount;
     private bool _isExpired;
+    private bool _vfxPlayed;
 
     public override void OnEquip(PassiveAbilityController controller)
     {
@@ -24,6 +30,28 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
         _isExpired  = false;
         if (controller.TryGetComponent<HostileCharacter>(out var h))
             _activeTargets.Add(h);
+
+        PlayApplyVFX(controller);
+    }
+
+    private void PlayApplyVFX(PassiveAbilityController controller)
+    {
+        if (_vfxPrefab == null || _vfxPlayed) return;
+        _vfxPlayed = true;
+
+        Vector3 position = controller.transform.position;
+        float scale = 1f;
+
+        Collider collider = controller.Collider;
+        if (collider != null)
+        {
+            Bounds bounds = collider.bounds;
+            position = new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
+            scale = Mathf.Clamp(bounds.extents.magnitude / VfxReferenceRadius, VfxMinScale, VfxMaxScale);
+        }
+
+        VFXController instance = Object.Instantiate(_vfxPrefab, position, Quaternion.identity);
+        instance.transform.localScale = Vector3.one * scale;
     }
 
     public override void OnUnequip(PassiveAbilityController controller)

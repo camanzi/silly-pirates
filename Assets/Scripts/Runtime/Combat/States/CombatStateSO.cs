@@ -75,6 +75,23 @@ public abstract class CombatStateSO : ScriptableObject
             if (!targets.Contains(target)) targets.Add(target);
         }
 
-        return new AbilityExecutionCue(ability, caster, targets, previewData.AffectedCells, data?.worldPosition);
+        return new AbilityExecutionCue(ability, caster, targets, ToWorldPoints(previewData.AffectedCells, caster), data?.worldPosition);
+    }
+
+    /// <summary>
+    /// AffectedCells in the preview are grid cell coordinates, but AbilityExecutionCue.AffectedCells is
+    /// consumed by the CameraDirector as world points (same contract as
+    /// IThreatenedAreaProvider.TryGetThreatenedWorldPoints on the enemy side). Returning null when the
+    /// conversion isn't possible is deliberate: the cue then falls back to TargetPoint, already a world point.
+    /// </summary>
+    private static List<Vector3> ToWorldPoints(List<Vector3> cells, IInteractableElement caster)
+    {
+        if (cells == null || cells.Count == 0) return null;
+        if (caster is not GridElement gridElement || gridElement.activeTilemap == null) return null;
+
+        var points = new List<Vector3>(cells.Count);
+        for (int i = 0; i < cells.Count; i++)
+            points.Add(gridElement.activeTilemap.GetCellCenterWorld(Vector3Int.FloorToInt(cells[i])));
+        return points;
     }
 }

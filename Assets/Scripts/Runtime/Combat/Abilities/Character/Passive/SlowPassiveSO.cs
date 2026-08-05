@@ -8,6 +8,11 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
     [SerializeField] private int _flatPenalty = 0;
     [SerializeField] private float _percentPenalty = 0f;
     [SerializeField] private int _durationInTurns = 3;
+    [SerializeField] private VFXController _vfxPrefab;
+
+    private const float VfxReferenceRadius = 1.7f;
+    private const float VfxMinScale = 0.6f;
+    private const float VfxMaxScale = 2.2f;
 
     private PassiveAbilityController _controller;
     private int _turnCount;
@@ -31,6 +36,27 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
         _turnCount  = 0;
         _isExpired  = false;
         _stacks     = 1;
+
+        PlayApplyVFX(controller);
+    }
+
+    private void PlayApplyVFX(PassiveAbilityController controller)
+    {
+        if (_vfxPrefab == null) return;
+
+        Vector3 position = controller.transform.position;
+        float scale = 1f;
+
+        Collider collider = controller.Collider;
+        if (collider != null)
+        {
+            Bounds bounds = collider.bounds;
+            position = new Vector3(bounds.center.x, bounds.max.y, bounds.center.z); // testa
+            scale = Mathf.Clamp(bounds.extents.magnitude / VfxReferenceRadius, VfxMinScale, VfxMaxScale);
+        }
+
+        VFXController instance = UnityEngine.Object.Instantiate(_vfxPrefab, position, Quaternion.identity);
+        instance.transform.localScale = Vector3.one * scale;
     }
 
     public override void OnUnequip(PassiveAbilityController controller)
@@ -44,6 +70,8 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
         _turnCount = 0;
         _isExpired = false;
         OnStateUpdated?.Invoke();
+
+        PlayApplyVFX(controller);
     }
 
     int IAgilityModifier.GetFlatAgilityBonus() => -_flatPenalty * _stacks;

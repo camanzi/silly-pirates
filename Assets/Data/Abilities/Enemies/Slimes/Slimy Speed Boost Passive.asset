@@ -17,3 +17,4 @@ MonoBehaviour:
   _flatBonus: 5
   _percentBonus: 7.5
   _durationInTurns: 6
+  _vfxPrefab: {fileID: 4519361680784028135, guid: 382dde045a9e97a48afcd318be016198, type: 3}
