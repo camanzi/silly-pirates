@@ -36,6 +36,10 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [Header("Hostile character configs")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
+    [Header("Combat Intro")]
+    [Tooltip("Se assegnato e IsIntroActive, sopprime lo spawn automatico: la fase Spawn viene rigiocata dal CombatIntroSequencer al momento giusto")]
+    [SerializeField] private CombatIntroStateSO _introState;
+
     public EnemyRole Role => _role;
     public string DisplayName => _displayName;
     public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
@@ -181,7 +185,12 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     {
         SetInteractable(true);                  // ripristina i collider se il GO viene riattivato dopo una morte
 
-        _lifecycleAnimator?.Play(LifecyclePhase.Spawn);
+        // Durante l'intro lo spawn è orchestrato dal CombatIntroSequencer: qui si prepara solo lo
+        // stato nascosto (pivot sott'acqua, alpha 0), senza riprodurre l'animazione.
+        if (_introState != null && _introState.IsIntroActive)
+            _lifecycleAnimator?.PrepareHidden(LifecyclePhase.Spawn);
+        else
+            _lifecycleAnimator?.Play(LifecyclePhase.Spawn);
         this.HandleCombatJoin();
     }
 

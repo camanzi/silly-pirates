@@ -6,6 +6,9 @@ public class SpawnPointManagerSO : ScriptableObject
 {
     private readonly List<SpawnPoint> _registeredPoints = new();
 
+    /// <summary>Spawn point registrati in scena, indipendentemente dallo stato di occupazione.</summary>
+    public IReadOnlyList<SpawnPoint> RegisteredPoints => _registeredPoints;
+
     private void OnEnable() => _registeredPoints.Clear();
 
     public void Register(SpawnPoint point)

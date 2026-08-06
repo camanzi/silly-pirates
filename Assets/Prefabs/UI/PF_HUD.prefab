@@ -31,6 +31,8 @@ GameObject:
   - component: {fileID: 3217598463108275501}
   - component: {fileID: 3217598463108275502}
   - component: {fileID: 2519003588646120238}
+  - component: {fileID: 9123456789012345678}
+  - component: {fileID: 9123456789012345679}
   m_Layer: 5
   m_Name: PF_HUD
   m_TagString: Untagged
@@ -640,4 +642,47 @@ MonoBehaviour:
   _hudDocument: {fileID: 2617577189569630218}
   _targetCounterChannel: {fileID: 11400000, guid: 7c2e9a1d4f6b4e3e9a0c8d5b2f1e6a3c, type: 2}
   _inputReader: {fileID: 11400000, guid: 7e56d5efef3525e478b22e3e6ac7bb2d, type: 2}
-  _cursorOffset: {x: 12, y: 0}
+  _cursorOffset: {x: 25, y: -25}
+--- !u!114 &9123456789012345678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d7e45b4eac6e54ca6f76523deee78a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HudVisibilityController
+  _hudDocument: {fileID: 2617577189569630218}
+  _introState: {fileID: 11400000, guid: 26a75455ea484e541b14250508a9fd03, type: 2}
+  _fadeDuration: 0.4
+--- !u!114 &9123456789012345679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871551424322025804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ece5938f2f80a94a8b017f45b7f28df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoidChannelListener
+  eventChannel: {fileID: 11400000, guid: 074ab50170a9dc745b635f809556e363, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9123456789012345678}
+        m_TargetAssemblyTypeName: HudVisibilityController, Assembly-CSharp
+        m_MethodName: ShowHud
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

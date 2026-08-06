@@ -12,6 +12,10 @@ public class TurnController : MonoBehaviour
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
     [SerializeField] private CommandQueueSO _commandQueue;
 
+    [Header("Combat Intro")]
+    [Tooltip("Se assegnato, il game loop attende il gate della sequenza di intro prima di partire. Lasciare vuoto nelle scene senza intro.")]
+    [SerializeField] private CombatIntroStateSO _introState;
+
     protected async Awaitable OnEnable()
     {
         _turnOrderData.Clear();
@@ -28,6 +32,9 @@ public class TurnController : MonoBehaviour
         try 
         {
             await Awaitable.NextFrameAsync(token);
+
+            // Gate della sequenza di intro: se assente o già passante, non introduce ritardo.
+            if (_introState != null) await _introState.WaitUntilCombatReadyAsync(token);
 
             while (!token.IsCancellationRequested)
             {

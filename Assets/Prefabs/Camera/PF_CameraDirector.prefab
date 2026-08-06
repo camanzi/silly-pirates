@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7722376064533576541}
   - component: {fileID: 253836838172320975}
+  - component: {fileID: 6559592996918120767}
   m_Layer: 0
   m_Name: PF_CameraDirector
   m_TagString: Untagged
@@ -52,3 +53,18 @@ MonoBehaviour:
   _cueDefaults: {fileID: 11400000, guid: b0038ad36a89ef0448c9de103acca1b4, type: 2}
   _groundAnchor: {fileID: 0}
   _maxBlendWait: 2
+--- !u!114 &6559592996918120767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2517699441383957649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0eb772fa77e72498812b97377a665b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShipOcclusionFader
+  _actionCamera: {fileID: 0}
+  _targetGroup: {fileID: 0}
+  _fadeDuration: 0.25

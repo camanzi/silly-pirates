@@ -75,7 +75,7 @@ public class CameraDirector : MonoBehaviour
 
         ICameraCueHandler handler = CameraCueHandlerFactory.GetHandler(cueType);
 
-        if (handler == null || profile == null || _actionCamera == null || _targetGroup == null || cue.Caster == null)
+        if (handler == null || profile == null || _actionCamera == null || _targetGroup == null)
         {
             if (_directorState != null) _directorState.SignalFocusReady();
             return;

@@ -38,7 +38,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: f34e6cbc31ae5d74485d162d04d6fd21, type: 2}
     - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.65
+      value: -1.33
       objectReference: {fileID: 0}
     - target: {fileID: 3906188551014031183, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: m_LocalPosition.y
@@ -92,6 +92,10 @@ PrefabInstance:
       propertyPath: _critStats
       value: 
       objectReference: {fileID: 11400000, guid: b4c4609d7a0bce744a37c5dc99ecdf51, type: 2}
+    - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
+      propertyPath: _introState
+      value: 
+      objectReference: {fileID: 11400000, guid: 26a75455ea484e541b14250508a9fd03, type: 2}
     - target: {fileID: 8268247932945328983, guid: 39c2c45da2c87e74baa4a8c556e3ce29, type: 3}
       propertyPath: _displayName
       value: Big Evil Octopus

@@ -84,6 +84,39 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applica istantaneamente lo stato "nascosto" di una fase (es. pivot sott'acqua, alpha 0) senza
+    /// riprodurre l'animazione. Usato dalla sequenza di intro al combattimento per sopprimere lo
+    /// spawn automatico di <see cref="HostileCharacter.OnCombatJoin"/> finché il regista non decide
+    /// di rigiocarlo con <see cref="PlayAsync"/>. Stessa risoluzione della SO di <see cref="PlayAsync"/>,
+    /// stessi messaggi di log: la SO resta stateless, tutto lo stato mutabile vive nel contesto.
+    /// </summary>
+    public void PrepareHidden(LifecyclePhase phase)
+    {
+        EnsureRestPoseCaptured();
+
+        if (_animations == null || _animations.Count == 0)
+        {
+            Debug.LogWarning(
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': dizionario animazioni vuoto, " +
+                $"fase {phase} ignorata.", this);
+            return;
+        }
+
+        if (!_animations.TryGetValue(phase, out LifecycleAnimationSO animation))
+            return;
+
+        if (animation == null)
+        {
+            Debug.LogWarning(
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': la fase {phase} è nel dizionario " +
+                "ma non ha una LifecycleAnimationSO assegnata.", this);
+            return;
+        }
+
+        animation.Prepare(in _context);
+    }
+
     public async Awaitable PlayAsync(LifecyclePhase phase, CancellationToken token)
     {
         EnsureRestPoseCaptured();

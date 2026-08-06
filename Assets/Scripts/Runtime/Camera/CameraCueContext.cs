@@ -25,6 +25,10 @@ public class CameraCueContext
 
     public void AddCaster()
     {
+        // Intro/ad-hoc cues (e.g. spawn-point or ship-arrival beats) carry no Caster. No-op rather
+        // than crash so caster-driven handlers (FocusCaster, FramePair, FocusCasterThen*) degrade
+        // gracefully to their target/ground-anchor fallback instead of throwing.
+        if (Cue.Caster == null || Cue.Caster.Transform == null) return;
         TargetGroup.AddMember(Cue.Caster.Transform, 1f, Profile.MemberRadius);
     }
 

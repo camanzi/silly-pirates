@@ -48,5 +48,14 @@ public class GridElement : MonoBehaviour
             _gridPosition = pos;
             _gridStateData.RegisterOccupancy(_gridPosition, this);
         }
+        else
+        {
+            // Non è mai una condizione voluta: senza tilemap l'elemento non registra occupancy
+            // (il pathfinding considera libera la sua cella) e ogni ability che legge activeTilemap
+            // esplode con una NullReference molto più tardi, lontano dalla vera causa.
+            Debug.LogError(
+                $"[{nameof(GridElement)}] '{name}': nessun pavimento trovato sotto {transform.position} " +
+                $"(layer '{floorGridLayer.value}'). L'elemento resta senza tilemap e senza occupancy.", this);
+        }
     }
 }
