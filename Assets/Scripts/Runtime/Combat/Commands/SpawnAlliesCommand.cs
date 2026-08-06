@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
@@ -33,7 +34,7 @@ public class SpawnAlliesCommand : ICommand
         _spawnedAnimators.Clear();
         foreach (var (prefab, spawnPoint) in _spawnPairs)
         {
-            var spawnedGO = Object.Instantiate(prefab.gameObject, spawnPoint.Position, Quaternion.identity);
+            var spawnedGO = UnityEngine.Object.Instantiate(prefab.gameObject, spawnPoint.Position, Quaternion.identity);
             var spawned = spawnedGO.GetComponent<HostileCharacter>();
 
             spawnPoint.Claim(spawned);
@@ -42,8 +43,20 @@ public class SpawnAlliesCommand : ICommand
                 _spawnedAnimators.Add(spawned.LifecycleAnimator);
         }
 
+        // Il token è quello dello spawnato, non del caster: è la sua animazione che stiamo
+        // attendendo, ed è la sua distruzione che deve sbloccare l'attesa.
         foreach (var animator in _spawnedAnimators)
-            await animator.WaitUntilIdleAsync(_caster.destroyCancellationToken);
+        {
+            try
+            {
+                await animator.WaitUntilIdleAsync(animator.destroyCancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // Spawnato distrutto durante l'emersione: passa al successivo senza abortire
+                // il rientro dello scettro.
+            }
+        }
 
         if (hasPart)
             await Tween.Position(_partTransform, origin, 0.4f, Ease.InQuad);

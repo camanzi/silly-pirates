@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "ayellowpaper.serialized-dictionary": {
-      "version": "https://github.com/ayellowpaper/SerializedDictionary.git",
+      "version": "https://github.com/camanzi/SerializedDictionary.git#c3b9c03d61485f215dde9f8981c61511ca559193",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "2fc7a2366437467e70b38dc756c7d9d06e4909b0"
+      "hash": "c3b9c03d61485f215dde9f8981c61511ca559193"
     },
     "com.coplaydev.unity-mcp": {
       "version": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",

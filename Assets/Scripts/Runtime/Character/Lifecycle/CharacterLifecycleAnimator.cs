@@ -88,14 +88,21 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     {
         EnsureRestPoseCaptured();
 
+        // Dizionario vuoto: non è mai una configurazione voluta — un prefab senza animazioni di
+        // lifecycle non ha nemmeno questo componente. In build indica che i dati serializzati sono
+        // andati persi sul clone (vedi SerializedDictionary.OnAfterDeserialize, che in player
+        // svuota la lista di backing dopo la prima deserializzazione).
+        if (_animations == null || _animations.Count == 0)
         {
-            LifecycleAnimationSO dbgAnim = null;
-            bool dbgFound = _animations != null && _animations.TryGetValue(phase, out dbgAnim);
+            Debug.LogWarning(
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': dizionario animazioni vuoto, " +
+                $"fase {phase} ignorata.", this);
+            return;
         }
 
         // Fase non configurata: silenzioso, è la configurazione voluta (non tutti i personaggi
         // hanno un'animazione per ogni fase).
-        if (_animations == null || !_animations.TryGetValue(phase, out LifecycleAnimationSO animation))
+        if (!_animations.TryGetValue(phase, out LifecycleAnimationSO animation))
             return;
 
         // Entry presente ma senza SO: quasi certamente un wiring dimenticato, non un'assenza voluta.
