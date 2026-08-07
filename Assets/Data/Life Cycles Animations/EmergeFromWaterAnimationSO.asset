@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65bfd175c374d044bba4a67747523c18, type: 3}
   m_Name: EmergeFromWaterAnimationSO
   m_EditorClassIdentifier: Assembly-CSharp::EmergeFromWaterAnimationSO
-  _depth: 2
-  _duration: 0.8
+  _depth: 10
+  _duration: 1.25
   _ease: 6
   _startDelay: 0
   _fadeIn: 1

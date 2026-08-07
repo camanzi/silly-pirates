@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: CombatIntroSequence
   m_EditorClassIdentifier: 
   _preSequenceDelay: 0.25
-  _perEnemyPreHold: 0.3
-  _perEnemyPostHold: 0.4
-  _shipArrivalHold: 0.6
-  _postDockDelay: 0.2
-  _openingLine: "La caccia \xE9 aperta!"
+  _perEnemyPreHold: 0.15
+  _perEnemyPostHold: 0.2
+  _shipArrivalHold: 0
+  _postDockDelay: 0.15
+  _openingLine: The hunt is open!
   _enemyFocusProfile: {fileID: 11400000, guid: 55c04bfd674c1f64db5f92d919c6f049, type: 2}
   _shipFocusProfile: {fileID: 11400000, guid: 3a4c91e1be5d7864fa8455eb41c73531, type: 2}

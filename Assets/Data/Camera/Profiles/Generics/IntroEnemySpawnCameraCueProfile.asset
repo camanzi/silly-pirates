@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f03152fcfb4bcf1479dc4473dace3173, type: 3}
   m_Name: IntroEnemySpawnCameraCueProfile
   m_EditorClassIdentifier: Assembly-CSharp::CameraCueProfileSO
-  _framingSize: 0.45
+  _framingSize: 0.2
   _memberRadius: 1.5
-  _preShotHold: 0.35
+  _preShotHold: 0
   _postShotHold: 0.25
+  _orbitSpeed: -4
+  _orbitMaxDegrees: 10
+  _orbitEase: 1

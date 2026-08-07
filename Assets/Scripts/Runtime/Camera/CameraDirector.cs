@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using PrimeTween;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -24,6 +25,13 @@ public class CameraDirector : MonoBehaviour
     private CameraCueProfileSO _activeProfile;
     private bool _isCueActive;
 
+    // Orbit drift. The action camera has no Aim stage, so its Transform rotation IS the vcam state
+    // orientation: yawing it makes CinemachinePositionComposer re-anchor the camera around the tracked
+    // point, i.e. a real orbit around the framed pivot. _baseRotation is captured once so repeated cues
+    // can never accumulate drift.
+    private Tween _orbitTween;
+    private Quaternion _baseCameraRotation;
+
     // Pool of ground anchors, grown on demand so a cue can frame several areas at once
     // (one member per affected point) rather than a single centroid.
     private readonly List<Transform> _groundAnchors = new();
@@ -31,7 +39,11 @@ public class CameraDirector : MonoBehaviour
 
     private void Awake()
     {
-        if (_actionCamera != null) _groupFraming = _actionCamera.GetComponent<CinemachineGroupFraming>();
+        if (_actionCamera != null)
+        {
+            _groupFraming = _actionCamera.GetComponent<CinemachineGroupFraming>();
+            _baseCameraRotation = _actionCamera.transform.rotation;
+        }
         if (_groundAnchor == null)
         {
             _groundAnchor = new GameObject("CueGroundAnchor").transform;
@@ -62,6 +74,7 @@ public class CameraDirector : MonoBehaviour
     {
         if (_directorState != null) _directorState.OnFocusEnded -= OnFocusEnded;
         if (_cueChannel != null) _cueChannel.OnEventRaised -= HandleCue;
+        StopOrbit();
     }
 
     public void HandleCue(AbilityExecutionCue cue)
@@ -96,6 +109,11 @@ public class CameraDirector : MonoBehaviour
 
     private async void RunCueAsync(ICameraCueHandler handler, CameraCueContext context)
     {
+        // Back-to-back cues (intro beats) re-enter here without an intervening release, so the previous
+        // sweep must die and the yaw be re-seeded BEFORE the reframe — the jump then hides inside the
+        // repositioning caused by the group being cleared and repopulated.
+        SeedOrbitStart(context.Profile);
+
         _activeProfile = context.Profile;
         _isCueActive = true;
 
@@ -104,8 +122,51 @@ public class CameraDirector : MonoBehaviour
 
         await handler.RunAsync(context);
 
+        // Fire-and-forget: the shot keeps drifting while the caller proceeds with the ability/spawn.
+        StartOrbit(context.Profile);
+
         if (_directorState != null) _directorState.SignalFocusReady();
     }
+
+    /// <summary>
+    /// Kills any running sweep and parks the vcam at the orbit's starting yaw (-half the sweep), so the
+    /// shot blends in already rotated and the drift crosses the authored angle instead of leaving it.
+    /// Cues without an orbit are parked back on the authored angle.
+    /// </summary>
+    private void SeedOrbitStart(CameraCueProfileSO profile)
+    {
+        _orbitTween.Stop();
+        if (_actionCamera == null) return;
+
+        bool hasOrbit = profile != null && profile.HasOrbit;
+        _actionCamera.transform.rotation = OrbitRotation(hasOrbit ? -HalfSweep(profile) : 0f);
+    }
+
+    private void StartOrbit(CameraCueProfileSO profile)
+    {
+        if (profile == null || !profile.HasOrbit || _actionCamera == null) return;
+
+        float half = HalfSweep(profile);
+        float duration = profile.OrbitMaxDegrees / Mathf.Abs(profile.OrbitSpeed);
+
+        _orbitTween = Tween.Rotation(_actionCamera.transform,
+            startValue: OrbitRotation(-half),
+            endValue: OrbitRotation(half),
+            duration, profile.OrbitEase);
+    }
+
+    private void StopOrbit()
+    {
+        _orbitTween.Stop();
+        if (_actionCamera != null) _actionCamera.transform.rotation = _baseCameraRotation;
+    }
+
+    // Signed: OrbitSpeed's sign is the sweep direction, OrbitMaxDegrees its total travel.
+    private static float HalfSweep(CameraCueProfileSO profile)
+        => Mathf.Sign(profile.OrbitSpeed) * profile.OrbitMaxDegrees * 0.5f;
+
+    private Quaternion OrbitRotation(float degrees)
+        => Quaternion.AngleAxis(degrees, Vector3.up) * _baseCameraRotation;
 
     private void OnFocusEnded()
     {
@@ -123,6 +184,8 @@ public class CameraDirector : MonoBehaviour
         // A new cue may have started during the hold — don't steal its camera
         if (_isCueActive) return;
 
+        // Never hand the vcam back to the player rotated
+        StopOrbit();
         _actionCamera.enabled = false;
         _activeProfile = null;
     }
