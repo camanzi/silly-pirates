@@ -10,6 +10,7 @@ public class EnemyTurnDriver : MonoBehaviour
     [SerializeField] private CommandQueueSO _commandQueue;
     [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
     [SerializeField] private AbilityExecutionCueEventChannel _cameraCueChannel;
+    [SerializeField] private SfxCueEventChannel _sfxChannel;
 
     private BehaviorGraphAgent _agent;
     private HostileCharacter _hostile;
@@ -52,10 +53,14 @@ public class EnemyTurnDriver : MonoBehaviour
 
     private async Awaitable RaiseCameraCueAsync()
     {
-        if (_cameraDirectorState == null || _cameraCueChannel == null) return;
         if (!_agent.GetVariable("SelectedAbility", out BlackboardVariable<AbilityBase> abilityVar)) return;
         AbilityBase ability = abilityVar.Value;
         if (ability == null) return;
+
+        // Fire-and-forget, indipendente dalla regia di camera: l'audio non blocca mai il turn loop.
+        RaiseCastSfx(ability);
+
+        if (_cameraDirectorState == null || _cameraCueChannel == null) return;
 
         _agent.GetVariable("SelectedTarget", out BlackboardVariable<MonoBehaviour> targetVar);
         MonoBehaviour targetMono = targetVar?.Value;
@@ -71,5 +76,12 @@ public class EnemyTurnDriver : MonoBehaviour
         _cameraDirectorState.BeginFocus();
         _cameraCueChannel.RaiseEvent(new AbilityExecutionCue(ability, _hostile, targets, affectedCells, targetPoint));
         await _cameraDirectorState.WaitUntilFocused();
+    }
+
+    private void RaiseCastSfx(AbilityBase ability)
+    {
+        if (_sfxChannel == null || ability.CastSfx == null) return;
+
+        _sfxChannel.RaiseEvent(SfxCue.At(ability.CastSfx, transform.position));
     }
 }

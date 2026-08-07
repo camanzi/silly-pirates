@@ -14,11 +14,15 @@ public class ShootCommand : ICommand
     private readonly DamageType _baseDMGType;
     private readonly int _effectiveAccuracy;
 
+    private readonly SoundEventSO _fireSfx;
+    private readonly SfxCueEventChannel _sfxChannel;
+
     private readonly List<Awaitable> _flightTasks = new();
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, TrajectoryConfigsSO trajectoryConfigData, int effectiveAccuracy)
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, TrajectoryConfigsSO trajectoryConfigData, int effectiveAccuracy,
+        SoundEventSO fireSfx = null, SfxCueEventChannel sfxChannel = null)
     {
         _caster = caster;
         _targets = targets;
@@ -28,6 +32,8 @@ public class ShootCommand : ICommand
         _baseDMGType = baseDMGType;
         _trajectoryConfigData = trajectoryConfigData;
         _effectiveAccuracy = effectiveAccuracy;
+        _fireSfx = fireSfx;
+        _sfxChannel = sfxChannel;
     }
 
     public async Awaitable ExecuteAsync()
@@ -85,6 +91,10 @@ public class ShootCommand : ICommand
         Vector3 controlPoint = (start + end) / 2 + Vector3.up * _trajectoryConfigData.Height;
 
         if (_caster is ShipEquipment equipment) equipment.OnCommandExecuted.Invoke();
+
+        // Il boom cade sul frame dello sparo, non all'inizio dell'abilita'.
+        if (_fireSfx != null && _sfxChannel != null)
+            _sfxChannel.RaiseEvent(SfxCue.At(_fireSfx, start));
 
         var state = new ProjectileState(projectile.transform, start, controlPoint, end);
         await Tween.Custom(state, 0f, 1f, duration: _trajectoryConfigData.TravelDuration, ease: Ease.Linear,

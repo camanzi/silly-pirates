@@ -13,6 +13,10 @@ public class ExecutionStateSO : CombatStateSO
         try
         {
             AbilityExecutionCue? cue = manager.CombatCtx.PendingCue;
+
+            // Fire-and-forget: a differenza del camera cue, l'audio non blocca mai il turn loop.
+            RaiseCastSfx(cue);
+
             if (cue.HasValue && cameraState != null && manager.CameraCueChannel != null)
             {
                 cameraState.BeginFocus();
@@ -34,6 +38,23 @@ public class ExecutionStateSO : CombatStateSO
     public override void OnExit()
     {
         Debug.Log($"Sono uscito dal Execution state");
+    }
+
+    private void RaiseCastSfx(AbilityExecutionCue? cue)
+    {
+        if (!cue.HasValue) return;
+
+        SfxCueEventChannel channel = manager.SfxChannel;
+        if (channel == null) return;
+
+        AbilityBase ability = cue.Value.Ability;
+        if (ability == null || ability.CastSfx == null) return;
+
+        Vector3 position = cue.Value.Caster?.Transform != null
+            ? cue.Value.Caster.Transform.position
+            : cue.Value.TargetPoint ?? Vector3.zero;
+
+        channel.RaiseEvent(SfxCue.At(ability.CastSfx, position));
     }
 
     public override void OnUpdate() { }

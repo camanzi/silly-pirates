@@ -847,6 +847,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1505999442
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1505999444}
+  - component: {fileID: 1505999443}
+  m_Layer: 0
+  m_Name: AudioDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1505999443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505999442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8310757322c5ab440b8173d616a63829, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioDirector
+  _sfxChannel: {fileID: 11400000, guid: b24a8181c961291499aa268fceeb8766, type: 2}
+  _loopStartChannel: {fileID: 11400000, guid: 1d7d68f798de6dc44a13ec7d9d46078c, type: 2}
+  _loopStopChannel: {fileID: 11400000, guid: 007d90b919c5cfe469942f7968aa27fe, type: 2}
+  _prewarmSize: 12
+  _maxPoolSize: 24
+--- !u!4 &1505999444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505999442}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &171171695064951625
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1998,3 +2047,4 @@ SceneRoots:
   - {fileID: 8537776285913125312}
   - {fileID: 5857357427390037507}
   - {fileID: 1332771444}
+  - {fileID: 1505999444}

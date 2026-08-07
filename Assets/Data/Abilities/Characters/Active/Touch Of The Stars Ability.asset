@@ -19,6 +19,8 @@ MonoBehaviour:
   _icon: {fileID: 21300000, guid: 97f546ee1b8855d4e8f3b0d7937d1fb4, type: 3}
   _cameraCue: 0
   _cameraCueProfile: {fileID: 0}
+  _sfxChannel: {fileID: 11400000, guid: b24a8181c961291499aa268fceeb8766, type: 2}
+  _castSfx: {fileID: 0}
   _apCost: 1
   _passiveSO: {fileID: 11400000, guid: d9b42ab0d490f0c46a67a2113e15f982, type: 2}
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}

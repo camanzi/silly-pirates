@@ -18,9 +18,17 @@ public abstract class AbilityBase : ScriptableObject
     [SerializeField] private CameraCueType _cameraCue = CameraCueType.FramePair;
     [SerializeField] private CameraCueProfileSO _cameraCueProfile;
 
+    [Header("Audio")]
+    [Tooltip("Serve solo alle abilita' che passano il canale ai propri comandi per SFX a tempo preciso")]
+    [SerializeField] protected SfxCueEventChannel _sfxChannel;
+    [Tooltip("Suono generico di lancio, riprodotto all'ingresso nello stato di esecuzione")]
+    [SerializeField] private SoundEventSO _castSfx;
+
     public Sprite Icon => _icon;
     public virtual CameraCueType CameraCue => _cameraCue;
     public virtual CameraCueProfileSO CameraCueProfile => _cameraCueProfile;
+    public virtual SoundEventSO CastSfx => _castSfx;
+    public SfxCueEventChannel SfxChannel => _sfxChannel;
     public bool ShowTrajectory => showTrajectory;
     public TrajectoryConfigsSO TrajectoryConfigData => trajectoryConfigData;
     public virtual int ActionPointCost => 0;
