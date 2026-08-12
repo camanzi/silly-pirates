@@ -20,3 +20,8 @@ MonoBehaviour:
   _openingLine: The hunt is open!
   _enemyFocusProfile: {fileID: 11400000, guid: 55c04bfd674c1f64db5f92d919c6f049, type: 2}
   _shipFocusProfile: {fileID: 11400000, guid: 3a4c91e1be5d7864fa8455eb41c73531, type: 2}
+  _introMusic: {fileID: 11400000, guid: 35e25452d1c638b4cb485497de1faa95, type: 2}
+  _introMusicFadeIn: 0.5
+  _introMusicFadeOut: 1
+  _combatMusic: {fileID: 11400000, guid: a2ef948fda66b9148b919b65e6046c4c, type: 2}
+  _combatMusicFadeIn: 0.5

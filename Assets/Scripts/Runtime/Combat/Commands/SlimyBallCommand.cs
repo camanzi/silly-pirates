@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using PrimeTween;
 using UnityEngine;
@@ -42,12 +43,16 @@ public class SlimyBallCommand : ICommand
     /// </summary>
     public async Awaitable ExecuteAsync()
     {
-        Transform animationRoot = _caster.LifecycleAnimator != null ? _caster.LifecycleAnimator.AnimationRoot : null;
+        // I bersagli includono il corpo (indice 0) e i suoi satelliti: le parti di un nemico composito
+        // devono saltare insieme a lui, non restare a terra.
+        IReadOnlyList<LifecycleAnimationTarget> targets =
+            _caster.LifecycleAnimator != null ? _caster.LifecycleAnimator.Targets : null;
+        Transform bodyPivot = targets != null && targets.Count > 0 ? targets[0].Pivot : null;
 
         // Senza un pivot visivo dedicato (fallback su transform di griglia) o senza config non
         // animiamo il salto: sposteremmo collider e posizione di cella, o gireremmo con parametri
         // non pronti. Si degrada al vecchio squash-stretch sul root.
-        bool canAnimateJump = animationRoot != null && animationRoot != _caster.Transform && _jumpConfig != null;
+        bool canAnimateJump = bodyPivot != null && bodyPivot != _caster.Transform && _jumpConfig != null;
 
         if (!canAnimateJump)
         {
@@ -56,8 +61,6 @@ public class SlimyBallCommand : ICommand
             return;
         }
 
-        Vector3 restLocalPosition = animationRoot.localPosition;
-        Vector3 restLocalScale = animationRoot.localScale;
         // Letta prima di qualunque await: il calcolo dell'apice non può fallire più tardi.
         float targetWorldY = _target.Transform.position.y;
         float apexWorldHeight = _jumpConfig.ComputeApexHeight(_caster.Transform.position.y, targetWorldY);
@@ -67,23 +70,23 @@ public class SlimyBallCommand : ICommand
         try
         {
             await JumpSquashStretchHelper.JumpUpAsync(
-                animationRoot, restLocalPosition, restLocalScale, apexWorldHeight, _jumpConfig, splashWorldPosition, token);
+                targets, apexWorldHeight, _jumpConfig, splashWorldPosition, token);
 
             if (_jumpConfig.HangHoldDuration > 0f)
                 await Tween.Delay(_jumpConfig.HangHoldDuration);
 
             // Il proiettile parte dalla posizione MONDO del pivot sollevato, non dal root a pelo d'acqua.
             await LegacySquashStretch();
-            await LaunchProjectile(animationRoot.position);
+            await LaunchProjectile(bodyPivot.position);
 
             await JumpSquashStretchHelper.FallDownAsync(
-                animationRoot, restLocalPosition, restLocalScale, _jumpConfig, splashWorldPosition, token);
+                targets, _jumpConfig, splashWorldPosition, token);
         }
         finally
         {
             // Ridondante col finally interno di FallDownAsync, ma necessario: se JumpUpAsync o
-            // LaunchProjectile falliscono prima di arrivarci, il pivot non deve restare sospeso in aria.
-            JumpSquashStretchHelper.ResetToRest(animationRoot, restLocalPosition, restLocalScale);
+            // LaunchProjectile falliscono prima di arrivarci, i pivot non devono restare sospesi in aria.
+            JumpSquashStretchHelper.ResetToRest(targets);
         }
     }
 

@@ -3,7 +3,7 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Il personaggio emerge da sotto il pelo dell'acqua verso la sua posa a riposo.
+/// Il personaggio emerge da sotto il pelo dell'acqua verso la sua posa a riposo, insieme ai suoi satelliti.
 /// </summary>
 [CreateAssetMenu(menuName = "Combat/Lifecycle Animations/Emerge From Water")]
 public class EmergeFromWaterAnimationSO : LifecycleAnimationSO
@@ -14,17 +14,26 @@ public class EmergeFromWaterAnimationSO : LifecycleAnimationSO
     [SerializeField] private float _startDelay = 0f;
     [SerializeField] private bool _fadeIn = true; // maschera lo sprite visibile sotto il pelo dell'acqua
 
-    public override void Prepare(in LifecycleAnimationContext ctx)
+    public override void PrepareTarget(in LifecycleAnimationTarget target)
     {
-        if (ctx.AnimationRoot != null)
-            ctx.AnimationRoot.localPosition = ctx.RestLocalPosition + Vector3.down * _depth;
+        if (target.Pivot == null) return;
 
-        if (_fadeIn && ctx.Renderer != null)
-        {
-            Color startColor = ctx.RestColor;
-            startColor.a = 0f;
-            ctx.Renderer.color = startColor;
-        }
+        // La scala torna a riposo perché l'avvio di una fase interrompe i tween altrui (es. lo scale-up di
+        // un telegraph), che potrebbero averla lasciata a metà.
+        target.Pivot.localPosition = target.RestLocalPosition + Vector3.down * _depth;
+        target.Pivot.localScale = target.RestLocalScale;
+
+        if (_fadeIn) target.SetAlpha(0f);
+    }
+
+    public override Tween PlayTarget(in LifecycleAnimationTarget target)
+    {
+        if (target.Pivot == null) return default;
+
+        if (_fadeIn && target.Renderer != null)
+            _ = Tween.Alpha(target.Renderer, target.RestColor.a, _duration * 0.5f);
+
+        return Tween.LocalPosition(target.Pivot, target.RestLocalPosition, _duration, _ease);
     }
 
     public override async Awaitable PlayAsync(LifecycleAnimationContext ctx, CancellationToken token)
@@ -32,9 +41,6 @@ public class EmergeFromWaterAnimationSO : LifecycleAnimationSO
         if (_startDelay > 0f)
             await Awaitable.WaitForSecondsAsync(_startDelay, token);
 
-        if (_fadeIn && ctx.Renderer != null)
-            _ = Tween.Alpha(ctx.Renderer, ctx.RestColor.a, _duration * 0.5f);
-
-        await Tween.LocalPosition(ctx.AnimationRoot, ctx.RestLocalPosition, _duration, _ease);
+        await PlayAllTargetsAsync(ctx);
     }
 }

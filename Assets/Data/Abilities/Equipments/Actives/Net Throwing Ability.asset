@@ -19,7 +19,7 @@ MonoBehaviour:
   _icon: {fileID: 0}
   _cameraCue: 0
   _cameraCueProfile: {fileID: 11400000, guid: 5b49ff35e353ef8448ea316a240dcc48, type: 2}
-  _sfxChannel: {fileID: 0}
+  _sfxChannel: {fileID: 11400000, guid: b24a8181c961291499aa268fceeb8766, type: 2}
   _castSfx: {fileID: 0}
   _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
   _maxTargets: 1

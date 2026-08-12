@@ -3,8 +3,8 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Il personaggio affonda sotto il pelo dell'acqua a partire dalla sua posa a riposo. Inverso di
-/// <see cref="EmergeFromWaterAnimationSO"/>.
+/// Il personaggio affonda sotto il pelo dell'acqua a partire dalla sua posa a riposo, insieme ai suoi
+/// satelliti. Inverso di <see cref="EmergeFromWaterAnimationSO"/>.
 /// </summary>
 [CreateAssetMenu(menuName = "Combat/Lifecycle Animations/Sink Under Water")]
 public class SinkUnderWaterAnimationSO : LifecycleAnimationSO
@@ -15,15 +15,28 @@ public class SinkUnderWaterAnimationSO : LifecycleAnimationSO
     [SerializeField] private float _startDelay = 0f;
     [SerializeField] private bool _fadeOut = true;
 
-    public override void Prepare(in LifecycleAnimationContext ctx)
+    public override void PrepareTarget(in LifecycleAnimationTarget target)
     {
-        // Difensivo: riporta alla posa a riposo nel caso una precedente animazione fosse
-        // stata interrotta lasciando pivot/colore in uno stato intermedio.
-        if (ctx.AnimationRoot != null)
-            ctx.AnimationRoot.localPosition = ctx.RestLocalPosition;
+        if (target.Pivot == null) return;
 
-        if (ctx.Renderer != null)
-            ctx.Renderer.color = ctx.RestColor;
+        // Difensivo: riporta alla posa a riposo nel caso un'animazione precedente (o un tween di abilità
+        // appena interrotto) avesse lasciato pivot o scala in uno stato intermedio.
+        target.Pivot.localPosition = target.RestLocalPosition;
+        target.Pivot.localScale = target.RestLocalScale;
+
+        // Solo l'alpha: il tint "morto" di chi è già stato distrutto deve restare visibile mentre affonda.
+        target.SetAlpha(target.RestColor.a);
+    }
+
+    public override Tween PlayTarget(in LifecycleAnimationTarget target)
+    {
+        if (target.Pivot == null) return default;
+
+        if (_fadeOut && target.Renderer != null)
+            _ = Tween.Alpha(target.Renderer, 0f, _duration * 0.5f, startDelay: _duration * 0.5f);
+
+        return Tween.LocalPosition(
+            target.Pivot, target.RestLocalPosition + Vector3.down * _depth, _duration, _ease);
     }
 
     public override async Awaitable PlayAsync(LifecycleAnimationContext ctx, CancellationToken token)
@@ -31,11 +44,6 @@ public class SinkUnderWaterAnimationSO : LifecycleAnimationSO
         if (_startDelay > 0f)
             await Awaitable.WaitForSecondsAsync(_startDelay, token);
 
-        Vector3 sunkPosition = ctx.RestLocalPosition + Vector3.down * _depth;
-
-        if (_fadeOut && ctx.Renderer != null)
-            _ = Tween.Alpha(ctx.Renderer, 0f, _duration * 0.5f, startDelay: _duration * 0.5f);
-
-        await Tween.LocalPosition(ctx.AnimationRoot, sunkPosition, _duration, _ease);
+        await PlayAllTargetsAsync(ctx);
     }
 }

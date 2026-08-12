@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -6,26 +7,33 @@ using UnityEngine;
 /// </summary>
 public readonly struct LifecycleAnimationContext
 {
-    public readonly Transform Root;                // transform del personaggio (posizione di griglia) — NON toccare
-    public readonly Transform AnimationRoot;        // pivot visivo da animare
-    public readonly SpriteRenderer Renderer;        // per fade/color
-    public readonly Vector3 RestLocalPosition;      // pose a riposo catturata in Awake
-    public readonly Vector3 RestLocalScale;
-    public readonly Color RestColor;
+    private static readonly LifecycleAnimationTarget[] NoTargets = new LifecycleAnimationTarget[0];
 
-    public LifecycleAnimationContext(
-        Transform root,
-        Transform animationRoot,
-        SpriteRenderer renderer,
-        Vector3 restLocalPosition,
-        Vector3 restLocalScale,
-        Color restColor)
+    public readonly Transform Root;   // transform del personaggio (posizione di griglia) — NON toccare
+
+    private readonly IReadOnlyList<LifecycleAnimationTarget> _targets;
+
+    /// <summary>
+    /// Bersagli da animare: <c>[0]</c> è sempre il corpo, seguito dai satelliti registrati.
+    /// La lista è VIVA — è la stessa istanza posseduta dal <see cref="CharacterLifecycleAnimator"/> — così
+    /// un satellite registrato dopo la costruzione del contesto (l'ordine fra gli <c>Awake</c> non è
+    /// garantito) compare qui senza dover ricostruire il contesto.
+    /// </summary>
+    public IReadOnlyList<LifecycleAnimationTarget> Targets => _targets ?? NoTargets;
+
+    public LifecycleAnimationTarget Body => Targets.Count > 0 ? Targets[0] : default;
+
+    // Scorciatoie sul corpo: mantengono invariata la sintassi delle SO e dei chiamanti scritti quando il
+    // contesto aveva un solo bersaglio.
+    public Transform AnimationRoot => Body.Pivot;
+    public SpriteRenderer Renderer => Body.Renderer;
+    public Vector3 RestLocalPosition => Body.RestLocalPosition;
+    public Vector3 RestLocalScale => Body.RestLocalScale;
+    public Color RestColor => Body.RestColor;
+
+    public LifecycleAnimationContext(Transform root, IReadOnlyList<LifecycleAnimationTarget> targets)
     {
         Root = root;
-        AnimationRoot = animationRoot;
-        Renderer = renderer;
-        RestLocalPosition = restLocalPosition;
-        RestLocalScale = restLocalScale;
-        RestColor = restColor;
+        _targets = targets;
     }
 }

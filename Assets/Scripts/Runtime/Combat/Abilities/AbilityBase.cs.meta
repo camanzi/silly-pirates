@@ -5,6 +5,13 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  - _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  - trajectoryConfigData: {fileID: 11400000, guid: ef232f08ea2afcd448a72b4afc59923c, type: 2}
+  - _icon: {instanceID: 0}
+  - _cameraCueProfile: {instanceID: 0}
+  - _sfxChannel: {fileID: 11400000, guid: b24a8181c961291499aa268fceeb8766, type: 2}
+  - _castSfx: {instanceID: 0}
+  - _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

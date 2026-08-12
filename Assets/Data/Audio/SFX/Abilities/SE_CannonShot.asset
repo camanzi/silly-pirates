@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76b7ea6740654f648981f819ba420f6b, type: 3}
+  m_Name: SE_CannonShot
+  m_EditorClassIdentifier: Assembly-CSharp::SoundEventSO
+  _clips:
+  - {fileID: 8300000, guid: 63b51bbd29330104385749e3ba1bf2b3, type: 3}
+  _mixerGroup: {fileID: 5279990543656843456, guid: 76b3ca51739b2b64380bbee8e09eb33a, type: 2}
+  _volumeRange: {x: 0.5, y: 0.6}
+  _pitchRange: {x: 0.95, y: 1.05}
+  _is3D: 0
+  _rolloffMode: 0
+  _minDistance: 3
+  _maxDistance: 25
+  _loop: 0
+  _cooldownSeconds: 0
+  _maxConcurrentInstances: 4
+  _stealPriority: 2

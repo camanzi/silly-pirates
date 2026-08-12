@@ -28,12 +28,19 @@ public class CombatIntroSequencer : MonoBehaviour
     [Tooltip("Sopprime la UI world-space (menu radiale degli equipaggiamenti) per tutta la durata dell'intro")]
     [SerializeField] private BoolEventChannel _showUIChannel;
 
+    [Header("Audio")]
+    [SerializeField] private MusicCueEventChannel _musicChannel;
+
     [Header("Debug")]
     [Tooltip("Salta la sequenza: il combattimento parte subito, come oggi")]
     [SerializeField] private bool _skipIntro;
 
     private ShipEntranceAnimator _shipEntrance;
     private bool _skipped;
+
+    // True non appena la musica di combattimento e' stata richiesta: da quel momento il
+    // sequencer non ne e' piu' proprietario, e OnDestroy non deve fermarla.
+    private bool _combatMusicStarted;
 
     private void Awake()
     {
@@ -55,9 +62,26 @@ public class CombatIntroSequencer : MonoBehaviour
                 "il beat di arrivo verrà saltato.", this);
     }
 
+    private void OnDestroy()
+    {
+        // Rete di sicurezza: se il sequencer viene distrutto a meta' cinematica (beat saltato,
+        // eccezione, scena chiusa) la musica d'intro resterebbe appesa in loop perche' nessun
+        // altro la ferma. Ma se il fight e' gia' partito, la traccia corrente e' quella di
+        // combattimento e non appartiene piu' a questo sequencer: non va toccata.
+        if (!_combatMusicStarted) _musicChannel?.RaiseEvent(MusicCue.Stop());
+    }
+
     private async void Start()
     {
-        if (_skipped) return;
+        if (_skipped)
+        {
+            // _skipIntro spegne solo la cinematica, non l'audio: saltare la sequenza non deve
+            // lasciare il combattimento muto. MusicDirector.OnEnable gira prima di qualunque
+            // Start() (l'ordine di esecuzione -1000 di questo componente non cambia le cose per
+            // OnEnable), quindi la sottoscrizione al canale c'e' gia' a questo punto.
+            PlayCombatMusic();
+            return;
+        }
 
         // Deve stare in Start e NON in Awake: Unity esegue tutti gli OnEnable degli oggetti presenti
         // al caricamento scena prima di qualunque Start, quindi qui i GridElement figli della nave
@@ -80,6 +104,7 @@ public class CombatIntroSequencer : MonoBehaviour
             // L'intro non deve mai poter bloccare il gioco né lasciare la UI soppressa,
             // qualunque cosa fallisca sopra.
             _showUIChannel?.RaiseEvent(true);
+
             _introState?.CompleteIntro();
         }
     }
@@ -91,6 +116,8 @@ public class CombatIntroSequencer : MonoBehaviour
         // Va alzato DOPO il frame di attesa: CombatStateManager.Start() transisce all'IdleStateSO
         // indipendentemente dall'intro e alza ShowUI(true), quindi farlo prima verrebbe sovrascritto.
         _showUIChannel?.RaiseEvent(false);
+
+        StartIntroMusic();
 
         await Hold(_sequence != null ? _sequence.PreSequenceDelay : 0f, token);
 
@@ -111,6 +138,10 @@ public class CombatIntroSequencer : MonoBehaviour
         _directorState?.EndFocus();
         _onCombatStarted?.RaiseEvent();
         if (_sequence != null) _flavorTextChannel?.RaiseEvent(_sequence.OpeningLine);
+
+        // La musica di combattimento parte sullo stesso beat del banner "combattimento iniziato"
+        // e della flavor text.
+        PlayCombatMusic();
     }
 
     private async Awaitable RunEnemyBeatAsync(IntroSpawnEntry entry, CancellationToken token)
@@ -149,6 +180,27 @@ public class CombatIntroSequencer : MonoBehaviour
     private static async Awaitable Hold(float seconds, CancellationToken token)
     {
         if (seconds > 0f) await Awaitable.WaitForSecondsAsync(seconds, token);
+    }
+
+    private void StartIntroMusic()
+    {
+        if (_sequence == null || _sequence.IntroMusic == null || _musicChannel == null) return;
+
+        _musicChannel.RaiseEvent(MusicCue.Play(_sequence.IntroMusic, _sequence.IntroMusicFadeIn));
+    }
+
+    /// <summary>
+    /// Una sola cue fa entrambe le cose: sfuma la musica d'intro ancora in riproduzione (se
+    /// presente) e accende la soundtrack di combattimento. Da qui in poi la traccia non
+    /// appartiene piu' a questo sequencer: e' il MusicDirector a possederne l'handle.
+    /// </summary>
+    private void PlayCombatMusic()
+    {
+        if (_sequence == null || _sequence.CombatMusic == null || _musicChannel == null) return;
+
+        _musicChannel.RaiseEvent(
+            MusicCue.Play(_sequence.CombatMusic, _sequence.CombatMusicFadeIn, _sequence.IntroMusicFadeOut));
+        _combatMusicStarted = true;
     }
 
     /// <summary>
