@@ -198,6 +198,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _impactVFXPrefab: {fileID: 443908736363304066, guid: e098ed46d9294ff4287966f132a91ac2, type: 3}
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
+  _impactSfx: {fileID: 0}
+  _sfxChannel: {fileID: 0}
 --- !u!1 &9083812531110553773
 GameObject:
   m_ObjectHideFlags: 0

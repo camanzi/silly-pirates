@@ -14,6 +14,15 @@ public class AbilityRendererSO : ScriptableObject
     [SerializeField] private HighlightGridEventChannel _highlightCellsEventChannel;
     [SerializeField] private HighlightFreeAimEventChannel _targetTransformEventChannel;
 
+    // DrawAbilityPreview gira a ogni movimento del puntatore durante la mira: e' il percorso piu'
+    // frequente del combat loop, e allocare qui una collection per chiamata e' la sua voce di GC
+    // dominante. I buffer sono riusabili perche' nessun listener conserva le liste oltre la chiamata
+    // (ShipController.ApplyLayer ne fa una copia, FreeAimRenderer e HitChanceIndicator le leggono e basta).
+    private readonly List<TrajectoryArc> _arcsBuffer = new();
+    private readonly List<CellOverlayLayer> _layersBuffer = new();
+    private readonly List<Vector3Int> _interactionCellsBuffer = new();
+    private readonly List<Vector3Int> _affectedCellsBuffer = new();
+
     public void DrawAbilityPreview(AbilityPreviewData data, AbilityBase ability, IInteractableElement caster, TargetingData targetingData, bool canExecute)
     {
         List<TrajectoryArc> arcs = null;
@@ -24,9 +33,13 @@ public class AbilityRendererSO : ScriptableObject
         else if (ability.ShowTrajectory)
         {
             float height = ability.TrajectoryConfigData?.Height ?? 0f;
-            arcs = new List<TrajectoryArc>();
-            foreach (ITargettable target in data.FreeAimTargets ?? new())
-                arcs.Add(new TrajectoryArc { Start = caster.Transform.position, End = target.Transform.position, PeakHeight = height });
+            arcs = _arcsBuffer;
+            arcs.Clear();
+
+            if (data.FreeAimTargets != null)
+                foreach (ITargettable target in data.FreeAimTargets)
+                    arcs.Add(new TrajectoryArc { Start = caster.Transform.position, End = target.Transform.position, PeakHeight = height });
+
             if (targetingData.worldPosition.HasValue)
                 arcs.Add(new TrajectoryArc { Start = caster.Transform.position, End = targetingData.worldPosition.Value, PeakHeight = height });
         }
@@ -39,31 +52,29 @@ public class AbilityRendererSO : ScriptableObject
                 { HoveredTarget = hovered, HitChance = hitChance });
         }
 
-        var layers = new List<CellOverlayLayer>();
+        _layersBuffer.Clear();
         if (data.InteractionArea != null)
-            layers.Add(new CellOverlayLayer { Key = HighlightLayerKeys.PreviewInteraction, Cells = ToVector3IntList(data.InteractionArea), Tile = _inRangePreviewTile, Target = TilemapTarget.Preview });
-        layers.Add(new CellOverlayLayer { Key = HighlightLayerKeys.PreviewAffected, Cells = ToVector3IntList(data.AffectedCells), Tile = canExecute ? _hoverFloorAllowTile : _hoverFloorNotAllowTile, Target = TilemapTarget.Preview });
-        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload { Layers = layers });
+            _layersBuffer.Add(new CellOverlayLayer { Key = HighlightLayerKeys.PreviewInteraction, Cells = ToVector3IntList(data.InteractionArea, _interactionCellsBuffer), Tile = _inRangePreviewTile, Target = TilemapTarget.Preview });
+        _layersBuffer.Add(new CellOverlayLayer { Key = HighlightLayerKeys.PreviewAffected, Cells = ToVector3IntList(data.AffectedCells, _affectedCellsBuffer), Tile = canExecute ? _hoverFloorAllowTile : _hoverFloorNotAllowTile, Target = TilemapTarget.Preview });
+        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload { Layers = _layersBuffer });
     }
 
     public void ClearPreview()
     {
-        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload
-        {
-            Layers = new List<CellOverlayLayer>
-            {
-                new() { Key = HighlightLayerKeys.PreviewAffected,    Target = TilemapTarget.Preview },
-                new() { Key = HighlightLayerKeys.PreviewInteraction, Target = TilemapTarget.Preview }
-            }
-        });
+        _layersBuffer.Clear();
+        _layersBuffer.Add(new CellOverlayLayer { Key = HighlightLayerKeys.PreviewAffected,    Target = TilemapTarget.Preview });
+        _layersBuffer.Add(new CellOverlayLayer { Key = HighlightLayerKeys.PreviewInteraction, Target = TilemapTarget.Preview });
+
+        _highlightCellsEventChannel.RaiseEvent(new HighlightGridPayload { Layers = _layersBuffer });
         _targetTransformEventChannel.RaiseEvent(HighlightFreeAimPayload.Empty);
     }
 
-    private static List<Vector3Int> ToVector3IntList(List<Vector3> list)
+    private static List<Vector3Int> ToVector3IntList(List<Vector3> list, List<Vector3Int> buffer)
     {
         if (list == null) return null;
-        var result = new List<Vector3Int>(list.Count);
-        foreach (var v in list) result.Add(Vector3Int.FloorToInt(v));
-        return result;
+
+        buffer.Clear();
+        foreach (var v in list) buffer.Add(Vector3Int.FloorToInt(v));
+        return buffer;
     }
 }

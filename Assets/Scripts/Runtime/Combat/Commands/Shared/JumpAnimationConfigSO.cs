@@ -77,8 +77,10 @@ public class JumpAnimationConfigSO : ScriptableObject
     [SerializeField] private Ease _landingRecoveryEase = Ease.OutElastic;
 
     [Header("Splash VFX")]
-    [Tooltip("Opzionale: istanziato allo stacco e all'atterraggio. Se null, lo spawn viene saltato.")]
+    [Tooltip("Opzionale: riprodotto allo stacco e all'atterraggio. Se null, lo spawn viene saltato.")]
     [SerializeField] private VFXController _splashVfxPrefab;
+    [Tooltip("Canale su cui inoltrare lo splash al VfxDirector. Se null, lo spawn viene saltato.")]
+    [SerializeField] private VfxCueEventChannel _vfxChannel;
     [Tooltip("Offset verticale del punto di spawn dello splash rispetto alla posizione del caster (livello dell'acqua).")]
     [SerializeField] private float _splashYOffset = 0.05f;
 
@@ -110,6 +112,7 @@ public class JumpAnimationConfigSO : ScriptableObject
     public Ease LandingRecoveryEase => _landingRecoveryEase;
 
     public VFXController SplashVfxPrefab => _splashVfxPrefab;
+    public VfxCueEventChannel VfxChannel => _vfxChannel;
     public float SplashYOffset => _splashYOffset;
 
     /// <summary>

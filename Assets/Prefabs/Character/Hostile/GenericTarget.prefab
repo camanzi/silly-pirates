@@ -187,6 +187,7 @@ MonoBehaviour:
   _onAgilityChangedChannel: {fileID: 11400000, guid: 63c2b4e4503f0c04083fedc24ccd57b5, type: 2}
   _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
   _spriteRenderer: {fileID: 2611006998671086757}
+  _introState: {fileID: 0}
 --- !u!114 &5641640005406227769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +308,7 @@ MonoBehaviour:
   _commandQueue: {fileID: 11400000, guid: 2bb0156ed80382545b45f1646e47397c, type: 2}
   _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
   _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
+  _sfxChannel: {fileID: 0}
 --- !u!114 &3596544409351883156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,6 +388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealVFXFeedback
   _healVFXPrefab: {fileID: 4519361680784028135, guid: 7e6b7496d7922f74ca6e37c922195e8d, type: 3}
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
   _referenceRadius: 1.7
   _fallbackRadius: 1.7
   _minScale: 0.6

@@ -45,4 +45,5 @@ MonoBehaviour:
   _landingRecoveryDuration: 0.22
   _landingRecoveryEase: 24
   _splashVfxPrefab: {fileID: 4820001000000003, guid: 784bd47514366524ea34232335f55175, type: 3}
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
   _splashYOffset: 0.05

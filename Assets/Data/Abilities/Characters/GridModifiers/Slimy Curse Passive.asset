@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SlimyCursePassiveSO
   _displayName: Slimy Curse
   _removalTiming: 1
+  _reapplyFeedback: 0
   _icon: {fileID: 21300000, guid: eeeb4635ad5297d4e9f4deae3c5562ed, type: 3}
   _description: Walking infects cells with "Slimy Cells", costing +1 MP
   _slimyCellData: {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}
   _durationInTurns: 1
   _vfxPrefab: {fileID: 5034920988923812493, guid: b4ddb59e398b25445bb4fb0c5ce8c526, type: 3}
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
+  _vfxStopChannel: {fileID: 11400000, guid: 4c947475077c8c74ebccd92a7aff58e5, type: 2}

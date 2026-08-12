@@ -10,6 +10,9 @@ public class NetThrowingAbility : OffensiveAbilityBase, IMultiTargetAbility
     [SerializeField] private int _cooldown = 2;
     [SerializeField] private SlowPassiveSO _slowPassiveSO;
 
+    [Tooltip("Nube di fumo emessa dalla bocca del cannone sul frame dello sparo.")]
+    [SerializeField] private VFXController _muzzleVfx;
+
     public int MaxTargets => _maxTargets;
 
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
@@ -25,7 +28,7 @@ public class NetThrowingAbility : OffensiveAbilityBase, IMultiTargetAbility
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        return new NetThrowCommand(caster, _selectionCtx.CurrentTargets, _projectilePrefab, _cooldown, _slowPassiveSO, trajectoryConfigData);
+        return new NetThrowCommand(caster, _selectionCtx.CurrentTargets, _projectilePrefab, _cooldown, _slowPassiveSO, trajectoryConfigData, _muzzleVfx, _vfxChannel);
     }
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache)

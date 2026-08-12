@@ -14,6 +14,9 @@ public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbili
     [Tooltip("Suono dello sparo, riprodotto sul frame esatto del colpo (non all'avvio dell'abilita')")]
     [SerializeField] private SoundEventSO _fireSfx;
 
+    [Tooltip("Nube di fumo emessa dalla bocca del cannone sul frame dello sparo.")]
+    [SerializeField] private VFXController _muzzleVfx;
+
     public int MaxTargets => _maxTargets;
 
     public override bool CanExecute(IInteractableElement caster, TargetingData? targetingData, ref object cache)
@@ -32,7 +35,7 @@ public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbili
 
         return new ShootCommand(caster, _selectionCtx.CurrentTargets, _projectileConfig, _cooldown,
                                 _baseDMG, _baseDMGType, trajectoryConfigData, effectiveAccuracy,
-                                _fireSfx, _sfxChannel);
+                                _fireSfx, _sfxChannel, _muzzleVfx, _vfxChannel);
     }
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache)

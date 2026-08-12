@@ -19,8 +19,13 @@ MonoBehaviour:
   _icon: {fileID: 0}
   _cameraCue: 0
   _cameraCueProfile: {fileID: 11400000, guid: 5b49ff35e353ef8448ea316a240dcc48, type: 2}
+  _sfxChannel: {fileID: 0}
+  _castSfx: {fileID: 0}
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
   _maxTargets: 1
   _projectileConfig: {fileID: 11400000, guid: 54be6d263248e094ba70b84c2f0ae0c1, type: 2}
   _cooldown: 2
   _baseDMG: 1000
   _baseDMGType: 3
+  _fireSfx: {fileID: 0}
+  _muzzleVfx: {fileID: 3573788983892192103, guid: 11fd9339ea96a554a90164b968af02d6, type: 3}

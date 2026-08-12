@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TrajectoryRenderer : MonoBehaviour
+public class TrajectoryRenderer : PooledBehaviour
 {
     [Header("Line Configs")]
     [SerializeField] private int _resolution = 20;

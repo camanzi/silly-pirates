@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostPassiveSO
   _displayName: Slimy Speed
   _removalTiming: 1
+  _reapplyFeedback: 0
+  _icon: {fileID: 0}
+  _description: 
   _flatBonus: 5
   _percentBonus: 7.5
   _durationInTurns: 6
   _vfxPrefab: {fileID: 4519361680784028135, guid: 382dde045a9e97a48afcd318be016198, type: 3}
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}

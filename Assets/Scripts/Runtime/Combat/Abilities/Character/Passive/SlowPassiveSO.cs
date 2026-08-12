@@ -9,6 +9,7 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
     [SerializeField] private float _percentPenalty = 0f;
     [SerializeField] private int _durationInTurns = 3;
     [SerializeField] private VFXController _vfxPrefab;
+    [SerializeField] private VfxCueEventChannel _vfxChannel;
 
     private const float VfxReferenceRadius = 1.7f;
     private const float VfxMinScale = 0.6f;
@@ -42,7 +43,7 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
 
     private void PlayApplyVFX(PassiveAbilityController controller)
     {
-        if (_vfxPrefab == null) return;
+        if (_vfxPrefab == null || _vfxChannel == null) return;
 
         Vector3 position = controller.transform.position;
         float scale = 1f;
@@ -55,8 +56,7 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
             scale = Mathf.Clamp(bounds.extents.magnitude / VfxReferenceRadius, VfxMinScale, VfxMaxScale);
         }
 
-        VFXController instance = UnityEngine.Object.Instantiate(_vfxPrefab, position, Quaternion.identity);
-        instance.transform.localScale = Vector3.one * scale;
+        _vfxChannel.RaiseEvent(VfxCue.At(_vfxPrefab, position, scale));
     }
 
     public override void OnUnequip(PassiveAbilityController controller)

@@ -39,7 +39,7 @@ public static class JumpSquashStretchHelper
 
         // 2) Stacco: spruzzo d'acqua + stiramento verticale secco, in parallelo alla salita.
         //    La salita decelera (RiseEase) come un corpo che perde velocità sotto gravità.
-        SpawnSplash(config.SplashVfxPrefab, splashWorldPosition);
+        SpawnSplash(config, splashWorldPosition);
         _ = Tween.Scale(animationRoot, ScaleOf(restLocalScale, config.LaunchScale),
                         config.LaunchDuration, config.LaunchEase);
         await Tween.LocalPosition(animationRoot, apexLocalPosition, config.RiseDuration, config.RiseEase);
@@ -73,7 +73,7 @@ public static class JumpSquashStretchHelper
 
             // 5) Impatto in acqua: spruzzo + schiacciamento, più marcato dell'anticipazione perché
             //    l'energia da dissipare all'arrivo è maggiore di quella accumulata alla partenza.
-            SpawnSplash(config.SplashVfxPrefab, splashWorldPosition);
+            SpawnSplash(config, splashWorldPosition);
             await Tween.Scale(animationRoot, ScaleOf(restLocalScale, config.LandingScale),
                               config.LandingSquashDuration, config.LandingSquashEase);
             token.ThrowIfCancellationRequested();
@@ -103,9 +103,10 @@ public static class JumpSquashStretchHelper
     private static Vector3 ScaleOf(Vector3 restScale, JumpAnimationConfigSO.SquashStretchScale s)
         => new(restScale.x * s.Horizontal, restScale.y * s.Vertical, restScale.z * s.Horizontal);
 
-    private static void SpawnSplash(VFXController prefab, Vector3 worldPosition)
+    private static void SpawnSplash(JumpAnimationConfigSO config, Vector3 worldPosition)
     {
-        if (prefab == null) return;     // splash non configurato: è una scelta, non un errore
-        Object.Instantiate(prefab, worldPosition, Quaternion.identity);
+        // splash non configurato: è una scelta, non un errore
+        if (config.SplashVfxPrefab == null || config.VfxChannel == null) return;
+        config.VfxChannel.RaiseEvent(VfxCue.At(config.SplashVfxPrefab, worldPosition));
     }
 }

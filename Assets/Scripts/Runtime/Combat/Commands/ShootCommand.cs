@@ -16,13 +16,15 @@ public class ShootCommand : ICommand
 
     private readonly SoundEventSO _fireSfx;
     private readonly SfxCueEventChannel _sfxChannel;
+    private readonly VFXController _muzzleVfx;
+    private readonly VfxCueEventChannel _vfxChannel;
 
     private readonly List<Awaitable> _flightTasks = new();
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
     public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, TrajectoryConfigsSO trajectoryConfigData, int effectiveAccuracy,
-        SoundEventSO fireSfx = null, SfxCueEventChannel sfxChannel = null)
+        SoundEventSO fireSfx = null, SfxCueEventChannel sfxChannel = null, VFXController muzzleVfx = null, VfxCueEventChannel vfxChannel = null)
     {
         _caster = caster;
         _targets = targets;
@@ -34,7 +36,12 @@ public class ShootCommand : ICommand
         _effectiveAccuracy = effectiveAccuracy;
         _fireSfx = fireSfx;
         _sfxChannel = sfxChannel;
+        _muzzleVfx = muzzleVfx;
+        _vfxChannel = vfxChannel;
     }
+
+    private Transform _muzzle;
+    private Transform Muzzle => _muzzle != null ? _muzzle : (_muzzle = MuzzleUtils.Resolve(_caster));
 
     public async Awaitable ExecuteAsync()
     {
@@ -83,10 +90,11 @@ public class ShootCommand : ICommand
     private async Awaitable LaunchProjectile(ITargettable target)
     {
         DamageType effectiveType = ResolveDMGType();
-        var projectile = GameObject.Instantiate(_projectileConfig.GetPrefab(effectiveType), _caster.Transform.position, Quaternion.identity);
+        Transform muzzle = Muzzle;
+        var projectile = GameObject.Instantiate(_projectileConfig.GetPrefab(effectiveType), muzzle.position, Quaternion.identity);
         var projectileComponent = projectile.GetComponent<Projectile>();
 
-        Vector3 start = _caster.Transform.position;
+        Vector3 start = muzzle.position;
         Vector3 end = target.Transform.position;
         Vector3 controlPoint = (start + end) / 2 + Vector3.up * _trajectoryConfigData.Height;
 
@@ -95,6 +103,9 @@ public class ShootCommand : ICommand
         // Il boom cade sul frame dello sparo, non all'inizio dell'abilita'.
         if (_fireSfx != null && _sfxChannel != null)
             _sfxChannel.RaiseEvent(SfxCue.At(_fireSfx, start));
+
+        if (_muzzleVfx != null && _vfxChannel != null)
+            _vfxChannel.RaiseEvent(VfxCue.At(_muzzleVfx, start, muzzle.rotation));
 
         var state = new ProjectileState(projectile.transform, start, controlPoint, end);
         await Tween.Custom(state, 0f, 1f, duration: _trajectoryConfigData.TravelDuration, ease: Ease.Linear,

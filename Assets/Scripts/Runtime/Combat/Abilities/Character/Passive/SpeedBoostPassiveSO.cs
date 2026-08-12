@@ -9,6 +9,7 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
     [SerializeField] private float _percentBonus = 40f;
     [SerializeField] private int _durationInTurns = 6;
     [SerializeField] private VFXController _vfxPrefab;
+    [SerializeField] private VfxCueEventChannel _vfxChannel;
 
     private const float VfxReferenceRadius = 1.7f;
     private const float VfxMinScale = 0.6f;
@@ -36,7 +37,7 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
 
     private void PlayApplyVFX(PassiveAbilityController controller)
     {
-        if (_vfxPrefab == null || _vfxPlayed) return;
+        if (_vfxPrefab == null || _vfxChannel == null || _vfxPlayed) return;
         _vfxPlayed = true;
 
         Vector3 position = controller.transform.position;
@@ -50,8 +51,7 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
             scale = Mathf.Clamp(bounds.extents.magnitude / VfxReferenceRadius, VfxMinScale, VfxMaxScale);
         }
 
-        VFXController instance = Object.Instantiate(_vfxPrefab, position, Quaternion.identity);
-        instance.transform.localScale = Vector3.one * scale;
+        _vfxChannel.RaiseEvent(VfxCue.At(_vfxPrefab, position, scale));
     }
 
     public override void OnUnequip(PassiveAbilityController controller)

@@ -1,48 +1,127 @@
 using UnityEngine;
 
-public class VFXController : MonoBehaviour
+/// <summary>
+/// Un effetto particellare prestabile dal pool. Non decide da solo quando finire: e' il
+/// <see cref="VfxDirector"/> a rimetterlo nel pool dopo <see cref="MaxLifetime"/>.
+///
+/// L'emissione non parte su OnAcquired ma su <see cref="Play"/>: la pool attiva l'oggetto
+/// prima che il consumatore lo abbia posizionato, e un ParticleSystem in playOnAwake
+/// emetterebbe un frame nel punto sbagliato.
+/// </summary>
+public class VFXController : PooledBehaviour
 {
+    [Tooltip("Solo per le istanze NON poolate (piazzate a mano in scena): si autodistruggono a fine effetto")]
     [SerializeField] private bool _autoDestroy = true;
 
     private ParticleSystem[] _particles;
+    // Il loop autorato sul prefab: StopEmitting lo azzera, e su un oggetto riciclato non tornerebbe mai.
+    private bool[] _authoredLoop;
+    private Vector3 _restScale;
+    private bool _initialized;
 
-    private void Awake()
-    {
-        _particles = GetComponentsInChildren<ParticleSystem>(true);
-    }
+    /// <summary>Durata oltre la quale l'effetto e' certamente finito. Calcolata una volta sola.</summary>
+    public float MaxLifetime { get; private set; }
+
+    /// <summary>Incrementato a ogni Play: permette alle continuazioni asincrone di accorgersi
+    /// che l'istanza e' stata nel frattempo rilasciata e riusata per un altro effetto.</summary>
+    public uint PlayId { get; private set; }
+
+    /// <summary>Se valorizzato, il VfxDirector copia la posizione del target ogni LateUpdate.</summary>
+    public Transform FollowTarget { get; set; }
+
+    /// <summary>Handle dell'effetto persistente in corso, o None. Serve a ripulire la mappa dei
+    /// persistenti anche quando l'istanza viene rilasciata da un percorso diverso dallo stop esplicito.</summary>
+    public VfxHandle Handle { get; set; }
+
+    private void Awake() => Initialize();
 
     private void Start()
     {
-        if (_autoDestroy)
-            Destroy(gameObject, GetMaxParticleLifetime());
+        // Istanza non poolata: vale il vecchio contratto di autodistruzione.
+        if (Releaser == null && _autoDestroy)
+            Destroy(gameObject, MaxLifetime);
     }
 
-    public void Release()
+    public override void OnAcquired()
     {
-        if (_autoDestroy)
-            return;
+        Initialize();
+        base.OnAcquired();
+        StopAndClear();
+    }
 
-        foreach (var ps in _particles)
+    public override void OnReleased()
+    {
+        Initialize();
+        StopAndClear();
+
+        FollowTarget = null;
+        Handle = VfxHandle.None;
+        transform.localScale = _restScale;
+
+        base.OnReleased();
+    }
+
+    /// <summary>Avvia l'effetto. Da chiamare dopo aver posizionato e scalato l'istanza.</summary>
+    public void Play()
+    {
+        Initialize();
+        PlayId++;
+
+        for (int i = 0; i < _particles.Length; i++)
         {
-            var main = ps.main;
+            ParticleSystem.MainModule main = _particles[i].main;
+            main.loop = _authoredLoop[i];
+        }
+
+        // Play(false): i sistemi figli sono gia' tutti nell'array, avviarli due volte li resetterebbe.
+        for (int i = 0; i < _particles.Length; i++)
+            _particles[i].Play(false);
+    }
+
+    /// <summary>
+    /// Chiude l'effetto lasciando esaurire le particelle gia' vive. Non rimette nel pool:
+    /// il rilascio arriva dal director dopo MaxLifetime, altrimenti l'effetto sparirebbe di colpo.
+    /// </summary>
+    public void StopEmitting()
+    {
+        Initialize();
+
+        for (int i = 0; i < _particles.Length; i++)
+        {
+            ParticleSystem.MainModule main = _particles[i].main;
             main.loop = false;
         }
 
-        foreach (var ps in _particles)
-            ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-
-        Destroy(gameObject, GetMaxParticleLifetime());
+        for (int i = 0; i < _particles.Length; i++)
+            _particles[i].Stop(false, ParticleSystemStopBehavior.StopEmitting);
     }
 
-    private float GetMaxParticleLifetime()
+    private void StopAndClear()
     {
+        for (int i = 0; i < _particles.Length; i++)
+            _particles[i].Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+    }
+
+    private void Initialize()
+    {
+        if (_initialized) return;
+        _initialized = true;
+
+        _particles = GetComponentsInChildren<ParticleSystem>(true);
+        _authoredLoop = new bool[_particles.Length];
+        _restScale = transform.localScale;
+
         float max = 0f;
-        foreach (var ps in _particles)
+
+        for (int i = 0; i < _particles.Length; i++)
         {
-            float lifetime = ps.main.startLifetime.constantMax + ps.main.duration;
-            if (lifetime > max)
-                max = lifetime;
+            ParticleSystem.MainModule main = _particles[i].main;
+            _authoredLoop[i] = main.loop;
+
+            float lifetime = main.startLifetime.constantMax + main.duration;
+            if (lifetime > max) max = lifetime;
         }
-        return Mathf.Max(max, 0.1f);
+
+        MaxLifetime = Mathf.Max(max, 0.1f);
     }
 }

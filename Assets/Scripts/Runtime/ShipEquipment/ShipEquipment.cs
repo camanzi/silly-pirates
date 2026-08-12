@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(EquipmentStateMachine))]
-public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquipmentStats, ITargettable, IAbilityHolder
+public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquipmentStats, ITargettable, IAbilityHolder, IMuzzleOwner
 {
     [Header("Equipment Stats")]
     [SerializeField] private EquipmentType _equipmentType;
@@ -20,6 +20,10 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     [Header("Feedback Events")]
     [SerializeField] private UnityEvent _onCommandExecuted;
     public UnityEvent OnCommandExecuted => _onCommandExecuted;
+
+    [Tooltip("Origine di proiettili e VFX di sparo. Se vuoto viene cercato in automatico un MuzzleAnchor fra i figli; in mancanza si usa la radice dell'equipaggiamento.")]
+    [SerializeField] private Transform _muzzleAnchor;
+    public Transform Muzzle => _muzzleAnchor;
 
     public int MaxAwakeningPoints => _toAwakePoints;
     public int OvercapLimit => _toAwakePoints + _maxExtraAwakeningPoints;
@@ -87,6 +91,10 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     protected override void Awake()
     {
         base.Awake();
+        // Il campo serializzato e' l'override manuale: se vuoto, il marker sul prefab
+        // e' la sorgente di verita' e viene risolto una volta sola, non a ogni colpo.
+        if (_muzzleAnchor == null)
+            _muzzleAnchor = GetComponentInChildren<MuzzleAnchor>(true)?.transform;
         _stateMachine = GetComponent<EquipmentStateMachine>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
         _abilityController = GetComponent<AbilityController>();

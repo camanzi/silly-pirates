@@ -4,6 +4,7 @@ using UnityEngine;
 public class HealVFXFeedback : MonoBehaviour
 {
     [SerializeField] private VFXController _healVFXPrefab;
+    [SerializeField] private VfxCueEventChannel _vfxChannel;
     [SerializeField] private float _referenceRadius = 1.7f;
     [SerializeField] private float _fallbackRadius = 1.7f;
     [SerializeField] private float _minScale = 0.6f;
@@ -31,7 +32,7 @@ public class HealVFXFeedback : MonoBehaviour
 
     private void PlayHealVFX()
     {
-        if (_healVFXPrefab == null) return;
+        if (_healVFXPrefab == null || _vfxChannel == null) return;
 
         Vector3 center;
         float radius;
@@ -52,8 +53,7 @@ public class HealVFXFeedback : MonoBehaviour
             radius = _fallbackRadius;
         }
 
-        VFXController instance = Object.Instantiate(_healVFXPrefab, center, Quaternion.identity);
         float scaleFactor = Mathf.Clamp(radius / _referenceRadius, _minScale, _maxScale);
-        instance.transform.localScale = Vector3.one * scaleFactor;
+        _vfxChannel.RaiseEvent(VfxCue.At(_healVFXPrefab, center, scaleFactor));
     }
 }

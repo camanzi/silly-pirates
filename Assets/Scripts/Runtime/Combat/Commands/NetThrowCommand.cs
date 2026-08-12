@@ -10,6 +10,8 @@ public class NetThrowCommand : ICommand
     private readonly int _cooldown;
     private readonly SlowPassiveSO _slowPassiveSO;
     private readonly TrajectoryConfigsSO _trajectoryConfigData;
+    private readonly VFXController _muzzleVfx;
+    private readonly VfxCueEventChannel _vfxChannel;
 
     private readonly List<Awaitable> _flightTasks = new();
 
@@ -21,7 +23,9 @@ public class NetThrowCommand : ICommand
         GameObject projectilePrefab,
         int cooldown,
         SlowPassiveSO slowPassiveSO,
-        TrajectoryConfigsSO trajectoryConfigData)
+        TrajectoryConfigsSO trajectoryConfigData,
+        VFXController muzzleVfx = null,
+        VfxCueEventChannel vfxChannel = null)
     {
         _caster = caster;
         _targets = targets;
@@ -29,7 +33,12 @@ public class NetThrowCommand : ICommand
         _cooldown = cooldown;
         _slowPassiveSO = slowPassiveSO;
         _trajectoryConfigData = trajectoryConfigData;
+        _muzzleVfx = muzzleVfx;
+        _vfxChannel = vfxChannel;
     }
+
+    private Transform _muzzle;
+    private Transform Muzzle => _muzzle != null ? _muzzle : (_muzzle = MuzzleUtils.Resolve(_caster));
 
     public async Awaitable ExecuteAsync()
     {
@@ -67,14 +76,18 @@ public class NetThrowCommand : ICommand
 
     private async Awaitable LaunchProjectile(ITargettable target)
     {
-        var projectile = GameObject.Instantiate(_projectilePrefab, _caster.Transform.position, Quaternion.identity);
+        Transform muzzle = Muzzle;
+        var projectile = GameObject.Instantiate(_projectilePrefab, muzzle.position, Quaternion.identity);
         var projectileComponent = projectile.GetComponent<Projectile>();
 
-        Vector3 start = _caster.Transform.position;
+        Vector3 start = muzzle.position;
         Vector3 end = target.Transform.position;
         Vector3 controlPoint = (start + end) / 2 + Vector3.up * _trajectoryConfigData.Height;
 
         if (_caster is ShipEquipment equipment) equipment.OnCommandExecuted?.Invoke();
+
+        if (_muzzleVfx != null && _vfxChannel != null)
+            _vfxChannel.RaiseEvent(VfxCue.At(_muzzleVfx, start, muzzle.rotation));
 
         var state = new ProjectileState(projectile.transform, start, controlPoint, end);
         await Tween.Custom(state, 0f, 1f, duration: _trajectoryConfigData.TravelDuration, ease: Ease.Linear,

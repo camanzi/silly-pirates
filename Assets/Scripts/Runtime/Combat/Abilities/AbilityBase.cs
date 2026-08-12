@@ -24,11 +24,16 @@ public abstract class AbilityBase : ScriptableObject
     [Tooltip("Suono generico di lancio, riprodotto all'ingresso nello stato di esecuzione")]
     [SerializeField] private SoundEventSO _castSfx;
 
+    [Header("VFX")]
+    [Tooltip("Serve solo alle abilita' che passano il canale ai propri comandi per VFX a tempo preciso")]
+    [SerializeField] protected VfxCueEventChannel _vfxChannel;
+
     public Sprite Icon => _icon;
     public virtual CameraCueType CameraCue => _cameraCue;
     public virtual CameraCueProfileSO CameraCueProfile => _cameraCueProfile;
     public virtual SoundEventSO CastSfx => _castSfx;
     public SfxCueEventChannel SfxChannel => _sfxChannel;
+    public VfxCueEventChannel VfxChannel => _vfxChannel;
     public bool ShowTrajectory => showTrajectory;
     public TrajectoryConfigsSO TrajectoryConfigData => trajectoryConfigData;
     public virtual int ActionPointCost => 0;

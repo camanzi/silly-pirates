@@ -156,19 +156,6 @@ Transform:
   - {fileID: 1835845055979691299}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9100000000000000007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7377031095278769717}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00f2da1ae3d2a764590f07d6fb6d98e4, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  _impactVFXPrefab: {fileID: 0}
 --- !u!96 &5690526273693548628
 TrailRenderer:
   serializedVersion: 4
@@ -288,3 +275,19 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &9100000000000000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7377031095278769717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f2da1ae3d2a764590f07d6fb6d98e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _impactVFXPrefab: {fileID: 0}
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
+  _impactSfx: {fileID: 0}
+  _sfxChannel: {fileID: 0}
