@@ -62,8 +62,20 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     private readonly List<LifecycleAnimationTarget> _targets = new();
+
+    // Per-istanza e non nella SO (condivisa fra prefab): tiene gli handle dei VFX persistenti della fase
+    // in corso. Riusata fase dopo fase, così spawn ripetuti non allocano.
+    private readonly LifecycleVfxSession _vfxSession = new();
+
     private LifecycleAnimationContext _context;
     private bool _restPoseCaptured;
+
+    // true da Start in poi. Prima di quel momento la scena si sta ancora inizializzando: alzare un cue
+    // significa parlare a un director che può non aver ancora fatto Awake, o a un listener non ancora
+    // iscritto — e in quel secondo caso il cue si perde in silenzio, senza nessun errore. Lo stato
+    // visivo invece si applica subito: Prepare non comunica con nessuno.
+    private bool _initialized;
+    private bool _pendingVfxBegin;
 
     // Non-null solo fra l'inizio di una fase e il suo completamento: serve ad agganciare alla fase in
     // corso un satellite che si registra in ritardo.
@@ -71,6 +83,38 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     private LifecyclePhase _activePhase;
 
     private void Awake() => EnsureRestPoseCaptured();
+
+    /// <summary>
+    /// Fine della finestra di inizializzazione: è l'unico momento garantito dopo TUTTI gli Awake e gli
+    /// OnEnable della scena, ed è comunque nello stesso frame in cui il personaggio è stato attivato,
+    /// prima che venga renderizzato — quindi il VFX rimandato qui non si vede partire in ritardo.
+    /// </summary>
+    private void Start()
+    {
+        _initialized = true;
+        FlushPendingVfxBegin();
+    }
+
+    /// <summary>Alza i VFX di <see cref="LifecycleVfxStage.Prepare"/> rimandati da <see cref="BeginPhase"/>.</summary>
+    private void FlushPendingVfxBegin()
+    {
+        if (!_pendingVfxBegin) return;
+
+        _pendingVfxBegin = false;
+        _activeAnimation?.BeginVfx(_vfxSession, in _context);
+    }
+
+    /// <summary>
+    /// Rete di sicurezza per la fase preparata e mai giocata: <see cref="PrepareHidden"/> apre la sessione
+    /// VFX, e se il personaggio viene distrutto o disattivato durante l'intro nessun <c>finally</c> di
+    /// <see cref="PlayAsync"/> la chiuderebbe. Il fallback di ultima istanza resta
+    /// <c>VfxDirector.OnDisable</c> → <c>StopEverything()</c>, ma non deve essere l'unico.
+    /// </summary>
+    private void OnDisable()
+    {
+        _vfxSession.StopAll();
+        _pendingVfxBegin = false;   // disattivato prima di Start: al risveglio non deve accendere nulla
+    }
 
     /// <summary>
     /// Cattura una sola volta la posa a riposo, risolvendo prima i riferimenti mancanti.
@@ -181,11 +225,25 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         IsPlaying = true;
         try
         {
-            await animation.PlayAsync(_context, token);
+            // IsPlaying è già vero qui sopra, sincrono: WaitUntilIdleAsync (SpawnAlliesCommand) non deve
+            // mai vedere l'animator a riposo fra il Play e la prima attesa.
+            //
+            // Play() è async void e gira sincrono dentro OnEnable: senza questa attesa anche lo stage
+            // Movement partirebbe verso sistemi non ancora inizializzati. Costo zero a scena avviata.
+            while (!_initialized)
+                await Awaitable.NextFrameAsync(token);
+
+            FlushPendingVfxBegin();
+
+            await animation.PlayAsync(_context, _vfxSession, token);
         }
         finally
         {
             IsPlaying = false;
+
+            // Qui e non dentro la SO: copre la cancellazione del token (personaggio distrutto a metà
+            // emersione), che altrimenti lascerebbe i persistenti accesi per sempre.
+            _vfxSession.StopAll();
         }
 
         // Fuori dal finally: una fase cancellata non è una fase completata.
@@ -197,9 +255,30 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     /// Prende possesso dei bersagli e ne applica lo stato iniziale. I tween altrui vengono fermati prima:
     /// uno shake di telegraph o un salto interrotto a metà scrivono sugli stessi <c>localPosition</c> che
     /// l'animazione di lifecycle sta per animare, e se ne contenderebbero il controllo.
+    ///
+    /// I VFX di <see cref="LifecycleVfxStage.Prepare"/> partono qui, subito dopo lo stato iniziale — ma
+    /// SOLO alla prima preparazione della fase. <see cref="PrepareHidden"/> e <see cref="PlayAsync"/>
+    /// passano entrambi di qui per la stessa fase durante l'intro al combattimento: senza la guardia le
+    /// bolle di un'emersione ripartirebbero da capo nel momento in cui il mostro comincia a salire.
+    ///
+    /// Se la scena si sta ancora inizializzando (questo metodo è raggiunto dall'OnEnable del personaggio)
+    /// i VFX vengono messi in coda e alzati da <see cref="Start"/>: lo stato visivo non può aspettare,
+    /// i cue verso gli altri sistemi sì.
     /// </summary>
     private void BeginPhase(LifecyclePhase phase, LifecycleAnimationSO animation)
     {
+        // Anche il begin rimandato conta come sessione già aperta: senza, PrepareHidden e PlayAsync
+        // sulla stessa fase lo metterebbero in coda due volte.
+        bool resuming = (_vfxSession.IsOpen || _pendingVfxBegin)
+                        && _activeAnimation == animation && _activePhase == phase;
+
+        // Fase diversa da quella preparata: i persistenti rimasti aperti non le appartengono.
+        if (!resuming)
+        {
+            _vfxSession.StopAll();
+            _pendingVfxBegin = false;
+        }
+
         for (int i = 0; i < _targets.Count; i++)
             _targets[i].StopActiveTweens();
 
@@ -207,6 +286,13 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         _activePhase = phase;
 
         animation.Prepare(in _context);
+
+        if (!resuming)
+        {
+            if (_initialized) animation.BeginVfx(_vfxSession, in _context);
+            else _pendingVfxBegin = true;
+        }
+
         OnPhaseStarted?.Invoke(phase);
     }
 
@@ -267,6 +353,8 @@ public class CharacterLifecycleAnimator : MonoBehaviour
             _targets[i].ResetToRest();
         }
 
+        _vfxSession.StopAll();
+        _pendingVfxBegin = false;
         _activeAnimation = null;
     }
 }

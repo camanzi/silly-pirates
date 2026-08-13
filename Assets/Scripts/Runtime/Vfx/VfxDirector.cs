@@ -14,10 +14,6 @@ public class VfxDirector : MonoBehaviour
 {
     private const float ReleaseGraceSeconds = 0.05f;
 
-    [Header("Channels")]
-    [SerializeField] private VfxCueEventChannel _cueChannel;
-    [SerializeField] private VfxStopEventChannel _stopChannel;
-
     [Header("Pool")]
     [Tooltip("Istanze create all'avvio per ogni prefab. 0 di default: i prefab VFX sono tanti e vari, prewarmarli tutti sarebbe un hitch di caricamento scena")]
     [Min(0)] [SerializeField] private int _prewarmPerPrefab = 0;
@@ -32,26 +28,26 @@ public class VfxDirector : MonoBehaviour
 
     private readonly Dictionary<Guid, VFXController> _persistent = new();
 
-    private void Awake()
+    private void Awake() => EnsureRegistry();
+
+    /// <summary>
+    /// Lazy e idempotente: un cue puo' arrivare dall'OnEnable di un altro oggetto, che Unity puo'
+    /// eseguire prima dell'Awake di questo director — e' il caso dello spawn di un personaggio, che
+    /// alza i VFX di lifecycle appena viene attivato. Stesso motivo di
+    /// <c>CharacterLifecycleAnimator.EnsureRestPoseCaptured</c>.
+    /// </summary>
+    private void EnsureRegistry()
     {
+        if (_registry != null) return;
+
         _poolRoot = new GameObject("VfxPool").transform;
         _poolRoot.SetParent(transform, false);
 
         _registry = new PrefabPoolRegistry<VFXController>(_poolRoot, _prewarmPerPrefab, _maxPerPrefab);
     }
 
-    private void OnEnable()
-    {
-        if (_cueChannel != null) _cueChannel.OnEventRaised += HandleCue;
-        if (_stopChannel != null) _stopChannel.OnEventRaised += HandleStop;
-    }
-
     private void OnDisable()
     {
-        if (_cueChannel != null) _cueChannel.OnEventRaised -= HandleCue;
-        if (_stopChannel != null) _stopChannel.OnEventRaised -= HandleStop;
-
-        // I canali sono asset SO che sopravvivono alla scena: il cleanup deve essere completo.
         StopEverything();
     }
 
@@ -84,9 +80,12 @@ public class VfxDirector : MonoBehaviour
         }
     }
 
-    private void HandleCue(VfxCue cue)
+    // Called by the VfxCueChannelListener when a cue event is raised.
+    public void HandleCue(VfxCue cue)
     {
         if (cue.Prefab == null) return;
+
+        EnsureRegistry();
 
         // Handle gia' attivo = doppia applicazione dello stesso effetto persistente: no-op.
         if (cue.Handle.IsValid && _persistent.ContainsKey(cue.Handle.Id)) return;
@@ -103,7 +102,7 @@ public class VfxDirector : MonoBehaviour
 
         // Uno scale a 0 viene dai payload costruiti a mano senza i factory method: si legge come "default".
         float scale = cue.Scale > 0f ? cue.Scale : 1f;
-        vfx.transform.localScale = Vector3.one * scale;
+        vfx.ApplyScale(scale);   // e non transform.localScale: i sistemi figli non ereditano (VFXController.ApplyScale)
         vfx.transform.rotation = cue.Rotation;
 
         if (cue.FollowTarget != null)
@@ -130,7 +129,8 @@ public class VfxDirector : MonoBehaviour
         ScheduleRelease(vfx);
     }
 
-    private void HandleStop(VfxHandle handle)
+    // Called by the VfxCueChannelListener when a stop event is raised. 
+    public void HandleStop(VfxHandle handle)
     {
         // Miss del dizionario = no-op silenzioso: il doppio stop e' un caso normale.
         if (!handle.IsValid) return;

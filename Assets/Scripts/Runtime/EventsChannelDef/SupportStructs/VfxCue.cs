@@ -71,4 +71,20 @@ public struct VfxCue
         FollowTarget = target,
         Handle = handle
     };
+
+    /// <summary>
+    /// Effetto che resta acceso finche' non viene fermato con l'handle, ma fermo in un punto del mondo
+    /// invece di inseguire un Transform (es. schiuma sul pelo dell'acqua: il punto di emersione non si
+    /// muove). Evita anche il costo per frame in VfxDirector.LateUpdate che Persistent() pagherebbe per
+    /// un effetto che non ne ha bisogno.
+    /// </summary>
+    public static VfxCue PersistentAt(VFXController prefab, Vector3 position, VfxHandle handle, float scale = 1f) => new()
+    {
+        Prefab = prefab,
+        Position = position,
+        Rotation = Quaternion.identity,
+        Scale = scale,
+        FollowTarget = null,
+        Handle = handle
+    };
 }

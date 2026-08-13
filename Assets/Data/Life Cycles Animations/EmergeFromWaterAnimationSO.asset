@@ -12,8 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65bfd175c374d044bba4a67747523c18, type: 3}
   m_Name: EmergeFromWaterAnimationSO
   m_EditorClassIdentifier: Assembly-CSharp::EmergeFromWaterAnimationSO
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
+  _vfxStopChannel: {fileID: 11400000, guid: 4c947475077c8c74ebccd92a7aff58e5, type: 2}
+  _vfx:
+    _serializedList:
+    - Key: 0
+      Value:
+      - _prefab: {fileID: 4266214752264791792, guid: 8af36716c68cc0744a28f307053abdb4, type: 3}
+        _anchor: 0
+        _loop: 1
+        _offset: {x: 0, y: 0, z: 0}
+        _scale: 1
   _depth: 10
   _duration: 1.25
   _ease: 6
-  _startDelay: 0
   _fadeIn: 1

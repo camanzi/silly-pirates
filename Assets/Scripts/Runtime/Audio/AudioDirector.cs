@@ -36,8 +36,17 @@ public class AudioDirector : MonoBehaviour
     private readonly Dictionary<SoundEventSO, int> _liveCounts = new();
     private readonly Dictionary<SoundEventSO, AudioClip> _lastClip = new();
 
-    private void Awake()
+    private void Awake() => EnsureVoicePool();
+
+    /// <summary>
+    /// Lazy e idempotente, come <c>VfxDirector.EnsureRegistry</c>: un cue puo' arrivare dalla finestra
+    /// di inizializzazione della scena (l'OnEnable di un personaggio che entra in combattimento), dove
+    /// l'ordine fra gli Awake e gli OnEnable di oggetti diversi non e' garantito.
+    /// </summary>
+    private void EnsureVoicePool()
     {
+        if (_voices != null) return;
+
         _poolRoot = new GameObject("AudioVoicePool").transform;
         _poolRoot.SetParent(transform, false);
 
@@ -210,6 +219,8 @@ public class AudioDirector : MonoBehaviour
     /// <summary>Preleva una voce libera, o applica la policy di steal se il pool e' esaurito.</summary>
     private AudioVoice AcquireVoice()
     {
+        EnsureVoicePool();
+
         AudioVoice voice = _voices.Acquire();
         if (voice != null) return voice;
 

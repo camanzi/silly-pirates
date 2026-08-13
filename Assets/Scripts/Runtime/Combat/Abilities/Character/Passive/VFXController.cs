@@ -16,6 +16,9 @@ public class VFXController : PooledBehaviour
     private ParticleSystem[] _particles;
     // Il loop autorato sul prefab: StopEmitting lo azzera, e su un oggetto riciclato non tornerebbe mai.
     private bool[] _authoredLoop;
+    // Scala autorata di ogni sistema e se quel sistema legge la scala del root o la propria (vedi ApplyScale).
+    private Vector3[] _particleRestScale;
+    private bool[] _scalesFromHierarchy;
     private Vector3 _restScale;
     private bool _initialized;
 
@@ -56,9 +59,35 @@ public class VFXController : PooledBehaviour
 
         FollowTarget = null;
         Handle = VfxHandle.None;
-        transform.localScale = _restScale;
+        ApplyScale(1f);   // anche i figli: un'istanza riciclata erediterebbe la scala del cue precedente
 
         base.OnReleased();
+    }
+
+    /// <summary>
+    /// Applica la scala richiesta dal cue. Non basta scalare il root: un ParticleSystem in
+    /// <see cref="ParticleSystemScalingMode.Local"/> (il default di questo progetto) usa SOLO la scala
+    /// del proprio Transform e ignora quella dei parent, quindi su un prefab con i sistemi sui figli
+    /// — la forma di gran lunga più comune — la scala scritta sul root verrebbe scartata in silenzio.
+    ///
+    /// I sistemi in <see cref="ParticleSystemScalingMode.Hierarchy"/> vanno invece lasciati stare:
+    /// ereditano già il root, e riapplicare la scala anche a loro darebbe scale².
+    /// </summary>
+    public void ApplyScale(float scale)
+    {
+        Initialize();
+
+        transform.localScale = _restScale * scale;   // copre anche i figli non particellari (luci, trail)
+
+        for (int i = 0; i < _particles.Length; i++)
+        {
+            if (_scalesFromHierarchy[i]) continue;
+
+            Transform particleTransform = _particles[i].transform;
+            if (particleTransform == transform) continue;   // già scalato sopra
+
+            particleTransform.localScale = _particleRestScale[i] * scale;
+        }
     }
 
     /// <summary>Avvia l'effetto. Da chiamare dopo aver posizionato e scalato l'istanza.</summary>
@@ -109,6 +138,8 @@ public class VFXController : PooledBehaviour
 
         _particles = GetComponentsInChildren<ParticleSystem>(true);
         _authoredLoop = new bool[_particles.Length];
+        _particleRestScale = new Vector3[_particles.Length];
+        _scalesFromHierarchy = new bool[_particles.Length];
         _restScale = transform.localScale;
 
         float max = 0f;
@@ -117,6 +148,8 @@ public class VFXController : PooledBehaviour
         {
             ParticleSystem.MainModule main = _particles[i].main;
             _authoredLoop[i] = main.loop;
+            _particleRestScale[i] = _particles[i].transform.localScale;
+            _scalesFromHierarchy[i] = main.scalingMode == ParticleSystemScalingMode.Hierarchy;
 
             float lifetime = main.startLifetime.constantMax + main.duration;
             if (lifetime > max) max = lifetime;

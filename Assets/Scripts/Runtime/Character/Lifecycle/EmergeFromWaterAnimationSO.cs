@@ -1,4 +1,3 @@
-using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
@@ -8,10 +7,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Combat/Lifecycle Animations/Emerge From Water")]
 public class EmergeFromWaterAnimationSO : LifecycleAnimationSO
 {
+    [Header("Emerge From Water")]
     [SerializeField] private float _depth = 2f;
     [SerializeField] private float _duration = 0.8f;
     [SerializeField] private Ease _ease = Ease.OutQuad;
-    [SerializeField] private float _startDelay = 0f;
     [SerializeField] private bool _fadeIn = true; // maschera lo sprite visibile sotto il pelo dell'acqua
 
     public override void PrepareTarget(in LifecycleAnimationTarget target)
@@ -34,13 +33,5 @@ public class EmergeFromWaterAnimationSO : LifecycleAnimationSO
             _ = Tween.Alpha(target.Renderer, target.RestColor.a, _duration * 0.5f);
 
         return Tween.LocalPosition(target.Pivot, target.RestLocalPosition, _duration, _ease);
-    }
-
-    public override async Awaitable PlayAsync(LifecycleAnimationContext ctx, CancellationToken token)
-    {
-        if (_startDelay > 0f)
-            await Awaitable.WaitForSecondsAsync(_startDelay, token);
-
-        await PlayAllTargetsAsync(ctx);
     }
 }

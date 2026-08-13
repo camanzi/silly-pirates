@@ -1,4 +1,3 @@
-using System.Threading;
 using PrimeTween;
 using UnityEngine;
 
@@ -9,10 +8,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Combat/Lifecycle Animations/Sink Under Water")]
 public class SinkUnderWaterAnimationSO : LifecycleAnimationSO
 {
+    [Header("Sink Under Water")]
     [SerializeField] private float _depth = 2f;
     [SerializeField] private float _duration = 0.8f;
     [SerializeField] private Ease _ease = Ease.OutQuad;
-    [SerializeField] private float _startDelay = 0f;
     [SerializeField] private bool _fadeOut = true;
 
     public override void PrepareTarget(in LifecycleAnimationTarget target)
@@ -37,13 +36,5 @@ public class SinkUnderWaterAnimationSO : LifecycleAnimationSO
 
         return Tween.LocalPosition(
             target.Pivot, target.RestLocalPosition + Vector3.down * _depth, _duration, _ease);
-    }
-
-    public override async Awaitable PlayAsync(LifecycleAnimationContext ctx, CancellationToken token)
-    {
-        if (_startDelay > 0f)
-            await Awaitable.WaitForSecondsAsync(_startDelay, token);
-
-        await PlayAllTargetsAsync(ctx);
     }
 }

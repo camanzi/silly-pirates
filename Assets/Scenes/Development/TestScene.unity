@@ -563,6 +563,8 @@ GameObject:
   m_Component:
   - component: {fileID: 865795676}
   - component: {fileID: 865795675}
+  - component: {fileID: 865795678}
+  - component: {fileID: 865795677}
   m_Layer: 0
   m_Name: VfxDirector
   m_TagString: Untagged
@@ -582,10 +584,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ccb64c0dc9a1e74095a676558d619ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxDirector
-  _cueChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
-  _stopChannel: {fileID: 11400000, guid: 4c947475077c8c74ebccd92a7aff58e5, type: 2}
   _prewarmPerPrefab: 0
-  _maxPerPrefab: 8
+  _maxPerPrefab: 25
 --- !u!4 &865795676
 Transform:
   m_ObjectHideFlags: 0
@@ -601,6 +601,62 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &865795677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865795674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f493c211b995c364bb21036a1bedd13d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxStopChannelListener
+  eventChannel: {fileID: 11400000, guid: 4c947475077c8c74ebccd92a7aff58e5, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865795675}
+        m_TargetAssemblyTypeName: VfxDirector, Assembly-CSharp
+        m_MethodName: HandleStop
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &865795678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865795674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2c440f096838ec4ba07b0c7326e6de6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxCueChannelListener
+  eventChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 865795675}
+        m_TargetAssemblyTypeName: VfxDirector, Assembly-CSharp
+        m_MethodName: HandleCue
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &910180335 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4783325474621977999, guid: d01a8b45b985b9c45849fa07c25e5ade, type: 3}
@@ -972,7 +1028,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e9d25013db8eab4fba4d224150e1be9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MusicDirector
   _musicChannel: {fileID: 11400000, guid: 2183da4ef54472640bd32b0cd248676e, type: 2}
   _loopStartChannel: {fileID: 11400000, guid: 1d7d68f798de6dc44a13ec7d9d46078c, type: 2}
@@ -1401,7 +1457,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6749185992305373848, guid: 201da27a883c34c41b5757c962eac672, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.0600004
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 6749185992305373848, guid: 201da27a883c34c41b5757c962eac672, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1515,7 +1571,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1709997534530044520, guid: 28d16df846320f14c96cddf70db93cc2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.0600004
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 1709997534530044520, guid: 28d16df846320f14c96cddf70db93cc2, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2072,7 +2128,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5098244755494640375, guid: f19c98a6a3519fe47a9c2d15b7a71b85, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.0600004
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 5098244755494640375, guid: f19c98a6a3519fe47a9c2d15b7a71b85, type: 3}
       propertyPath: m_LocalPosition.y
