@@ -23,7 +23,7 @@ public class GridInputHandler : MonoBehaviour
     private void OnEnable()
     {
         _inputReader.PointEvent += OnPointEvent;
-        _inputReader.ClickStartedEvent += () => _wasClickPressedThisFrame = true;
+        _inputReader.ClickStartedEvent += OnClickStarted;
 
         if (_mainCameraAnchor == null)
         {
@@ -38,12 +38,17 @@ public class GridInputHandler : MonoBehaviour
     private void OnDisable()
     {
         _inputReader.PointEvent -= OnPointEvent;
+        _inputReader.ClickStartedEvent -= OnClickStarted;
         _wasClickPressedThisFrame = false;
 
         if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
     }
 
     private void HandleCameraChanged(Camera camera) => _mainCamera = camera;
+
+    // Prima era una lambda anonima mai rimossa: InputReader è uno ScriptableObject, quindi ogni
+    // caricamento scena aggiungeva una closure morta alla sua invocation list per sempre.
+    private void OnClickStarted() => _wasClickPressedThisFrame = true;
 
     private void LateUpdate()
     {

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CurrentTurnState", menuName = "Combat/Turn System/Turn State")]
-public class TurnStateSO : ScriptableObject
+public class TurnStateSO : ScriptableObject, ICombatSessionResettable
 {
     [SerializeField] private TurnAgentEventChannel _onAgentActivated;
     public TurnAgentEventChannel OnAgentActivated => _onAgentActivated;
@@ -31,5 +31,16 @@ public class TurnStateSO : ScriptableObject
 
     public async Awaitable WaitUntilTurnFinished() => await _turnTaskSource.Awaitable;
 
-    public void Clear() => _activeAgent = null;
+    // Prima azzerava solo _activeAgent. _currentActionIndex sopravviveva al reset e veniva letto
+    // da TurnOrderController.RebuildDisplayList con il valore del combattimento precedente;
+    // _turnTaskSource e _isPlayerTurn restavano stale, pronti a confondere il primo turno nuovo.
+    public void Clear()
+    {
+        _activeAgent = null;
+        _turnTaskSource = null;
+        _isPlayerTurn = false;
+        _currentActionIndex = 0;
+    }
+
+    public void ResetForNewCombat() => Clear();
 }

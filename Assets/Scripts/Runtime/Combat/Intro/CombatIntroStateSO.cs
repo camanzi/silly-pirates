@@ -8,13 +8,20 @@ using UnityEngine;
 /// avviare il game loop.
 /// </summary>
 [CreateAssetMenu(fileName = "CombatIntroState", menuName = "Combat/Intro/Combat Intro State")]
-public class CombatIntroStateSO : ScriptableObject
+public class CombatIntroStateSO : ScriptableObject, ICombatSessionResettable
 {
     public bool IsIntroActive { get; private set; }
     public bool IsCombatReady { get; private set; }
 
     // Default "passante": una scena senza CombatIntroSequencer non deve mai bloccarsi.
-    private void OnEnable()
+    private void OnEnable() => ResetToPassthrough();
+
+    // Protegge dal caso in cui il CombatIntroSequencer della scena precedente venga distrutto senza
+    // completare l'intro: senza questo reset, IsCombatReady resterebbe false per sempre e
+    // TurnController.WaitUntilCombatReadyAsync del nuovo combattimento non partirebbe mai.
+    public void ResetForNewCombat() => ResetToPassthrough();
+
+    private void ResetToPassthrough()
     {
         IsIntroActive = false;
         IsCombatReady = true;

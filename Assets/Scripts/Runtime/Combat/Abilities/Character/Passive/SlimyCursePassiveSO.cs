@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Slimy Curse Passive", menuName = "Abilities/Character/Passives/Slimy Curse")]
-public class SlimyCursePassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnStart
+public class SlimyCursePassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnStart, ICombatSessionResettable
 {
     [SerializeField] private SlimyCellDataSO _slimyCellData;
     [SerializeField] private int _durationInTurns = 1;
@@ -42,6 +42,10 @@ public class SlimyCursePassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnStar
 
         _controller = null;
     }
+
+    // HashSet statico condiviso fra tutti i cloni: senza reset, i personaggi del combattimento
+    // precedente (distrutti) restano dentro e IsActiveOn continuerebbe a segnalarli come maledetti.
+    public void ResetForNewCombat() => _activeCurseTargets.Clear();
 
     void IOnCellEntered.OnCellEntered(Vector3Int cell) => _slimyCellData?.Apply(cell);
 

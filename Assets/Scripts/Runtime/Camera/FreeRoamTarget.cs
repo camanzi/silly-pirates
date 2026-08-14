@@ -86,6 +86,7 @@ public class FreeRoamTarget : MonoBehaviour
         if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
 
         _moveCameraAction.Disable();
+        _tacticalView.Disable();
 
         _tacticalView.performed -= OnToggleTactical;
     }

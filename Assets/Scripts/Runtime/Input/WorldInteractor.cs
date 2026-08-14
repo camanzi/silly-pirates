@@ -58,6 +58,10 @@ public class WorldInteractor : MonoBehaviour
 
     private void PerformHoverCheck()
     {
+        // Con l'auto-bootstrap la camera può arrivare un frame dopo questo componente:
+        // senza guardia, ScreenPointToRay su null esplode ogni frame finché non arriva.
+        if (_mainCamera == null) return;
+
         if (UIPointerTracker.IsPointerOverUI(_mousePosition))
         {
             ResetHover();

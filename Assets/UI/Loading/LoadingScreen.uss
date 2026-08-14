@@ -1,0 +1,64 @@
+/* Overlay di caricamento. Vive nella scena persistente su un PanelSettings dedicato con
+   sortingOrder alto: deve coprire l'HUD di combattimento (che sta a 10) mentre la scena
+   sottostante viene scaricata e ricaricata. */
+
+.loading-root {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(8, 12, 20);
+    align-items: center;
+    justify-content: center;
+    /* Parte invisibile: la visibilita' e' guidata da LoadingScreenController via PrimeTween,
+       non da display, cosi' il fade e' interpolabile. */
+    opacity: 0;
+    display: none;
+}
+
+.loading-root.visible {
+    display: flex;
+}
+
+.loading-panel {
+    align-items: center;
+    justify-content: center;
+    min-width: 460px;
+}
+
+.loading-title {
+    color: rgb(255, 69, 61);
+    font-size: 44px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    white-space: nowrap;
+    margin-bottom: 26px;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(251, 68, 60, 0.686);
+    text-shadow: -4px 8px 0 rgb(0, 0, 0);
+    -unity-font-definition: url("project://database/Assets/Fonts/Jaini-Regular.ttf?fileID=12800000&guid=f87297ce785d8694c9876678ba95904d&type=3#Jaini-Regular");
+}
+
+.progress-track {
+    width: 100%;
+    height: 14px;
+    background-color: rgba(255, 255, 255, 0.114);
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+/* La larghezza e' scritta da codice in percentuale: lasciarla a 0 qui evita un frame
+   di barra piena prima del primo aggiornamento. */
+.progress-fill {
+    width: 0;
+    height: 100%;
+    background-color: rgb(255, 69, 61);
+    border-radius: 7px;
+}
+
+.loading-percentage {
+    color: rgb(236, 240, 248);
+    font-size: 22px;
+    -unity-text-align: middle-center;
+    margin-top: 14px;
+    -unity-font-definition: url("project://database/Assets/Fonts/Tektur-VariableFont_wdth,wght.ttf?fileID=12800000&guid=e781eecbbec6f9a42ad1f7250c665308&type=3#Tektur-VariableFont_wdth,wght");
+}

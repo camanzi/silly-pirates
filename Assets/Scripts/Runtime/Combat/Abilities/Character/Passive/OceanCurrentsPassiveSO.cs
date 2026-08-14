@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Ocean Currents Passive", menuName = "Abilities/Character/Passives/Ocean Currents")]
-public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPassiveStateNotifier
+public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPassiveStateNotifier, ICombatSessionResettable
 {
     private static readonly Vector3Int[] OddRowNeighbors =
     {
@@ -101,6 +101,16 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
                 new() { Key = HighlightLayerKeys.OceanCurrents, Target = TilemapTarget.PersistentEffects }
             }});
         }
+    }
+
+    // s_equippedCount è un refcount che si desincronizza in modo PERMANENTE se la scena viene
+    // scaricata mentre passive equipaggiate sono ancora vive: nessun OnUnequip le decrementa mai.
+    // Va nella lista di CombatSessionSO come il resto dello stato condiviso fra i cloni.
+    public void ResetForNewCombat()
+    {
+        s_equippedCount = 0;
+        s_sharedCurrentCells.Clear();
+        s_lastSeenAgent = null;
     }
 
     private void OnTurnChanged(ITurnAgent agent)

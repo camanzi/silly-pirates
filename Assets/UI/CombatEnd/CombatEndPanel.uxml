@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/CombatEnd/CombatEndPanel.uss"/>
+    <ui:VisualElement name="combat-end-root" class="combat-end-root">
+        <ui:Label name="combat-end-title" picking-mode="Ignore" text="Vittoria" class="combat-end-title"/>
+        <ui:VisualElement name="combat-end-buttons" class="combat-end-buttons">
+            <ui:Button name="retry-button" text="Riprova" class="combat-end-button"/>
+            <ui:Button name="menu-button" text="Torna al menu" class="combat-end-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

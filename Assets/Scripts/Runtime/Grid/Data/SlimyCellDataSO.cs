@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Slimy Cell Data", menuName = "Grid/Slimy Cell Data")]
-public class SlimyCellDataSO : ScriptableObject, ICellCostModifier
+public class SlimyCellDataSO : ScriptableObject, ICellCostModifier, ICombatSessionResettable
 {
     [Header("Dependencies")]
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
@@ -59,6 +59,16 @@ public class SlimyCellDataSO : ScriptableObject, ICellCostModifier
             _cellCountdowns.Remove(cell);
 
         RaiseEffectEvent(new List<Vector3Int>(_cellCountdowns.Keys));
+    }
+
+    // Vedi il commento gemello in PathOfStarDataSO: il Register qui è una rete di sicurezza
+    // idempotente, non un obbligo — CellCostRegistrySO non svuota la propria lista, quindi la
+    // registrazione fatta in OnEnable regge già per tutta la sessione.
+    public void ResetForNewCombat()
+    {
+        _cellCountdowns.Clear();
+        _cellCostRegistry?.Register(this);
+        RaiseEffectEvent(null);
     }
 
     private void RaiseEffectEvent(List<Vector3Int> cells) =>

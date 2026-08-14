@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Menu/MainMenu.uss"/>
+    <ui:VisualElement name="menu-root" class="menu-root">
+        <ui:Label name="menu-title" picking-mode="Ignore" text="Silly Pirates" class="menu-title"/>
+        <ui:Button name="start-combat-button" text="Inizia combattimento" class="menu-button"/>
+    </ui:VisualElement>
+</ui:UXML>

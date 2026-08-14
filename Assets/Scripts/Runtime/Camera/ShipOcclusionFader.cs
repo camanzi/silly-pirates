@@ -41,6 +41,14 @@ public class ShipOcclusionFader : MonoBehaviour
 
     private readonly Dictionary<Renderer, RendererFadeState> _states = new();
 
+    // Serve a intercettare la deregistrazione di una nave senza modificare ShipOccluderRegistrySO
+    // (che non espone un evento OnUnregistered ed è nella lista dei file da non toccare): teniamo
+    // la lista dei renderer per ogni registry noto e la confrontiamo ad ogni frame con quella
+    // corrente esposta dal registry SO. Il fader diventerà persistente (scena Persistent), quindi
+    // il proprio OnDisable non scatterà più fra un combattimento e l'altro per ripulire da solo.
+    private readonly Dictionary<ShipOccluderRegistry, List<Renderer>> _rendererOwners = new();
+    private readonly List<ShipOccluderRegistry> _staleRegistriesBuffer = new();
+
     private void OnEnable()
     {
         // Pull-then-subscribe, come CameraDirector: il rig può esistere già o arrivare dopo.
@@ -88,17 +96,22 @@ public class ShipOcclusionFader : MonoBehaviour
         IReadOnlyList<Renderer> renderers = registry.OccluderRenderers;
         if (renderers == null) return;
 
+        var owned = new List<Renderer>(renderers.Count);
         for (int i = 0; i < renderers.Count; i++)
         {
             Renderer candidate = renderers[i];
             if (candidate == null) continue;
 
             ApplyFade(GetOrCreateState(candidate), 0f);
+            owned.Add(candidate);
         }
+        _rendererOwners[registry] = owned;
     }
 
     private void Update()
     {
+        PruneUnregisteredShips();
+
         if (_actionCamera == null || !_actionCamera.enabled)
         {
             FadeAllOut();
@@ -108,6 +121,45 @@ public class ShipOcclusionFader : MonoBehaviour
         if (_targetGroup == null || _occluderRegistry == null) return;
 
         EvaluateOcclusion();
+    }
+
+    /// <summary>
+    /// Confronta i registry di cui teniamo traccia con quelli attualmente vivi in
+    /// ShipOccluderRegistrySO.Registries e libera lo stato dei renderer di chi si è deregistrato
+    /// (nave distrutta o disattivata) — altrimenti _states continuerebbe a referenziare renderer
+    /// della scena di combattimento scaricata per il resto della sessione.
+    /// </summary>
+    private void PruneUnregisteredShips()
+    {
+        if (_occluderRegistry == null || _rendererOwners.Count == 0) return;
+
+        IReadOnlyList<ShipOccluderRegistry> liveRegistries = _occluderRegistry.Registries;
+
+        _staleRegistriesBuffer.Clear();
+        foreach (KeyValuePair<ShipOccluderRegistry, List<Renderer>> kvp in _rendererOwners)
+        {
+            bool stillLive = false;
+            for (int i = 0; i < liveRegistries.Count; i++)
+            {
+                if (liveRegistries[i] == kvp.Key) { stillLive = true; break; }
+            }
+            if (!stillLive) _staleRegistriesBuffer.Add(kvp.Key);
+        }
+
+        for (int i = 0; i < _staleRegistriesBuffer.Count; i++)
+        {
+            ShipOccluderRegistry stale = _staleRegistriesBuffer[i];
+            List<Renderer> renderers = _rendererOwners[stale];
+            for (int r = 0; r < renderers.Count; r++)
+            {
+                if (_states.TryGetValue(renderers[r], out RendererFadeState state))
+                {
+                    state.ActiveTween.Stop();
+                    _states.Remove(renderers[r]);
+                }
+            }
+            _rendererOwners.Remove(stale);
+        }
     }
 
     private void FadeAllOut()

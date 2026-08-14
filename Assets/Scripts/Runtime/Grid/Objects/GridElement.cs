@@ -34,7 +34,16 @@ public class GridElement : MonoBehaviour
         InitializePosition();
     }
 
-    protected virtual void OnDisable() { }
+    protected virtual void OnDisable()
+    {
+        // Senza questo, scaricare la scena lascia il GridElement distrutto dentro
+        // GridStateDataSO._occupiedCells: IsOccupied() è una lookup su dizionario, non un null check
+        // Unity, quindi al combattimento successivo la cella risulta occupata per sempre e il
+        // pathfinding muore. Le sottoclassi che fanno override di OnDisable DEVONO chiamare
+        // base.OnDisable() per non silenziare questo unregister.
+        if (_gridStateData != null)
+            _gridStateData.UnregisterOccupancy(_gridPosition, this);
+    }
 
     private void InitializePosition()
     {

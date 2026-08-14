@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Grid/Selection Context")]
-public class SelectionContextSO : ScriptableObject
+public class SelectionContextSO : ScriptableObject, ICombatSessionResettable
 {
     public List<ITargettable> CurrentTargets => _currentTargets;
 
@@ -22,6 +22,10 @@ public class SelectionContextSO : ScriptableObject
         CurrentCaster = null;
         ClearTargets();
     }
+
+    // Senza questo, CurrentCaster e i target restano puntatori a IInteractableElement distrutti
+    // dallo scarico della scena precedente.
+    public void ResetForNewCombat() => ClearCtx();
 
     public void ClearTargets()
     {

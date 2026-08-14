@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 550c3496f6bb7d04b8a140e0b7db8f81, type: 3}
+  m_Name: CombatSession
+  m_EditorClassIdentifier: Assembly-CSharp::CombatSessionSO
+  _resettables:
+  - {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  - {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  - {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
+  - {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+  - {fileID: 11400000, guid: 2bb0156ed80382545b45f1646e47397c, type: 2}
+  - {fileID: 11400000, guid: 377649c3550f3fa44a6b43aede9383aa, type: 2}
+  - {fileID: 11400000, guid: fa58dc8798418b14483e61aedc7484e6, type: 2}
+  - {fileID: 11400000, guid: 26a75455ea484e541b14250508a9fd03, type: 2}
+  - {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
+  - {fileID: 11400000, guid: 4b50460d971b65b499c461689a3faeaf, type: 2}
+  - {fileID: 11400000, guid: 1f5b98cd91e555d4a888a8f0e6bbfe95, type: 2}
+  - {fileID: 11400000, guid: f7b8d933692195f4988e8eca08030099, type: 2}

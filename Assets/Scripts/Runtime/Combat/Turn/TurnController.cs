@@ -16,12 +16,25 @@ public class TurnController : MonoBehaviour
     [Tooltip("Se assegnato, il game loop attende il gate della sequenza di intro prima di partire. Lasciare vuoto nelle scene senza intro.")]
     [SerializeField] private CombatIntroStateSO _introState;
 
-    protected async Awaitable OnEnable()
+    [Header("Combat Outcome")]
+    [Tooltip("Se assegnato, il game loop smette di avviare nuovi turni quando il combattimento è risolto. Lasciare vuoto nelle scene senza esito: il gate non introduce alcun comportamento.")]
+    [SerializeField] private CombatOutcomeStateSO _outcomeState;
+
+    // Spostati da OnEnable: Unity chiama tutti gli Awake prima di tutti gli OnEnable degli oggetti
+    // presenti al load. Se questi Clear() restassero in OnEnable, funzionerebbero solo grazie
+    // all'await NextFrameAsync qui sotto che rimanda l'avvio del loop — ma qualunque ITurnAgent il
+    // cui OnEnable (e quindi OnAgentJoin) girasse PRIMA di quello del TurnController verrebbe
+    // cancellato dalla coda da questo stesso Clear(). Spostandoli in Awake l'ordine diventa
+    // deterministico invece che dipendente dall'ordine dei sibling in gerarchia.
+    private void Awake()
     {
         _turnOrderData.Clear();
         _currentTurnState.Clear();
         _commandQueue.Clear();
+    }
 
+    protected async Awaitable OnEnable()
+    {
         await Awaitable.NextFrameAsync();
         _ = RunGameLoop(destroyCancellationToken);
     }
@@ -38,6 +51,16 @@ public class TurnController : MonoBehaviour
 
             while (!token.IsCancellationRequested)
             {
+                // Gate dell'esito: a combattimento risolto non si avviano più nuovi turni, ma la
+                // scena resta viva (animazioni, camera, VFX continuano) esattamente come col gate
+                // dell'intro qui sopra. Protegge dalla sconfitta: senza questo, in coda restano solo
+                // nemici che continuerebbero a giocare turni all'infinito cercando bersagli inesistenti.
+                if (_outcomeState != null && _outcomeState.IsCombatOver)
+                {
+                    await Awaitable.NextFrameAsync(token);
+                    continue;
+                }
+
                 if (_turnOrderData.TurnQueue.Count == 0)
                 {
                     await Awaitable.NextFrameAsync(token);

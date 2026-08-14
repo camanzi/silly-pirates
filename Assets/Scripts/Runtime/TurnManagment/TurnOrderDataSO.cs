@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TurnOrderData", menuName = "Combat/Turn System/Turn Order")]
-public class TurnOrderDataSO : ScriptableObject
+public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
 {
     [SerializeField] private VoidEventChannel _onQueueUpdated;
 
@@ -97,6 +97,8 @@ public class TurnOrderDataSO : ScriptableObject
         _turnQueue.Clear();
         _onQueueUpdated?.RaiseEvent();
     }
+
+    public void ResetForNewCombat() => Clear();
 
     public void UpdateAgentAV(ITurnAgent agent)
     {

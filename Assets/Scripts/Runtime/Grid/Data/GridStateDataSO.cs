@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GridStateData", menuName = "Grid/Grid State Data")]
-public class GridStateDataSO : ScriptableObject
+public class GridStateDataSO : ScriptableObject, ICombatSessionResettable
 {
     private Dictionary<Vector3Int, HashSet<GridElement>> _occupiedCells = new();
 
@@ -40,4 +40,9 @@ public class GridStateDataSO : ScriptableObject
     }
     
     public void ClearAll() => _occupiedCells.Clear();
+
+    // Cintura e bretelle: l'unregister per-elemento in GridElement.OnDisable copre lo scarico
+    // ordinato della scena, questo copre tutto il resto (elementi distrutti senza passare da
+    // OnDisable, occupanti "fantasma" da bug futuri).
+    public void ResetForNewCombat() => ClearAll();
 }

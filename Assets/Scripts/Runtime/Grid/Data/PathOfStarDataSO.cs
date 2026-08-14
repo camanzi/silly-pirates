@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Path Of Star Data", menuName = "Grid/Path Of Star Data")]
-public class PathOfStarDataSO : ScriptableObject, ICellCostModifier
+public class PathOfStarDataSO : ScriptableObject, ICellCostModifier, ICombatSessionResettable
 {
     [Header("Dependencies")]
     [SerializeField] private TurnAgentEventChannel _onAnyTurnEnded;
@@ -57,6 +57,19 @@ public class PathOfStarDataSO : ScriptableObject, ICellCostModifier
             _cellCountdowns.Remove(cell);
 
         RaiseEffectEvent(new List<Vector3Int>(_cellCountdowns.Keys));
+    }
+
+    // Le celle del combattimento appena finito non devono sopravvivere al prossimo, e il canale va
+    // rialzato a vuoto per spegnerne anche il visual.
+    // Il Register è una rete di sicurezza, non un obbligo: CellCostRegistrySO non svuota più la
+    // propria lista, quindi la registrazione fatta in OnEnable regge già. Resta perché è idempotente
+    // (il registry fa dedup) e ripara il caso in cui la registrazione sia andata persa — OnEnable
+    // qui non riscatta più, l'asset è già in memoria.
+    public void ResetForNewCombat()
+    {
+        _cellCountdowns.Clear();
+        _cellCostRegistry?.Register(this);
+        RaiseEffectEvent(null);
     }
 
     private void RaiseEffectEvent(List<Vector3Int> cells) =>

@@ -1,0 +1,47 @@
+/* Main menu. Vive nella scena MainMenu, non in quella persistente: ogni scena possiede
+   la propria UI, cosi' non resta stato di schermata da resettare tra un caricamento e l'altro. */
+
+.menu-root {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(8, 12, 20);
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-title {
+    color: rgb(255, 69, 61);
+    font-size: 72px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    white-space: nowrap;
+    margin-bottom: 56px;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(251, 68, 60, 0.686);
+    text-shadow: -6px 12px 0 rgb(0, 0, 0);
+    -unity-font-definition: url("project://database/Assets/Fonts/Jaini-Regular.ttf?fileID=12800000&guid=f87297ce785d8694c9876678ba95904d&type=3#Jaini-Regular");
+}
+
+.menu-button {
+    min-width: 340px;
+    height: 62px;
+    font-size: 26px;
+    color: rgb(236, 240, 248);
+    background-color: rgba(255, 69, 61, 0.184);
+    border-color: rgb(255, 69, 61);
+    border-width: 2px;
+    border-radius: 8px;
+    -unity-font-definition: url("project://database/Assets/Fonts/Tektur-VariableFont_wdth,wght.ttf?fileID=12800000&guid=e781eecbbec6f9a42ad1f7250c665308&type=3#Tektur-VariableFont_wdth,wght");
+    transition-property: background-color, scale;
+    transition-duration: 0.12s;
+}
+
+.menu-button:hover {
+    background-color: rgba(255, 69, 61, 0.365);
+    scale: 1.03 1.03;
+}
+
+.menu-button:active {
+    scale: 0.98 0.98;
+}

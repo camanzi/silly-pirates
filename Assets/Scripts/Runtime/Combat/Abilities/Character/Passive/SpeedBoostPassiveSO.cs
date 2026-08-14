@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SpeedBoost Passive", menuName = "Abilities/Character/Passives/Speed Boost")]
-public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEnd, IOnTurnStart, IOnTurnEnd
+public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEnd, IOnTurnStart, IOnTurnEnd, ICombatSessionResettable
 {
     [Header("SpeedBoost configs")]
     [SerializeField] private int _flatBonus = 10;
@@ -60,6 +60,10 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
             _activeTargets.Remove(h);
         _controller = null;
     }
+
+    // Stesso motivo del gemello in SlimyCursePassiveSO: HashSet statico condiviso, va svuotato o
+    // trattiene nemici distrutti dal combattimento precedente.
+    public void ResetForNewCombat() => _activeTargets.Clear();
 
     int IAgilityModifier.GetFlatAgilityBonus() => _flatBonus;
 

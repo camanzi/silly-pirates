@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CommandQueue", menuName = "Combat/Turn System/Command Queue")]
-public class CommandQueueSO : ScriptableObject
+public class CommandQueueSO : ScriptableObject, ICombatSessionResettable
 {
     private Queue<ICommand> _commandQueue = new Queue<ICommand>();
     private bool _isProcessing = false;
@@ -12,6 +12,8 @@ public class CommandQueueSO : ScriptableObject
         _commandQueue.Clear();
         _isProcessing = false;
     }
+
+    public void ResetForNewCombat() => Clear();
 
     public void AddCommand(ICommand command) => _commandQueue.Enqueue(command);
 

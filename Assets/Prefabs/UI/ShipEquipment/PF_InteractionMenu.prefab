@@ -79,6 +79,8 @@ MonoBehaviour:
   _bindedMenuElement: {fileID: 0}
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _abilityHoverChannel: {fileID: 11400000, guid: 8cad665092ecc53409f79697988b1022, type: 2}
+  _introState: {fileID: 11400000, guid: 26a75455ea484e541b14250508a9fd03, type: 2}
+  _onCombatStarted: {fileID: 11400000, guid: 074ab50170a9dc745b635f809556e363, type: 2}
 --- !u!114 &8472393621736945837
 MonoBehaviour:
   m_ObjectHideFlags: 0

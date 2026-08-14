@@ -15,15 +15,49 @@ public class InteractionMenuController : WorldSpaceContainer
     [SerializeField] private TurnStateSO _currentTurnState;
     [SerializeField] private AbilityCostEventChannel _abilityHoverChannel;
 
+    [Header("Combat Intro")]
+    [Tooltip("Se non assegnato il menu si comporta come oggi: nessuna regressione nelle scene senza CombatIntroSequencer.")]
+    [SerializeField] private CombatIntroStateSO _introState;
+    [Tooltip("Obbligatorio se _introState è assegnato: è l'unico segnale che riapre il menu a fine intro.")]
+    [SerializeField] private VoidEventChannel _onCombatStarted;
+
     private Dictionary<InteractionActionSO, InteractionButton> _activeButtons = new();
     private VisualElement _statusContainer;
     private EquipmentStatusElement _statusElement;
+    private Tween _statusVisibilityTween;
 
     protected override void Awake()
     {
         base.Awake();
         _statusContainer = _uiDocument.rootVisualElement.Q<VisualElement>("status-container");
         _statusContainer.pickingMode = PickingMode.Position;
+
+        if (IsIntroGateActive)
+        {
+            // Si usa lo slot "element state" e non quello "combat state": quest'ultimo è già guidato
+            // dal BoolChannelListener su ShowUIEventChannel, che CombatStateManager.Start() rialza a
+            // true nello stesso frame entrando nello stato Idle — il gate dell'intro verrebbe perso.
+            _isAllowedByElementState = false;
+            ApplyVisibilityImmediate();
+        }
+
+        ApplyStatusVisibility(immediate: true);
+    }
+
+    private bool IsIntroGateActive
+    {
+        get
+        {
+            if (_introState == null || !_introState.IsIntroActive) return false;
+
+            if (_onCombatStarted == null)
+            {
+                Debug.LogWarning($"{nameof(InteractionMenuController)}: _introState assegnato senza _onCombatStarted, il menu resterebbe nascosto per sempre. Gate ignorato.", this);
+                return false;
+            }
+
+            return true;
+        }
     }
 
     protected override void OnEnable()
@@ -38,10 +72,10 @@ public class InteractionMenuController : WorldSpaceContainer
 
         if (_statusContainer != null)
         {
-            _statusContainer.style.display = DisplayStyle.Flex;
             _statusElement = new EquipmentStatusElement();
             _statusContainer.Add(_statusElement);
             SetupStatusElement();
+            ApplyStatusVisibility(immediate: true);
         }
 
         var awakable = _bindedMenuElement as IAwakable;
@@ -51,11 +85,21 @@ public class InteractionMenuController : WorldSpaceContainer
             awakable.OnCooldownChanged += OnCooldownStateChanged;
             awakable.OnAwakeningHoverPreview += OnHoverPreview;
         }
+
+        if (_onCombatStarted != null)
+            _onCombatStarted.OnEventRaised += HandleCombatStarted;
+
+        // Copre sia le riattivazioni dopo il combat start sia le scene senza sequencer di intro:
+        // in entrambi i casi il permesso va concesso da subito.
+        if (_introState == null || !_introState.IsIntroActive)
+            SetIntroPermission(true);
     }
 
     protected override void OnDisable()
     {
         base.OnDisable();
+
+        _statusVisibilityTween.Stop();
 
         if (_statusContainer != null && _statusElement != null)
         {
@@ -70,6 +114,52 @@ public class InteractionMenuController : WorldSpaceContainer
             awakable.OnCooldownChanged -= OnCooldownStateChanged;
             awakable.OnAwakeningHoverPreview -= OnHoverPreview;
         }
+
+        if (_onCombatStarted != null)
+            _onCombatStarted.OnEventRaised -= HandleCombatStarted;
+    }
+
+    // Fade-in standard (.25s) quando il combattimento comincia davvero.
+    private void HandleCombatStarted() => SetIntroPermission(true);
+
+    private void SetIntroPermission(bool isAllowed)
+    {
+        SetElementStatePermission(isAllowed);     // menu radiale: gate della base class
+        ApplyStatusVisibility(immediate: false);  // anello di stato: gate locale
+    }
+
+    /// <summary>
+    /// L'anello di stato dell'equipaggiamento vive fuori dal Container gestito da
+    /// <see cref="WorldSpaceContainer"/>, quindi nessuno dei permessi della base class lo tocca:
+    /// senza questo resterebbe a schermo (e hoverabile) per tutta l'intro. Segue lo stesso flag
+    /// _isAllowedByElementState del menu radiale, con lo stesso fade di .25s.
+    /// </summary>
+    private void ApplyStatusVisibility(bool immediate)
+    {
+        if (_statusContainer == null) return;
+
+        bool visible = _isAllowedByElementState;
+        _statusVisibilityTween.Stop();
+
+        if (immediate)
+        {
+            _statusContainer.style.opacity = visible ? 1f : 0f;
+            _statusContainer.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            return;
+        }
+
+        // Il container potrebbe essere a display:None da un fade-out precedente: va ripristinato
+        // prima di animare, altrimenti il tween scrive su un elemento che il layout non renderizza.
+        if (visible) _statusContainer.style.display = DisplayStyle.Flex;
+
+        _statusVisibilityTween = Tween.Custom(
+            _statusContainer.style.opacity.value, visible ? 1f : 0f,
+            duration: .25f, ease: Ease.OutQuad,
+            onValueChange: newVal => _statusContainer.style.opacity = new StyleFloat(newVal))
+            .OnComplete(() => {
+                if (!_isAllowedByElementState)
+                    _statusContainer.style.display = DisplayStyle.None;
+            });
     }
 
     protected override void LateUpdate()
@@ -77,6 +167,8 @@ public class InteractionMenuController : WorldSpaceContainer
         base.LateUpdate();
 
         if (MainCamera == null || _statusContainer == null || _statusContainer.panel == null) return;
+        if (_statusContainer.style.display == DisplayStyle.None) return;
+
         Vector2 panelPos = RuntimePanelUtils.CameraTransformWorldToPanel(
             _statusContainer.panel, transform.position + _positionOffset, MainCamera);
         _statusContainer.style.left = panelPos.x;
