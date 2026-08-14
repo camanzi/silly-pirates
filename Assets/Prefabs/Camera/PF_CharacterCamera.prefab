@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8414386091854447864}
   - component: {fileID: 15057873484163021}
   - component: {fileID: 4267790876653449643}
+  - component: {fileID: 6024522344607745152}
   m_Layer: 0
   m_Name: PF_CharacterCamera
   m_TagString: Untagged
@@ -305,3 +306,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &6024522344607745152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3925270668694182085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cee3b0b15a755243bfe2885e821fc6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CinemachineTargetBinder
+  _trackingTargetAnchor: {fileID: 11400000, guid: dbc5b97bdac3bca4c9ec44cdc2899dee, type: 2}
+  _lookAtTargetAnchor: {fileID: 0}

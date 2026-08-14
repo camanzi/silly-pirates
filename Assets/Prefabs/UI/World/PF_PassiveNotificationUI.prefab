@@ -70,6 +70,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PassiveNotificationManager
   _channel: {fileID: 11400000, guid: f34e6cbc31ae5d74485d162d04d6fd21, type: 2}
   _notificationTemplate: {fileID: 9197481963319205126, guid: e1fb2c009cddb2e4a9351d7f55b2cbd0, type: 3}
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
   _appearDuration: 0.5
   _moveFadeDuration: 1.5
   _moveDistance: 30

@@ -104,6 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e1fa65507bbf5d4b8d52fbb257f5079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
 --- !u!1 &1160724987171713202
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,6 +261,7 @@ MonoBehaviour:
     _serializedList: []
   _directionUpdateRate: 10
   _minAngleChange: 15
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
 --- !u!114 &2110638255548067988
 MonoBehaviour:
   m_ObjectHideFlags: 0

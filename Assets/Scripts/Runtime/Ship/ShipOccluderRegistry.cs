@@ -9,6 +9,8 @@ using UnityEngine;
 /// </summary>
 public class ShipOccluderRegistry : MonoBehaviour
 {
+    [SerializeField] private ShipOccluderRegistrySO _registry;
+
     private readonly List<Renderer> _occluderRenderers = new();
 
     public IReadOnlyList<Renderer> OccluderRenderers => _occluderRenderers;
@@ -32,5 +34,14 @@ public class ShipOccluderRegistry : MonoBehaviour
                 _occluderRenderers.Add(renderer);
             }
         }
+
+        // Registrazione DOPO aver popolato la lista: il fader inizializza i renderer appena viene
+        // notificato, e li vuole trovare già pronti.
+        if (_registry != null) _registry.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        if (_registry != null) _registry.Unregister(this);
     }
 }

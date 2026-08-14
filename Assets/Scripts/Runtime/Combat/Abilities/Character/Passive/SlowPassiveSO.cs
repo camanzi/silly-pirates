@@ -6,7 +6,7 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
 {
     [Header("Slow configs")]
     [SerializeField] private int _flatPenalty = 0;
-    [SerializeField] private float _percentPenalty = 0f;
+    [SerializeField][Range(0, 100)] private float _percentPenalty = 0f;
     [SerializeField] private int _durationInTurns = 3;
     [SerializeField] private VFXController _vfxPrefab;
     [SerializeField] private VfxCueEventChannel _vfxChannel;

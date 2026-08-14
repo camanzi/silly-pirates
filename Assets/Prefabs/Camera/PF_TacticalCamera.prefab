@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5754489548777726585}
   - component: {fileID: 5417196466065809670}
   - component: {fileID: 5856659775123055282}
+  - component: {fileID: 8850188184857836729}
   m_Layer: 0
   m_Name: PF_TacticalCamera
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3335119789545491468}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7009092, y: 0.0000020982486, z: -0.0000020619425, w: 0.7132506}
+  m_LocalRotation: {x: 0.70090926, y: 0, z: 0, w: 0.71325046}
   m_LocalPosition: {x: -4.240001, y: 20.997715, z: -4.561789}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -190,3 +191,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8850188184857836729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3335119789545491468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cee3b0b15a755243bfe2885e821fc6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CinemachineTargetBinder
+  _trackingTargetAnchor: {fileID: 11400000, guid: dbc5b97bdac3bca4c9ec44cdc2899dee, type: 2}
+  _lookAtTargetAnchor: {fileID: 0}

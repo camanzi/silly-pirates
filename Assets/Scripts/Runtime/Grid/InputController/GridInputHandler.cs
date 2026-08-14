@@ -11,25 +11,39 @@ public class GridInputHandler : MonoBehaviour
     [SerializeField] private TargetingDataEventChannel _onPointerMoved;
     [SerializeField] private TargetingDataEventChannel _onPointerClicked;
 
+    [Header("Anchors")]
+    [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
+
     private Vector2 _latestMousePosition;
     private bool _hasMouseMoved;
     private bool _wasClickPressedThisFrame;
     private Vector3Int? _lastHoveredCell;
     private Camera _mainCamera;
 
-    private void Awake() => _mainCamera = Camera.main;
-
     private void OnEnable()
     {
         _inputReader.PointEvent += OnPointEvent;
         _inputReader.ClickStartedEvent += () => _wasClickPressedThisFrame = true;
+
+        if (_mainCameraAnchor == null)
+        {
+            Debug.LogError($"{nameof(GridInputHandler)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            return;
+        }
+
+        _mainCamera = _mainCameraAnchor.Value;
+        _mainCameraAnchor.OnValueChanged += HandleCameraChanged;
     }
 
     private void OnDisable()
     {
         _inputReader.PointEvent -= OnPointEvent;
         _wasClickPressedThisFrame = false;
+
+        if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
     }
+
+    private void HandleCameraChanged(Camera camera) => _mainCamera = camera;
 
     private void LateUpdate()
     {

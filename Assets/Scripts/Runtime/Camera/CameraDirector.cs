@@ -6,10 +6,14 @@ using UnityEngine;
 
 public class CameraDirector : MonoBehaviour
 {
+    // Il rig camera vive in altri prefab, quindi non è referenziabile da qui: arriva via anchor SO,
+    // risolti col contratto pull-then-subscribe documentato su RuntimeAnchorSO.
+    [Header("Camera Rig (anchors)")]
+    [SerializeField] private CinemachineCameraAnchorSO _actionCameraAnchor;
+    [SerializeField] private CinemachineTargetGroupAnchorSO _targetGroupAnchor;
+    [SerializeField] private CinemachineBrainAnchorSO _brainAnchor;
+
     [Header("Dependencies")]
-    [SerializeField] private CinemachineCamera _actionCamera;
-    [SerializeField] private CinemachineTargetGroup _targetGroup;
-    [SerializeField] private CinemachineBrain _brain;
     [SerializeField] private CameraDirectorStateSO _directorState;
     [SerializeField] private AbilityExecutionCueEventChannel _cueChannel;
     [SerializeField] private CameraCueDefaultProfilesSO _cueDefaults;
@@ -20,6 +24,10 @@ public class CameraDirector : MonoBehaviour
     [Tooltip("Safety cap on how long a cue waits for the Brain blend before signaling ready")]
     [Min(0.5f)]
     [SerializeField] private float _maxBlendWait = 2f;
+
+    private CinemachineCamera _actionCamera;
+    private CinemachineTargetGroup _targetGroup;
+    private CinemachineBrain _brain;
 
     private CinemachineGroupFraming _groupFraming;
     private CameraCueProfileSO _activeProfile;
@@ -39,11 +47,6 @@ public class CameraDirector : MonoBehaviour
 
     private void Awake()
     {
-        if (_actionCamera != null)
-        {
-            _groupFraming = _actionCamera.GetComponent<CinemachineGroupFraming>();
-            _baseCameraRotation = _actionCamera.transform.rotation;
-        }
         if (_groundAnchor == null)
         {
             _groundAnchor = new GameObject("CueGroundAnchor").transform;
@@ -68,14 +71,63 @@ public class CameraDirector : MonoBehaviour
     {
         if (_directorState != null) _directorState.OnFocusEnded += OnFocusEnded;
         if (_cueChannel != null) _cueChannel.OnEventRaised += HandleCue;
+
+        // Pull-then-subscribe: la pull prende il rig già in scena, la subscribe quello che arriva
+        // dopo (director nella scena persistente, rig in quella di combattimento additiva).
+        if (_actionCameraAnchor != null)
+        {
+            HandleActionCameraChanged(_actionCameraAnchor.Value);
+            _actionCameraAnchor.OnValueChanged += HandleActionCameraChanged;
+        }
+        if (_targetGroupAnchor != null)
+        {
+            _targetGroup = _targetGroupAnchor.Value;
+            _targetGroupAnchor.OnValueChanged += HandleTargetGroupChanged;
+        }
+        if (_brainAnchor != null)
+        {
+            _brain = _brainAnchor.Value;
+            _brainAnchor.OnValueChanged += HandleBrainChanged;
+        }
     }
 
     private void OnDisable()
     {
         if (_directorState != null) _directorState.OnFocusEnded -= OnFocusEnded;
         if (_cueChannel != null) _cueChannel.OnEventRaised -= HandleCue;
+
+        if (_actionCameraAnchor != null) _actionCameraAnchor.OnValueChanged -= HandleActionCameraChanged;
+        if (_targetGroupAnchor != null) _targetGroupAnchor.OnValueChanged -= HandleTargetGroupChanged;
+        if (_brainAnchor != null) _brainAnchor.OnValueChanged -= HandleBrainChanged;
+
         StopOrbit();
     }
+
+    private void HandleActionCameraChanged(CinemachineCamera camera)
+    {
+        // Il tween di orbita pilota il transform della camera precedente: va fermato prima di
+        // perderne il riferimento, altrimenti continua a ruotare un oggetto che non governiamo più.
+        _orbitTween.Stop();
+
+        _actionCamera = camera;
+        if (camera == null)
+        {
+            _groupFraming = null;
+            return;
+        }
+
+        // Catturati qui — non in Awake, e non "al primo cue con un flag one-shot". Al secondo
+        // combattimento della sessione arriva una NUOVA istanza di action camera: una cattura
+        // one-shot userebbe come base la rotazione di quella precedente, ormai distrutta. In questo
+        // punto il transform è ancora quello autorato, perché nessun cue può partire prima che il
+        // rig si sia registrato.
+        _groupFraming = camera.GetComponent<CinemachineGroupFraming>();
+        _baseCameraRotation = camera.transform.rotation;
+    }
+
+    private void HandleTargetGroupChanged(CinemachineTargetGroup targetGroup) => _targetGroup = targetGroup;
+
+    private void HandleBrainChanged(CinemachineBrain brain) => _brain = brain;
 
     public void HandleCue(AbilityExecutionCue cue)
     {
@@ -186,7 +238,9 @@ public class CameraDirector : MonoBehaviour
 
         // Never hand the vcam back to the player rotated
         StopOrbit();
-        _actionCamera.enabled = false;
+        // Il rig può essere sparito durante l'hold (scarico di scena): StopOrbit già lo tollera,
+        // questo no.
+        if (_actionCamera != null) _actionCamera.enabled = false;
         _activeProfile = null;
     }
 }

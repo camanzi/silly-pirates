@@ -17,6 +17,9 @@ public class FreeRoamTarget : MonoBehaviour
     [SerializeField] private VoidEventChannel enableTacticalViewEventChannel;
     [SerializeField] private VoidEventChannel disableTacticalViewEventChannel;
 
+    [Header("Anchors")]
+    [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
+
     [Header("Automoving Camera configs")]
     [SerializeField] private Ease _interpolationCurve;
     
@@ -46,8 +49,6 @@ public class FreeRoamTarget : MonoBehaviour
 
     private void Awake()
     {
-        _cameraTransform = Camera.main.transform;
-
         InputActionAsset inputActions = InputSystem.actions;
         if (inputActions != null)
         {
@@ -66,10 +67,24 @@ public class FreeRoamTarget : MonoBehaviour
         _tacticalView.Enable();
 
         _tacticalView.performed += OnToggleTactical;
+
+        if (_mainCameraAnchor == null)
+        {
+            Debug.LogError($"{nameof(FreeRoamTarget)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            return;
+        }
+
+        HandleCameraChanged(_mainCameraAnchor.Value);
+        _mainCameraAnchor.OnValueChanged += HandleCameraChanged;
     }
+
+    private void HandleCameraChanged(Camera camera)
+        => _cameraTransform = camera != null ? camera.transform : null;
 
     private void OnDisable()
     {
+        if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
+
         _moveCameraAction.Disable();
 
         _tacticalView.performed -= OnToggleTactical;
@@ -134,7 +149,7 @@ public class FreeRoamTarget : MonoBehaviour
 
     private void UpdateRotation()
     {
-        if (!enableRotation) return;
+        if (!enableRotation || _cameraTransform == null) return;
 
         Vector3 cameraForward = _cameraTransform.forward;
         cameraForward.y = 0;

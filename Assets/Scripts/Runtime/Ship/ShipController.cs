@@ -14,6 +14,10 @@ public class ShipController : MonoBehaviour
     [Header("Tiles")]
     [SerializeField] private Tile _defaultFloorTile;
 
+    [Header("Anchors")]
+    [Tooltip("Pubblica questa nave per chi la cerca senza poterla referenziare (es. CombatIntroSequencer)")]
+    [SerializeField] private ShipControllerAnchorSO _shipAnchor;
+
     private Grid _shipGrid;
     private Tilemap _modelsMap;
     private Tilemap _floorMap;
@@ -30,6 +34,16 @@ public class ShipController : MonoBehaviour
         _floorMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _floorMapTag);
         _previewMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _previewMapTag);
         _persistentEffectsMap = FindChildByTag<Tilemap>(_shipGrid.gameObject, _persistentEffectsMapTag);
+    }
+
+    private void OnEnable()
+    {
+        if (_shipAnchor != null) _shipAnchor.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        if (_shipAnchor != null) _shipAnchor.Unregister(this);
     }
 
     private T FindChildByTag<T>(GameObject parent, string tag)

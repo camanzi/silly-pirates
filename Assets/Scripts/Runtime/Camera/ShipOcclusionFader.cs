@@ -15,12 +15,18 @@ using UnityEngine;
 /// </summary>
 public class ShipOcclusionFader : MonoBehaviour
 {
+    [Header("Camera Rig (anchors)")]
+    [SerializeField] private CinemachineCameraAnchorSO _actionCameraAnchor;
+    [SerializeField] private CinemachineTargetGroupAnchorSO _targetGroupAnchor;
+
     [Header("Dependencies")]
-    [SerializeField] private CinemachineCamera _actionCamera;
-    [SerializeField] private CinemachineTargetGroup _targetGroup;
+    [SerializeField] private ShipOccluderRegistrySO _occluderRegistry;
 
     [Header("Fade Settings")]
     [SerializeField] private float _fadeDuration = 0.25f;
+
+    private CinemachineCamera _actionCamera;
+    private CinemachineTargetGroup _targetGroup;
 
     private static readonly int FadeId = Shader.PropertyToID("_Fade");
 
@@ -33,33 +39,61 @@ public class ShipOcclusionFader : MonoBehaviour
         public Tween ActiveTween;
     }
 
-    private readonly List<ShipOccluderRegistry> _registries = new();
     private readonly Dictionary<Renderer, RendererFadeState> _states = new();
 
-    private void Awake()
+    private void OnEnable()
     {
-        _registries.AddRange(FindObjectsByType<ShipOccluderRegistry>(FindObjectsSortMode.None));
-
-        // Eagerly initialize every candidate renderer to "fully visible" instead of leaving it
-        // unset until the first time it's evaluated as occluding — SetTargetFade would otherwise
-        // early-return for a freshly created state whose target already matches the fresh 0f
-        // default, never writing a MaterialPropertyBlock at all.
-        for (int r = 0; r < _registries.Count; r++)
+        // Pull-then-subscribe, come CameraDirector: il rig può esistere già o arrivare dopo.
+        if (_actionCameraAnchor != null)
         {
-            ShipOccluderRegistry registry = _registries[r];
-            if (registry == null) continue;
+            _actionCamera = _actionCameraAnchor.Value;
+            _actionCameraAnchor.OnValueChanged += HandleActionCameraChanged;
+        }
+        if (_targetGroupAnchor != null)
+        {
+            _targetGroup = _targetGroupAnchor.Value;
+            _targetGroupAnchor.OnValueChanged += HandleTargetGroupChanged;
+        }
 
-            IReadOnlyList<Renderer> renderers = registry.OccluderRenderers;
-            if (renderers == null) continue;
+        if (_occluderRegistry != null)
+        {
+            IReadOnlyList<ShipOccluderRegistry> existing = _occluderRegistry.Registries;
+            for (int i = 0; i < existing.Count; i++) InitializeRenderers(existing[i]);
+            _occluderRegistry.OnRegistered += InitializeRenderers;
+        }
+    }
 
-            for (int i = 0; i < renderers.Count; i++)
-            {
-                Renderer candidate = renderers[i];
-                if (candidate == null) continue;
+    private void OnDisable()
+    {
+        if (_actionCameraAnchor != null) _actionCameraAnchor.OnValueChanged -= HandleActionCameraChanged;
+        if (_targetGroupAnchor != null) _targetGroupAnchor.OnValueChanged -= HandleTargetGroupChanged;
+        if (_occluderRegistry != null) _occluderRegistry.OnRegistered -= InitializeRenderers;
+    }
 
-                RendererFadeState state = GetOrCreateState(candidate);
-                ApplyFade(state, 0f);
-            }
+    private void HandleActionCameraChanged(CinemachineCamera camera) => _actionCamera = camera;
+
+    private void HandleTargetGroupChanged(CinemachineTargetGroup targetGroup) => _targetGroup = targetGroup;
+
+    /// <summary>
+    /// Porta ogni renderer candidato a "pienamente visibile" invece di lasciarlo indefinito fino
+    /// alla prima valutazione di occlusione: SetTargetFade uscirebbe subito per uno stato appena
+    /// creato il cui target coincide già con lo 0f di default, senza mai scrivere un
+    /// MaterialPropertyBlock. Chiamato anche per i registry che si registrano più tardi (nave che
+    /// arriva nell'intro, scena caricata in additivo).
+    /// </summary>
+    private void InitializeRenderers(ShipOccluderRegistry registry)
+    {
+        if (registry == null) return;
+
+        IReadOnlyList<Renderer> renderers = registry.OccluderRenderers;
+        if (renderers == null) return;
+
+        for (int i = 0; i < renderers.Count; i++)
+        {
+            Renderer candidate = renderers[i];
+            if (candidate == null) continue;
+
+            ApplyFade(GetOrCreateState(candidate), 0f);
         }
     }
 
@@ -71,7 +105,7 @@ public class ShipOcclusionFader : MonoBehaviour
             return;
         }
 
-        if (_targetGroup == null) return;
+        if (_targetGroup == null || _occluderRegistry == null) return;
 
         EvaluateOcclusion();
     }
@@ -88,10 +122,11 @@ public class ShipOcclusionFader : MonoBehaviour
     {
         Vector3 camPos = _actionCamera.transform.position;
         List<CinemachineTargetGroup.Target> targets = _targetGroup.Targets;
+        IReadOnlyList<ShipOccluderRegistry> registries = _occluderRegistry.Registries;
 
-        for (int r = 0; r < _registries.Count; r++)
+        for (int r = 0; r < registries.Count; r++)
         {
-            ShipOccluderRegistry registry = _registries[r];
+            ShipOccluderRegistry registry = registries[r];
             if (registry == null) continue;
 
             IReadOnlyList<Renderer> renderers = registry.OccluderRenderers;
@@ -156,6 +191,10 @@ public class ShipOcclusionFader : MonoBehaviour
     private static void ApplyFade(RendererFadeState state, float fadeAmount)
     {
         state.CurrentFade = fadeAmount;
+        // Ora che i registry vanno e vengono (nave distrutta, scena scaricata), _states può
+        // contenere renderer già distrutti — anche a metà di un tween in corso.
+        if (state.Renderer == null) return;
+
         state.Mpb.SetFloat(FadeId, fadeAmount);
         state.Renderer.SetPropertyBlock(state.Mpb);
     }

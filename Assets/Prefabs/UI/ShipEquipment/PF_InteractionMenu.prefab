@@ -73,6 +73,7 @@ MonoBehaviour:
   _shownByDefault: 0
   _positionOffset: {x: 0, y: 0, z: 0}
   _pickingMode: 0
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
   _interactionSet: {fileID: 0}
   _buttonRadius: 110
   _bindedMenuElement: {fileID: 0}

@@ -45,9 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39f554c64bb5ff24c890970dea711912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraDirector
-  _actionCamera: {fileID: 0}
-  _targetGroup: {fileID: 0}
-  _brain: {fileID: 0}
+  _actionCameraAnchor: {fileID: 11400000, guid: 157e42c074187864bbdf137ea7c0af06, type: 2}
+  _targetGroupAnchor: {fileID: 11400000, guid: 10115289e0a0586448c69c01a7de3850, type: 2}
+  _brainAnchor: {fileID: 11400000, guid: 74179911c8f891b4dbd090ca65c8752e, type: 2}
   _directorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
   _cueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
   _cueDefaults: {fileID: 11400000, guid: b0038ad36a89ef0448c9de103acca1b4, type: 2}
@@ -65,6 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d0eb772fa77e72498812b97377a665b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShipOcclusionFader
-  _actionCamera: {fileID: 0}
-  _targetGroup: {fileID: 0}
+  _actionCameraAnchor: {fileID: 11400000, guid: 157e42c074187864bbdf137ea7c0af06, type: 2}
+  _targetGroupAnchor: {fileID: 11400000, guid: 10115289e0a0586448c69c01a7de3850, type: 2}
+  _occluderRegistry: {fileID: 11400000, guid: f2fd0dffc173eb94abb3e76821de0f73, type: 2}
   _fadeDuration: 0.25

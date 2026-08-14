@@ -104,6 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e1fa65507bbf5d4b8d52fbb257f5079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LookAtCamera
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
 --- !u!1 &5650143268143191011
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,6 +233,7 @@ MonoBehaviour:
         loop: 1
   _directionUpdateRate: 10
   _minAngleChange: 15
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
 --- !u!1 &7745515885230444371
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,5 +306,8 @@ MonoBehaviour:
   _shownByDefault: 1
   _positionOffset: {x: 0, y: 3, z: 0}
   _pickingMode: 1
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
   _healthController: {fileID: 4311720663962954783}
   _passiveAbilityController: {fileID: 0}
+  _introState: {fileID: 11400000, guid: 26a75455ea484e541b14250508a9fd03, type: 2}
+  _onCombatStarted: {fileID: 11400000, guid: 074ab50170a9dc745b635f809556e363, type: 2}

@@ -6,6 +6,9 @@ public class HitChanceIndicator : MonoBehaviour
 {
     [SerializeField] private UIDocument _uiDocument;
 
+    [Header("Anchors")]
+    [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
+
     private VisualElement _container;
     private Label _label;
     private Camera _camera;
@@ -13,9 +16,27 @@ public class HitChanceIndicator : MonoBehaviour
     private bool _isVisible;
     private Tween _visibilityTween;
 
+    private void OnEnable()
+    {
+        if (_mainCameraAnchor == null)
+        {
+            Debug.LogError($"{nameof(HitChanceIndicator)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            return;
+        }
+
+        _camera = _mainCameraAnchor.Value;
+        _mainCameraAnchor.OnValueChanged += HandleCameraChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
+    }
+
+    private void HandleCameraChanged(Camera camera) => _camera = camera;
+
     private void Awake()
     {
-        _camera = Camera.main;
         var root = _uiDocument.rootVisualElement;
         root.pickingMode = PickingMode.Ignore;
         _container = root.Q<VisualElement>("container");

@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7396911091303441764}
   - component: {fileID: 4783325474621977999}
+  - component: {fileID: 961648396968700536}
+  - component: {fileID: 7326897641087679205}
   m_Layer: 0
   m_Name: PF_ActionCameraTargetGroup
   m_TagString: Untagged
@@ -49,3 +51,29 @@ MonoBehaviour:
   UpdateMethod: 2
   Targets: []
   m_LegacyTargets: []
+--- !u!114 &961648396968700536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6439436049581050637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc32624d5c0851440a13c58a6a6eb01a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CinemachineTargetGroupAnchorProvider
+  _anchor: {fileID: 11400000, guid: 10115289e0a0586448c69c01a7de3850, type: 2}
+--- !u!114 &7326897641087679205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6439436049581050637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db52e03cc93e9ea44ad5a45a032c3b91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TransformAnchorProvider
+  _anchor: {fileID: 11400000, guid: 0c96dcc1dcc9a6048b42c40db3898751, type: 2}

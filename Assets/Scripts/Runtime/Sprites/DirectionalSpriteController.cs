@@ -15,10 +15,32 @@ public class DirectionalSpriteController : MonoBehaviour
     [SerializeField] private float _directionUpdateRate = 10f;
     [SerializeField] private float _minAngleChange = 15f;
 
+    [Header("Anchors")]
+    [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
+
     public event Action<EAnimation> OnAnimationComplete;
 
     private Camera _mainCamera;
     private Transform _characterTransform;
+
+    private void OnEnable()
+    {
+        if (_mainCameraAnchor == null)
+        {
+            Debug.LogError($"{nameof(DirectionalSpriteController)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            return;
+        }
+
+        _mainCamera = _mainCameraAnchor.Value;
+        _mainCameraAnchor.OnValueChanged += HandleCameraChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
+    }
+
+    private void HandleCameraChanged(Camera camera) => _mainCamera = camera;
 
     private Dictionary<EAnimation, Sprite[,]> _spriteCache;
 
@@ -50,7 +72,6 @@ public class DirectionalSpriteController : MonoBehaviour
     #region Initializations
     private bool InitializeComponents()
     {
-        _mainCamera = Camera.main;
         _characterTransform = transform;
         _spriteCache = new Dictionary<EAnimation, Sprite[,]>();
 

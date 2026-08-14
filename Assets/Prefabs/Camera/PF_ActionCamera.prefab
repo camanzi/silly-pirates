@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 1838714775471130644}
   - component: {fileID: 5559166313382618655}
   - component: {fileID: 6244654736696062476}
+  - component: {fileID: 3441272217118248759}
+  - component: {fileID: 2156747434120241853}
   m_Layer: 0
   m_Name: PF_ActionCamera
   m_TagString: Untagged
@@ -154,3 +156,30 @@ MonoBehaviour:
     FrequencyGain: 1
     Duration: 1
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!114 &3441272217118248759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2915604341846750772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d36189739a70a7b4e98d0b2664d96893, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CinemachineCameraAnchorProvider
+  _anchor: {fileID: 11400000, guid: 157e42c074187864bbdf137ea7c0af06, type: 2}
+--- !u!114 &2156747434120241853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2915604341846750772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cee3b0b15a755243bfe2885e821fc6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CinemachineTargetBinder
+  _trackingTargetAnchor: {fileID: 11400000, guid: 0c96dcc1dcc9a6048b42c40db3898751, type: 2}
+  _lookAtTargetAnchor: {fileID: 0}

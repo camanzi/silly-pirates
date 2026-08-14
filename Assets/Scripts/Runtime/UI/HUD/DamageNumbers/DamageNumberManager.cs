@@ -10,6 +10,9 @@ public class DamageNumberManager : MonoBehaviour
     [SerializeField] private VisualTreeAsset _modifierLabelTemplate;
     [SerializeField] private DamageTypeColorConfigSO _colorConfig;
 
+    [Header("Anchors")]
+    [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
+
     [Header("Animation Settings")]
     [SerializeField] private float _normalFontSize = 80f;
     [SerializeField] private float _critFontSize = 100f;
@@ -27,10 +30,24 @@ public class DamageNumberManager : MonoBehaviour
     private VisualElement _root;
     private Camera _camera;
 
-    private void Awake()
+    private void OnEnable()
     {
-        _camera = Camera.main;
+        if (_mainCameraAnchor == null)
+        {
+            Debug.LogError($"{nameof(DamageNumberManager)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            return;
+        }
+
+        _camera = _mainCameraAnchor.Value;
+        _mainCameraAnchor.OnValueChanged += HandleCameraChanged;
     }
+
+    private void OnDisable()
+    {
+        if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
+    }
+
+    private void HandleCameraChanged(Camera camera) => _camera = camera;
 
     private void Start()
     {

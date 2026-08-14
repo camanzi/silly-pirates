@@ -8,6 +8,9 @@ public class PassiveNotificationManager : MonoBehaviour
     [SerializeField] private PassiveNotificationEventChannel _channel;
     [SerializeField] private VisualTreeAsset _notificationTemplate;
 
+    [Header("Anchors")]
+    [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
+
     [Header("Animation Settings")]
     [SerializeField] private float _appearDuration = 0.2f;
     [SerializeField] private float _moveFadeDuration = 0.5f;
@@ -34,11 +37,6 @@ public class PassiveNotificationManager : MonoBehaviour
     private VisualElement _root;
     private Camera _camera;
 
-    private void Awake()
-    {
-        _camera = Camera.main;
-    }
-
     private void Start()
     {
         _root = GetComponent<UIDocument>().rootVisualElement;
@@ -48,12 +46,24 @@ public class PassiveNotificationManager : MonoBehaviour
     private void OnEnable()
     {
         if (_channel != null) _channel.OnEventRaised += HandleNotification;
+
+        if (_mainCameraAnchor == null)
+        {
+            Debug.LogError($"{nameof(PassiveNotificationManager)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            return;
+        }
+
+        _camera = _mainCameraAnchor.Value;
+        _mainCameraAnchor.OnValueChanged += HandleCameraChanged;
     }
 
     private void OnDisable()
     {
         if (_channel != null) _channel.OnEventRaised -= HandleNotification;
+        if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
     }
+
+    private void HandleCameraChanged(Camera camera) => _camera = camera;
 
     private void LateUpdate()
     {

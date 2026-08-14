@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5098244755494640375}
   - component: {fileID: 4048333577892378373}
   - component: {fileID: 7519204749261811007}
+  - component: {fileID: 2974570045643552000}
   m_Layer: 0
   m_Name: PF_FreeRoamCameraTarget
   m_TagString: Untagged
@@ -51,6 +52,7 @@ MonoBehaviour:
   enableRotation: 1
   enableTacticalViewEventChannel: {fileID: 11400000, guid: 9e7eec016bf71a649b66b2c0381ecaaa, type: 2}
   disableTacticalViewEventChannel: {fileID: 11400000, guid: fc780932b78f00c448d696a01aa1fbcb, type: 2}
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
   _interpolationCurve: 1
   _interpolationDuration: 0.5
   _enableAutomovingTimer: 10
@@ -82,3 +84,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2974570045643552000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7516277361083106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db52e03cc93e9ea44ad5a45a032c3b91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TransformAnchorProvider
+  _anchor: {fileID: 11400000, guid: dbc5b97bdac3bca4c9ec44cdc2899dee, type: 2}

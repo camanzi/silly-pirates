@@ -70,6 +70,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitChanceIndicator
   _uiDocument: {fileID: 2232314375866992149}
+  _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
 --- !u!114 &9149739252300950267
 MonoBehaviour:
   m_ObjectHideFlags: 0

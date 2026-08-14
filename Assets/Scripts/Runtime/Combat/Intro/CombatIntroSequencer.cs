@@ -16,6 +16,7 @@ public class CombatIntroSequencer : MonoBehaviour
     [SerializeField] private CombatIntroStateSO _introState;
     [SerializeField] private CombatIntroSequenceSO _sequence;
     [SerializeField] private SpawnPointManagerSO _spawnPointManager;
+    [SerializeField] private ShipControllerAnchorSO _shipAnchor;
 
     [Header("Camera")]
     [SerializeField] private CameraDirectorStateSO _directorState;
@@ -52,15 +53,27 @@ public class CombatIntroSequencer : MonoBehaviour
 
         // Alzato per primo, prima di qualunque OnEnable di HostileCharacter: sopprime lo spawn automatico.
         _introState?.BeginIntro();
-
-        var shipController = FindFirstObjectByType<ShipController>();
-        _shipEntrance = shipController != null ? shipController.GetComponent<ShipEntranceAnimator>() : null;
-
-        if (_shipEntrance == null)
-            Debug.LogError(
-                $"[{nameof(CombatIntroSequencer)}] Nessuna nave con {nameof(ShipEntranceAnimator)} trovata in scena: " +
-                "il beat di arrivo verrà saltato.", this);
     }
+
+    private void OnEnable()
+    {
+        // La nave NON può essere risolta in Awake: l'ordine di esecuzione -1000 di questo componente
+        // lo fa girare prima di qualunque OnEnable, e quindi prima che ShipController si registri.
+        // Pull-then-subscribe copre entrambi gli ordinamenti; il primo uso vero è in Start, che
+        // Unity garantisce dopo tutti gli OnEnable.
+        if (_shipAnchor == null) return;
+
+        HandleShipChanged(_shipAnchor.Value);
+        _shipAnchor.OnValueChanged += HandleShipChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (_shipAnchor != null) _shipAnchor.OnValueChanged -= HandleShipChanged;
+    }
+
+    private void HandleShipChanged(ShipController ship)
+        => _shipEntrance = ship != null ? ship.GetComponent<ShipEntranceAnimator>() : null;
 
     private void OnDestroy()
     {
@@ -89,6 +102,11 @@ public class CombatIntroSequencer : MonoBehaviour
         // prima, il loro raycast di InitializePosition mancherebbe il pavimento e li lascerebbe
         // senza tilemap e senza occupancy registrata.
         // Start gira comunque prima del primo render, quindi non esiste un frame con la nave attraccata.
+        if (_shipEntrance == null)
+            Debug.LogError(
+                $"[{nameof(CombatIntroSequencer)}] Nessuna nave con {nameof(ShipEntranceAnimator)} registrata su " +
+                $"{nameof(ShipControllerAnchorSO)}: il beat di arrivo verrà saltato.", this);
+
         _shipEntrance?.SnapToEntry();
 
         try

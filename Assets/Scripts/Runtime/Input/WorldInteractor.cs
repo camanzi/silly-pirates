@@ -10,23 +10,37 @@ public class WorldInteractor : MonoBehaviour
     [Header("Event Channels")]
     [SerializeField] private InteractableElementEventChannel _hoverChannel;
 
+    [Header("Anchors")]
+    [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
+
     private Camera _mainCamera;
     private IClickable _currentHovered;
     private Vector2 _mousePosition;
-
-    private void Awake() => _mainCamera = Camera.main;
 
     private void OnEnable()
     {
         _inputReader.PointEvent += HandlePoint;
         _inputReader.ClickStartedEvent += HandleClick;
+
+        if (_mainCameraAnchor == null)
+        {
+            Debug.LogError($"{nameof(WorldInteractor)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            return;
+        }
+
+        _mainCamera = _mainCameraAnchor.Value;
+        _mainCameraAnchor.OnValueChanged += HandleCameraChanged;
     }
 
     private void OnDisable()
     {
         _inputReader.PointEvent -= HandlePoint;
         _inputReader.ClickStartedEvent -= HandleClick;
+
+        if (_mainCameraAnchor != null) _mainCameraAnchor.OnValueChanged -= HandleCameraChanged;
     }
+
+    private void HandleCameraChanged(Camera camera) => _mainCamera = camera;
 
     private void HandlePoint(Vector2 pos) => _mousePosition = pos;
 
