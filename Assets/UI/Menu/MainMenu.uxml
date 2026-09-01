@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/Menu/MainMenu.uss"/>
+    <Style src="project://database/Assets/UI/Menu/MainMenu.uss?fileID=7433441132597879392&amp;guid=5877aecdcd8fcca498c84047ebe781d6&amp;type=3#MainMenu"/>
     <ui:VisualElement name="menu-root" class="menu-root">
         <ui:Label name="menu-title" picking-mode="Ignore" text="Silly Pirates" class="menu-title"/>
-        <ui:Button name="start-combat-button" text="Inizia combattimento" class="menu-button"/>
+        <ui:Button name="start-combat-button" text="Play" class="menu-button"/>
     </ui:VisualElement>
 </ui:UXML>

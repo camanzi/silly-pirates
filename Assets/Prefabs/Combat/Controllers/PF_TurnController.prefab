@@ -52,6 +52,7 @@ MonoBehaviour:
   _onAnyTurnEnded: {fileID: 11400000, guid: a5966ecee92988d46ab8f4fd6ffd380d, type: 2}
   _commandQueue: {fileID: 11400000, guid: 2bb0156ed80382545b45f1646e47397c, type: 2}
   _introState: {fileID: 11400000, guid: 26a75455ea484e541b14250508a9fd03, type: 2}
+  _outcomeState: {fileID: 11400000, guid: 2dafe2a743513ec4bb82e88abf69bba9, type: 2}
 --- !u!114 &4529232175609205763
 MonoBehaviour:
   m_ObjectHideFlags: 0
