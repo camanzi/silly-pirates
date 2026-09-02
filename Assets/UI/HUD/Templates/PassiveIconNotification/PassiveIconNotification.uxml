@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/Templates/PassiveIconNotification/PassiveIconNotification.uss?fileID=7433441132597879392&amp;guid=cf636c68bcadbe04ca7e2d5e3dc42a7e&amp;type=3#PassiveIconNotification"/>
+    <ui:VisualElement name="container" picking-mode="Ignore" class="container">
+        <ui:VisualElement name="icon-anchor" picking-mode="Ignore" class="icon-anchor">
+            <ui:VisualElement name="icon-image" picking-mode="Ignore" class="icon-image"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

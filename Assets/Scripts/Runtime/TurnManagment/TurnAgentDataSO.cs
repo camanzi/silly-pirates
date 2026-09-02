@@ -22,6 +22,11 @@ public class TurnAgentDataSO : ScriptableObject
 
     [SerializeField] private int _baseEvasion = 50;
 
+    [Tooltip("Se attivo, il primo Action Value assegnato in coda turni al join (spawn) varia " +
+             "pseudo-casualmente rispetto al valore base, per dare varietà all'ordine dei turni. " +
+             "Dal secondo turno in poi l'AV torna sempre al valore base.")]
+    [SerializeField] private bool _randomizeInitialAV;
+
     public int InitialAgility => _initialAgility;
     public int MaxActionPointsPerTurn => _maxActionPointsPerTurn;
     public int MaxMovementPoints => _maxMovementPoints;
@@ -29,4 +34,5 @@ public class TurnAgentDataSO : ScriptableObject
     public float MaxHp => _maxHp;
     public int ActionsPerTurn => _actionsPerTurn;
     public int BaseEvasion => _baseEvasion;
+    public bool RandomizeInitialAV => _randomizeInitialAV;
 }

@@ -8,4 +8,6 @@ public struct PassiveNotificationEvent
     public int StackCount;
     public Vector3 WorldPosition;
     public Transform Source;
+    // Null quando la passiva non ha un'icona assegnata in PassiveAbilitySO.
+    public Sprite Icon;
 }

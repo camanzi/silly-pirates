@@ -19,3 +19,4 @@ MonoBehaviour:
   _interactionRange: 1
   _actionsPerTurn: 1
   _baseEvasion: 35
+  _randomizeInitialAV: 1

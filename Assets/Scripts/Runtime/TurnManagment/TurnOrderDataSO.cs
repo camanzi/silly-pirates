@@ -14,6 +14,13 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
 
     private readonly List<IAVModifier> _avModifierBuffer = new();
 
+    /// <summary>
+    /// Varianza massima (frazione del AV base) applicata al primo AV di un agente il cui
+    /// TurnAgentDataSO.RandomizeInitialAV è attivo. Modificare qui per cambiare quanta varietà
+    /// ha l'ordine dei turni all'inizio del combattimento.
+    /// </summary>
+    public const float InitialAVVarianceRatio = 0.2f; // ±1/5 del AV base
+
     public void StartActiveTurn()
     {
         if (_turnQueue.Count == 0) return;
@@ -70,11 +77,18 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
 
         float initialAV = CalculateBaseAV(agent);
 
+        bool randomized = agent.AgentData != null && agent.AgentData.RandomizeInitialAV;
+        if (randomized)
+        {
+            float variance = initialAV * InitialAVVarianceRatio;
+            initialAV = Mathf.Max(1f, initialAV + Random.Range(-variance, variance));
+        }
+
         EntityTurnState newState = new EntityTurnState(agent, initialAV);
         _turnQueue.Add(newState);
 
         if (agent is MonoBehaviour mono)
-            Debug.Log($"Ho aggiunto un nuovo Agent {mono.name} con AV: {initialAV}");
+            Debug.Log($"Ho aggiunto un nuovo Agent {mono.name} con AV: {initialAV}{(randomized ? " (randomizzato)" : "")}");
 
         SortQueue();
         _onQueueUpdated?.RaiseEvent();
@@ -121,7 +135,7 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
     private float CalculateBaseAV(ITurnAgent a)
     {
         float speed = Mathf.Max(1, a.EffectiveAgility);
-        return 10000f / speed;
+        return 10_000f / speed;
     }
 
     private void SortQueue()

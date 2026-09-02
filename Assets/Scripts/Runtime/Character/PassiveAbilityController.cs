@@ -113,6 +113,7 @@ public class PassiveAbilityController : MonoBehaviour
             StackCount = passive is IStackCountProvider stacks ? stacks.CurrentStacks : 0,
             WorldPosition = transform.position,
             Source = transform,
+            Icon = passive.Icon,
         });
     }
 

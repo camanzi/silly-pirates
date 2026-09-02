@@ -18,7 +18,7 @@ MonoBehaviour:
     _serializedList: []
   _startsLoopOnComplete: 1
   _loopPhaseOnComplete: 2
-  _amplitude: 0.12
-  _duration: 1.6
+  _amplitude: 0.25
+  _duration: 1.5
   _ease: 4
   _maxStartOffset: 0.8
