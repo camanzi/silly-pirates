@@ -78,8 +78,10 @@ public class ThreatenAreaStepSO : MultiStepAbilityStepSO
     {
         if (_shakeRequiredPart)
         {
-            if (state.Extra.TryGetValue(ShakeTweenKey, out var tObj) && tObj is Tween tween && tween.isAlive)
-                tween.Stop();
+            // Percorso di interruzione (parte rotta / caster morto / precondizioni fallite): lo strike non
+            // arriverà mai a chiudere il telegraph, quindi tocca a noi restituire il loop al caster.
+            EndPartShake(state, caster != null ? caster.LifecycleAnimator : null);
+
             if (caster != null && state.Extra.TryGetValue(CasterOriginalScaleKey, out var csObj) && csObj is Vector3 cs && cs != Vector3.zero)
                 Tween.Scale(caster.Transform, cs, 0.3f, Ease.InOutQuad);
             if (state.Extra.TryGetValue(RequiredPartTransformKey, out var ptObj) && ptObj is Transform pt && pt != null

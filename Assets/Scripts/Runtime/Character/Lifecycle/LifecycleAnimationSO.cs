@@ -28,6 +28,18 @@ public abstract class LifecycleAnimationSO : ScriptableObject
     [Tooltip("VFX della fase, raggruppati per momento interno. Gli spec dello stesso stage partono insieme.")]
     [SerializeField] protected SerializedDictionary<LifecycleVfxStage, List<LifecycleVfxSpec>> _vfx = new();
 
+    [Header("Loop successivo")]
+    [Tooltip("A fase conclusa, avvia l'animazione in loop configurata per questa fase sul personaggio.")]
+    [SerializeField] private bool _startsLoopOnComplete = true;
+
+    [Tooltip("Quale fase in loop incatenare. Ignorato se il flag sopra è falso.")]
+    [SerializeField] private LifecyclePhase _loopPhaseOnComplete = LifecyclePhase.Idle;
+
+    // Sostituisce un `if (phase == Spawn) StartLoop(Idle)` cablato nell'animator: un domani `PostDeath`
+    // che deve incatenare un loop diverso (o nessuno) si configura sull'asset, senza toccare codice.
+    public bool StartsLoopOnComplete => _startsLoopOnComplete;
+    public LifecyclePhase LoopPhaseOnComplete => _loopPhaseOnComplete;
+
     /// <summary>
     /// Applica istantaneamente lo stato iniziale a tutti i bersagli (es. sprite già sott'acqua).
     /// Chiamata nello stesso frame in cui il GO viene attivato, prima del rendering.

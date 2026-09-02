@@ -415,6 +415,8 @@ MonoBehaviour:
       Value: {fileID: 11400000, guid: 45dd11067ee051d4689995f75da4f35d, type: 2}
     - Key: 1
       Value: {fileID: 11400000, guid: 9f82236eb749d9d4abdcdafc59d7d874, type: 2}
+    - Key: 2
+      Value: {fileID: 11400000, guid: b8fc133a73946424c8c9e781a88b06fc, type: 2}
 --- !u!1 &7172817821701578183
 GameObject:
   m_ObjectHideFlags: 0

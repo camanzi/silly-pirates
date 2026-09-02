@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -24,6 +24,9 @@ public class ActiveCharacterPanelController : MonoBehaviour
     private PassiveAbilityController _cachedPassiveController;
 
     private Tween _hpTween;
+    // Percentuale corrente del fill: il tween deve partire da qui e non da resolvedStyle.width,
+    // che e' in pixel (unit mismatch -> la barra sbordava dal container per tutta la durata del tween).
+    private float _hpFillPercent = 100f;
 
     private void Awake()
     {
@@ -42,6 +45,7 @@ public class ActiveCharacterPanelController : MonoBehaviour
 
         if (agent == null || !agent.CompareTag("Player"))
         {
+            _hpTween.Stop();
             _root.style.display = DisplayStyle.None;
             _nativePassiveSlot.Clear();
             return;
@@ -56,7 +60,8 @@ public class ActiveCharacterPanelController : MonoBehaviour
         if (_cachedHealth != null)
         {
             _cachedHealth.OnHpChanged += HandleHpChanged;
-            HandleHpChanged(_cachedHealth.CurrentHp);
+            // Snap: al cambio di character la barra si posiziona subito, senza animazione.
+            SetHealth(_cachedHealth.CurrentHp, _cachedHealth.MaxHp, animate: false);
         }
 
         RefreshNativePassive(agent);
@@ -107,17 +112,30 @@ public class ActiveCharacterPanelController : MonoBehaviour
     private void HandleHpChanged(float currentHp)
     {
         if (_cachedHealth == null) return;
-        UpdateHealth(currentHp, _cachedHealth.MaxHp);
+        SetHealth(currentHp, _cachedHealth.MaxHp, animate: true);
     }
 
-    private void UpdateHealth(float currentHp, float maxHp)
+    private void SetHealth(float currentHp, float maxHp, bool animate)
     {
-        float ratio = maxHp > 0f ? currentHp / maxHp : 0f;
+        float ratio = maxHp > 0f ? Mathf.Clamp01(currentHp / maxHp) : 0f;
+        float targetPercent = ratio * 100f;
         _hpLabel.text = $"{Mathf.CeilToInt(currentHp)}/{Mathf.CeilToInt(maxHp)}";
 
         _hpTween.Stop();
-        _hpTween = Tween.Custom(_hpBarFill, _hpBarFill.resolvedStyle.width, ratio * 100f, duration: 0.3f,
-            onValueChange: (target, val) => target.style.width = Length.Percent(val));
+
+        if (!animate)
+        {
+            _hpFillPercent = targetPercent;
+            _hpBarFill.style.width = Length.Percent(targetPercent);
+            return;
+        }
+
+        _hpTween = Tween.Custom(_hpBarFill, _hpFillPercent, targetPercent, duration: 0.3f,
+            onValueChange: (target, val) =>
+            {
+                _hpFillPercent = val;
+                target.style.width = Length.Percent(val);
+            });
     }
 
     private void UnsubscribeFromAgent()

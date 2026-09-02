@@ -1,8 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/Loading/LoadingScreen.uss"/>
+    <Style src="project://database/Assets/UI/Loading/LoadingScreen.uss?fileID=7433441132597879392&amp;guid=82e4c4d433080174ea84cf170fdf722f&amp;type=3#LoadingScreen"/>
     <ui:VisualElement name="loading-root" picking-mode="Ignore" class="loading-root">
         <ui:VisualElement name="loading-panel" picking-mode="Ignore" class="loading-panel">
-            <ui:Label name="loading-title" picking-mode="Ignore" text="Caricamento" class="loading-title"/>
+            <ui:Label name="loading-title" picking-mode="Ignore" text="Loading" class="loading-title"/>
             <ui:VisualElement name="progress-track" picking-mode="Ignore" class="progress-track">
                 <ui:VisualElement name="progress-fill" picking-mode="Ignore" class="progress-fill"/>
             </ui:VisualElement>

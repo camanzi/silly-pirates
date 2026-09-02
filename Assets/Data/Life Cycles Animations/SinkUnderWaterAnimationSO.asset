@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f957ec04aa24840a14fef2e8ecf791, type: 3}
   m_Name: SinkUnderWaterAnimationSO
   m_EditorClassIdentifier: Assembly-CSharp::SinkUnderWaterAnimationSO
+  _vfxChannel: {fileID: 0}
+  _vfxStopChannel: {fileID: 0}
+  _vfx:
+    _serializedList: []
+  _startsLoopOnComplete: 0
+  _loopPhaseOnComplete: 2
   _depth: 2
   _duration: 0.8
   _ease: 6

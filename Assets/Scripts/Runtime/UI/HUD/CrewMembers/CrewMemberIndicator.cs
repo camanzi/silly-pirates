@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
@@ -16,6 +16,9 @@ public partial class CrewMemberIndicator : VisualElement
 
     private Tween _colorTween;
     private Tween _healthTween;
+    // Percentuale corrente del fill: il tween deve partire da qui e non da resolvedStyle.width,
+    // che e' in pixel (unit mismatch: la barra restava piena per tutta la durata del tween).
+    private float _healthFillPercent = 100f;
 
     private VisualElement _passivesContainer;
     private VisualTreeAsset _passiveIndicatorTemplate;
@@ -58,7 +61,8 @@ public partial class CrewMemberIndicator : VisualElement
         if (_health != null)
         {
             _health.OnHpChanged += HandleHpChanged;
-            UpdateHealth(_health.CurrentHp, _health.MaxHp);
+            // Snap: l'elemento e' appena stato clonato, un tween qui partirebbe da valori non ancora risolti.
+            UpdateHealth(_health.CurrentHp, _health.MaxHp, animate: false);
         }
 
         if (LinkedAgent is Component comp && comp.TryGetComponent<PassiveAbilityController>(out var controller))
@@ -87,24 +91,37 @@ public partial class CrewMemberIndicator : VisualElement
     private void HandleHpChanged(float currentHp)
     {
         if (_health != null)
-            UpdateHealth(currentHp, _health.MaxHp);
+            UpdateHealth(currentHp, _health.MaxHp, animate: true);
     }
 
-    private void UpdateHealth(float currentHp, float maxHp)
+    private void UpdateHealth(float currentHp, float maxHp, bool animate)
     {
         bool isDead = currentHp <= 0f;
-        float ratio = maxHp > 0f ? currentHp / maxHp : 0f;
+        float ratio = maxHp > 0f ? Mathf.Clamp01(currentHp / maxHp) : 0f;
 
         Color targetColor = isDead ? new Color(0.3f, 0.3f, 0.3f, 1f) : Color.white;
-        float targetWidth = isDead ? 0f : ratio * 100f;
+        float targetPercent = isDead ? 0f : ratio * 100f;
 
         _colorTween.Stop();
+        _healthTween.Stop();
+
+        if (!animate)
+        {
+            _portrait.style.unityBackgroundImageTintColor = new StyleColor(targetColor);
+            _healthFillPercent = targetPercent;
+            _healthBarFill.style.width = Length.Percent(targetPercent);
+            return;
+        }
+
         _colorTween = Tween.Custom(_portrait, _portrait.resolvedStyle.unityBackgroundImageTintColor, targetColor, duration: 0.3f,
             onValueChange: (target, val) => target.style.unityBackgroundImageTintColor = new StyleColor(val));
 
-        _healthTween.Stop();
-        _healthTween = Tween.Custom(_healthBarFill, _healthBarFill.resolvedStyle.width, targetWidth, duration: 0.3f,
-            onValueChange: (target, val) => target.style.width = Length.Percent(val));
+        _healthTween = Tween.Custom(_healthBarFill, _healthFillPercent, targetPercent, duration: 0.3f,
+            onValueChange: (target, val) =>
+            {
+                _healthFillPercent = val;
+                target.style.width = Length.Percent(val);
+            });
     }
 
     private void SyncPassiveIndicators()

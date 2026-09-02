@@ -67,6 +67,10 @@ public class SlimyBallCommand : ICommand
         Vector3 splashWorldPosition = _caster.Transform.position + Vector3.up * _jumpConfig.SplashYOffset;
         CancellationToken token = _caster.destroyCancellationToken;
 
+        // Il salto scrive localPosition E localScale del pivot: sono gli stessi due canali su cui gira
+        // l'idle in loop. Senza sospenderlo si contenderebbero la Y del pivot ad ogni frame.
+        _caster.LifecycleAnimator?.SuspendLoop();
+
         try
         {
             await JumpSquashStretchHelper.JumpUpAsync(
@@ -87,6 +91,8 @@ public class SlimyBallCommand : ICommand
             // Ridondante col finally interno di FallDownAsync, ma necessario: se JumpUpAsync o
             // LaunchProjectile falliscono prima di arrivarci, i pivot non devono restare sospesi in aria.
             JumpSquashStretchHelper.ResetToRest(targets);
+
+            _caster.LifecycleAnimator?.ResumeLoop();
         }
     }
 

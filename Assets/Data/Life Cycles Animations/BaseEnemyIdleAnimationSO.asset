@@ -9,23 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65bfd175c374d044bba4a67747523c18, type: 3}
-  m_Name: EmergeFromWaterAnimationSO
-  m_EditorClassIdentifier: Assembly-CSharp::EmergeFromWaterAnimationSO
+  m_Script: {fileID: 11500000, guid: d73cb48195dcad6438dc6189e2883b39, type: 3}
+  m_Name: BaseEnemyIdleAnimationSO
+  m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyIdleAnimationSO
   _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
   _vfxStopChannel: {fileID: 11400000, guid: 4c947475077c8c74ebccd92a7aff58e5, type: 2}
   _vfx:
-    _serializedList:
-    - Key: 0
-      Value:
-      - _prefab: {fileID: 4266214752264791792, guid: 8af36716c68cc0744a28f307053abdb4, type: 3}
-        _anchor: 0
-        _loop: 1
-        _offset: {x: 0, y: 0, z: 0}
-        _scale: 1
+    _serializedList: []
   _startsLoopOnComplete: 1
   _loopPhaseOnComplete: 2
-  _depth: 10
-  _duration: 1.25
-  _ease: 6
-  _fadeIn: 1
+  _amplitude: 0.12
+  _duration: 1.6
+  _ease: 4
+  _maxStartOffset: 0.8

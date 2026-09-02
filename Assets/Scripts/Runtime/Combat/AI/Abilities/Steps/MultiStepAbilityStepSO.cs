@@ -1,3 +1,4 @@
+using PrimeTween;
 using UnityEngine;
 
 public abstract class MultiStepAbilityStepSO : ScriptableObject
@@ -31,4 +32,30 @@ public abstract class MultiStepAbilityStepSO : ScriptableObject
     public const string PartOriginalScaleKey = "PartOriginalScale";
     public const string ThreatCellEffectChannelKey = "ThreatCellEffectChannel";
     public const string ThreatKeyKey = "ThreatKey";
+
+    /// <summary>
+    /// Chiude il telegraph con shake avviato da <see cref="PartShakeTelegraphCommand"/>: ferma il tween
+    /// infinito e restituisce al binario loop il pivot che gli era stato tolto in prestito con
+    /// <see cref="CharacterLifecycleAnimator.SuspendLoop"/>.
+    ///
+    /// Va chiamata da OGNI percorso che spegne lo shake — lo strike che segue il telegraph e il rollback di
+    /// una sequenza interrotta. Non ci si può appoggiare a un teardown del comando: <c>ICommand.Undo()</c>
+    /// non è mai invocato in questo progetto, quindi la sospensione resterebbe aperta per sempre.
+    ///
+    /// Il ripristino della SCALA resta a ogni chiamante: i percorsi la trattano legittimamente in modo
+    /// diverso (atteso, fire-and-forget, assegnazione secca) ed è un canale indipendente dal loop.
+    /// </summary>
+    public static void EndPartShake(StepState state, CharacterLifecycleAnimator animator)
+    {
+        if (state == null) return;
+
+        if (state.Extra.TryGetValue(ShakeTweenKey, out var tObj) && tObj is Tween tween && tween.isAlive)
+            tween.Stop();
+
+        // Rimossa e non solo fermata: l'handle è morto, e un secondo passaggio (strike dopo un rollback
+        // parziale) non deve ritrovarsi un Tween stantio da interrogare.
+        state.Extra.Remove(ShakeTweenKey);
+
+        animator?.ResumeLoop();
+    }
 }

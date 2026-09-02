@@ -32,6 +32,16 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     public LifecyclePhase? ActivePhase => _activeAnimation != null ? _activePhase : null;
 
     /// <summary>
+    /// Binario indipendente da <see cref="ActivePhase"/>/<see cref="IsPlaying"/>: una transizione (Spawn,
+    /// Leave) e un loop (Idle, domani PostDeath) non sono mai attivi insieme, ma nessun consumatore
+    /// esistente deve accorgersi del loop, quindi i due stati restano separati invece di essere unificati.
+    /// </summary>
+    public bool IsLoopingAnimationPlaying => _loopingAnimation != null;
+
+    /// <summary>Fase in loop attiva; <c>null</c> quando il personaggio è a riposo rispetto a questo binario.</summary>
+    public LifecyclePhase? LoopingPhase => _loopingAnimation != null ? _loopingPhase : null;
+
+    /// <summary>
     /// Pivot visivo (es. MeshHolder) per animazioni una-tantum esterne alle <see cref="LifecyclePhase"/>,
     /// come i salti in combattimento. Se il prefab non ha un pivot dedicato, <see cref="EnsureRestPoseCaptured"/>
     /// ha già fatto fallback su <c>transform</c> loggando un errore: i chiamanti devono trattare
@@ -67,6 +77,12 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     // in corso. Riusata fase dopo fase, così spawn ripetuti non allocano.
     private readonly LifecycleVfxSession _vfxSession = new();
 
+    // Binario loop, separato dai campi sopra e non riusato: _vfxSession.StopAll() gira a ogni BeginPhase
+    // (con la guardia "resuming"), condividerla spegnerebbe i VFX del loop a ogni Spawn e intreccerebbe
+    // i due binari che il piano vuole indipendenti.
+    private readonly LifecycleTweenSession _loopTweenSession = new();
+    private readonly LifecycleVfxSession _loopVfxSession = new();
+
     private LifecycleAnimationContext _context;
     private bool _restPoseCaptured;
 
@@ -82,6 +98,17 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     private LifecycleAnimationSO _activeAnimation;
     private LifecyclePhase _activePhase;
 
+    // Specchio dei tre campi sopra ma per il binario loop. _pendingLoopStart replica la stessa finestra di
+    // inizializzazione di _pendingVfxBegin: StartLoop può essere chiamato da OnEnable, prima di Start.
+    private LoopingLifecycleAnimationSO _loopingAnimation;
+    private LifecyclePhase _loopingPhase;
+    private bool _pendingLoopStart;
+
+    // Bool e non contatore: i tre punti di sospensione del progetto (salto, shake di telegraph, orbita
+    // dello scettro) non sono mai concorrenti sullo stesso personaggio, e StopLoop() lo azzera comunque a
+    // ogni transizione — non serve un refcount per uno stato che è già garantito non annidarsi.
+    private bool _loopSuspended;
+
     private void Awake() => EnsureRestPoseCaptured();
 
     /// <summary>
@@ -93,6 +120,13 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     {
         _initialized = true;
         FlushPendingVfxBegin();
+        FlushPendingLoopStart();
+
+        // Copre il personaggio senza uno slot Spawn configurato: Play(Spawn) gira in OnEnable e imposta
+        // _activeAnimation in modo sincrono (vedi commento su OnPhaseCompleted), quindi se a questo punto
+        // non c'è né una transizione né un loop già in corso, nessuno lo avvierà mai da solo.
+        if (_activeAnimation == null && _loopingAnimation == null)
+            StartLoop(LifecyclePhase.Idle);
     }
 
     /// <summary>Alza i VFX di <see cref="LifecycleVfxStage.Prepare"/> rimandati da <see cref="BeginPhase"/>.</summary>
@@ -102,6 +136,15 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
         _pendingVfxBegin = false;
         _activeAnimation?.BeginVfx(_vfxSession, in _context);
+    }
+
+    /// <summary>Avvia il loop rimandato da <see cref="StartLoop"/> quando chiamato prima di <see cref="Start"/>.</summary>
+    private void FlushPendingLoopStart()
+    {
+        if (!_pendingLoopStart) return;
+
+        _pendingLoopStart = false;
+        if (_loopingAnimation != null) BeginLoopPlayback(_loopingAnimation);
     }
 
     /// <summary>
@@ -114,6 +157,7 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     {
         _vfxSession.StopAll();
         _pendingVfxBegin = false;   // disattivato prima di Start: al risveglio non deve accendere nulla
+        StopLoop();
     }
 
     /// <summary>
@@ -166,10 +210,20 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         var target = LifecycleAnimationTarget.Capture(pivot, renderer);
         _targets.Add(target);
 
-        if (_activeAnimation == null) return;
+        // I due binari sono mutuamente esclusivi (BeginPhase ferma sempre il loop prima di una
+        // transizione), ma un satellite può registrarsi mentre gira l'uno o l'altro: stesso recupero
+        // per entrambi, altrimenti resterebbe indietro finché la fase/il loop in corso non ricomincia.
+        if (_activeAnimation != null)
+        {
+            _activeAnimation.PrepareTarget(target);
+            if (IsPlaying) _ = _activeAnimation.PlayTarget(target);
+        }
 
-        _activeAnimation.PrepareTarget(target);
-        if (IsPlaying) _ = _activeAnimation.PlayTarget(target);
+        if (_loopingAnimation != null)
+        {
+            _loopingAnimation.PrepareTarget(target);
+            if (!_loopSuspended) _loopTweenSession.Track(_loopingAnimation.StartLoopOn(target));
+        }
     }
 
     public void UnregisterSatellite(Transform pivot)
@@ -220,6 +274,15 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
         if (!TryResolveAnimation(phase, out LifecycleAnimationSO animation)) return;
 
+        // Un Play() scritto per errore su una fase in loop (es. Idle) non deve MAI finire su
+        // `await bodyTween`: quel tween non torna mai, e l'await bloccherebbe per sempre sia questo
+        // metodo sia IsPlaying. Si ridirige sul binario giusto invece di crashare o impiccarsi.
+        if (animation is LoopingLifecycleAnimationSO)
+        {
+            StartLoop(phase);
+            return;
+        }
+
         BeginPhase(phase, animation);
 
         IsPlaying = true;
@@ -249,6 +312,10 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         // Fuori dal finally: una fase cancellata non è una fase completata.
         _activeAnimation = null;
         OnPhaseCompleted?.Invoke(phase);
+
+        // Un solo punto che copre sia lo spawn normale sia quello dell'intro al combattimento (che passa
+        // comunque da qui), invece di ramificare "se è uno spawn, avvia l'idle" in più posti.
+        if (animation.StartsLoopOnComplete) StartLoop(animation.LoopPhaseOnComplete);
     }
 
     /// <summary>
@@ -267,6 +334,11 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     /// </summary>
     private void BeginPhase(LifecyclePhase phase, LifecycleAnimationSO animation)
     {
+        // In testa e non delegato a StopActiveTweens sotto: quello uccide comunque i tween del loop
+        // (sono sugli stessi Transform), ma non gli handle registrati in _loopTweenSession, non i VFX
+        // del loop e non il flag di sospensione — StopLoop() è l'unico che chiude tutti e tre insieme.
+        StopLoop();
+
         // Anche il begin rimandato conta come sessione già aperta: senza, PrepareHidden e PlayAsync
         // sulla stessa fase lo metterebbero in coda due volte.
         bool resuming = (_vfxSession.IsOpen || _pendingVfxBegin)
@@ -356,5 +428,143 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         _vfxSession.StopAll();
         _pendingVfxBegin = false;
         _activeAnimation = null;
+
+        StopLoop();
+    }
+
+    /// <summary>
+    /// Avvia il binario loop sulla fase indicata — oggi solo <see cref="LifecyclePhase.Idle"/>, domani
+    /// anche un <c>PostDeath</c>: il meccanismo non sa e non deve sapere quale fase gira sopra di lui.
+    /// Stessa risoluzione di <see cref="PlayAsync"/> (<see cref="TryResolveAnimation"/>, stessi log), ma
+    /// NON passa mai da <c>LifecycleAnimationSO.PlayAsync</c>: quel binario presuppone un tween che
+    /// finisce, un loop no.
+    /// </summary>
+    public void StartLoop(LifecyclePhase phase)
+    {
+        EnsureRestPoseCaptured();
+
+        if (!TryResolveAnimation(phase, out LifecycleAnimationSO animation)) return;
+
+        if (animation is not LoopingLifecycleAnimationSO loopingAnimation)
+        {
+            Debug.LogWarning(
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': la fase {phase} non è una " +
+                $"{nameof(LoopingLifecycleAnimationSO)}, StartLoop ignorato.", this);
+            return;
+        }
+
+        // Chiude un loop precedente (VFX, tween, sospensione) prima di prenderne possesso: stesso motivo
+        // per cui BeginPhase ferma i tween altrui prima di animare gli stessi pivot.
+        StopLoop();
+
+        _loopingAnimation = loopingAnimation;
+        _loopingPhase = phase;
+
+        loopingAnimation.Prepare(in _context);
+
+        // Stessa finestra di inizializzazione di BeginPhase/_pendingVfxBegin: un cue alzato prima di Start
+        // può parlare a un director non ancora sveglio o perdersi su un listener non ancora iscritto.
+        if (!_initialized)
+        {
+            _pendingLoopStart = true;
+            return;
+        }
+
+        BeginLoopPlayback(loopingAnimation);
+    }
+
+    /// <summary>Alza Prepare+Movement e avvia i tween su tutti i bersagli. Condiviso fra <see cref="StartLoop"/> (percorso sincrono) e <see cref="FlushPendingLoopStart"/> (percorso rimandato).</summary>
+    private void BeginLoopPlayback(LoopingLifecycleAnimationSO animation)
+    {
+        animation.BeginVfx(_loopVfxSession, in _context);
+        animation.RaiseMovementVfx(in _context, _loopVfxSession);
+
+        _loopTweenSession.Begin();
+        animation.StartLoops(in _context, _loopTweenSession);
+    }
+
+    /// <summary>
+    /// Ferma il binario loop: VFX (stage End), tween e registrazione dell'animazione, con ripristino della
+    /// sola posizione dei bersagli. Chiamata da <see cref="BeginPhase"/>, <see cref="ResetToRest"/> e
+    /// <c>OnDisable</c> per rimettere il personaggio "a riposo" rispetto a questo binario.
+    ///
+    /// Azzera anche <see cref="_loopSuspended"/>, ma quello è un ripiego, non una rete su cui contare: si
+    /// attiva solo quando il personaggio cambia fase, e chi sospende resta tipicamente vivo e a riposo per
+    /// tutto il prestito. Ogni <see cref="SuspendLoop"/> deve avere il suo <see cref="ResumeLoop"/> su un
+    /// percorso che gira davvero (cfr. <see cref="MultiStepAbilityStepSO.EndPartShake"/>).
+    /// </summary>
+    public void StopLoop()
+    {
+        EnsureRestPoseCaptured();
+
+        if (_loopingAnimation == null)
+        {
+            _loopSuspended = false;
+            return;
+        }
+
+        _loopingAnimation.RaiseEndVfx(in _context, _loopVfxSession);
+
+        _loopTweenSession.StopAll();
+        _loopVfxSession.StopAll();
+        RestoreLoopPose();
+
+        _loopingAnimation = null;
+        _pendingLoopStart = false;
+        _loopSuspended = false;
+    }
+
+    /// <summary>
+    /// Sospende il SOLO movimento del loop: usata dai comandi che tweenano lo stesso <c>localPosition</c>
+    /// di un bersaglio registrato (salto, shake di telegraph, orbita dello scettro) e che altrimenti se ne
+    /// contenderebbero il controllo. Animazione e VFX restano registrati — non è un conflitto di effetti,
+    /// solo di transform — così <see cref="ResumeLoop"/> riparte senza rigiocare Prepare/Movement.
+    /// </summary>
+    public void SuspendLoop()
+    {
+        EnsureRestPoseCaptured();
+
+        if (_loopingAnimation == null || _loopSuspended) return;
+
+        _loopSuspended = true;
+        _loopTweenSession.StopAll();
+        RestoreLoopPose();
+    }
+
+    /// <summary>
+    /// Controparte di <see cref="SuspendLoop"/>: riavvia i tween su tutti i bersagli correnti. Non serve
+    /// distinguere quelli registrati durante la sospensione: <see cref="RegisterSatellite"/> li aggiunge
+    /// già a <c>_targets</c>, e <see cref="LoopingLifecycleAnimationSO.StartLoops"/> li itera tutti.
+    ///
+    /// Ripristina la posa PRIMA di ripartire, gemello di quello che <see cref="SuspendLoop"/> fa in uscita:
+    /// la sospensione è un prestito del transform, e chi lo restituisce non deve sapere dov'era il riposo.
+    /// Serve davvero — <c>Tween.Stop()</c> di PrimeTween è un kill, non un rewind: uno shake infinito
+    /// fermato a metà oscillazione lascia il pivot sfasato, e i tween del loop ripartono dal valore
+    /// corrente, fissando quello sfasamento per sempre.
+    /// </summary>
+    public void ResumeLoop()
+    {
+        if (!_loopSuspended || _loopingAnimation == null) return;
+
+        _loopSuspended = false;
+        RestoreLoopPose();
+        _loopTweenSession.Begin();
+        _loopingAnimation.StartLoops(in _context, _loopTweenSession);
+    }
+
+    /// <summary>
+    /// Ripristina la sola posizione dei bersagli — MAI la scala. A differenza di
+    /// <see cref="LifecycleAnimationTarget.ResetPoseToRest"/>, che tocca anche <c>localScale</c>, il loop
+    /// non anima e non deve appropriarsi della scala: la stanno già usando
+    /// <see cref="JumpSquashStretchHelper"/> e i comandi legacy di squash-stretch, e un ripristino qui la
+    /// riporterebbe a riposo a metà del loro tween.
+    /// </summary>
+    private void RestoreLoopPose()
+    {
+        for (int i = 0; i < _targets.Count; i++)
+        {
+            Transform pivot = _targets[i].Pivot;
+            if (pivot != null) pivot.localPosition = _targets[i].RestLocalPosition;
+        }
     }
 }

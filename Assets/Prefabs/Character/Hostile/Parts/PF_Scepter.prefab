@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthController
   _agentData: {fileID: 0}
-  _standaloneMaxHp: 7000
+  _standaloneMaxHp: 5000
   _baseBehaviors: []
   _showDamageUIEventChannel: {fileID: 11400000, guid: 423303bb8fae67c47bdf297e57d82e31, type: 2}
 --- !u!114 &2781145230433490056

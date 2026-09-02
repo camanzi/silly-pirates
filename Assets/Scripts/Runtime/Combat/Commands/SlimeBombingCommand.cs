@@ -64,8 +64,11 @@ public class SlimeBombingCommand : ICommand
 
         if (_state != null)
         {
-            if (_state.Extra.TryGetValue(MultiStepAbilityStepSO.ShakeTweenKey, out var tObj) && tObj is Tween tween && tween.isAlive)
-                tween.Stop();
+            // Percorso normale di chiusura del telegraph: è QUI che lo shake finisce, non in un Undo().
+            // EndPartShake ferma il tween e ridà l'idle in loop al caster (corpo e satelliti), che
+            // PartShakeTelegraphCommand aveva sospeso un turno fa.
+            MultiStepAbilityStepSO.EndPartShake(_state, _caster != null ? _caster.LifecycleAnimator : null);
+
             if (_state.Extra.TryGetValue(MultiStepAbilityStepSO.RequiredPartTransformKey, out var ptObj) && ptObj is Transform pt && pt != null
                 && _state.Extra.TryGetValue(MultiStepAbilityStepSO.PartOriginalScaleKey, out var psObj) && psObj is Vector3 ps && ps != Vector3.zero)
                 await Tween.Scale(pt, ps, 0.3f, Ease.InOutQuad);

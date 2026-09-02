@@ -29,37 +29,55 @@ public class SpawnAlliesCommand : ICommand
         Vector3 origin = hasPart ? _partTransform.position : Vector3.zero;
 
         if (hasPart)
-            await AnimatePart(_partTransform);
-
-        _spawnedAnimators.Clear();
-        foreach (var (prefab, spawnPoint) in _spawnPairs)
         {
-            var spawnedGO = UnityEngine.Object.Instantiate(prefab.gameObject, spawnPoint.Position, Quaternion.identity);
-            var spawned = spawnedGO.GetComponent<HostileCharacter>();
-
-            spawnPoint.Claim(spawned);
-
-            if (spawned.LifecycleAnimator != null)
-                _spawnedAnimators.Add(spawned.LifecycleAnimator);
+            // AnimatePart tweena part.position in coordinate MONDO, leggendo la posizione corrente come
+            // origine: lo stesso canale su cui gira l'idle in loop del caster (localPosition sullo stesso
+            // pivot, se la parte è il corpo o un satellite registrato).
+            _caster.LifecycleAnimator?.SuspendLoop();
         }
 
-        // Il token è quello dello spawnato, non del caster: è la sua animazione che stiamo
-        // attendendo, ed è la sua distruzione che deve sbloccare l'attesa.
-        foreach (var animator in _spawnedAnimators)
+        try
         {
-            try
-            {
-                await animator.WaitUntilIdleAsync(animator.destroyCancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                // Spawnato distrutto durante l'emersione: passa al successivo senza abortire
-                // il rientro dello scettro.
-            }
-        }
+            if (hasPart)
+                await AnimatePart(_partTransform);
 
-        if (hasPart)
-            await Tween.Position(_partTransform, origin, 0.4f, Ease.InQuad);
+            _spawnedAnimators.Clear();
+            foreach (var (prefab, spawnPoint) in _spawnPairs)
+            {
+                var spawnedGO = UnityEngine.Object.Instantiate(prefab.gameObject, spawnPoint.Position, Quaternion.identity);
+                var spawned = spawnedGO.GetComponent<HostileCharacter>();
+
+                spawnPoint.Claim(spawned);
+
+                if (spawned.LifecycleAnimator != null)
+                    _spawnedAnimators.Add(spawned.LifecycleAnimator);
+            }
+
+            // Il token è quello dello spawnato, non del caster: è la sua animazione che stiamo
+            // attendendo, ed è la sua distruzione che deve sbloccare l'attesa.
+            foreach (var animator in _spawnedAnimators)
+            {
+                try
+                {
+                    await animator.WaitUntilIdleAsync(animator.destroyCancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Spawnato distrutto durante l'emersione: passa al successivo senza abortire
+                    // il rientro dello scettro.
+                }
+            }
+
+            if (hasPart)
+                await Tween.Position(_partTransform, origin, 0.4f, Ease.InQuad);
+        }
+        finally
+        {
+            // Nel finally e non dopo il rientro dello scettro: se lo spawn esplode a metà, il loop del
+            // caster deve tornare a girare comunque. La rete di sicurezza di StopLoop() copre solo chi
+            // cambia fase, e il caster di questa abilità resta vivo e a riposo.
+            if (hasPart) _caster.LifecycleAnimator?.ResumeLoop();
+        }
 
         await Awaitable.WaitForSecondsAsync(0.3f);
     }
