@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58f2d78135e90c54d86100b8c168a5db, type: 3}
+  m_Name: Shield Break Slow Passive
+  m_EditorClassIdentifier: Assembly-CSharp::ShieldBreakSlowPassiveSO
+  _displayName: Shield Break
+  _removalTiming: 1
+  _reapplyFeedback: 0
+  _icon: {fileID: 0}
+  _description: 'Lo scudo elementale e'' caduto: l''agente perde il posto in coda
+    e finisce ultimo.'
+  _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
+  _flatPenalty: 0
+  _percentPenalty: 0
+  _durationInTurns: 0
+  _vfxPrefab: {fileID: 0}
+  _vfxChannel: {fileID: 0}

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f48d4a907035c1b4ebbd30b52c70820b, type: 3}
+  m_Name: Dynamic Elemental Resistance Ability
+  m_EditorClassIdentifier: Assembly-CSharp::DynamicElementalResistanceAbility
+  _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _selectionCtx: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
+  showTrajectory: 0
+  trajectoryConfigData: {fileID: 0}
+  _icon: {fileID: 0}
+  _cameraCue: 2
+  _cameraCueProfile: {fileID: 0}
+  _sfxChannel: {fileID: 0}
+  _castSfx: {fileID: 0}
+  _vfxChannel: {fileID: 0}
+  _requiredPart: {fileID: 11400000, guid: 26b725c01d5d3cf49918283c7807151d, type: 2}
+  _flavorText: The shield hums and shifts to a new element
+  _basePriority: 6
+  _unlimitedUse: 0
+  _minTurnsBeforeUse: 0
+  _cooldownTurns: 1
+  _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
+  _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}

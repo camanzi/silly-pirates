@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -55,6 +55,26 @@ public class HealthController : MonoBehaviour, IDamageable
         for (int i = 0; i < _behaviors.Count; i++) payload = _behaviors[i].ModifyIncomingDamage(payload);
         payload.ResistanceMultiplier = originalAmount > 0f ? payload.Amount / originalAmount : 1f;
         ApplyDamage(payload);
+    }
+
+    /// <summary>
+    /// Aggiunge un behavior a runtime. Il chiamante passa un'istanza GIA' clonata (Instantiate) e ne resta
+    /// proprietario: <see cref="RemoveBehavior"/> smonta esattamente quella istanza e mai i _baseBehaviors.
+    /// Non esistono overload per tipo o per indice proprio per rendere impossibile cancellare per sbaglio
+    /// un behavior di base del personaggio.
+    /// </summary>
+    public void AddBehavior(HealthBehaviorSO instance)
+    {
+        if (instance == null || _behaviors.Contains(instance)) return;
+        _behaviors.Add(instance);
+        instance.OnEquip(this);
+    }
+
+    public void RemoveBehavior(HealthBehaviorSO instance)
+    {
+        if (instance == null || !_behaviors.Remove(instance)) return;
+        instance.OnUnequip(this);
+        Destroy(instance);
     }
 
     public void Heal(float amount)

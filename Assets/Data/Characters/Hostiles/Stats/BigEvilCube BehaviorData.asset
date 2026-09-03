@@ -17,5 +17,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 216e4b8b98d6cc2438b66efb7759328a, type: 2}
   - {fileID: 11400000, guid: 27f03342d41d9064a8343f7993723cbb, type: 2}
   - {fileID: 11400000, guid: d754fd9752659b341ae005fde8d57689, type: 2}
+  - {fileID: 11400000, guid: b74796d93335f9f42992a5d7184278e5, type: 2}
   _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}

@@ -88,7 +88,24 @@ public class GridInputHandler : MonoBehaviour
             if (hit.collider.TryGetComponent(out ITargettable target))
                 finalWorldPos = hit.collider.transform.position;
 
-            Vector3Int cellPos = _grid.WorldToCell(finalWorldPos);
+            Vector3Int cellPos;
+            if (target is GridElement gridElement)
+            {
+                // Fonte autorevole: è la stessa cella con cui l'elemento si registra in
+                // GridStateDataSO (GridElement.InitializePosition), quindi targeting e
+                // occupancy non possono divergere.
+                cellPos = gridElement.gridPosition;
+            }
+            else
+            {
+                cellPos = _grid.WorldToCell(finalWorldPos);
+                // La griglia è mono-layer (FloorMap ha tile solo su z=0), ma con
+                // cellSwizzle YZX e cellSize.z = 1 la Z della cella è l'altezza sopra il
+                // ponte: qualunque punto colpito sopra 1 unità produrrebbe una Z che non
+                // corrisponde a nessuna cella reale.
+                cellPos.z = 0;
+            }
+
             bool isValid = _interactableTilemap.HasTile(cellPos);
 
             return new TargetingData(finalWorldPos, cellPos, isValid, target);

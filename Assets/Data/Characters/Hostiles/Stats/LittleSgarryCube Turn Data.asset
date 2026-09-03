@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697114ac8b492f04a85a19eabb834d9b, type: 3}
   m_Name: LittleSgarryCube Turn Data
   m_EditorClassIdentifier: Assembly-CSharp::TurnAgentDataSO
-  _initialAgility: 120
+  _initialAgility: 165
   _maxActionPointsPerTurn: 0
   _maxHp: 2500
   _maxMovementPoints: 0

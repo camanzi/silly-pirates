@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -126,7 +126,11 @@ public class DamageNumberManager : MonoBehaviour
 
         const float epsilon = 0.01f;
         float ratio = evt.Payload.ResistanceMultiplier;
-        if (Mathf.Abs(ratio - 1f) > epsilon)
+        // Un ratio a zero non e' una semplice resistenza: il colpo e' stato annullato del tutto
+        // (ImmunityBehaviorSO). Senza questo ramo uscirebbe "Resist" sopra un danno di 0, che si legge male.
+        if (ratio <= epsilon)
+            SpawnModifierLabel("Immune", elementColor, evt.WorldPosition);
+        else if (Mathf.Abs(ratio - 1f) > epsilon)
             SpawnModifierLabel(ratio < 1f ? "Resist" : "Effective", elementColor, evt.WorldPosition);
     }
 

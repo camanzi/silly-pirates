@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
@@ -128,6 +128,28 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
         var state = _turnQueue.Find(s => s.Agent == agent);
         if (state == null || state.CurrentAV == 0f) return;
         state.CurrentAV = Mathf.Max(1f, state.CurrentAV + avDelta);
+        SortQueue();
+        _onQueueUpdated?.RaiseEvent();
+    }
+
+    /// <summary>
+    /// Spedisce l'agente in fondo alla coda in modo deterministico: invece di sperare che una penalita' di
+    /// agilita' basti, gli assegna un AV oltre il massimo attualmente in coda.
+    ///
+    /// Limite noto: se l'agente sta eseguendo il proprio turno, <see cref="CompleteActiveTurn"/> gli
+    /// ricalcola comunque il CurrentAV a fine turno e l'effetto si perde. Nel flusso reale chi chiama
+    /// questo metodo (rottura di una parte) agisce durante il turno di qualcun altro.
+    /// </summary>
+    public void SendToBack(ITurnAgent agent)
+    {
+        var state = _turnQueue.Find(s => s.Agent == agent);
+        if (state == null) return;
+
+        float maxAV = 0f;
+        for (int i = 0; i < _turnQueue.Count; i++)
+            if (_turnQueue[i] != state) maxAV = Mathf.Max(maxAV, _turnQueue[i].CurrentAV);
+
+        state.CurrentAV = maxAV + CalculateBaseAV(agent);
         SortQueue();
         _onQueueUpdated?.RaiseEvent();
     }

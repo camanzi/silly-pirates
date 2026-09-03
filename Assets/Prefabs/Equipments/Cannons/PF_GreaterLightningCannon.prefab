@@ -33,10 +33,6 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5587952578991430984, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
-      propertyPath: _overcapMultiplier
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5587952578991430984, guid: 6b96d3d8af15a4d43958934c32c0ba2b, type: 3}
       propertyPath: _maxExtraAwakeningPoints
       value: 12
       objectReference: {fileID: 0}
