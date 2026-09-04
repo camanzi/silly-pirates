@@ -186,16 +186,28 @@ public class ElementalShieldController : MonoBehaviour
         _granted.Clear();
     }
 
-    private void ApplyTint(DamageType element)
+    /// <summary>
+    /// Colore associato a un elemento. Esposto perche' il feedback di guardia
+    /// (<see cref="ElementalShieldGuardAnimator"/>) deve lampeggiare col colore dell'elemento IN ARRIVO,
+    /// che non e' quello attivo e quindi non e' leggibile dal tint corrente dello sprite.
+    /// </summary>
+    public bool TryGetTint(DamageType element, out Color tint)
     {
-        if (_spriteRenderer == null) return;
-
         for (int i = 0; i < _elements.Length; i++)
             if (_elements[i].Element == element)
             {
-                _spriteRenderer.color = _elements[i].Tint;
-                return;
+                tint = _elements[i].Tint;
+                return true;
             }
+
+        tint = Color.white;
+        return false;
+    }
+
+    private void ApplyTint(DamageType element)
+    {
+        if (_spriteRenderer == null) return;
+        if (TryGetTint(element, out Color tint)) _spriteRenderer.color = tint;
     }
 
     private void RaiseElementChangeVfx()

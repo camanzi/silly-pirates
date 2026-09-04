@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Restoring Aura Ability", menuName = "Abilities/Equipment/Restoring Aura Ability")]
-public class RestoringAuraAbility : AbilityBase
+public class RestoringAuraAbility : AbilityBase, IDefensiveAbility
 {
     [Header("Restoring Aura Configs")]
     [SerializeField] private int _range = 10;

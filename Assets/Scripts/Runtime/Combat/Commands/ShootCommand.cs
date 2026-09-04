@@ -77,15 +77,9 @@ public class ShootCommand : ICommand
         { Projectile = p; Start = s; ControlPoint = cp; End = e; }
     }
 
-    private DamageType ResolveDMGType()
-    {
-        if (_caster is IDMGTypeOwner dmgOwner)
-        {
-            DamageType overridden = dmgOwner.EffectiveDMGType;
-            if (overridden != DamageType.None) return overridden;
-        }
-        return _baseDMGType;
-    }
+    // Condivisa con ShootWithEquipmentAbility.ResolveDamageElement: l'elemento annunciato ai reattori
+    // prima dell'impatto deve essere lo stesso che arriva davvero qui.
+    private DamageType ResolveDMGType() => DamageTypeResolver.Resolve(_caster, _baseDMGType);
 
     private async Awaitable LaunchProjectile(ITargettable target)
     {

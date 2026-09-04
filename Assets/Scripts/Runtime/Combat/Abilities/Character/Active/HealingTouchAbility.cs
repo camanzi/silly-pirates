@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Healing Touch Ability", menuName = "Abilities/Character/Actives/Healing Touch Ability")]
-public class HealingTouchAbility : AbilityBase
+public class HealingTouchAbility : AbilityBase, IDefensiveAbility
 {
     [Header("Healing Touch Configs")]
     [SerializeField] private int _range = 1;

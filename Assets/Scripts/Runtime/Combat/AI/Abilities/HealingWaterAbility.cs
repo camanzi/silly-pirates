@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "HealingWater Ability", menuName = "Abilities/Enemy/Healing Water Ability")]
-public class HealingWaterAbility : EnemyAbilityBase
+public class HealingWaterAbility : EnemyAbilityBase, IDefensiveAbility
 {
     [Header("Healing Water configs")]
     [SerializeField] private float _fixedHeal = 20f;

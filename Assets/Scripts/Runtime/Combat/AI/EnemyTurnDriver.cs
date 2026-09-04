@@ -11,6 +11,8 @@ public class EnemyTurnDriver : MonoBehaviour
     [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
     [SerializeField] private AbilityExecutionCueEventChannel _cameraCueChannel;
     [SerializeField] private SfxCueEventChannel _sfxChannel;
+    [Tooltip("Annuncia ai bersagli che un'abilita' sta per colpirli, e quando l'esecuzione e' finita")]
+    [SerializeField] private AbilityThreatEventChannel _threatChannel;
 
     private BehaviorGraphAgent _agent;
     private HostileCharacter _hostile;
@@ -44,6 +46,7 @@ public class EnemyTurnDriver : MonoBehaviour
         finally
         {
             _cameraDirectorState?.EndFocus();
+            _threatChannel?.RaiseEvent(AbilityThreatCue.End);
 
             await Awaitable.WaitForSecondsAsync(.5f, token);
 
@@ -60,13 +63,18 @@ public class EnemyTurnDriver : MonoBehaviour
         // Fire-and-forget, indipendente dalla regia di camera: l'audio non blocca mai il turn loop.
         RaiseCastSfx(ability);
 
-        if (_cameraDirectorState == null || _cameraCueChannel == null) return;
-
         _agent.GetVariable("SelectedTarget", out BlackboardVariable<MonoBehaviour> targetVar);
         MonoBehaviour targetMono = targetVar?.Value;
         var targets = targetMono is ITargettable target
             ? new List<ITargettable> { target }
             : null;
+
+        // Risolto e alzato PRIMA della guardia sulla camera: un nemico senza regia di camera cablata deve
+        // comunque annunciare la minaccia ai propri bersagli.
+        _threatChannel?.RaiseEvent(AbilityThreatCue.Begin(ability, _hostile, targets));
+
+        if (_cameraDirectorState == null || _cameraCueChannel == null) return;
+
         Vector3? targetPoint = targetMono != null ? targetMono.transform.position : null;
 
         IReadOnlyList<Vector3> affectedCells = null;

@@ -17,6 +17,10 @@ public class ExecutionStateSO : CombatStateSO
             // Fire-and-forget: a differenza del camera cue, l'audio non blocca mai il turn loop.
             RaiseCastSfx(cue);
 
+            // Prima dell'attesa sulla camera, non dopo: i bersagli devono potersi preparare mentre
+            // l'inquadratura si compone, non nell'istante dell'impatto.
+            RaiseThreatBegin(cue);
+
             if (cue.HasValue && cameraState != null && manager.CameraCueChannel != null)
             {
                 cameraState.BeginFocus();
@@ -29,6 +33,7 @@ public class ExecutionStateSO : CombatStateSO
         finally
         {
             cameraState?.EndFocus();
+            manager.ThreatChannel?.RaiseEvent(AbilityThreatCue.End);
         }
 
         manager.AabilityRenderer.ClearPreview();
@@ -38,6 +43,17 @@ public class ExecutionStateSO : CombatStateSO
     public override void OnExit()
     {
         Debug.Log($"Sono uscito dal Execution state");
+    }
+
+    private void RaiseThreatBegin(AbilityExecutionCue? cue)
+    {
+        if (!cue.HasValue || manager.ThreatChannel == null) return;
+
+        AbilityBase ability = cue.Value.Ability;
+        if (ability == null) return;
+
+        manager.ThreatChannel.RaiseEvent(
+            AbilityThreatCue.Begin(ability, cue.Value.Caster, cue.Value.Targets));
     }
 
     private void RaiseCastSfx(AbilityExecutionCue? cue)

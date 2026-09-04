@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SlimyBall Ability", menuName = "Abilities/Enemy/Slimy Ball Ability")]
-public class SlimyBallAbility : EnemyAbilityBase
+public class SlimyBallAbility : EnemyAbilityBase, IOffensiveAbility
 {
     [Header("SlimyBall ability configs")]
     [SerializeField] private GameObject _projectile;
@@ -83,4 +83,6 @@ public class SlimyBallAbility : EnemyAbilityBase
             _jumpConfig
         );
     }
+
+    public DamageType ResolveDamageElement(IInteractableElement caster) => _damageType;
 }

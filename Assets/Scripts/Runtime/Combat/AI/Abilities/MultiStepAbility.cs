@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MultiStep Ability", menuName = "Abilities/Enemy/Multi Step Ability")]
-public class MultiStepAbility : EnemyAbilityBase, IThreatenedAreaProvider
+public class MultiStepAbility : EnemyAbilityBase, IThreatenedAreaProvider, IOffensiveAbility
 {
     [SerializeField] private List<MultiStepAbilityStepSO> _steps;
 
@@ -138,4 +138,7 @@ public class MultiStepAbility : EnemyAbilityBase, IThreatenedAreaProvider
             return cmd;
         }
     }
+
+    // L'elemento vero vive nello step attivo: da qui non e' risolvibile senza aprire la sequenza.
+    public DamageType ResolveDamageElement(IInteractableElement caster) => DamageType.None;
 }

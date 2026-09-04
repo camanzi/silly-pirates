@@ -58,6 +58,8 @@ MonoBehaviour:
   _showUIEventChannel: {fileID: 11400000, guid: dd8d84cf213af304b84cc6768bfc7af3, type: 2}
   _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
   _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
+  _sfxChannel: {fileID: 0}
+  _threatChannel: {fileID: 11400000, guid: d4b88e968a27a5c4a9f4cfd8bde49337, type: 2}
   _initialState: {fileID: 11400000, guid: 479618e8b15bfd849afd6ee5b349a2a9, type: 2}
 --- !u!114 &7905440404563248050
 MonoBehaviour:

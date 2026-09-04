@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SlimyCurse Ability", menuName = "Abilities/Enemy/Slimy Curse Ability")]
-public class SlimyCurseAbility : EnemyAbilityBase
+public class SlimyCurseAbility : EnemyAbilityBase, IOffensiveAbility
 {
     [Header("SlimyCurse ability configs")]
     [SerializeField] private SlimyCursePassiveSO _cursePassive;
@@ -65,4 +65,7 @@ public class SlimyCurseAbility : EnemyAbilityBase
             _cameraCueChannel,
             _cameraDirectorState
         );
+
+    // Ostile ma senza danno: applica una passiva di maledizione.
+    public DamageType ResolveDamageElement(IInteractableElement caster) => DamageType.None;
 }

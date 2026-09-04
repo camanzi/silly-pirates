@@ -17,16 +17,16 @@ MonoBehaviour:
   showTrajectory: 0
   trajectoryConfigData: {fileID: 0}
   _icon: {fileID: 0}
-  _cameraCue: 2
+  _cameraCue: 1
   _cameraCueProfile: {fileID: 0}
-  _sfxChannel: {fileID: 0}
+  _sfxChannel: {fileID: 11400000, guid: b24a8181c961291499aa268fceeb8766, type: 2}
   _castSfx: {fileID: 0}
-  _vfxChannel: {fileID: 0}
+  _vfxChannel: {fileID: 11400000, guid: 521ae5996c542c545a003e26fade5096, type: 2}
   _requiredPart: {fileID: 11400000, guid: 26b725c01d5d3cf49918283c7807151d, type: 2}
-  _flavorText: The shield hums and shifts to a new element
+  _flavorText: The shield attune with a different element!
   _basePriority: 6
   _unlimitedUse: 0
-  _minTurnsBeforeUse: 0
+  _minTurnsBeforeUse: 1
   _cooldownTurns: 1
   _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
   _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}

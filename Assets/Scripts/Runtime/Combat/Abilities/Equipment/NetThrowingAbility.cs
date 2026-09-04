@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Net Throwing Ability", menuName = "Abilities/Equipment/Net Throwing Ability")]
-public class NetThrowingAbility : OffensiveAbilityBase, IMultiTargetAbility
+public class NetThrowingAbility : OffensiveAbilityBase, IMultiTargetAbility, IOffensiveAbility
 {
     [Header("Net Throwing configs")]
     [SerializeField] private int _maxTargets = 1;
@@ -35,4 +35,7 @@ public class NetThrowingAbility : OffensiveAbilityBase, IMultiTargetAbility
     {
         return new AbilityPreviewData(affectedCells: new(), interactionArea: new(), freeAimTargets: _selectionCtx.CurrentTargets);
     }
+
+    // Ostile ma senza danno: applica solo uno slow, quindi non ha un elemento da annunciare.
+    public DamageType ResolveDamageElement(IInteractableElement caster) => DamageType.None;
 }

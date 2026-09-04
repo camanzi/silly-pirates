@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SpeedBoost Ability", menuName = "Abilities/Enemy/Speed Boost Ability")]
-public class SpeedBoostAbility : EnemyAbilityBase
+public class SpeedBoostAbility : EnemyAbilityBase, IDefensiveAbility
 {
     [Header("SpeedBoost Ability configs")]
     [Tooltip("Full turns with different abilities needed before this ability can be used again.")]

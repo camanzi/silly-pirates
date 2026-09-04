@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Touch Of The Stars Ability", menuName = "Abilities/Character/Actives/Touch Of The Stars Ability")]
-public class TouchOfTheStarsAbility : AbilityBase
+public class TouchOfTheStarsAbility : AbilityBase, IDefensiveAbility
 {
     [Header("Touch Of The Stars Configs")]
     [SerializeField] private int _apCost = 1;

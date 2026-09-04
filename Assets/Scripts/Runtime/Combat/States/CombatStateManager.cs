@@ -14,6 +14,8 @@ public class CombatStateManager : MonoBehaviour
     [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
     [SerializeField] private AbilityExecutionCueEventChannel _cameraCueChannel;
     [SerializeField] private SfxCueEventChannel _sfxChannel;
+    [Tooltip("Annuncia ai bersagli che un'abilita' sta per colpirli, e quando l'esecuzione e' finita")]
+    [SerializeField] private AbilityThreatEventChannel _threatChannel;
 
     [Header("State Settings")]
     [SerializeField] private CombatStateSO _initialState;
@@ -31,6 +33,7 @@ public class CombatStateManager : MonoBehaviour
     public CameraDirectorStateSO CameraDirectorState => _cameraDirectorState;
     public AbilityExecutionCueEventChannel CameraCueChannel => _cameraCueChannel;
     public SfxCueEventChannel SfxChannel => _sfxChannel;
+    public AbilityThreatEventChannel ThreatChannel => _threatChannel;
 
     private Dictionary<CombatStateSO, CombatStateSO> _stateInstances = new Dictionary<CombatStateSO, CombatStateSO>();
 

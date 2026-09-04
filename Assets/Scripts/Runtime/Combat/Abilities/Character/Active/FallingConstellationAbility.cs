@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "Falling Constellation Ability", menuName = "Abilities/Character/Actives/Falling Constellation Ability")]
-public class FallingConstellationAbility : AbilityBase
+public class FallingConstellationAbility : AbilityBase, IOffensiveAbility
 {
     [Header("Falling Constellation Configs")]
     [SerializeField] private int _range = 4;
@@ -84,4 +84,7 @@ public class FallingConstellationAbility : AbilityBase
 
         cache = new ConstellationFallCache { ValidCells = validCells };
     }
+
+    // Il danno lo infligge il ConstellationFragment quando atterra, non l'abilita': nessun elemento qui.
+    public DamageType ResolveDamageElement(IInteractableElement caster) => DamageType.None;
 }

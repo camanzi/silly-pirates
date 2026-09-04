@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Shoot With Equipment Ability", menuName = "Abilities/Equipment/Shoot With Equipment Ability")]
-public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbility
+public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbility, IOffensiveAbility
 {
     [Header("Cannon ability configs")]
     [SerializeField] private int _maxTargets = 1;
@@ -43,4 +43,7 @@ public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbili
         return new AbilityPreviewData(affectedCells: new(), interactionArea: new(), freeAimTargets: _selectionCtx.CurrentTargets);
     }
 
+    // Stessa regola di ShootCommand.ResolveDMGType: l'elemento vero e' quello del cannone montato.
+    public DamageType ResolveDamageElement(IInteractableElement caster)
+        => DamageTypeResolver.Resolve(caster, _baseDMGType);
 }

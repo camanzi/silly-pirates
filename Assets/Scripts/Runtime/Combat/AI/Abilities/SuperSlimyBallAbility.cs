@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SuperSlimyBall Ability", menuName = "Abilities/Enemy/Super Slimy Ball Ability")]
-public class SuperSlimyBallAbility : EnemyAbilityBase
+public class SuperSlimyBallAbility : EnemyAbilityBase, IOffensiveAbility
 {
     [Header("SuperSlimyBall ability configs")]
     [SerializeField] private GameObject _projectile;
@@ -109,4 +109,6 @@ public class SuperSlimyBallAbility : EnemyAbilityBase
             GetRequiredPartTransform(caster)
         );
     }
+
+    public DamageType ResolveDamageElement(IInteractableElement caster) => _damageType;
 }

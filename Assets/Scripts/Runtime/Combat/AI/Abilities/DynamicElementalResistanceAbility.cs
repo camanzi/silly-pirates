@@ -6,7 +6,7 @@ using UnityEngine;
 /// esce automaticamente dalle candidate.
 /// </summary>
 [CreateAssetMenu(fileName = "DynamicElementalResistance Ability", menuName = "Abilities/Enemy/Dynamic Elemental Resistance")]
-public class DynamicElementalResistanceAbility : EnemyAbilityBase
+public class DynamicElementalResistanceAbility : EnemyAbilityBase, IDefensiveAbility
 {
     [Header("Dynamic Elemental Resistance configs")]
     [Tooltip("Turni di attesa fra un uso e il successivo.")]
