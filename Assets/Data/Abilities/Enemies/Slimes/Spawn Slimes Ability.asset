@@ -33,3 +33,6 @@ MonoBehaviour:
   - {fileID: 5879834906850785746, guid: 6e576a828c802154aba3540e9d113db0, type: 3}
   _maxSpawns: 2
   _cooldownTurns: 2
+  _apexVfx: {fileID: 9169982007841061582, guid: 37a169993d6adf64a9726a9c06f77e42, type: 3}
+  _apexVfxWorldOffset: {x: 0, y: 3.25, z: 0}
+  _apexVfxScale: 1

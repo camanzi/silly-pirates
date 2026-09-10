@@ -8,16 +8,28 @@ public class SpawnAlliesCommand : ICommand
     private readonly HostileCharacter _caster;
     private readonly List<(HostileCharacter prefab, SpawnPoint point)> _spawnPairs;
     private readonly Transform _partTransform;
+    private readonly VFXController _apexVfx;
+    private readonly Vector3 _apexVfxWorldOffset;
+    private readonly float _apexVfxScale;
+    private readonly VfxCueEventChannel _vfxChannel;
     private readonly List<CharacterLifecycleAnimator> _spawnedAnimators = new();
 
     public SpawnAlliesCommand(
         HostileCharacter caster,
         List<(HostileCharacter prefab, SpawnPoint point)> spawnPairs,
-        Transform partTransform = null)
+        Transform partTransform = null,
+        VFXController apexVfx = null,
+        Vector3 apexVfxWorldOffset = default,
+        float apexVfxScale = 1f,
+        VfxCueEventChannel vfxChannel = null)
     {
         _caster = caster;
         _spawnPairs = spawnPairs;
         _partTransform = partTransform;
+        _apexVfx = apexVfx;
+        _apexVfxWorldOffset = apexVfxWorldOffset;
+        _apexVfxScale = apexVfxScale;
+        _vfxChannel = vfxChannel;
     }
 
     public async Awaitable ExecuteAsync()
@@ -88,7 +100,7 @@ public class SpawnAlliesCommand : ICommand
     // 3. Orbit 2 full circles around local pivot with radius 0.75f (on XZ plane)
     // 4. Move up additional 0.5 units
     // 5. Return to original position
-    private static async Awaitable AnimatePart(Transform part)
+    private async Awaitable AnimatePart(Transform part)
     {
         Vector3 origin = part.position;
 
@@ -113,6 +125,9 @@ public class SpawnAlliesCommand : ICommand
         part.position = orbitCenter;
 
         await Tween.Position(part, orbitCenter + Vector3.up * 1f, .75f, Ease.OutQuad);
+
+        if (_apexVfx != null && _vfxChannel != null)
+            _vfxChannel.RaiseEvent(VfxCue.At(_apexVfx, part.position + _apexVfxWorldOffset, _apexVfxScale));
 
         await Awaitable.WaitForSecondsAsync(1f);
     }

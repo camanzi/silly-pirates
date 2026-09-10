@@ -11,6 +11,14 @@ public class SpawnAlliesAbility : EnemyAbilityBase
     [Tooltip("Full turns with different abilities needed before this ability can be used again.")]
     [SerializeField] private int _cooldownTurns = 3;
 
+    [Header("Apex flash")]
+    [SerializeField] private VFXController _apexVfx;
+    [Tooltip("Offset in WORLD space sommato alla posizione attuale della parte. Non usare lo spazio locale " +
+             "della parte: lo sprite ha LookAtCamera, che ne azzera l'inclinazione a ogni LateUpdate, quindi " +
+             "la punta visibile sta sempre lungo world-up.")]
+    [SerializeField] private Vector3 _apexVfxWorldOffset = new(0f, 0.85f, 0f);
+    [SerializeField] private float _apexVfxScale = 1f;
+
     protected override bool MeetsPreconditions(AIContext context)
     {
         if (!base.MeetsPreconditions(context)) return false;
@@ -51,7 +59,7 @@ public class SpawnAlliesAbility : EnemyAbilityBase
             pairs.Add((shuffled[i], freePoints[i]));
 
         Transform partTransform = GetRequiredPartTransform(caster);
-        return new SpawnAlliesCommand(hostile, pairs, partTransform);
+        return new SpawnAlliesCommand(hostile, pairs, partTransform, _apexVfx, _apexVfxWorldOffset, _apexVfxScale, _vfxChannel);
     }
 
     public override bool RequiresTargeting => false;

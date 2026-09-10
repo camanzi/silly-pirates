@@ -254,7 +254,7 @@ MonoBehaviour:
     Resistance: {fileID: 11400000, guid: c5ddfe7dd11921f42909e8e38fd32f1f, type: 2}
     Immunity: {fileID: 11400000, guid: cbdf37967d91af64da86b7b7e5bb33fc, type: 2}
     Vulnerability: {fileID: 11400000, guid: 4fb8f4d92b9ffcf4a8b0cd5c26ddb840, type: 2}
-    Tint: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+    Tint: {r: 0.58431375, g: 0.58431375, b: 0.58431375, a: 1}
   - Element: 2
     Resistance: {fileID: 11400000, guid: b992fda6e3b8ca741a3fcd32ee9c1c6c, type: 2}
     Immunity: {fileID: 11400000, guid: c7868df42b2136f4997376f570566cdc, type: 2}
