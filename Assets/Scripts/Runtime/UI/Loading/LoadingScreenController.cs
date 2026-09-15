@@ -3,71 +3,43 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// Overlay di caricamento. Vive nella scena persistente, su un PanelSettings con sortingOrder più
-/// alto di quello della HUD: deve restare visibile mentre la scena di contenuto sotto viene
-/// scaricata e ricaricata.
+/// The loading overlay. Lives in the persistent scene, on a PanelSettings with a higher sorting
+/// order than the HUD's: it must stay visible while the content scene underneath is unloaded and
+/// reloaded.
 ///
-/// Non conosce SceneFlowDirector: riceve la visibilità da un canale, quindi non ha riferimenti a
-/// oggetti che possono sparire con una scena.
+/// Knows nothing about SceneFlowDirector: visibility arrives through a channel, so it holds no
+/// reference to objects that can disappear with a scene.
 ///
-/// La schermata non mostra alcun avanzamento, per scelta di design: le scene qui sono piccole e una
-/// percentuale che salta da 0 a 100 dice meno di niente. Al suo posto due animazioni che servono
-/// solo a non lasciare un'immagine ferma — i puntini e l'oscillazione della piuma. Il canale del
-/// progresso continua a esistere ed essere alzato da SceneFlowDirector, semplicemente non ha più
-/// nessuno in ascolto.
+/// The screen shows no progress, by design: the scenes here are small, and a percentage jumping
+/// from 0 to 100 says less than nothing. In its place, two animations exist only so the screen is
+/// not a frozen image — the dots and the quill's bob. The progress channel still exists and is
+/// still raised by SceneFlowDirector, it simply has no one listening anymore.
 /// </summary>
 public class LoadingScreenController : MonoBehaviour
 {
-    /// <summary>
-    /// Le quattro parole sono precostruite e non composte a runtime: il ciclo gira per tutta la
-    /// durata del caricamento, e concatenare un suffisso ogni volta allocherebbe per nulla.
-    /// </summary>
-    private static readonly string[] DotStates = { "Loading", "Loading.", "Loading..", "Loading..." };
-
     [SerializeField] private UIDocument _document;
 
-    [Header("Canali")]
+    [Header("Channels")]
     [SerializeField] private BoolEventChannel _visibilityChannel;
 
     [Header("Config")]
     [SerializeField] private float _fadeDuration = 0.25f;
 
-    [Tooltip("Millisecondi fra un puntino e il successivo. A 1000 il ciclo completo 0 -> 3 -> 0 dura " +
-             "i 4 secondi di progetto.")]
-    [Min(1)] [SerializeField] private int _dotIntervalMs = 1000;
-
-    [Tooltip("Spostamento verticale massimo della piuma, in pixel.")]
-    [SerializeField] private float _quillBobAmplitude = 6f;
-
-    [Tooltip("Secondi per una oscillazione COMPLETA della piuma (un ciclo Rewind ne copre metà).")]
-    [Min(0.02f)] [SerializeField] private float _quillBobPeriod = 1.6f;
-
     private VisualElement _root;
-    private Label _label;
-    private VisualElement _quill;
+    private EllipsisLabel _label;
+    private LoadingAnimationElement _animation;
 
     private Tween _fadeTween;
-    private Tween _bobTween;
-    private IVisualElementScheduledItem _dots;
-    private int _dotIndex;
 
     private void OnEnable()
     {
         VisualElement documentRoot = _document.rootVisualElement;
         _root = documentRoot.Q<VisualElement>("loading-root");
-        _label = documentRoot.Q<Label>("loading-label");
-        _quill = documentRoot.Q<VisualElement>("loading-quill");
+        _label = documentRoot.Q<EllipsisLabel>("loading-label");
+        _animation = documentRoot.Q<LoadingAnimationElement>("loading-animation");
 
-        if (_root != null)
-        {
-            // Lo scheduler è legato al pannello, non alla visibilità dell'elemento: continuerebbe a
-            // girare anche con l'overlay spento. Nasce quindi già in pausa e lo riaccende solo lo show.
-            _dots = _root.schedule.Execute(AdvanceDots).Every(_dotIntervalMs);
-            _dots.Pause();
-        }
-
-        // Parte nascosto: il primo frame della sessione non deve mostrare un overlay a schermo pieno
-        // prima che qualcuno abbia chiesto una transizione.
+        // Starts hidden: the first frame of the session must not show a full-screen overlay before
+        // anyone has requested a transition.
         ApplyVisibility(false, instant: true);
 
         if (_visibilityChannel != null) _visibilityChannel.OnEventRaised += HandleVisibility;
@@ -99,8 +71,8 @@ public class LoadingScreenController : MonoBehaviour
 
         if (visible)
         {
-            // Il display va acceso PRIMA del tween: un elemento in DisplayStyle.None non viene
-            // disegnato, quindi il fade-in non si vedrebbe affatto.
+            // Display must be turned on BEFORE the tween: an element in DisplayStyle.None is not
+            // drawn at all, so the fade-in would not show.
             _root.style.display = DisplayStyle.Flex;
             _fadeTween = Tween.Custom(_root, _root.style.opacity.value, 1f, _fadeDuration,
                 static (el, v) => el.style.opacity = v, Ease.OutQuad);
@@ -109,47 +81,25 @@ public class LoadingScreenController : MonoBehaviour
 
         _fadeTween = Tween.Custom(_root, _root.style.opacity.value, 0f, _fadeDuration,
             static (el, v) => el.style.opacity = v, Ease.InQuad)
-            // Lo spegnimento del display va in coda al fade, altrimenti l'overlay resterebbe
-            // trasparente ma cliccabile, rubando gli input alla scena appena caricata.
+            // Turning off the display comes after the fade, otherwise the overlay would stay
+            // transparent but clickable, stealing input from the scene that just loaded.
             .OnComplete(_root, static el => el.style.display = DisplayStyle.None);
     }
 
     /// <summary>
-    /// Puntini e oscillazione vivono solo mentre l'overlay è a schermo: lasciarli girare a vuoto
-    /// significherebbe far lavorare uno scheduler e un tween infinito per tutta la partita.
+    /// Dots and bob run only while the overlay is on screen: leaving them running would mean a
+    /// scheduled tick and an infinite tween working for nothing for the rest of the match.
     /// </summary>
     private void SetAnimationsRunning(bool running)
     {
-        _bobTween.Stop();
-
-        if (!running)
+        if (running)
         {
-            _dots?.Pause();
+            _label?.Play();
+            _animation?.Play();
             return;
         }
 
-        // Si riparte sempre dalla parola nuda: riprendere da dove si era rimasti farebbe comparire
-        // l'overlay con due puntini già scritti.
-        _dotIndex = 0;
-        if (_label != null) _label.text = DotStates[0];
-        _dots?.Resume();
-
-        if (_quill == null) return;
-
-        // Stesso stampo del loop di idle dei pezzi del drago: il periodo configurato è
-        // l'oscillazione completa, e un ciclo Rewind ne copre metà.
-        // Tempo NON scalato: un overlay di caricamento non deve dipendere dal timeScale del gioco.
-        _bobTween = Tween.Custom(_quill, -_quillBobAmplitude, _quillBobAmplitude,
-            _quillBobPeriod * 0.5f,
-            static (element, value) => element.style.translate = new Translate(0f, value),
-            Ease.InOutSine, cycles: -1, cycleMode: CycleMode.Rewind, useUnscaledTime: true);
-    }
-
-    private void AdvanceDots()
-    {
-        if (_label == null) return;
-
-        _dotIndex = (_dotIndex + 1) % DotStates.Length;
-        _label.text = DotStates[_dotIndex];
+        _label?.Stop();
+        _animation?.Stop();
     }
 }

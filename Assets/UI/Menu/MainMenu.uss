@@ -1,34 +1,8 @@
-/* Main menu. Vive nella scena MainMenu, non in quella persistente: ogni scena possiede
-   la propria UI, cosi' non resta stato di schermata da resettare tra un caricamento e l'altro.
+/* Main menu. Lives in the MainMenu scene, not the persistent one: every scene owns its own UI, so
+   there is no leftover screen state to reset between loads.
 
-   Il font NON si dichiara qui: arriva da STL_Menu.uss, incluso prima di questo foglio.
-   Le coordinate sono quelle del canvas Figma "Main Menu" (1920x1080) e vanno lette insieme
-   allo stage, che e' l'unico elemento a misura fissa. */
-
-.menu-root {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    /* Tinta media della pergamena: si vede solo per il frame in cui lo stage non ha ancora
-       misurato, e nelle bande che il cover ritaglia. Meglio di un nero che lampeggia. */
-    background-color: rgb(236, 224, 206);
-    overflow: hidden;
-}
-
-/* Misura fissa e centrata. A farlo coprire lo schermo ci pensa MainMenuPanelSettings
-   (ScaleWithScreenSize + Shrink su 1920x1080): niente scaling a mano, cosi' il testo resta
-   nitido perche' passa dal scaledPixelsPerPoint del pannello e non da un transform. */
-.menu-stage {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    translate: -50% -50%;
-    width: 1920px;
-    height: 1080px;
-    flex-shrink: 0;
-    background-image: url("project://database/Assets/Imports/2D/UI Icons/MainMenu/parchment.png");
-    -unity-background-scale-mode: scale-and-crop;
-}
+   The font and the shared stage/quill primitives come from STL_Menu.uss, included before this
+   sheet. Coordinates are those of the Figma "Main Menu" canvas (1920x1080). */
 
 /* --- Moving Group ------------------------------------------------------------------------ */
 
@@ -61,7 +35,72 @@
 .drake-8 { left: 67px; top: 2px; width: 256px; height: 122px;
     background-image: url("project://database/Assets/Imports/2D/UI Icons/MainMenu/drake_8.png"); }
 
-/* --- Voci di menu ------------------------------------------------------------------------- */
+/* --- Menu buttons ------------------------------------------------------------------------- */
+
+/* UI Toolkit's default runtime theme styles every Button (margin, border, background, and its own
+   :hover/:focus/:active/:disabled variants). All of it must be zeroed here, including the
+   pseudo-class variants specifically: a bare .menu-button reset does not outrank
+   .unity-button:hover, which has the same class+pseudo-class specificity. Skipping this shows a
+   grey rounded rectangle on hover/focus that is not in the mockup. */
+.menu-button, .menu-button:hover, .menu-button:focus, .menu-button:active, .menu-button:disabled {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: none;
+}
+
+/* 453x53 with a 96px font: the text overflows the box, exactly like in Figma. The box stays the
+   clickable/hoverable surface, so it must not be widened to "fit" the glyphs. */
+.menu-button {
+    position: absolute;
+    font-size: 96px;
+    color: rgb(0, 0, 0);
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+}
+
+/* Attenuated just enough to read as unavailable. Toggled by MenuButton.Selectable itself
+   (EnableInClassList), never authored directly in UXML: a hand-authored class here and the
+   selectable flag would be two sources of truth that could drift apart. */
+.menu-button--disabled {
+    opacity: 0.45;
+}
+
+/* Anchored to the left edge of the TEXT, not of the button's box: MenuButton computes left/top
+   itself, in its own local content rect, from the measured text width — not expressible in USS.
+   Width starts at zero: no entry is born underlined, the initial selection takes care of that. */
+.menu-button__underline {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 3px;
+    background-color: rgb(0, 0, 0);
+}
+
+#menu-play, #menu-options, #menu-quit { left: 186px; width: 453px; height: 53px; }
+#menu-play { top: 442px; }
+#menu-options { top: 576px; }
+#menu-quit { top: 710px; }
+
+/* --- Selection marker --------------------------------------------------------------------- */
+
+.selection-marker {
+    position: absolute;
+}
+
+.selection-marker__quill {
+    position: absolute;
+    width: 128px;
+    height: 128px;
+}
+
+/* Same box as a menu row: sliding in Y alone lines the quill up with the selected row. */
+#menu-marker { left: 186px; top: 442px; width: 453px; height: 53px; }
+#menu-marker .selection-marker__quill { left: 10px; top: -36px; }
+
+/* --- Menu items row ------------------------------------------------------------------------ */
 
 .menu-items {
     position: absolute;
@@ -71,87 +110,10 @@
     height: 1080px;
 }
 
-/* 453x53 con font 96px: il testo deborda dal box, esattamente come in Figma. Il box resta la
-   superficie cliccabile/hoverabile, quindi non va allargato per "contenere" i glifi. */
-.menu-item {
-    position: absolute;
-    left: 186px;
-    width: 453px;
-    height: 53px;
-    font-size: 96px;
-    color: rgb(0, 0, 0);
-    -unity-text-align: middle-center;
-    white-space: nowrap;
-}
-
-#menu-play { top: 442px; }
-#menu-options { top: 576px; }
-#menu-quit { top: 710px; }
-
-/* Options e' disegnata come da mockup ma inerte: attenuata quel tanto che basta a leggersi come
-   non disponibile, e saltata dalla navigazione (vedi MainMenuSelection). */
-.menu-item--disabled {
-    opacity: 0.45;
-}
-
-/* --- Marker di selezione ------------------------------------------------------------------ */
-
-/* Stessa cassa di una voce: scorrendo in Y la piuma si allinea da sola alla riga selezionata.
-   La sottolineatura NON sta qui dentro: non deve viaggiare con la piuma. */
-.menu-marker {
-    position: absolute;
-    left: 186px;
-    top: 442px;
-    width: 453px;
-    height: 53px;
-}
-
-.menu-marker__quill {
-    position: absolute;
-    left: 10px;
-    top: -36px;
-    width: 128px;
-    height: 128px;
-    /* In Figma il nodo e' ruotato di 180 gradi e specchiato in verticale: la risultante e' un
-       semplice specchio orizzontale. */
-    scale: -1 1;
-    background-image: url("project://database/Assets/Imports/2D/UI Icons/MainMenu/quill.png");
-    -unity-background-scale-mode: scale-to-fit;
-}
-
-/* Una per voce. Ancorata al bordo SINISTRO del testo: e' da li' che la linea si scrive verso
-   destra quando la voce viene scelta, e verso li' che si ritira quando viene abbandonata.
-   'left' e 'top' li calcola MainMenuSelection dal rettangolo della Label, perche' dipendono dalla
-   larghezza del testo, che in USS non e' esprimibile. La larghezza parte a zero: nessuna voce
-   nasce sottolineata, ci pensa la selezione iniziale. */
-.menu-underline {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 3px;
-    background-color: rgb(0, 0, 0);
-}
-
 /* --- Title screen -------------------------------------------------------------------------- */
 
-/* Gemella di .menu-stage: stessa misura fissa, stesso centraggio, stessa pergamena. Deve essere
-   OPACA, perche' sotto di lei il menu e' gia' montato (voci nascoste, drago a opacita' zero) e il
-   suo fade-out e' l'unica cosa che separa le due pagine. */
-.title-stage {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    translate: -50% -50%;
-    width: 1920px;
-    height: 1080px;
-    flex-shrink: 0;
-    background-image: url("project://database/Assets/Imports/2D/UI Icons/MainMenu/parchment.png");
-    -unity-background-scale-mode: scale-and-crop;
-}
-
-/* Cassa 1920x555 con font 200px: il testo e' centrato nella cassa, non incollato al suo bordo, ed
-   e' molto piu' basso di lei. Sono le misure del mockup, non vanno strette al testo. */
+/* 1920x555 box with a 200px font: the text is centred within the box, not pinned to its edge, and
+   sits much lower than it. These are the mockup's own measurements, not meant to hug the text. */
 .title-text {
     position: absolute;
     left: 0;
@@ -164,19 +126,8 @@
     white-space: nowrap;
 }
 
-/* Come .menu-items: una cassa a tutto stage, cosi' la sottolineatura (che MainMenuSelection
-   posiziona in coordinate assolute dal layout della Label) vive nello stesso spazio del testo. */
-.title-prompt {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 1920px;
-    height: 1080px;
-}
-
-/* Stessa cassa del prompt, cosi' MainMenuSelection puo' allineare la piuma scrivendo 'top' con la
-   y della Label, esattamente come fa nel menu. */
-.title-marker {
+/* Sized like a single menu row: PulsingGroup only needs enough room for its own quill + button. */
+.title-prompt-group {
     position: absolute;
     left: 733px;
     top: 801px;
@@ -184,32 +135,11 @@
     height: 53px;
 }
 
-/* Qui la piuma sta FUORI dalla cassa (left negativo), non dentro come nel menu: "Press any button"
-   riempie quasi tutti i 453px e non lascia il margine in cui la piuma sta nel menu.
-   Lo specchio orizzontale e' lo stesso: in Figma il nodo e' ruotato di 180 gradi e specchiato in
-   verticale, e la risultante e' un semplice 'scale: -1 1'. */
-.title-marker__quill {
-    position: absolute;
-    left: -128px;
-    top: -38px;
-    width: 128px;
-    height: 128px;
-    scale: -1 1;
-    background-image: url("project://database/Assets/Imports/2D/UI Icons/MainMenu/quill.png");
-    -unity-background-scale-mode: scale-to-fit;
-}
+/* Both children simply fill the group; each still positions its own internals (the quill's offset,
+   the underline) relative to that shared 453x53 frame. */
+#title-marker { left: 0; top: 0; width: 100%; height: 100%; }
+/* Here the quill sits OUTSIDE the box (negative left), unlike the menu: "Press any button" nearly
+   fills the 453px box and leaves no margin for the quill to sit inside. */
+#title-marker .selection-marker__quill { left: -128px; top: -38px; }
 
-/* Gemella di .menu-item: stessa cassa 453x53 e stesso font 96px, perche' deve leggersi come una
-   voce di menu selezionata. Resta pickabile (niente picking-mode Ignore nel UXML): il click vale
-   come "premi un tasto qualsiasi". */
-.title-prompt__label {
-    position: absolute;
-    left: 733px;
-    top: 801px;
-    width: 453px;
-    height: 53px;
-    font-size: 96px;
-    color: rgb(0, 0, 0);
-    -unity-text-align: middle-center;
-    white-space: nowrap;
-}
+#title-prompt-label { left: 0; top: 0; width: 100%; height: 100%; }

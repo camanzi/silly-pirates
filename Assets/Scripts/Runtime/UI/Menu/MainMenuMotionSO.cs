@@ -4,162 +4,71 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Parametri del movimento dell'illustrazione del main menu: l'entrata "a composizione" e il loop
-/// di idle dei singoli pezzi del drago.
+/// Parameters for the main menu illustration's motion: the "assembling" entrance and the idle loop
+/// of the drake's individual pieces.
 ///
-/// L'asset e' STATELESS, come <see cref="LifecycleAnimationSO"/>: qui vivono solo i numeri, mentre i
-/// Tween e lo stato di riproduzione stanno in <see cref="MainMenuDrakeAnimator"/>. Cosi' lo stesso
-/// asset puo' essere riferito da piu' schermate senza copie per-istanza.
+/// The asset is STATELESS, like <see cref="LifecycleAnimationSO"/>: only numbers live here, while
+/// the Tweens and playback state live in <see cref="MainMenuDrakeAnimator"/>. This way the same
+/// asset can be referenced by multiple screens with no per-instance copies.
 ///
-/// L'ORDINE di entrata non e' serializzato: lo calcola l'animator dalla distanza orizzontale di ogni
-/// pezzo dal centro dello stage. Scriverlo qui a mano significherebbe doverlo rifare a ogni ritocco
-/// dell'illustrazione.
+/// The entrance ORDER is not serialized: the animator computes it from each piece's horizontal
+/// distance from the stage centre. Writing it here by hand would mean redoing it on every retouch
+/// of the illustration.
+///
+/// The title screen's and the menu selection's own timings used to live here too (as TitleMotion
+/// and SelectionMotion). They have moved onto the components that actually own that motion
+/// (SweepRevealLabel, SelectionMarker, MenuButton, PulsingGroup) as UxmlAttributes, so they can be
+/// tuned in UI Builder next to the element they animate instead of in a separate asset.
 /// </summary>
 [CreateAssetMenu(fileName = "MainMenuMotion", menuName = "UI/Main Menu Motion")]
 public class MainMenuMotionSO : ScriptableObject
 {
-    /// <summary>Oscillazione in loop di un singolo layer, riferita alla sua posizione a riposo.</summary>
+    /// <summary>Looping oscillation of a single layer, relative to its resting position.</summary>
     [Serializable]
     public struct LayerIdle
     {
-        [Tooltip("Nome dell'elemento nel documento UXML (es. 'drake-4').")]
+        [Tooltip("Name of the element in the UXML document (e.g. 'drake-4'). Must match element.name exactly.")]
         public string elementName;
 
-        [Tooltip("Spostamento massimo in pixel, sui due assi. Zero su un asse = quell'asse non si muove.")]
+        [Tooltip("Maximum displacement in pixels, on both axes. Zero on an axis = that axis does not move.")]
         public Vector2 amplitude;
 
-        [Tooltip("Secondi per una oscillazione completa, per asse. I due valori vanno tenuti diversi " +
-                 "fra loro: se coincidono il pezzo si muove su una diagonale invece che alla deriva.")]
+        [Tooltip("Seconds for one full oscillation, per axis. The two values should be kept different " +
+                 "from each other: if they match, the piece drifts along a diagonal instead of adrift.")]
         public Vector2 period;
 
-        [Tooltip("Rotazione massima in gradi. Zero = il pezzo non ruota.")]
+        [Tooltip("Maximum rotation in degrees. Zero = the piece does not rotate.")]
         public float rotationAmplitude;
 
-        [Tooltip("Secondi per una oscillazione completa della rotazione.")]
+        [Tooltip("Seconds for one full oscillation of the rotation.")]
         public float rotationPeriod;
 
-        [Tooltip("Ritardo iniziale: serve a sfasare i layer fra loro, altrimenti respirano all'unisono " +
-                 "e l'insieme sembra una singola immagine che trema.")]
+        [Tooltip("Initial delay: staggers layers against each other, otherwise they breathe in unison " +
+                 "and the whole thing reads as a single trembling image.")]
         public float startDelay;
 
         public Ease ease;
     }
 
-    /// <summary>
-    /// Tempi del cambio di voce selezionata. La piuma SCORRE da una riga all'altra, mentre le
-    /// sottolineature non si spostano: quella vecchia si cancella e quella nuova si scrive.
-    /// </summary>
-    [Serializable]
-    public struct SelectionMotion
-    {
-        [Tooltip("Durata dello scorrimento della piuma fra due voci.")]
-        public float quillDuration;
-
-        public Ease quillEase;
-
-        [Tooltip("Durata della cancellazione della sottolineatura della voce abbandonata (da destra a sinistra).")]
-        public float underlineOutDuration;
-
-        public Ease underlineOutEase;
-
-        [Tooltip("Durata della scrittura della sottolineatura della voce scelta (da sinistra a destra).")]
-        public float underlineInDuration;
-
-        public Ease underlineInEase;
-
-        [Tooltip("Ritardo della scrittura rispetto alla cancellazione. Tenendolo appena sotto la durata " +
-                 "della cancellazione le due si sovrappongono un poco e il passaggio non sembra a scatti.")]
-        public float underlineInDelay;
-
-        /// <summary>Valori usati quando manca l'asset, così il menu resta usabile invece di bloccarsi.</summary>
-        public static SelectionMotion Default => new()
-        {
-            quillDuration = 0.25f,
-            quillEase = Ease.OutCubic,
-            underlineOutDuration = 0.16f,
-            underlineOutEase = Ease.InQuad,
-            underlineInDuration = 0.24f,
-            underlineInEase = Ease.OutQuad,
-            underlineInDelay = 0.1f
-        };
-    }
-
-    /// <summary>
-    /// Tempi della title screen: la comparsa del titolo sotto una maschera sfumata che scorre in
-    /// orizzontale, e la comparsa/pulsazione del prompt "Press any button".
-    ///
-    /// Vive qui e non in un SO a parte per lo stesso motivo di <see cref="SelectionMotion"/>: la
-    /// title e' una pagina della scena MainMenu, e un secondo asset significherebbe un secondo campo
-    /// da tenere agganciato a mano in Editor.
-    /// </summary>
-    [Serializable]
-    public struct TitleMotion
-    {
-        [Tooltip("Durata della passata della maschera sull'intero titolo.")]
-        public float sweepDuration;
-
-        [Tooltip("Ampiezza in pixel della sfumatura del bordo della maschera. Piu' alto = piu' morbido " +
-                 "e piu' lettere in dissolvenza insieme; abbassandolo l'effetto si indurisce verso il " +
-                 "lettera-per-lettera.")]
-        public float sweepFalloff;
-
-        public Ease sweepEase;
-
-        [Tooltip("Pausa fra la fine del titolo e la comparsa del prompt.")]
-        public float promptDelay;
-
-        [Tooltip("Durata del fade-in del gruppo del prompt (piuma + testo + sottolineatura).")]
-        public float promptFadeDuration;
-
-        [Tooltip("Estremo basso della pulsazione del prompt. L'estremo alto e' sempre 1.")]
-        public float promptPulseMinOpacity;
-
-        [Tooltip("Secondi per una SOLA direzione della pulsazione (da semitrasparente a opaco). " +
-                 "Il ciclo completo dura il doppio.")]
-        public float promptPulseDuration;
-
-        [Tooltip("Durata del fade-out della title screen quando viene congedata.")]
-        public float dismissDuration;
-
-        /// <summary>Valori usati quando manca l'asset, così la schermata resta usabile invece di bloccarsi.</summary>
-        public static TitleMotion Default => new()
-        {
-            sweepDuration = 2f,
-            sweepFalloff = 300f,
-            sweepEase = Ease.InOutSine,
-            promptDelay = 0.2f,
-            promptFadeDuration = 0.5f,
-            promptPulseMinOpacity = 0.5f,
-            promptPulseDuration = 2f,
-            dismissDuration = 0.35f
-        };
-    }
-
-    [Header("Entrata")]
-    [Tooltip("Distanza fra la partenza di un pezzo e quella del successivo.")]
+    [Header("Entrance")]
+    [Tooltip("Gap between one piece starting and the next.")]
     [Min(0f)] [SerializeField] private float _stagger = 0.25f;
 
-    [Tooltip("Di quanto un pezzo parte piu' in basso rispetto alla sua posizione finale.")]
+    [Tooltip("How far below its final position a piece starts.")]
     [SerializeField] private float _riseDistance = 160f;
 
-    [Tooltip("Durata della risalita del singolo pezzo.")]
+    [Tooltip("Duration of a single piece's rise.")]
     [Min(0.01f)] [SerializeField] private float _pieceDuration = 0.6f;
 
     [SerializeField] private Ease _pieceEase = Ease.OutCubic;
 
-    [Header("Entrata delle voci di menu")]
-    [Tooltip("Pausa fra la partenza dell'ultimo pezzo del drago e la comparsa delle voci.")]
+    [Header("Menu entries entrance")]
+    [Tooltip("Pause between the last piece of the drake starting and the menu entries appearing.")]
     [Min(0f)] [SerializeField] private float _menuDelay = 0.15f;
 
     [Min(0.01f)] [SerializeField] private float _menuDuration = 0.5f;
 
     [SerializeField] private Ease _menuEase = Ease.OutQuad;
-
-    [Header("Selezione")]
-    [SerializeField] private SelectionMotion _selection = SelectionMotion.Default;
-
-    [Header("Title screen")]
-    [SerializeField] private TitleMotion _title = TitleMotion.Default;
 
     [Header("Idle")]
     [SerializeField] private List<LayerIdle> _idle = new();
@@ -171,12 +80,10 @@ public class MainMenuMotionSO : ScriptableObject
     public float MenuDelay => _menuDelay;
     public float MenuDuration => _menuDuration;
     public Ease MenuEase => _menuEase;
-    public SelectionMotion Selection => _selection;
-    public TitleMotion Title => _title;
 
     /// <summary>
-    /// Scansione lineare invece di un dizionario cachato: i layer sono una manciata e una cache
-    /// sarebbe stato mutabile dentro l'asset, che e' esattamente cio' che qui si vuole evitare.
+    /// Linear scan instead of a cached dictionary: the layers are a handful, and a cache would be
+    /// mutable state inside the asset, which is exactly what this design wants to avoid.
     /// </summary>
     public bool TryGetIdle(string elementName, out LayerIdle idle)
     {

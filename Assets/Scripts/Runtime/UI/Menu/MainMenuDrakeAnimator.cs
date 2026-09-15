@@ -5,25 +5,27 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// Anima i pezzi dell'illustrazione del main menu (il gruppo "Moving Group" del mockup Figma).
+/// Animates the pieces of the main menu illustration (the "Moving Group" from the Figma mockup).
 ///
-/// Due fasi. L'ENTRATA compone il drago dal basso un pezzo alla volta, partendo da quelli piu' vicini
-/// al centro orizzontale e chiudendo con quelli sui bordi, come se il disegno venisse assemblato sul
-/// momento. L'IDLE che segue e' un'oscillazione infinita e sfasata per layer, che toglie alla
-/// schermata l'aria di immagine ferma senza distrarre.
+/// Two phases. The ENTRANCE assembles the drake from the bottom, one piece at a time, starting with
+/// the ones closest to the horizontal centre and finishing with the ones on the edges, as if the
+/// drawing were being put together on the spot. The IDLE that follows is an infinite, per-layer
+/// staggered oscillation, which takes the "still image" feel off the screen without being
+/// distracting.
 ///
-/// L'ordine di entrata si ricava dai centri dei layer a layout risolto, non da una lista scritta a
-/// mano: e' per questo che <see cref="PlayIntroAsync"/> va chiamata dopo il primo GeometryChangedEvent,
-/// mentre <see cref="Bind"/> puo' (e deve) essere chiamata prima, per nascondere i pezzi nel frame
-/// stesso in cui il documento compare.
+/// The entrance ORDER is derived from the layers' centres at resolved layout, not from a hand-
+/// written list: this is why <see cref="PlayIntroAsync"/> must be called after the first
+/// GeometryChangedEvent, while <see cref="Bind"/> can (and must) be called earlier, to hide the
+/// pieces in the very same frame the document appears.
 ///
-/// Tutto gira a tempo NON scalato: un menu non deve dipendere dal timeScale del gioco.
+/// Everything runs on UNSCALED time: a menu must not depend on the game's timeScale.
 /// </summary>
 public class MainMenuDrakeAnimator : MonoBehaviour
 {
     /// <summary>
-    /// Stato di movimento di un layer. Serve perche' X e Y sono tween separati che scrivono la stessa
-    /// proprieta' 'translate': senza un punto in cui sommarli, l'ultimo dei due cancellerebbe l'altro.
+    /// Motion state of a layer. Needed because X and Y are separate tweens writing the same
+    /// 'translate' property: without a point where they are summed, the last of the two would
+    /// overwrite the other.
     /// </summary>
     private sealed class LayerState
     {
@@ -46,15 +48,15 @@ public class MainMenuDrakeAnimator : MonoBehaviour
     private VisualElement _stage;
 
     /// <summary>
-    /// Esposto perche' il controller usa gli stessi parametri per far entrare le voci di menu subito
-    /// dopo il drago: un solo asset di riferimento invece di due campi da tenere allineati a mano.
+    /// Exposed because the controller uses the same parameters to bring the menu entries in right
+    /// after the drake: a single reference asset instead of two fields to keep in sync by hand.
     /// </summary>
     public MainMenuMotionSO Motion => _motion;
 
     /// <summary>
-    /// Raccoglie i layer e li porta subito allo stato di partenza (invisibili e spostati in basso).
-    /// Da chiamare nell'OnEnable del controller: se si aspettasse il primo layout, i pezzi
-    /// sarebbero visibili al posto giusto per un frame prima di sparire.
+    /// Collects the layers and immediately brings them to their starting state (invisible and
+    /// shifted downward). Call from the controller's OnEnable: waiting for the first layout would
+    /// mean the pieces are visible in the right place for a frame before disappearing.
     /// </summary>
     public void Bind(VisualElement stage)
     {
@@ -64,8 +66,8 @@ public class MainMenuDrakeAnimator : MonoBehaviour
         if (stage == null || _motion == null)
         {
             Debug.LogError(
-                $"[{nameof(MainMenuDrakeAnimator)}] stage o {nameof(MainMenuMotionSO)} mancanti: " +
-                "l'illustrazione resta ferma.", this);
+                $"[{nameof(MainMenuDrakeAnimator)}] missing stage or {nameof(MainMenuMotionSO)}: " +
+                "the illustration stays still.", this);
             return;
         }
 
@@ -80,8 +82,8 @@ public class MainMenuDrakeAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Compone il drago. Va chiamata a layout risolto: prima, i rettangoli dei layer sono tutti a zero
-    /// e l'ordinamento per distanza dal centro darebbe una sequenza casuale.
+    /// Assembles the drake. Must be called at resolved layout: before that, every layer's rect is
+    /// zero and sorting by distance from the centre would give a random-looking sequence.
     /// </summary>
     public async Awaitable PlayIntroAsync(CancellationToken token)
     {
@@ -107,14 +109,14 @@ public class MainMenuDrakeAnimator : MonoBehaviour
 
         await _intro;
 
-        // La Sequence viene fermata anche da OnDisable, e in quel caso l'await ritorna comunque:
-        // senza questo controllo si avvierebbero i loop di idle su una schermata gia' smontata.
+        // The Sequence is also stopped by OnDisable, and in that case the await still returns:
+        // without this check, the idle loops would start on a screen that has already been torn down.
         if (token.IsCancellationRequested || !isActiveAndEnabled) return;
 
         StartIdle();
     }
 
-    /// <summary>Durata complessiva dell'entrata, usata dal controller per accodare le voci di menu.</summary>
+    /// <summary>Total duration of the entrance, used by the controller to queue the menu entries after it.</summary>
     public float IntroDuration =>
         _motion == null || _layers.Count == 0
             ? 0f
@@ -131,8 +133,8 @@ public class MainMenuDrakeAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Ordina per distanza orizzontale del centro del pezzo dal centro dello stage: chi sta al centro
-    /// si compone per primo, chi tocca i bordi verticali chiude la sequenza.
+    /// Sorts by each piece's horizontal centre distance from the stage centre: whatever sits at the
+    /// centre assembles first, whatever touches the vertical edges closes the sequence.
     /// </summary>
     private void SortByDistanceFromCentre()
     {
@@ -152,7 +154,7 @@ public class MainMenuDrakeAnimator : MonoBehaviour
 
             if (!_motion.TryGetIdle(layer.Element.name, out MainMenuMotionSO.LayerIdle idle)) continue;
 
-            // Il periodo configurato e' l'oscillazione COMPLETA; un ciclo Rewind ne copre meta'.
+            // The configured period is the FULL oscillation; a Rewind cycle covers half of it.
             if (idle.amplitude.x != 0f && idle.period.x > 0f)
                 _idleTweens.Add(Tween.Custom(layer, -idle.amplitude.x, idle.amplitude.x,
                     idle.period.x * 0.5f, static (state, value) => state.SetX(value), idle.ease,

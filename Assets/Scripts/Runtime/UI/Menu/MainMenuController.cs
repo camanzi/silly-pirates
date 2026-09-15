@@ -1,20 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// Main menu. Vive nella scena MainMenu, non nella persistente: ogni scena possiede la propria UI,
-/// così non resta stato di schermata da azzerare fra un caricamento e l'altro.
+/// The main menu. Lives in the MainMenu scene, not the persistent one: every scene owns its own UI,
+/// so there is no leftover screen state to reset between loads.
 ///
-/// Non carica nulla da sé: alza un canale e basta. Chi risponde è SceneFlowDirector, nella scena
-/// persistente, che è l'unico a sapere cosa è caricato in questo momento.
+/// It never loads anything itself: it just raises a channel. Whoever answers is SceneFlowDirector,
+/// in the persistent scene, which is the only thing that knows what is currently loaded.
 ///
-/// Qui vive anche l'orchestrazione della sequenza di apertura, perché è l'unico punto che vede sia
-/// l'illustrazione (delegata a <see cref="MainMenuDrakeAnimator"/>) sia le voci di menu: il drago si
-/// compone, poi entrano le voci, poi si accettano input.
+/// This is also where the opening sequence is orchestrated, because it is the one place that sees
+/// both the illustration (delegated to <see cref="MainMenuDrakeAnimator"/>) and the menu entries:
+/// the drake assembles itself, then the entries come in, then input is accepted.
 /// </summary>
 public class MainMenuController : MonoBehaviour
 {
@@ -22,14 +21,20 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private MainMenuDrakeAnimator _drakeAnimator;
     [SerializeField] private VoidEventChannel _startCombatRequested;
 
+    [Header("Title screen")]
+    [Tooltip("Pause between the title text finishing its reveal and the prompt starting to fade in.")]
+    [Min(0f)] [SerializeField] private float _titlePromptDelay = 0.2f;
+
+    [Tooltip("Duration of the title stage's fade-out when it steps aside for the menu.")]
+    [Min(0.01f)] [SerializeField] private float _titleDismissDuration = 0.35f;
+
     private VisualElement _root;
     private VisualElement _stage;
     private VisualElement _itemsRoot;
-    private VisualElement _marker;
+    private SelectionMarker _marker;
 
-    private MainMenuSelection _selection;
+    private MenuSelection _selection;
     private TitleScreenPage _titlePage;
-    private readonly List<MainMenuSelection.Entry> _entries = new();
 
     private Sequence _menuEntry;
     private bool _introStarted;
@@ -41,74 +46,53 @@ public class MainMenuController : MonoBehaviour
 
         if (_root == null)
         {
-            Debug.LogError($"[{nameof(MainMenuController)}] nessun UIDocument: il menu non può funzionare.", this);
+            Debug.LogError($"[{nameof(MainMenuController)}] no UIDocument: the menu cannot function.", this);
             return;
         }
 
         _stage = _root.Q<VisualElement>("menu-stage");
         _itemsRoot = _root.Q<VisualElement>("menu-items");
-        _marker = _root.Q<VisualElement>("menu-marker");
+        _marker = _root.Q<SelectionMarker>("menu-marker");
 
-        Label play = _root.Q<Label>("menu-play");
-        Label options = _root.Q<Label>("menu-options");
-        Label quit = _root.Q<Label>("menu-quit");
-
-        VisualElement playLine = _root.Q<VisualElement>("underline-play");
-        VisualElement optionsLine = _root.Q<VisualElement>("underline-options");
-        VisualElement quitLine = _root.Q<VisualElement>("underline-quit");
+        MenuButton play = _root.Q<MenuButton>("menu-play");
+        MenuButton options = _root.Q<MenuButton>("menu-options");
+        MenuButton quit = _root.Q<MenuButton>("menu-quit");
 
         if (_stage == null || _itemsRoot == null || _marker == null
-            || play == null || options == null || quit == null
-            || playLine == null || optionsLine == null || quitLine == null)
+            || play == null || options == null || quit == null)
         {
             Debug.LogError(
-                $"[{nameof(MainMenuController)}] il documento non ha la struttura attesa " +
-                "(menu-stage / menu-items / menu-marker / le tre voci con la loro sottolineatura): " +
-                "il menu resta inerte.", this);
+                $"[{nameof(MainMenuController)}] the document does not have the expected structure " +
+                "(menu-stage / menu-items / menu-marker / the three MenuButton entries): " +
+                "the menu stays inert.", this);
             return;
         }
 
-        _entries.Clear();
-        _entries.Add(new MainMenuSelection.Entry(play, playLine, selectable: true, StartCombat));
-        // Options è disegnata come da mockup ma non porta da nessuna parte: non selezionabile, così
-        // le frecce la scavalcano invece di fermarsi su una voce che non fa nulla. La sottolineatura
-        // ce l'ha comunque: il giorno in cui diventerà attiva non c'è nulla da aggiungere.
-        _entries.Add(new MainMenuSelection.Entry(options, optionsLine, selectable: false, null));
-        _entries.Add(new MainMenuSelection.Entry(quit, quitLine, selectable: true, Quit));
+        _selection = new MenuSelection(_marker, new[] { play, options, quit });
 
-        MainMenuMotionSO motionAsset = _drakeAnimator != null ? _drakeAnimator.Motion : null;
-        _selection = new MainMenuSelection(_marker, _entries,
-            motionAsset != null ? motionAsset.Selection : MainMenuMotionSO.SelectionMotion.Default);
+        play.Activated += StartCombat;
+        quit.Activated += Quit;
+        // Options has no listener: it is marked selectable="false" in the UXML, so MenuButton
+        // never raises Activated for it and MenuSelection never lands on it either.
 
-        // Nascosti prima che il pannello disegni il primo frame: 'visibility' e non 'display' perché
-        // il layout deve restare misurabile — è da lì che il marker ricava dove andare e quanto è
-        // larga la sottolineatura. Hidden blocca anche il picking, quindi durante l'intro non si può
-        // cliccare una voce invisibile.
+        // Hidden before the panel draws its first frame: 'visibility' and not 'display' because the
+        // layout must stay measurable — that is where the marker reads where to go and how wide the
+        // underline should be. Hidden also blocks picking, so nothing can be clicked during the intro.
         _itemsRoot.style.visibility = Visibility.Hidden;
         _itemsRoot.style.opacity = 0f;
         _marker.style.visibility = Visibility.Hidden;
         _marker.style.opacity = 0f;
 
-        BuildTitlePage(motionAsset);
+        BuildTitlePage();
 
         _drakeAnimator?.Bind(_stage);
-
-        for (int i = 0; i < _entries.Count; i++)
-        {
-            if (!_entries[i].Selectable) continue;
-
-            Label label = _entries[i].Label;
-            int index = i;
-            label.RegisterCallback<MouseEnterEvent>(_ => _selection.Select(index, animated: true));
-            label.RegisterCallback<ClickEvent>(_ => _selection.ActivateCurrent());
-        }
 
         _root.focusable = true;
         _root.RegisterCallback<NavigationMoveEvent>(OnNavigationMove);
         _root.RegisterCallback<NavigationSubmitEvent>(OnNavigationSubmit);
 
-        // La selezione parte su Play e non si azzera mai: il marker deve essere sempre da qualche
-        // parte, anche a mouse fermo lontano dal menu.
+        // The selection starts on Play and is never cleared: the marker must always be somewhere,
+        // even with the mouse resting far from the menu.
         _selection.Select(0, animated: false);
 
         _stage.RegisterCallback<GeometryChangedEvent>(OnStageGeometryChanged);
@@ -130,37 +114,35 @@ public class MainMenuController : MonoBehaviour
     }
 
     /// <summary>
-    /// La title screen e' additiva rispetto al menu: se il documento non la contiene si segnala e si
-    /// tira dritto, perche' un menu senza pagina di apertura resta perfettamente giocabile — mentre
-    /// restare inerti renderebbe il gioco inavviabile per una schermata di cortesia.
+    /// The title screen is additive on top of the menu: if the document does not contain it, this
+    /// logs and moves on, because a menu without an opening page is perfectly playable — while
+    /// staying inert would make the game unlaunchable over a courtesy screen.
     /// </summary>
-    private void BuildTitlePage(MainMenuMotionSO motionAsset)
+    private void BuildTitlePage()
     {
         VisualElement titleStage = _root.Q<VisualElement>("title-stage");
-        Label titleText = _root.Q<Label>("title-text");
-        VisualElement promptGroup = _root.Q<VisualElement>("title-prompt");
-        Label promptLabel = _root.Q<Label>("title-prompt-label");
-        VisualElement promptMarker = _root.Q<VisualElement>("title-marker");
-        VisualElement promptUnderline = _root.Q<VisualElement>("title-underline");
+        SweepRevealLabel titleText = _root.Q<SweepRevealLabel>("title-text");
+        PulsingGroup promptGroup = _root.Q<PulsingGroup>("title-prompt-group");
+        MenuButton promptButton = _root.Q<MenuButton>("title-prompt-label");
+        SelectionMarker promptMarker = _root.Q<SelectionMarker>("title-marker");
 
         if (titleStage == null || titleText == null || promptGroup == null
-            || promptLabel == null || promptMarker == null || promptUnderline == null)
+            || promptButton == null || promptMarker == null)
         {
             Debug.LogError(
-                $"[{nameof(MainMenuController)}] il documento non contiene la title screen " +
-                "(title-stage / title-text / title-prompt / title-prompt-label / title-marker / " +
-                "title-underline): si apre direttamente sul menu.", this);
+                $"[{nameof(MainMenuController)}] the document does not contain the title screen " +
+                "(title-stage / title-text / title-prompt-group / title-prompt-label / title-marker): " +
+                "it opens directly on the menu.", this);
             return;
         }
 
-        _titlePage = new TitleScreenPage(titleStage, titleText, promptGroup, promptLabel,
-            promptMarker, promptUnderline, motionAsset);
+        _titlePage = new TitleScreenPage(titleStage, titleText, promptGroup, promptButton, promptMarker,
+            _titlePromptDelay, _titleDismissDuration);
     }
 
     /// <summary>
-    /// Primo layout: solo qui i rettangoli delle voci e la misura del testo esistono davvero. Prima
-    /// di questo momento l'ordine di entrata dei pezzi e la larghezza della sottolineatura sarebbero
-    /// calcolati su degli zeri.
+    /// First layout: only here do the entries' rectangles and the text measurements actually exist.
+    /// Before this moment, the entry order and the underline width would be computed on zeros.
     /// </summary>
     private void OnStageGeometryChanged(GeometryChangedEvent evt)
     {
@@ -176,8 +158,8 @@ public class MainMenuController : MonoBehaviour
     {
         try
         {
-            // La title screen copre tutto: il drago non deve comporsi mentre e' nascosto sotto di
-            // lei, o l'intro dell'illustrazione si consumerebbe senza che nessuno la veda.
+            // The title screen covers everything: the drake must not assemble itself while hidden
+            // underneath it, or the illustration's intro would play out unseen.
             if (_titlePage != null)
                 await _titlePage.PlayAsync(token);
 
@@ -207,13 +189,13 @@ public class MainMenuController : MonoBehaviour
 
             if (token.IsCancellationRequested || !isActiveAndEnabled) return;
 
-            // Il focus arriva a intro finita: prenderlo prima significherebbe accettare una freccia
-            // o un Invio mentre le voci non sono ancora a schermo.
+            // Focus arrives once the intro is done: taking it earlier would mean accepting an arrow
+            // key or an Enter while the entries are not yet on screen.
             _root.Focus();
         }
         catch (OperationCanceledException)
         {
-            // Scena scaricata a metà apertura: non c'è nulla da riportare.
+            // Scene unloaded mid-opening: nothing to report.
         }
     }
 
@@ -242,8 +224,8 @@ public class MainMenuController : MonoBehaviour
 
     private void StartCombat()
     {
-        // La scena resta viva ancora qualche frame mentre parte la transizione: senza questa guardia
-        // un doppio click alzerebbe il canale due volte.
+        // The scene stays alive for a few more frames while the transition starts: without this
+        // guard, a double click would raise the channel twice.
         if (_transitionRequested) return;
         _transitionRequested = true;
 

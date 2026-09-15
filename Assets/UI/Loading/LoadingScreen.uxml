@@ -1,18 +1,19 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <!-- STL_Menu per primo, come fa MainMenu.uxml: porta solo il font, e il foglio della schermata
-         non deve poterlo sovrascrivere per sbaglio. -->
+    <!-- STL_Menu first, same as MainMenu.uxml: it carries the font and the shared stage/quill
+         primitives, and this screen's own sheet must not be able to override them by accident. -->
     <Style src="project://database/Assets/UI/Shared/STL_Menu.uss"/>
     <Style src="project://database/Assets/UI/Loading/LoadingScreen.uss"/>
-    <ui:VisualElement name="loading-root" picking-mode="Ignore" class="loading-root">
-        <!-- Stesso schema del main menu: uno stage fisso 1920x1080 centrato, dentro cui i figli
-             usano le coordinate esatte del mockup. A coprire lo schermo ci pensa PS_LoadingScreen
-             (ScaleWithScreenSize + Shrink), non del codice di scaling. -->
-        <ui:VisualElement name="loading-stage" picking-mode="Ignore" class="loading-stage">
-            <!-- Parte senza puntini: li aggiunge LoadingScreenController scambiando fra quattro
-                 stringhe gia' pronte. La cassa e' misurata in Figma su "Loading..." e il testo e'
-                 allineato a sinistra, quindi i puntini crescono verso destra senza spostare nulla. -->
-            <ui:Label name="loading-label" picking-mode="Ignore" text="Loading" class="loading-label"/>
-            <ui:VisualElement name="loading-quill" picking-mode="Ignore" class="loading-quill"/>
+    <ui:VisualElement name="loading-root" picking-mode="Ignore" class="screen-root loading-root">
+        <!-- Same scheme as the main menu: a fixed 1920x1080 stage, centred, in which children use
+             the mockup's exact coordinates. Covering the screen is PS_LoadingScreen's job
+             (ScaleWithScreenSize + Shrink), not any scaling code. -->
+        <ui:VisualElement name="loading-stage" picking-mode="Ignore" class="parchment-stage">
+            <!-- Starts with no dots; EllipsisLabel adds them by cycling through four ready-made
+                 strings. The box is measured in Figma on "Loading..." and the text is left-aligned,
+                 so the dots grow rightward without shifting anything. -->
+            <EllipsisLabel name="loading-label" picking-mode="Ignore" base-text="Loading" interval-ms="1000" class="loading-label"/>
+            <LoadingAnimationElement name="loading-animation" picking-mode="Ignore" class="loading-quill quill-icon"
+                bob-amplitude="6" bob-period="1.6" bob-ease="InOutSine"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

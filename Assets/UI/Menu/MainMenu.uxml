@@ -1,14 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <!-- STL_Menu per primo: porta solo il font, e i fogli successivi non devono poterlo sovrascrivere
-         per sbaglio. MainMenu.uss si occupa di misure, colori e posizioni. -->
+    <!-- STL_Menu first: it carries the font plus the shared stage/quill primitives, and later
+         sheets must not be able to override it by accident. MainMenu.uss handles sizes, colours
+         and positions specific to this screen. -->
     <Style src="project://database/Assets/UI/Shared/STL_Menu.uss"/>
     <Style src="project://database/Assets/UI/Menu/MainMenu.uss"/>
-    <ui:VisualElement name="menu-root" class="menu-root">
-        <!-- Lo stage e' fisso 1920x1080 e centrato: dentro di lui ogni figlio usa le coordinate
-             esatte del mockup Figma. A coprire lo schermo ci pensa la PanelSettings del menu
-             (ScaleWithScreenSize + Shrink), non del codice di scaling. -->
-        <ui:VisualElement name="menu-stage" class="menu-stage">
-            <!-- Moving Group: l'ordine nel documento E' lo z-order del mockup, dal fondo in su. -->
+    <ui:VisualElement name="menu-root" class="screen-root menu-root">
+        <!-- The stage is a fixed 1920x1080 box, centred: inside it every child uses the exact
+             coordinates from the Figma mockup. Covering the actual screen is the job of the menu's
+             PanelSettings (ScaleWithScreenSize + Shrink), not of any scaling code. -->
+        <ui:VisualElement name="menu-stage" class="parchment-stage">
+            <!-- Moving Group: document order IS the mockup's z-order, from back to front. -->
             <ui:VisualElement name="drake-9" picking-mode="Ignore" class="drake-layer drake-9"/>
             <ui:VisualElement name="drake-6" picking-mode="Ignore" class="drake-layer drake-6"/>
             <ui:VisualElement name="drake-5" picking-mode="Ignore" class="drake-layer drake-5"/>
@@ -18,50 +19,47 @@
             <ui:VisualElement name="drake-7" picking-mode="Ignore" class="drake-layer drake-7"/>
             <ui:VisualElement name="drake-8" picking-mode="Ignore" class="drake-layer drake-8"/>
 
-            <!-- Il marker porta SOLO la piuma, ed e' fratello delle voci: cosi' scorre da una riga
-                 all'altra con un solo tween invece di comparire e sparire dentro ciascuna. -->
-            <ui:VisualElement name="menu-marker" picking-mode="Ignore" class="menu-marker">
-                <ui:VisualElement name="menu-marker-quill" picking-mode="Ignore" class="menu-marker__quill"/>
-            </ui:VisualElement>
+            <!-- The single shared quill; a sibling of the entries so it can slide between rows with
+                 one tween instead of appearing/disappearing inside each one. -->
+            <SelectionMarker name="menu-marker" picking-mode="Ignore" slide-duration="0.25" slide-ease="OutCubic"/>
 
             <ui:VisualElement name="menu-items" picking-mode="Ignore" class="menu-items">
-                <!-- Una sottolineatura per voce, non una sola che scorre: devono poter vivere due
-                     animazioni opposte nello stesso istante (la vecchia si cancella mentre la nuova
-                     si scrive), cosa impossibile con un elemento solo. Prima delle Label nel
-                     documento, cosi' la linea resta dietro al testo. -->
-                <ui:VisualElement name="underline-play" picking-mode="Ignore" class="menu-underline"/>
-                <ui:VisualElement name="underline-options" picking-mode="Ignore" class="menu-underline"/>
-                <ui:VisualElement name="underline-quit" picking-mode="Ignore" class="menu-underline"/>
-
-                <ui:Label name="menu-play" text="Play" class="menu-item"/>
-                <ui:Label name="menu-options" text="Options" class="menu-item menu-item--disabled"/>
-                <ui:Label name="menu-quit" text="Quit" class="menu-item"/>
+                <MenuButton name="menu-play" text="Play" focusable="false"
+                    underline-in-duration="0.24" underline-in-ease="OutQuad" underline-in-delay="0.1"
+                    underline-out-duration="0.16" underline-out-ease="InQuad"/>
+                <!-- Drawn as in the mockup but inert: MainMenuController marks it non-selectable so
+                     arrow keys skip over it instead of stopping on an entry that does nothing. -->
+                <MenuButton name="menu-options" text="Options" focusable="false" selectable="false"
+                    underline-in-duration="0.24" underline-in-ease="OutQuad" underline-in-delay="0.1"
+                    underline-out-duration="0.16" underline-out-ease="InQuad"/>
+                <MenuButton name="menu-quit" text="Quit" focusable="false"
+                    underline-in-duration="0.24" underline-in-ease="OutQuad" underline-in-delay="0.1"
+                    underline-out-duration="0.16" underline-out-ease="InQuad"/>
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <!-- Title screen: pagina-proxy davanti al menu, non una scena a se'. Sta DOPO menu-stage nel
-             documento, quindi sopra nello z-order, e porta la SUA pergamena: e' opaca, percio' il
-             fade-out della sua opacita' e' gia' il cross-fade verso il menu pronto sotto.
-             Congedata la title, TitleScreenPage la mette in display:none e non la riaccende piu'. -->
-        <ui:VisualElement name="title-stage" class="title-stage">
-            <!-- Il testo resta questo e non viene mai cambiato: TitleScreenPage lo rilegge una volta
-                 sola alla costruzione e poi riscrive la Label inserendo i tag <alpha>, quindi da qui
-                 in avanti 'text' contiene markup e non e' piu' una fonte di verita'. -->
-            <ui:Label name="title-text" picking-mode="Ignore" text="A Pirates Story" class="title-text"/>
+        <!-- Title screen: a proxy page in front of the menu, not a scene of its own. Sits AFTER
+             menu-stage in the document, so above it in z-order, and carries its own parchment: it
+             is opaque, so its own opacity fade-out already IS the cross-fade into the menu waiting
+             beneath it. Once dismissed, TitleScreenPage sets it to display:none and never turns it
+             back on. -->
+        <ui:VisualElement name="title-stage" class="parchment-stage">
+            <!-- Read once by SweepRevealLabel and never again from the outside: from that point on
+                 its 'text' carries reveal markup and is no longer a source of truth. -->
+            <SweepRevealLabel name="title-text" picking-mode="Ignore" text="A Pirates Story" class="title-text"
+                sweep-duration="2" sweep-falloff="300" sweep-ease="InOutSine"/>
 
-            <!-- Cassa 1920x1080 come menu-items: MainMenuSelection ricava left/top della
-                 sottolineatura dal layout della Label, quindi i due devono stare nello stesso spazio
-                 di coordinate. E' anche l'elemento la cui opacita' pulsa, cosi' piuma, testo e linea
-                 pulsano come un pezzo solo invece che ognuno per conto suo. -->
-            <ui:VisualElement name="title-prompt" picking-mode="Ignore" class="title-prompt">
-                <ui:VisualElement name="title-marker" picking-mode="Ignore" class="title-marker">
-                    <ui:VisualElement name="title-marker-quill" picking-mode="Ignore" class="title-marker__quill"/>
-                </ui:VisualElement>
-
-                <ui:VisualElement name="title-underline" picking-mode="Ignore" class="menu-underline"/>
-
-                <ui:Label name="title-prompt-label" text="Press any button" class="title-prompt__label"/>
-            </ui:VisualElement>
+            <!-- Sized like a single menu row (453x53), not the whole stage: the only reason it used
+                 to be 1920x1080 was so the underline and the label could share one coordinate
+                 space, and that reason is gone now that the underline lives inside MenuButton. Its
+                 one remaining job is fading in and pulsing the quill and the label together. -->
+            <PulsingGroup name="title-prompt-group" class="title-prompt-group"
+                fade-in-duration="0.5" pulse-min-opacity="0.5" pulse-duration="1.25">
+                <SelectionMarker name="title-marker" picking-mode="Ignore" slide-duration="0.25" slide-ease="OutCubic"/>
+                <MenuButton name="title-prompt-label" text="Press any button" focusable="false"
+                    underline-in-duration="0.24" underline-in-ease="OutQuad" underline-in-delay="0.1"
+                    underline-out-duration="0.16" underline-out-ease="InQuad"/>
+            </PulsingGroup>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

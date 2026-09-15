@@ -140,3 +140,4 @@ Project-specific agents are in `.claude/agents/` — invoke with `@<name>` in th
 - New enemy abilities: extend `EnemyAbilityBase`, implement `Score()` + `CanExecute()` + `CreateCommand()` (cast `caster` to `HostileCharacter`, not `GridElement`). Place the asset under `Assets/Data/Abilities/Enemy/`.
 - New event channels: create a typed subclass of `GenericEventChannelSO<T>` and matching listener.
 - Grid positions use the `Vector2Int` offset coordinate system (odd-row offset for hex).
+- Code comments, XML doc comments, and Inspector strings (`[Tooltip]`, `[Header]`) are written in English; identifiers and USS names already are.
