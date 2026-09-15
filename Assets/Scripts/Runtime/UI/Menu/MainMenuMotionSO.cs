@@ -84,6 +84,57 @@ public class MainMenuMotionSO : ScriptableObject
         };
     }
 
+    /// <summary>
+    /// Tempi della title screen: la comparsa del titolo sotto una maschera sfumata che scorre in
+    /// orizzontale, e la comparsa/pulsazione del prompt "Press any button".
+    ///
+    /// Vive qui e non in un SO a parte per lo stesso motivo di <see cref="SelectionMotion"/>: la
+    /// title e' una pagina della scena MainMenu, e un secondo asset significherebbe un secondo campo
+    /// da tenere agganciato a mano in Editor.
+    /// </summary>
+    [Serializable]
+    public struct TitleMotion
+    {
+        [Tooltip("Durata della passata della maschera sull'intero titolo.")]
+        public float sweepDuration;
+
+        [Tooltip("Ampiezza in pixel della sfumatura del bordo della maschera. Piu' alto = piu' morbido " +
+                 "e piu' lettere in dissolvenza insieme; abbassandolo l'effetto si indurisce verso il " +
+                 "lettera-per-lettera.")]
+        public float sweepFalloff;
+
+        public Ease sweepEase;
+
+        [Tooltip("Pausa fra la fine del titolo e la comparsa del prompt.")]
+        public float promptDelay;
+
+        [Tooltip("Durata del fade-in del gruppo del prompt (piuma + testo + sottolineatura).")]
+        public float promptFadeDuration;
+
+        [Tooltip("Estremo basso della pulsazione del prompt. L'estremo alto e' sempre 1.")]
+        public float promptPulseMinOpacity;
+
+        [Tooltip("Secondi per una SOLA direzione della pulsazione (da semitrasparente a opaco). " +
+                 "Il ciclo completo dura il doppio.")]
+        public float promptPulseDuration;
+
+        [Tooltip("Durata del fade-out della title screen quando viene congedata.")]
+        public float dismissDuration;
+
+        /// <summary>Valori usati quando manca l'asset, così la schermata resta usabile invece di bloccarsi.</summary>
+        public static TitleMotion Default => new()
+        {
+            sweepDuration = 2f,
+            sweepFalloff = 300f,
+            sweepEase = Ease.InOutSine,
+            promptDelay = 0.2f,
+            promptFadeDuration = 0.5f,
+            promptPulseMinOpacity = 0.5f,
+            promptPulseDuration = 2f,
+            dismissDuration = 0.35f
+        };
+    }
+
     [Header("Entrata")]
     [Tooltip("Distanza fra la partenza di un pezzo e quella del successivo.")]
     [Min(0f)] [SerializeField] private float _stagger = 0.25f;
@@ -107,6 +158,9 @@ public class MainMenuMotionSO : ScriptableObject
     [Header("Selezione")]
     [SerializeField] private SelectionMotion _selection = SelectionMotion.Default;
 
+    [Header("Title screen")]
+    [SerializeField] private TitleMotion _title = TitleMotion.Default;
+
     [Header("Idle")]
     [SerializeField] private List<LayerIdle> _idle = new();
 
@@ -118,6 +172,7 @@ public class MainMenuMotionSO : ScriptableObject
     public float MenuDuration => _menuDuration;
     public Ease MenuEase => _menuEase;
     public SelectionMotion Selection => _selection;
+    public TitleMotion Title => _title;
 
     /// <summary>
     /// Scansione lineare invece di un dizionario cachato: i layer sono una manciata e una cache

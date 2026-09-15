@@ -27,6 +27,15 @@ MonoBehaviour:
     underlineInDuration: 0.24
     underlineInEase: 6
     underlineInDelay: 0.1
+  _title:
+    sweepDuration: 2
+    sweepFalloff: 300
+    sweepEase: 4
+    promptDelay: 0.2
+    promptFadeDuration: 0.5
+    promptPulseMinOpacity: 0.5
+    promptPulseDuration: 1.25
+    dismissDuration: 0.35
   _idle:
   - elementName: drake-9
     amplitude: {x: 2, y: 3}

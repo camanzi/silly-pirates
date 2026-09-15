@@ -38,5 +38,30 @@
                 <ui:Label name="menu-quit" text="Quit" class="menu-item"/>
             </ui:VisualElement>
         </ui:VisualElement>
+
+        <!-- Title screen: pagina-proxy davanti al menu, non una scena a se'. Sta DOPO menu-stage nel
+             documento, quindi sopra nello z-order, e porta la SUA pergamena: e' opaca, percio' il
+             fade-out della sua opacita' e' gia' il cross-fade verso il menu pronto sotto.
+             Congedata la title, TitleScreenPage la mette in display:none e non la riaccende piu'. -->
+        <ui:VisualElement name="title-stage" class="title-stage">
+            <!-- Il testo resta questo e non viene mai cambiato: TitleScreenPage lo rilegge una volta
+                 sola alla costruzione e poi riscrive la Label inserendo i tag <alpha>, quindi da qui
+                 in avanti 'text' contiene markup e non e' piu' una fonte di verita'. -->
+            <ui:Label name="title-text" picking-mode="Ignore" text="A Pirates Story" class="title-text"/>
+
+            <!-- Cassa 1920x1080 come menu-items: MainMenuSelection ricava left/top della
+                 sottolineatura dal layout della Label, quindi i due devono stare nello stesso spazio
+                 di coordinate. E' anche l'elemento la cui opacita' pulsa, cosi' piuma, testo e linea
+                 pulsano come un pezzo solo invece che ognuno per conto suo. -->
+            <ui:VisualElement name="title-prompt" picking-mode="Ignore" class="title-prompt">
+                <ui:VisualElement name="title-marker" picking-mode="Ignore" class="title-marker">
+                    <ui:VisualElement name="title-marker-quill" picking-mode="Ignore" class="title-marker__quill"/>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="title-underline" picking-mode="Ignore" class="menu-underline"/>
+
+                <ui:Label name="title-prompt-label" text="Press any button" class="title-prompt__label"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

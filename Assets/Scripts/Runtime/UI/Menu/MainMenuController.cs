@@ -28,6 +28,7 @@ public class MainMenuController : MonoBehaviour
     private VisualElement _marker;
 
     private MainMenuSelection _selection;
+    private TitleScreenPage _titlePage;
     private readonly List<MainMenuSelection.Entry> _entries = new();
 
     private Sequence _menuEntry;
@@ -88,6 +89,8 @@ public class MainMenuController : MonoBehaviour
         _marker.style.visibility = Visibility.Hidden;
         _marker.style.opacity = 0f;
 
+        BuildTitlePage(motionAsset);
+
         _drakeAnimator?.Bind(_stage);
 
         for (int i = 0; i < _entries.Count; i++)
@@ -115,6 +118,7 @@ public class MainMenuController : MonoBehaviour
     {
         _menuEntry.Stop();
         _selection?.Stop();
+        _titlePage?.Stop();
 
         if (_stage != null) _stage.UnregisterCallback<GeometryChangedEvent>(OnStageGeometryChanged);
 
@@ -123,6 +127,34 @@ public class MainMenuController : MonoBehaviour
             _root.UnregisterCallback<NavigationMoveEvent>(OnNavigationMove);
             _root.UnregisterCallback<NavigationSubmitEvent>(OnNavigationSubmit);
         }
+    }
+
+    /// <summary>
+    /// La title screen e' additiva rispetto al menu: se il documento non la contiene si segnala e si
+    /// tira dritto, perche' un menu senza pagina di apertura resta perfettamente giocabile — mentre
+    /// restare inerti renderebbe il gioco inavviabile per una schermata di cortesia.
+    /// </summary>
+    private void BuildTitlePage(MainMenuMotionSO motionAsset)
+    {
+        VisualElement titleStage = _root.Q<VisualElement>("title-stage");
+        Label titleText = _root.Q<Label>("title-text");
+        VisualElement promptGroup = _root.Q<VisualElement>("title-prompt");
+        Label promptLabel = _root.Q<Label>("title-prompt-label");
+        VisualElement promptMarker = _root.Q<VisualElement>("title-marker");
+        VisualElement promptUnderline = _root.Q<VisualElement>("title-underline");
+
+        if (titleStage == null || titleText == null || promptGroup == null
+            || promptLabel == null || promptMarker == null || promptUnderline == null)
+        {
+            Debug.LogError(
+                $"[{nameof(MainMenuController)}] il documento non contiene la title screen " +
+                "(title-stage / title-text / title-prompt / title-prompt-label / title-marker / " +
+                "title-underline): si apre direttamente sul menu.", this);
+            return;
+        }
+
+        _titlePage = new TitleScreenPage(titleStage, titleText, promptGroup, promptLabel,
+            promptMarker, promptUnderline, motionAsset);
     }
 
     /// <summary>
@@ -144,6 +176,13 @@ public class MainMenuController : MonoBehaviour
     {
         try
         {
+            // La title screen copre tutto: il drago non deve comporsi mentre e' nascosto sotto di
+            // lei, o l'intro dell'illustrazione si consumerebbe senza che nessuno la veda.
+            if (_titlePage != null)
+                await _titlePage.PlayAsync(token);
+
+            if (token.IsCancellationRequested || !isActiveAndEnabled) return;
+
             if (_drakeAnimator != null)
                 await _drakeAnimator.PlayIntroAsync(token);
 

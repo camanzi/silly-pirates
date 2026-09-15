@@ -1,64 +1,62 @@
 /* Overlay di caricamento. Vive nella scena persistente su un PanelSettings dedicato con
-   sortingOrder alto: deve coprire l'HUD di combattimento (che sta a 10) mentre la scena
-   sottostante viene scaricata e ricaricata. */
+   sortingOrder alto: deve coprire l'HUD di combattimento (che sta a 10) e il pannello di fine
+   combattimento (50) mentre la scena sottostante viene scaricata e ricaricata.
+
+   Il font NON si dichiara qui: arriva da STL_Menu.uss, incluso prima di questo foglio, lo stesso
+   che usa il main menu. */
 
 .loading-root {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgb(8, 12, 20);
-    align-items: center;
-    justify-content: center;
+    /* Tinta media della pergamena. Non e' decorazione: l'overlay deve essere OPACO, o durante lo
+       scambio di scena si vedrebbe il vuoto attraverso le bande che lo stage non copre ai rapporti
+       diversi da 16:9. */
+    background-color: rgb(236, 224, 206);
+    overflow: hidden;
     /* Parte invisibile: la visibilita' e' guidata da LoadingScreenController via PrimeTween,
        non da display, cosi' il fade e' interpolabile. */
     opacity: 0;
     display: none;
 }
 
-.loading-root.visible {
-    display: flex;
+/* Gemello di .menu-stage e .title-stage: stessa misura fissa, stesso centraggio, stessa pergamena. */
+.loading-stage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 1920px;
+    height: 1080px;
+    flex-shrink: 0;
+    background-image: url("project://database/Assets/Imports/2D/UI Icons/MainMenu/parchment.png");
+    -unity-background-scale-mode: scale-and-crop;
 }
 
-.loading-panel {
-    align-items: center;
-    justify-content: center;
-    min-width: 460px;
-}
-
-.loading-title {
-    color: rgb(255, 69, 61);
-    font-size: 44px;
-    -unity-text-align: middle-center;
-    -unity-font-style: bold;
+/* Ancorata in basso a destra, come nel mockup. Allineata a sinistra dentro una cassa piu' larga del
+   testo: e' cosi' che i tre puntini possono comparire senza far ballare la parola "Loading". */
+.loading-label {
+    position: absolute;
+    left: 1587px;
+    top: 979px;
+    width: 297px;
+    height: 101px;
+    font-size: 70px;
+    color: rgb(0, 0, 0);
+    -unity-text-align: middle-left;
     white-space: nowrap;
-    margin-bottom: 26px;
-    -unity-text-outline-width: 2px;
-    -unity-text-outline-color: rgba(251, 68, 60, 0.686);
-    text-shadow: -4px 8px 0 rgb(0, 0, 0);
-    -unity-font-definition: url("project://database/Assets/Fonts/Jaini-Regular.ttf?fileID=12800000&guid=f87297ce785d8694c9876678ba95904d&type=3#Jaini-Regular");
 }
 
-.progress-track {
-    width: 100%;
-    height: 14px;
-    background-color: rgba(255, 255, 255, 0.114);
-    border-radius: 7px;
-    overflow: hidden;
-}
-
-/* La larghezza e' scritta da codice in percentuale: lasciarla a 0 qui evita un frame
-   di barra piena prima del primo aggiornamento. */
-.progress-fill {
-    width: 0;
-    height: 100%;
-    background-color: rgb(255, 69, 61);
-    border-radius: 7px;
-}
-
-.loading-percentage {
-    color: rgb(236, 240, 248);
-    font-size: 22px;
-    -unity-text-align: middle-center;
-    margin-top: 14px;
-    -unity-font-definition: url("project://database/Assets/Fonts/Tektur-VariableFont_wdth,wght.ttf?fileID=12800000&guid=e781eecbbec6f9a42ad1f7250c665308&type=3#Tektur-VariableFont_wdth,wght");
+/* Stessa piuma del main menu e con lo stesso specchio orizzontale: in Figma il nodo e' ruotato di
+   180 gradi e specchiato in verticale, e la risultante e' un semplice 'scale: -1 1'.
+   La posizione verticale viene animata da codice via 'translate', quindi 'top' resta fermo. */
+.loading-quill {
+    position: absolute;
+    left: 1772px;
+    top: 968px;
+    width: 112px;
+    height: 112px;
+    scale: -1 1;
+    background-image: url("project://database/Assets/Imports/2D/UI Icons/MainMenu/quill.png");
+    -unity-background-scale-mode: scale-to-fit;
 }

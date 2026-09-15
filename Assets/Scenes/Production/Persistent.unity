@@ -150,9 +150,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoadingScreenController
   _document: {fileID: 392516012}
-  _progressChannel: {fileID: 11400000, guid: 89f469bd3f027c84bbe7d53dc6524b5a, type: 2}
   _visibilityChannel: {fileID: 11400000, guid: 1fb638cdac1b4664696b438ec5c9a5c0, type: 2}
   _fadeDuration: 0.25
+  _dotIntervalMs: 1000
+  _quillBobAmplitude: 6
+  _quillBobPeriod: 1.6
 --- !u!114 &392516012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,7 +229,7 @@ MonoBehaviour:
   _returnToMenuRequested: {fileID: 11400000, guid: fe533df7f7408f540b555134f12b2680, type: 2}
   _loadingProgress: {fileID: 11400000, guid: 89f469bd3f027c84bbe7d53dc6524b5a, type: 2}
   _loadingVisible: {fileID: 11400000, guid: 1fb638cdac1b4664696b438ec5c9a5c0, type: 2}
-  _minimumDisplaySeconds: 0.75
+  _minimumDisplaySeconds: 2
 --- !u!4 &663932147
 Transform:
   m_ObjectHideFlags: 0

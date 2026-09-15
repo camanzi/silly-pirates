@@ -1,12 +1,18 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/Loading/LoadingScreen.uss?fileID=7433441132597879392&amp;guid=82e4c4d433080174ea84cf170fdf722f&amp;type=3#LoadingScreen"/>
+    <!-- STL_Menu per primo, come fa MainMenu.uxml: porta solo il font, e il foglio della schermata
+         non deve poterlo sovrascrivere per sbaglio. -->
+    <Style src="project://database/Assets/UI/Shared/STL_Menu.uss"/>
+    <Style src="project://database/Assets/UI/Loading/LoadingScreen.uss"/>
     <ui:VisualElement name="loading-root" picking-mode="Ignore" class="loading-root">
-        <ui:VisualElement name="loading-panel" picking-mode="Ignore" class="loading-panel">
-            <ui:Label name="loading-title" picking-mode="Ignore" text="Loading" class="loading-title"/>
-            <ui:VisualElement name="progress-track" picking-mode="Ignore" class="progress-track">
-                <ui:VisualElement name="progress-fill" picking-mode="Ignore" class="progress-fill"/>
-            </ui:VisualElement>
-            <ui:Label name="loading-percentage" picking-mode="Ignore" text="0%" class="loading-percentage"/>
+        <!-- Stesso schema del main menu: uno stage fisso 1920x1080 centrato, dentro cui i figli
+             usano le coordinate esatte del mockup. A coprire lo schermo ci pensa PS_LoadingScreen
+             (ScaleWithScreenSize + Shrink), non del codice di scaling. -->
+        <ui:VisualElement name="loading-stage" picking-mode="Ignore" class="loading-stage">
+            <!-- Parte senza puntini: li aggiunge LoadingScreenController scambiando fra quattro
+                 stringhe gia' pronte. La cassa e' misurata in Figma su "Loading..." e il testo e'
+                 allineato a sinistra, quindi i puntini crescono verso destra senza spostare nulla. -->
+            <ui:Label name="loading-label" picking-mode="Ignore" text="Loading" class="loading-label"/>
+            <ui:VisualElement name="loading-quill" picking-mode="Ignore" class="loading-quill"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
