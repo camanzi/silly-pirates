@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b442e37deff56246b284881eaef0c8d, type: 3}
+  m_Name: MainMenuMotion
+  m_EditorClassIdentifier: Assembly-CSharp::MainMenuMotionSO
+  _stagger: 0.25
+  _riseDistance: 160
+  _pieceDuration: 0.6
+  _pieceEase: 9
+  _menuDelay: 0.15
+  _menuDuration: 0.5
+  _menuEase: 6
+  _selection:
+    quillDuration: 0.25
+    quillEase: 9
+    underlineOutDuration: 0.16
+    underlineOutEase: 5
+    underlineInDuration: 0.24
+    underlineInEase: 6
+    underlineInDelay: 0.1
+  _idle:
+  - elementName: drake-9
+    amplitude: {x: 2, y: 3}
+    period: {x: 11, y: 9}
+    rotationAmplitude: 0
+    rotationPeriod: 0
+    startDelay: 0
+    ease: 4
+  - elementName: drake-8
+    amplitude: {x: 6, y: 4}
+    period: {x: 7, y: 5.5}
+    rotationAmplitude: 0.6
+    rotationPeriod: 8
+    startDelay: 0.4
+    ease: 4
+  - elementName: drake-7
+    amplitude: {x: 5, y: 6}
+    period: {x: 8.5, y: 6.5}
+    rotationAmplitude: 0.5
+    rotationPeriod: 9
+    startDelay: 1.1
+    ease: 4
+  - elementName: drake-6
+    amplitude: {x: 7, y: 5}
+    period: {x: 6.5, y: 5}
+    rotationAmplitude: 0
+    rotationPeriod: 0
+    startDelay: 0.7
+    ease: 4
+  - elementName: drake-5
+    amplitude: {x: 4, y: 7}
+    period: {x: 5.5, y: 4.5}
+    rotationAmplitude: 0.8
+    rotationPeriod: 7
+    startDelay: 1.6
+    ease: 4
+  - elementName: drake-4
+    amplitude: {x: 9, y: 12}
+    period: {x: 9, y: 7}
+    rotationAmplitude: 0.7
+    rotationPeriod: 10
+    startDelay: 0.2
+    ease: 4
+  - elementName: drake-3
+    amplitude: {x: 6, y: 8}
+    period: {x: 6, y: 4.8}
+    rotationAmplitude: 0
+    rotationPeriod: 0
+    startDelay: 1.4
+    ease: 4
+  - elementName: drake-2
+    amplitude: {x: 8, y: 9}
+    period: {x: 7.5, y: 5.8}
+    rotationAmplitude: 0
+    rotationPeriod: 0
+    startDelay: 0.9
+    ease: 4

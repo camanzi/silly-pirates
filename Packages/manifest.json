@@ -3,7 +3,7 @@
     "ayellowpaper.serialized-dictionary": "https://github.com/camanzi/SerializedDictionary.git#c3b9c03d61485f215dde9f8981c61511ca559193",
     "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
     "com.cqf.urpoutline": "https://github.com/CristianQiu/Unity-URP-Outline.git",
-    "com.kyrylokuzyk.primetween": "file:../Assets/Plugins/PrimeTween/internal/com.kyrylokuzyk.primetween.tgz",
+    "com.kyrylokuzyk.primetween": "file:../Packages/com.kyrylokuzyk.primetween.tgz",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.spriteshape": "13.0.0",
     "com.unity.2d.tilemap": "1.0.0",

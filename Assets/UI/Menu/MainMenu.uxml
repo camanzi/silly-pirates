@@ -1,7 +1,42 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/Menu/MainMenu.uss?fileID=7433441132597879392&amp;guid=5877aecdcd8fcca498c84047ebe781d6&amp;type=3#MainMenu"/>
+    <!-- STL_Menu per primo: porta solo il font, e i fogli successivi non devono poterlo sovrascrivere
+         per sbaglio. MainMenu.uss si occupa di misure, colori e posizioni. -->
+    <Style src="project://database/Assets/UI/Shared/STL_Menu.uss"/>
+    <Style src="project://database/Assets/UI/Menu/MainMenu.uss"/>
     <ui:VisualElement name="menu-root" class="menu-root">
-        <ui:Label name="menu-title" picking-mode="Ignore" text="Silly Pirates" class="menu-title"/>
-        <ui:Button name="start-combat-button" text="Play" class="menu-button"/>
+        <!-- Lo stage e' fisso 1920x1080 e centrato: dentro di lui ogni figlio usa le coordinate
+             esatte del mockup Figma. A coprire lo schermo ci pensa la PanelSettings del menu
+             (ScaleWithScreenSize + Shrink), non del codice di scaling. -->
+        <ui:VisualElement name="menu-stage" class="menu-stage">
+            <!-- Moving Group: l'ordine nel documento E' lo z-order del mockup, dal fondo in su. -->
+            <ui:VisualElement name="drake-9" picking-mode="Ignore" class="drake-layer drake-9"/>
+            <ui:VisualElement name="drake-6" picking-mode="Ignore" class="drake-layer drake-6"/>
+            <ui:VisualElement name="drake-5" picking-mode="Ignore" class="drake-layer drake-5"/>
+            <ui:VisualElement name="drake-2" picking-mode="Ignore" class="drake-layer drake-2"/>
+            <ui:VisualElement name="drake-3" picking-mode="Ignore" class="drake-layer drake-3"/>
+            <ui:VisualElement name="drake-4" picking-mode="Ignore" class="drake-layer drake-4"/>
+            <ui:VisualElement name="drake-7" picking-mode="Ignore" class="drake-layer drake-7"/>
+            <ui:VisualElement name="drake-8" picking-mode="Ignore" class="drake-layer drake-8"/>
+
+            <!-- Il marker porta SOLO la piuma, ed e' fratello delle voci: cosi' scorre da una riga
+                 all'altra con un solo tween invece di comparire e sparire dentro ciascuna. -->
+            <ui:VisualElement name="menu-marker" picking-mode="Ignore" class="menu-marker">
+                <ui:VisualElement name="menu-marker-quill" picking-mode="Ignore" class="menu-marker__quill"/>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="menu-items" picking-mode="Ignore" class="menu-items">
+                <!-- Una sottolineatura per voce, non una sola che scorre: devono poter vivere due
+                     animazioni opposte nello stesso istante (la vecchia si cancella mentre la nuova
+                     si scrive), cosa impossibile con un elemento solo. Prima delle Label nel
+                     documento, cosi' la linea resta dietro al testo. -->
+                <ui:VisualElement name="underline-play" picking-mode="Ignore" class="menu-underline"/>
+                <ui:VisualElement name="underline-options" picking-mode="Ignore" class="menu-underline"/>
+                <ui:VisualElement name="underline-quit" picking-mode="Ignore" class="menu-underline"/>
+
+                <ui:Label name="menu-play" text="Play" class="menu-item"/>
+                <ui:Label name="menu-options" text="Options" class="menu-item menu-item--disabled"/>
+                <ui:Label name="menu-quit" text="Quit" class="menu-item"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -87,6 +87,27 @@ UI uses **UI Toolkit** (UIElements). `InteractionMenuController` renders the rad
 
 `DirectionalSpriteController.cs` drives an 8-directional (N/NE/E/SE/S/SW/W/NW) frame animation system. Sprites are cached from atlases via `SpriteAtlasHelper`. Direction is computed relative to the camera each frame.
 
+## Design Reference
+
+Mockup su Figma: board **"Silly Pirates - Mockups"**, fileKey `gOTH97KrEjOmsApwDI4FI7`, pagina unica `0:1`.
+Passare il fileKey ai tool del Figma MCP (`get_metadata`, `get_design_context`, `get_screenshot`).
+
+| Canvas | node-id |
+|---|---|
+| Main Menu | `136:117` (dentro: `Moving Group` `137:127`, gli 8 pezzi del drago) |
+| Base Button (component set Default/Selected) | `137:134` |
+| Combat - Overview - Idle | `5:104` |
+| Combat - Overview - Captain abilities selection | `16:91` |
+| PG - Detail | `1:2` |
+| Components (libreria) | `3:19` |
+
+Due trappole viste sul campo:
+- `get_metadata` su alcuni frame (fra cui `136:117`) torna il frame **senza figli**. Non vuol dire che
+  sia appiattito: interrogare direttamente il nodo figlio, o usare `get_design_context`.
+- Gli export PNG di Figma sono @2x e quasi sempre **non sono potenze di due**. Unity di default li
+  riscala alla POT piu' vicina (`nPOTScale: 1`), il che cambia l'aspect ratio e sposta il contenuto
+  dentro l'elemento UI Toolkit. Per gli sfondi importati da Figma va messo `nPOTScale: 0`.
+
 ## Key Packages
 
 | Package | Purpose |

@@ -21,7 +21,7 @@ MonoBehaviour:
       - _prefab: {fileID: 4266214752264791792, guid: 8af36716c68cc0744a28f307053abdb4, type: 3}
         _anchor: 0
         _loop: 1
-        _offset: {x: 0, y: 0, z: 0}
+        _offset: {x: 0, y: -1, z: 0}
         _scale: 1
   _startsLoopOnComplete: 1
   _loopPhaseOnComplete: 2

@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 105684128}
   - component: {fileID: 105684127}
   - component: {fileID: 105684126}
+  - component: {fileID: 105684129}
   m_Layer: 0
   m_Name: MainMenuUI
   m_TagString: Untagged
@@ -150,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuController
   _document: {fileID: 105684127}
+  _drakeAnimator: {fileID: 105684129}
   _startCombatRequested: {fileID: 11400000, guid: b1cdf997ea3138e48a7c0dd056c43825, type: 2}
 --- !u!114 &105684127
 MonoBehaviour:
@@ -163,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: e52617c2db1cfb44db5cd5d43158168e, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: cb819c6ebcdce3d46ab769724c176d94, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 0fe2c15ce98dd3b4f8ad558f5b88d0fa, type: 3}
   m_SortingOrder: 0
@@ -189,6 +191,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &105684129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105684125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bd6fcaedc4c36f47b4c5093d1042b1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainMenuDrakeAnimator
+  _motion: {fileID: 11400000, guid: c62d0ccbdda2cf94d89f92273088e54a, type: 2}
 --- !u!1 &1048206633
 GameObject:
   m_ObjectHideFlags: 0

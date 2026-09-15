@@ -1,0 +1,8 @@
+/* Tipografia condivisa delle schermate di menu (main menu e, in futuro, Options e simili).
+   Gemello di STL_Overlay/STL_WorldSpace per l'HUD: qui vive SOLO la definizione del font, così
+   cambiarlo per tutte le scritte del menu significa toccare questa singola url(). Dimensioni,
+   colori e posizioni restano nei fogli delle singole schermate. */
+
+:root {
+    -unity-font-definition: url("project://database/Assets/Fonts/Italianno-Regular.ttf");
+}
