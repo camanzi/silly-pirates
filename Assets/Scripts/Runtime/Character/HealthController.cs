@@ -94,7 +94,12 @@ public class HealthController : MonoBehaviour, IDamageable
 
     private void ApplyDamage(DamagePayload payload)
     {
-        if (payload.Amount < 0f) { ApplyHeal(-payload.Amount); return; }
+        if (payload.Amount < 0f)
+        {
+            _showDamageUIEventChannel?.RaiseEvent(new DamageEvent { Payload = payload, WorldPosition = transform.position });
+            ApplyHeal(-payload.Amount);
+            return;
+        }
         _currentHp = Mathf.Max(0f, _currentHp - payload.Amount);
         OnHpChanged?.Invoke(_currentHp);
         bool died = _currentHp <= 0f;

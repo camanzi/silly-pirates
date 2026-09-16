@@ -108,7 +108,7 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
 
     /// <param name="incoming">
     /// Elemento in arrivo. Diverso da quello attivo (o <see cref="DamageType.None"/>) = para, il danno verra'
-    /// azzerato dall'immunita'. Uguale = incassa, e' il colpo che sta rompendo lo scudo.
+    /// dimezzato dalla resistenza. Uguale = incassa ed assorbe, e' il colpo che il corpo trasforma in cura.
     /// </param>
     private void RaiseGuard(DamageType incoming)
     {

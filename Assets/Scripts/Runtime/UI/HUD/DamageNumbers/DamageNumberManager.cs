@@ -99,7 +99,8 @@ public class DamageNumberManager : MonoBehaviour
         var damageLabel = popup.Q<Label>("damage-label");
         var critLabel = popup.Q<Label>("crit-label");
 
-        damageLabel.text = Mathf.RoundToInt(evt.Payload.Amount).ToString();
+        int displayAmount = Mathf.RoundToInt(evt.Payload.Amount);
+        damageLabel.text = evt.Payload.Amount < 0f ? $"+{-displayAmount}" : displayAmount.ToString();
         damageLabel.style.color = new StyleColor(elementColor);
         critLabel.style.color = new StyleColor(elementColor);
         popup.style.fontSize = 0;
@@ -126,9 +127,12 @@ public class DamageNumberManager : MonoBehaviour
 
         const float epsilon = 0.01f;
         float ratio = evt.Payload.ResistanceMultiplier;
-        // Un ratio a zero non e' una semplice resistenza: il colpo e' stato annullato del tutto
-        // (ImmunityBehaviorSO). Senza questo ramo uscirebbe "Resist" sopra un danno di 0, che si legge male.
-        if (ratio <= epsilon)
+        // Un ratio negativo non e' una semplice resistenza: il colpo e' stato trasformato in cura
+        // (AbsorptionBehaviorSO). Va controllato PRIMA del ramo "Immune", altrimenti un ratio di -1
+        // ci finirebbe dentro e stamperebbe "Immune" sopra una cura.
+        if (ratio < -epsilon)
+            SpawnModifierLabel("Absorb", elementColor, evt.WorldPosition);
+        else if (ratio <= epsilon)
             SpawnModifierLabel("Immune", elementColor, evt.WorldPosition);
         else if (Mathf.Abs(ratio - 1f) > epsilon)
             SpawnModifierLabel(ratio < 1f ? "Resist" : "Effective", elementColor, evt.WorldPosition);

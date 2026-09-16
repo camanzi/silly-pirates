@@ -6,9 +6,11 @@ using UnityEngine;
 /// Cuore dello scudo elementale. Vive sulla parte (PF_ElementalShield) e riscrive a runtime le resistenze
 /// del personaggio che la indossa.
 ///
-/// Scudo attivo: l'owner e' resistente all'elemento selezionato e immune agli altri tre, quindi l'unico
-/// modo di fargli danno e' indovinare l'elemento corrente. Scudo rotto: l'owner perde tutto e diventa
-/// vulnerabile a tutti e quattro, finche' il PartRegenBehaviorSO della parte non lo rimette in piedi.
+/// Scudo attivo: l'owner e' resistente a tutti e quattro gli elementi, tranne quello selezionato, che
+/// invece lo CURA del danno inflitto — l'elemento estratto e' quello da evitare sul corpo, ma resta anche
+/// l'unico che rompe la parte scudo (vedi <see cref="ElementalShieldHitBehaviorSO"/>), quindi va scaricato
+/// li' e mai sul corpo. Scudo rotto: l'owner perde tutto e diventa vulnerabile a tutti e quattro, finche'
+/// il PartRegenBehaviorSO della parte non lo rimette in piedi.
 ///
 /// Tutti i behavior concessi all'owner sono tracciati in <see cref="_granted"/>: la revoca tocca solo
 /// quelli, mai i _baseBehaviors del personaggio, che restano attivi e si compongono con questi.
@@ -21,13 +23,13 @@ public class ElementalShieldController : MonoBehaviour
     {
         public DamageType Element;
         public ResistanceBehaviorSO Resistance;
-        public ImmunityBehaviorSO Immunity;
+        public AbsorptionBehaviorSO Absorption;
         public VulnerabilityBehaviorSO Vulnerability;
         public Color Tint;
     }
 
     [Header("Elementi")]
-    [Tooltip("Una riga per elemento (Physical, Fire, Ice, Lightning): gli asset di resistenza, immunita' e vulnerabilita' da concedere all'owner.")]
+    [Tooltip("Una riga per elemento (Physical, Fire, Ice, Lightning): gli asset di resistenza, assorbimento e vulnerabilita' da concedere all'owner.")]
     [SerializeField] private ElementBehaviors[] _elements;
 
     [Header("Configurazione scudo")]
@@ -61,7 +63,7 @@ public class ElementalShieldController : MonoBehaviour
         _shieldHealth.OnRevive += HandleRestore;
     }
 
-    private void Start() => SetElement(PickRandomElement(DamageType.None), silent: true);
+    private void Start() => SetElement(PickRandomElement(), silent: true);
 
     private void OnDestroy()
     {
@@ -70,7 +72,7 @@ public class ElementalShieldController : MonoBehaviour
         _shieldHealth.OnRevive -= HandleRestore;
     }
 
-    /// <summary>Conta un colpo per elemento. Chiamato sia dallo scudo sia dall'owner, anche per i colpi azzerati dall'immunita'.</summary>
+    /// <summary>Conta un colpo per elemento. Chiamato sia dallo scudo sia dall'owner, anche per i colpi che l'assorbimento ha trasformato in cura.</summary>
     public void RegisterHit(DamageType type)
     {
         if (type == DamageType.None) return;
@@ -79,13 +81,14 @@ public class ElementalShieldController : MonoBehaviour
     }
 
     /// <summary>
-    /// Fra i tre elementi diversi da quello attivo, quello che il giocatore ha usato meno: passare li'
-    /// rende inutili le cannoniere che ha in mano e lo costringe a ri-adattarsi. Parita' risolta a caso.
+    /// Fra i tre elementi diversi da quello attivo, quello che il giocatore ha usato di piu': passare li'
+    /// rende la cannoniera che ha gia' in mano lo strumento che cura il nemico invece di ferirlo, negando
+    /// il suo piano. Parita' risolta a caso.
     /// </summary>
     public DamageType PickDenialElement()
     {
         var candidates = new List<DamageType>();
-        int best = int.MaxValue;
+        int best = int.MinValue;
 
         for (int i = 0; i < _elements.Length; i++)
         {
@@ -93,7 +96,7 @@ public class ElementalShieldController : MonoBehaviour
             if (element == DamageType.None || element == ActiveElement) continue;
 
             _hitCounts.TryGetValue(element, out int count);
-            if (count < best)
+            if (count > best)
             {
                 best = count;
                 candidates.Clear();
@@ -108,7 +111,7 @@ public class ElementalShieldController : MonoBehaviour
         return candidates.Count == 0 ? ActiveElement : candidates[UnityEngine.Random.Range(0, candidates.Count)];
     }
 
-    /// <summary>Rende l'owner resistente a <paramref name="element"/> e immune agli altri tre.</summary>
+    /// <summary>Rende l'owner resistente a tutti e quattro gli elementi, tranne <paramref name="element"/>, che invece lo cura.</summary>
     public void SetElement(DamageType element, bool silent = false)
     {
         RevokeAll();
@@ -117,7 +120,7 @@ public class ElementalShieldController : MonoBehaviour
         {
             var row = _elements[i];
             if (row.Element == DamageType.None) continue;
-            Grant(row.Element == element ? (HealthBehaviorSO)row.Resistance : row.Immunity);
+            Grant(row.Element == element ? (HealthBehaviorSO)row.Absorption : row.Resistance);
         }
 
         GrantTracker();
@@ -142,19 +145,21 @@ public class ElementalShieldController : MonoBehaviour
             _owner.PassiveAbilityController.AddPassive(Instantiate(_breakPassive));
     }
 
-    // La rigenerazione riestrae l'elemento: ripartire da quello appena bucato regalerebbe un turno gratis.
-    private void HandleRestore() => SetElement(PickRandomElement(ActiveElement));
+    // La rigenerazione riestrae l'elemento fra tutti e quattro, incluso quello appena usato per rompere lo
+    // scudo: con la nuova regola ripescarlo non e' un regalo, e' la trappola migliore che ci sia, perche' la
+    // cannoniera che il giocatore ha appena usato per bucare la parte tornerebbe a curare il corpo.
+    private void HandleRestore() => SetElement(PickRandomElement());
 
-    private DamageType PickRandomElement(DamageType exclude)
+    private DamageType PickRandomElement()
     {
         var candidates = new List<DamageType>();
         for (int i = 0; i < _elements.Length; i++)
         {
             DamageType element = _elements[i].Element;
-            if (element != DamageType.None && element != exclude) candidates.Add(element);
+            if (element != DamageType.None) candidates.Add(element);
         }
 
-        if (candidates.Count == 0) return exclude;
+        if (candidates.Count == 0) return DamageType.None;
         return candidates[UnityEngine.Random.Range(0, candidates.Count)];
     }
 

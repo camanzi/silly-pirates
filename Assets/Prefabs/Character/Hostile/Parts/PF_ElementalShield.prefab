@@ -252,22 +252,22 @@ MonoBehaviour:
   _elements:
   - Element: 1
     Resistance: {fileID: 11400000, guid: c5ddfe7dd11921f42909e8e38fd32f1f, type: 2}
-    Immunity: {fileID: 11400000, guid: cbdf37967d91af64da86b7b7e5bb33fc, type: 2}
+    Absorption: {fileID: 11400000, guid: 3df604119a6a952468ab31e515d1f8fb, type: 2}
     Vulnerability: {fileID: 11400000, guid: 4fb8f4d92b9ffcf4a8b0cd5c26ddb840, type: 2}
     Tint: {r: 0.58431375, g: 0.58431375, b: 0.58431375, a: 1}
   - Element: 2
     Resistance: {fileID: 11400000, guid: b992fda6e3b8ca741a3fcd32ee9c1c6c, type: 2}
-    Immunity: {fileID: 11400000, guid: c7868df42b2136f4997376f570566cdc, type: 2}
+    Absorption: {fileID: 11400000, guid: f3d21639279bdb240a513baf488c8aa3, type: 2}
     Vulnerability: {fileID: 11400000, guid: 648e61335f598824482c72a612e41c43, type: 2}
     Tint: {r: 1, g: 0.45, b: 0.2, a: 1}
   - Element: 3
     Resistance: {fileID: 11400000, guid: 054e664cd853cc54a89bfddccde66fbe, type: 2}
-    Immunity: {fileID: 11400000, guid: fecad264f8803e34f9081520e846bb45, type: 2}
+    Absorption: {fileID: 11400000, guid: 0c1a892468ce3db4e8fe8b006f5afda2, type: 2}
     Vulnerability: {fileID: 11400000, guid: d9ad558df172eeb4686c54dc3a5d1402, type: 2}
     Tint: {r: 0.45, g: 0.85, b: 1, a: 1}
   - Element: 4
     Resistance: {fileID: 11400000, guid: 88844b46fc69c1649a82ffcdbfa0dab2, type: 2}
-    Immunity: {fileID: 11400000, guid: 14f1bec998f125a449da36834ea4631f, type: 2}
+    Absorption: {fileID: 11400000, guid: 00ca4fa58a45cbd4ba589dac844bca73, type: 2}
     Vulnerability: {fileID: 11400000, guid: b217d9799c5387f488af47459e6bff77, type: 2}
     Tint: {r: 1, g: 0.9, b: 0.35, a: 1}
   _hitsToBreak: 3

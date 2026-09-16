@@ -19,23 +19,6 @@ MonoBehaviour:
   _menuDelay: 0.15
   _menuDuration: 0.5
   _menuEase: 6
-  _selection:
-    quillDuration: 0.25
-    quillEase: 9
-    underlineOutDuration: 0.16
-    underlineOutEase: 5
-    underlineInDuration: 0.24
-    underlineInEase: 6
-    underlineInDelay: 0.1
-  _title:
-    sweepDuration: 2
-    sweepFalloff: 300
-    sweepEase: 4
-    promptDelay: 0.2
-    promptFadeDuration: 0.5
-    promptPulseMinOpacity: 0.5
-    promptPulseDuration: 1.25
-    dismissDuration: 0.35
   _idle:
   - elementName: drake-9
     amplitude: {x: 2, y: 3}
