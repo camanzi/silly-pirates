@@ -1,0 +1,22 @@
+{
+    "name": "SillyPirates.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "Unity.InputSystem",
+        "Unity.Cinemachine",
+        "Unity.Behavior",
+        "Unity.Behavior.GraphFramework",
+        "Unity.Behavior.SerializableGUID",
+        "PrimeTween.Runtime",
+        "AYellowpaper.SerializedCollections"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

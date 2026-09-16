@@ -34,7 +34,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 2444404693356773506
-      type: {class: 'BlackboardVariable`1[[StringEventChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[StringEventChannel, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 15501644482629857356
@@ -42,7 +42,7 @@ MonoBehaviour:
         Name: FlavorTextChannel
         m_Value: {fileID: 11400000, guid: 25f72ae43ecf3d94f87959b2120cf83c, type: 2}
     - rid: 2444404694317269299
-      type: {class: 'BlackboardVariable`1[[CommandQueueSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[CommandQueueSO, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 5426005287459155466
@@ -58,7 +58,7 @@ MonoBehaviour:
         Name: Self
         m_Value: {fileID: 0}
     - rid: 3650710072783274193
-      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 7945665044519069491
@@ -66,7 +66,7 @@ MonoBehaviour:
         Name: AIData
         m_Value: {fileID: 0}
     - rid: 3650710072783274251
-      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[AbilityBase, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 2841507027988935019
@@ -120,7 +120,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 2444404693356773505
-      type: {class: 'TypedVariableModel`1[[StringEventChannel, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[StringEventChannel, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 15501644482629857356
@@ -130,7 +130,7 @@ MonoBehaviour:
         m_IsShared: 1
         m_Value: {fileID: 11400000, guid: 25f72ae43ecf3d94f87959b2120cf83c, type: 2}
     - rid: 2444404694317269298
-      type: {class: 'TypedVariableModel`1[[CommandQueueSO, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[CommandQueueSO, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 5426005287459155466
@@ -150,7 +150,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 3650710072783274192
-      type: {class: 'TypedVariableModel`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[EnemyAIDataSO, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 7945665044519069491
@@ -160,7 +160,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 3650710072783274250
-      type: {class: 'TypedVariableModel`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[AbilityBase, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 2841507027988935019
@@ -232,7 +232,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Evaluate And Select Ability
     Story: '[Agent] evaluates abilities and selects the best one using [AIData]'
-    RuntimeTypeString: EvaluateAndSelectAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+    RuntimeTypeString: EvaluateAndSelectAbilityAction, SillyPirates.Runtime, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 13305875091066958497
@@ -245,12 +245,12 @@ MonoBehaviour:
       Tooltip: 
     - Name: AIData
       Type:
-        m_SerializableType: EnemyAIDataSO, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: EnemyAIDataSO, SillyPirates.Runtime, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     - Name: SelectedAbility
       Type:
-        m_SerializableType: AbilityBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: AbilityBase, SillyPirates.Runtime, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     - Name: SelectedTarget
@@ -262,7 +262,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Execute Selected Ability
     Story: '[Agent] executes [SelectedAbility] on [SelectedTarget] via [CommandQueueRef]'
-    RuntimeTypeString: ExecuteSelectedAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+    RuntimeTypeString: ExecuteSelectedAbilityAction, SillyPirates.Runtime, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 14535552476197995442
@@ -275,7 +275,7 @@ MonoBehaviour:
       Tooltip: 
     - Name: SelectedAbility
       Type:
-        m_SerializableType: AbilityBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: AbilityBase, SillyPirates.Runtime, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     - Name: SelectedTarget
@@ -285,12 +285,12 @@ MonoBehaviour:
       Tooltip: 
     - Name: CommandQueueRef
       Type:
-        m_SerializableType: CommandQueueSO, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        m_SerializableType: CommandQueueSO, SillyPirates.Runtime, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
       Tooltip: 
     - Name: FlavorTextChannel
       Type:
-        m_SerializableType: StringEventChannel, Assembly-CSharp, Version=0.0.0.0,
+        m_SerializableType: StringEventChannel, SillyPirates.Runtime, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
       Tooltip: 
     NamedChildren: []
@@ -311,14 +311,14 @@ MonoBehaviour:
       data:
         FieldName: FlavorTextChannel
         Type:
-          m_SerializableType: StringEventChannel, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: StringEventChannel, SillyPirates.Runtime, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 2444404693356773454
         LinkedVariable:
           rid: 2444404693356773555
     - rid: 2444404693356773454
-      type: {class: 'BlackboardVariable`1[[StringEventChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[StringEventChannel, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -326,7 +326,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 2444404693356773555
-      type: {class: 'TypedVariableModel`1[[StringEventChannel, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[StringEventChannel, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 15501644482629857356
@@ -340,14 +340,14 @@ MonoBehaviour:
       data:
         FieldName: CommandQueueRef
         Type:
-          m_SerializableType: CommandQueueSO, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          m_SerializableType: CommandQueueSO, SillyPirates.Runtime, Version=0.0.0.0, Culture=neutral,
             PublicKeyToken=null
         LocalValue:
           rid: 2444404694317269286
         LinkedVariable:
           rid: 2444404694317269344
     - rid: 2444404694317269286
-      type: {class: 'BlackboardVariable`1[[CommandQueueSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[CommandQueueSO, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -355,7 +355,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 2444404694317269344
-      type: {class: 'TypedVariableModel`1[[CommandQueueSO, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[CommandQueueSO, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 5426005287459155466
@@ -406,7 +406,7 @@ MonoBehaviour:
         - rid: 3650710072783274131
         - rid: 3650710072783274132
         NodeType:
-          m_SerializableType: EvaluateAndSelectAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: EvaluateAndSelectAbilityAction, SillyPirates.Runtime, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
           m_Value0: 13305875091066958497
@@ -450,7 +450,7 @@ MonoBehaviour:
       data:
         FieldName: AIData
         Type:
-          m_SerializableType: EnemyAIDataSO, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          m_SerializableType: EnemyAIDataSO, SillyPirates.Runtime, Version=0.0.0.0, Culture=neutral,
             PublicKeyToken=null
         LocalValue:
           rid: 3650710072783274138
@@ -461,7 +461,7 @@ MonoBehaviour:
       data:
         FieldName: SelectedAbility
         Type:
-          m_SerializableType: AbilityBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          m_SerializableType: AbilityBase, SillyPirates.Runtime, Version=0.0.0.0, Culture=neutral,
             PublicKeyToken=null
         LocalValue:
           rid: 3650710072783274139
@@ -487,7 +487,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 3650710072783274138
-      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -495,7 +495,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 3650710072783274139
-      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[AbilityBase, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -523,7 +523,7 @@ MonoBehaviour:
         - rid: 3650710072783274149
         - rid: 3650710072783274150
         NodeType:
-          m_SerializableType: ExecuteSelectedAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: ExecuteSelectedAbilityAction, SillyPirates.Runtime, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
           m_Value0: 14535552476197995442
@@ -568,7 +568,7 @@ MonoBehaviour:
       data:
         FieldName: SelectedAbility
         Type:
-          m_SerializableType: AbilityBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          m_SerializableType: AbilityBase, SillyPirates.Runtime, Version=0.0.0.0, Culture=neutral,
             PublicKeyToken=null
         LocalValue:
           rid: 3650710072783274156
@@ -594,7 +594,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 3650710072783274156
-      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[AbilityBase, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -643,7 +643,7 @@ MonoBehaviour:
           rid: 3650710072783274167
         m_Connections: []
     - rid: 3650710072783274208
-      type: {class: 'TypedVariableModel`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[EnemyAIDataSO, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 7945665044519069491
@@ -653,7 +653,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 3650710072783274312
-      type: {class: 'TypedVariableModel`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[AbilityBase, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 2841507027988935019
@@ -683,7 +683,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 3650710072783274422
-      type: {class: 'TypedVariableModel`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[AbilityBase, SillyPirates.Runtime]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 2841507027988935019
@@ -773,7 +773,7 @@ MonoBehaviour:
         Name: Self
         m_Value: {fileID: 0}
     - rid: 2444404694317269348
-      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[EnemyAIDataSO, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 7945665044519069491
@@ -781,7 +781,7 @@ MonoBehaviour:
         Name: AIData
         m_Value: {fileID: 0}
     - rid: 2444404694317269349
-      type: {class: 'BlackboardVariable`1[[AbilityBase, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[AbilityBase, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 2841507027988935019
@@ -805,7 +805,7 @@ MonoBehaviour:
         Name: Agent
         m_Value: {fileID: 0}
     - rid: 2444404694317269352
-      type: {class: 'SharedBlackboardVariable`1[[StringEventChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'SharedBlackboardVariable`1[[StringEventChannel, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 15501644482629857356
@@ -814,7 +814,7 @@ MonoBehaviour:
         m_Value: {fileID: 0}
         m_SharedVariablesRuntimeAsset: {fileID: -8844193655486203930}
     - rid: 2444404694317269353
-      type: {class: 'SharedBlackboardVariable`1[[CommandQueueSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'SharedBlackboardVariable`1[[CommandQueueSO, SillyPirates.Runtime]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 5426005287459155466
@@ -823,7 +823,7 @@ MonoBehaviour:
         m_Value: {fileID: 0}
         m_SharedVariablesRuntimeAsset: {fileID: -8844193655486203930}
     - rid: 2444404694317269354
-      type: {class: EvaluateAndSelectAbilityAction, ns: , asm: Assembly-CSharp}
+      type: {class: EvaluateAndSelectAbilityAction, ns: , asm: SillyPirates.Runtime}
       data:
         ID:
           m_Value0: 2382769948957726025
@@ -841,7 +841,7 @@ MonoBehaviour:
         SelectedTarget:
           rid: 2444404694317269350
     - rid: 2444404694317269355
-      type: {class: ExecuteSelectedAbilityAction, ns: , asm: Assembly-CSharp}
+      type: {class: ExecuteSelectedAbilityAction, ns: , asm: SillyPirates.Runtime}
       data:
         ID:
           m_Value0: 17558329880386543288

@@ -386,7 +386,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4960090281698417887}
-        m_TargetAssemblyTypeName: DirectionalSpriteController, Assembly-CSharp
+        m_TargetAssemblyTypeName: DirectionalSpriteController, SillyPirates.Runtime
         m_MethodName: set_enabled
         m_Mode: 6
         m_Arguments:
@@ -414,7 +414,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4960090281698417887}
-        m_TargetAssemblyTypeName: DirectionalSpriteController, Assembly-CSharp
+        m_TargetAssemblyTypeName: DirectionalSpriteController, SillyPirates.Runtime
         m_MethodName: set_enabled
         m_Mode: 6
         m_Arguments:
@@ -507,7 +507,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4197157872790995930}
-        m_TargetAssemblyTypeName: GridCharacter, Assembly-CSharp
+        m_TargetAssemblyTypeName: GridCharacter, SillyPirates.Runtime
         m_MethodName: OnSelectionCtxChange
         m_Mode: 1
         m_Arguments:
@@ -610,7 +610,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3005545097045729255}
-        m_TargetAssemblyTypeName: PassiveAbilityController, Assembly-CSharp
+        m_TargetAssemblyTypeName: PassiveAbilityController, SillyPirates.Runtime
         m_MethodName: HandleGlobalTurnEnd
         m_Mode: 1
         m_Arguments:

@@ -205,7 +205,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5939637095325751624}
-        m_TargetAssemblyTypeName: EndTurnButton, Assembly-CSharp
+        m_TargetAssemblyTypeName: EndTurnButton, SillyPirates.Runtime
         m_MethodName: UpdateEndTurnButtonState
         m_Mode: 1
         m_Arguments:
@@ -217,7 +217,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 7381703322447710225}
-        m_TargetAssemblyTypeName: ActiveAbilityButtonController, Assembly-CSharp
+        m_TargetAssemblyTypeName: ActiveAbilityButtonController, SillyPirates.Runtime
         m_MethodName: HandleAgentActivated
         m_Mode: 0
         m_Arguments:
@@ -229,7 +229,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 8886951184808175055}
-        m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
+        m_TargetAssemblyTypeName: ActionPointController, SillyPirates.Runtime
         m_MethodName: HandleAgentActivated
         m_Mode: 0
         m_Arguments:
@@ -241,7 +241,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 8269550459025187014}
-        m_TargetAssemblyTypeName: TurnOrderController, Assembly-CSharp
+        m_TargetAssemblyTypeName: TurnOrderController, SillyPirates.Runtime
         m_MethodName: RefreshList
         m_Mode: 1
         m_Arguments:
@@ -253,7 +253,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 3217598463108275501}
-        m_TargetAssemblyTypeName: ActiveCharacterPanelController, Assembly-CSharp
+        m_TargetAssemblyTypeName: ActiveCharacterPanelController, SillyPirates.Runtime
         m_MethodName: HandleAgentActivated
         m_Mode: 0
         m_Arguments:
@@ -265,7 +265,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 3217598463108275502}
-        m_TargetAssemblyTypeName: MovementPointController, Assembly-CSharp
+        m_TargetAssemblyTypeName: MovementPointController, SillyPirates.Runtime
         m_MethodName: HandleAgentActivated
         m_Mode: 0
         m_Arguments:
@@ -293,7 +293,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8269550459025187014}
-        m_TargetAssemblyTypeName: TurnOrderController, Assembly-CSharp
+        m_TargetAssemblyTypeName: TurnOrderController, SillyPirates.Runtime
         m_MethodName: RefreshList
         m_Mode: 1
         m_Arguments:
@@ -337,7 +337,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8886951184808175055}
-        m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
+        m_TargetAssemblyTypeName: ActionPointController, SillyPirates.Runtime
         m_MethodName: HandleAbilityHoverPreview
         m_Mode: 0
         m_Arguments:
@@ -349,7 +349,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 3217598463108275502}
-        m_TargetAssemblyTypeName: MovementPointController, Assembly-CSharp
+        m_TargetAssemblyTypeName: MovementPointController, SillyPirates.Runtime
         m_MethodName: HandleAbilityHoverPreview
         m_Mode: 0
         m_Arguments:
@@ -377,7 +377,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8886951184808175055}
-        m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
+        m_TargetAssemblyTypeName: ActionPointController, SillyPirates.Runtime
         m_MethodName: UpdateActionPoints
         m_Mode: 0
         m_Arguments:
@@ -422,7 +422,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5085973386943220704}
-        m_TargetAssemblyTypeName: CrewOverviewController, Assembly-CSharp
+        m_TargetAssemblyTypeName: CrewOverviewController, SillyPirates.Runtime
         m_MethodName: HandleAgentJoined
         m_Mode: 0
         m_Arguments:
@@ -478,7 +478,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8269550459025187014}
-        m_TargetAssemblyTypeName: TurnOrderController, Assembly-CSharp
+        m_TargetAssemblyTypeName: TurnOrderController, SillyPirates.Runtime
         m_MethodName: OnElementHovered
         m_Mode: 0
         m_Arguments:
@@ -490,7 +490,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 8747241022062416173}
-        m_TargetAssemblyTypeName: HoverHealthBarController, Assembly-CSharp
+        m_TargetAssemblyTypeName: HoverHealthBarController, SillyPirates.Runtime
         m_MethodName: OnElementHovered
         m_Mode: 0
         m_Arguments:
@@ -532,7 +532,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6346294301681519480}
-        m_TargetAssemblyTypeName: FlavorTextBannerController, Assembly-CSharp
+        m_TargetAssemblyTypeName: FlavorTextBannerController, SillyPirates.Runtime
         m_MethodName: Enqueue
         m_Mode: 0
         m_Arguments:
@@ -560,7 +560,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8886951184808175055}
-        m_TargetAssemblyTypeName: ActionPointController, Assembly-CSharp
+        m_TargetAssemblyTypeName: ActionPointController, SillyPirates.Runtime
         m_MethodName: OnTargetingStateChanged
         m_Mode: 0
         m_Arguments:
@@ -675,7 +675,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9123456789012345678}
-        m_TargetAssemblyTypeName: HudVisibilityController, Assembly-CSharp
+        m_TargetAssemblyTypeName: HudVisibilityController, SillyPirates.Runtime
         m_MethodName: ShowHud
         m_Mode: 1
         m_Arguments:

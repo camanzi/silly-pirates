@@ -78,7 +78,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5020568918102610953}
-        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatStateManager, SillyPirates.Runtime
         m_MethodName: OnElementClicked
         m_Mode: 0
         m_Arguments:
@@ -106,7 +106,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5020568918102610953}
-        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatStateManager, SillyPirates.Runtime
         m_MethodName: OnPointerMoved
         m_Mode: 0
         m_Arguments:
@@ -134,7 +134,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5020568918102610953}
-        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatStateManager, SillyPirates.Runtime
         m_MethodName: HandleGlobalClick
         m_Mode: 0
         m_Arguments:
@@ -162,7 +162,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5020568918102610953}
-        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatStateManager, SillyPirates.Runtime
         m_MethodName: OnSelectAbility
         m_Mode: 0
         m_Arguments:
@@ -190,7 +190,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5020568918102610953}
-        m_TargetAssemblyTypeName: CombatStateManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatStateManager, SillyPirates.Runtime
         m_MethodName: RequestActiveAbility
         m_Mode: 0
         m_Arguments:

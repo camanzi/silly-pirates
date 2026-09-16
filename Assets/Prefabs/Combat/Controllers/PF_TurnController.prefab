@@ -70,7 +70,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3365122536592145621}
-        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_TargetAssemblyTypeName: TurnController, SillyPirates.Runtime
         m_MethodName: OnAgentJoin
         m_Mode: 0
         m_Arguments:
@@ -98,7 +98,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3365122536592145621}
-        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_TargetAssemblyTypeName: TurnController, SillyPirates.Runtime
         m_MethodName: OnAgentLeave
         m_Mode: 0
         m_Arguments:
@@ -126,7 +126,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3365122536592145621}
-        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+        m_TargetAssemblyTypeName: TurnController, SillyPirates.Runtime
         m_MethodName: OnAgilityChanged
         m_Mode: 0
         m_Arguments:

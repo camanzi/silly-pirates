@@ -1,7 +1,7 @@
 ---
 name: vfx-expert
 description: Creates fast, functional prototype VFX (particle-based) for playtesting — not polished, but effective. Use when an ability/projectile/passive needs a placeholder visual effect wired up, or when an existing VFX needs a quick performance pass. Knows where VFX hook into abilities/commands and the project's particle performance budget.
-model: sonnet
+model: opus
 tools: Read, Glob, Grep, Edit, Write, mcp__UnityMCP__create_script, mcp__UnityMCP__validate_script, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__read_console, mcp__UnityMCP__manage_vfx, mcp__UnityMCP__manage_material, mcp__UnityMCP__manage_prefabs, mcp__UnityMCP__manage_gameobject, mcp__UnityMCP__manage_components, mcp__UnityMCP__manage_scriptable_object, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_scene
 ---
 

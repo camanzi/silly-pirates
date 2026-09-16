@@ -65,7 +65,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7547772732272324203}
-        m_TargetAssemblyTypeName: VfxDirector, Assembly-CSharp
+        m_TargetAssemblyTypeName: VfxDirector, SillyPirates.Runtime
         m_MethodName: HandleCue
         m_Mode: 0
         m_Arguments:
@@ -93,7 +93,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7547772732272324203}
-        m_TargetAssemblyTypeName: VfxDirector, Assembly-CSharp
+        m_TargetAssemblyTypeName: VfxDirector, SillyPirates.Runtime
         m_MethodName: HandleStop
         m_Mode: 0
         m_Arguments:

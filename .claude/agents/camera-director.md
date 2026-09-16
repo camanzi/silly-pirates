@@ -1,7 +1,7 @@
 ---
 name: camera-director
 description: Owns the ability-execution camera direction system (CameraDirector, CameraCueType, CameraCueProfileSO). Use to decide how an ability should be framed on screen, tune camera cue profiles, assign cue types to ability assets, and extend the system (FrameArea, impact shake, FollowProjectile).
-model: sonnet
+model: opus
 tools: Read, Glob, Grep, Edit, Write, mcp__UnityMCP__read_console, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__validate_script, mcp__UnityMCP__manage_scriptable_object, mcp__UnityMCP__manage_components, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_scene
 ---
 

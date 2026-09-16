@@ -210,7 +210,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5506485831106271739}
-        m_TargetAssemblyTypeName: CameraRenderingHelper, Assembly-CSharp
+        m_TargetAssemblyTypeName: CameraRenderingHelper, SillyPirates.Runtime
         m_MethodName: OnEnableTacticalView
         m_Mode: 6
         m_Arguments:
@@ -238,7 +238,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5506485831106271739}
-        m_TargetAssemblyTypeName: CameraRenderingHelper, Assembly-CSharp
+        m_TargetAssemblyTypeName: CameraRenderingHelper, SillyPirates.Runtime
         m_MethodName: OnEnableTacticalView
         m_Mode: 6
         m_Arguments:

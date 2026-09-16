@@ -287,7 +287,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9201985177974873206}
-        m_TargetAssemblyTypeName: HealingEquipment, Assembly-CSharp
+        m_TargetAssemblyTypeName: HealingEquipment, SillyPirates.Runtime
         m_MethodName: OnSelectionCtxChange
         m_Mode: 1
         m_Arguments:
@@ -315,7 +315,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9201985177974873206}
-        m_TargetAssemblyTypeName: HealingEquipment, Assembly-CSharp
+        m_TargetAssemblyTypeName: HealingEquipment, SillyPirates.Runtime
         m_MethodName: CheckProximity
         m_Mode: 0
         m_Arguments:
@@ -343,7 +343,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9201985177974873206}
-        m_TargetAssemblyTypeName: HealingEquipment, Assembly-CSharp
+        m_TargetAssemblyTypeName: HealingEquipment, SillyPirates.Runtime
         m_MethodName: OnTurnChange
         m_Mode: 0
         m_Arguments:
@@ -403,7 +403,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7824246908159508280}
-        m_TargetAssemblyTypeName: InteractionMenuController, Assembly-CSharp
+        m_TargetAssemblyTypeName: InteractionMenuController, SillyPirates.Runtime
         m_MethodName: ToggleRequested
         m_Mode: 0
         m_Arguments:

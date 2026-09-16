@@ -102,7 +102,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5483414710137781226}
-        m_TargetAssemblyTypeName: DamageNumberManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: DamageNumberManager, SillyPirates.Runtime
         m_MethodName: SpawnDamageNumber
         m_Mode: 0
         m_Arguments:

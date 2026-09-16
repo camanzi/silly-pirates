@@ -1,7 +1,7 @@
 ---
 name: sound-implementer
 description: Wires SFX, ambience and music into the game using the existing AudioDirector / SoundEventSO / cue-channel system. Use to give an ability, command, VFX, UI element or scene its sound, to author SoundEventSO assets from clips the user already has, and to extend the audio system. Does NOT create or generate audio files.
-model: sonnet
+model: opus
 tools: Read, Glob, Grep, Edit, Write, mcp__UnityMCP__create_script, mcp__UnityMCP__validate_script, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__read_console, mcp__UnityMCP__manage_scriptable_object, mcp__UnityMCP__manage_asset, mcp__UnityMCP__manage_components, mcp__UnityMCP__manage_prefabs, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_scene
 ---
 

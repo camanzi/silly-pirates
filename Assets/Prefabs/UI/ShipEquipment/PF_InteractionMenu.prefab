@@ -98,7 +98,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5835306874188514479}
-        m_TargetAssemblyTypeName: InteractionMenuController, Assembly-CSharp
+        m_TargetAssemblyTypeName: InteractionMenuController, SillyPirates.Runtime
         m_MethodName: SetCombatStatePermission
         m_Mode: 0
         m_Arguments:

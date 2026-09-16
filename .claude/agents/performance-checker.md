@@ -1,7 +1,7 @@
 ---
 name: performance-checker
 description: Reviews Unity C# code for GC allocations, closure captures, and patterns that degrade FPS. Use when writing or modifying code that runs in Update/LateUpdate or is called frequently during gameplay.
-model: sonnet
+model: opus
 tools: Read, Glob, Grep, mcp__UnityMCP__read_console, mcp__UnityMCP__execute_code
 ---
 
@@ -51,6 +51,15 @@ These were identified during analysis — reference them when reviewing related 
 | `DirectionalSpriteController.cs:UpdateDirection()` | Allocates `new Vector2(...)` every 100ms inside the throttled update | MEDIUM |
 | UI tween files (InteractionMenuController, ActionPointController, InteractionButton, CrewMemberIndicator, WorldSpaceContainer) | Lambda closures passed to `Tween.Custom` — should use target overloads | MEDIUM |
 | `PathFindingUtils.cs:FindPath()` | Creates `List<>`, `HashSet<>`, `Dictionary<>` on every pathfind call — acceptable if called rarely, critical if called per-frame | MEDIUM |
+
+## Pinning a regression
+
+A fix you cannot re-verify will come back. When a finding is about measurable behaviour rather than
+style, say so and hand it to `@qa-engineer`: tests live in `Assets/Tests/EditMode/`, and
+`com.unity.test-framework.performance` 3.4.0 is already in the project (as a transitive dependency), so
+`Measure.Method` / `SampleGroup` benchmarks are available without installing anything. Allocation counts
+and call counts can be pinned this way; frame timings measured on a loaded editor cannot, so do not
+pretend otherwise.
 
 ## Output format
 

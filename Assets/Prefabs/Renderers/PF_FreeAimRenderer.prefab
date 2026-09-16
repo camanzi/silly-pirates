@@ -63,7 +63,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5304379827479436793}
-        m_TargetAssemblyTypeName: FreeAimRenderer, Assembly-CSharp
+        m_TargetAssemblyTypeName: FreeAimRenderer, SillyPirates.Runtime
         m_MethodName: HighlightTargets
         m_Mode: 0
         m_Arguments:

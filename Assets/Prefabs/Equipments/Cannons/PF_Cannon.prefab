@@ -142,7 +142,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5587952578991430984}
-        m_TargetAssemblyTypeName: ShootingEquipment, Assembly-CSharp
+        m_TargetAssemblyTypeName: ShootingEquipment, SillyPirates.Runtime
         m_MethodName: OnSelectionCtxChange
         m_Mode: 1
         m_Arguments:
@@ -229,7 +229,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 892377213469747711}
-        m_TargetAssemblyTypeName: InteractionMenuController, Assembly-CSharp
+        m_TargetAssemblyTypeName: InteractionMenuController, SillyPirates.Runtime
         m_MethodName: ToggleRequested
         m_Mode: 0
         m_Arguments:
@@ -277,7 +277,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5587952578991430984}
-        m_TargetAssemblyTypeName: ShootingEquipment, Assembly-CSharp
+        m_TargetAssemblyTypeName: ShootingEquipment, SillyPirates.Runtime
         m_MethodName: CheckProximity
         m_Mode: 0
         m_Arguments:
@@ -305,7 +305,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5587952578991430984}
-        m_TargetAssemblyTypeName: ShootingEquipment, Assembly-CSharp
+        m_TargetAssemblyTypeName: ShootingEquipment, SillyPirates.Runtime
         m_MethodName: OnTurnChange
         m_Mode: 0
         m_Arguments:

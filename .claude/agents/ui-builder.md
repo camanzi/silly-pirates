@@ -1,7 +1,7 @@
 ---
 name: ui-builder
 description: Implements Unity UI Toolkit interfaces for this project. Use when building new HUD elements, world-space UI, or translating Figma designs into UXML/USS/C#.
-model: sonnet
+model: opus
 tools: Read, Glob, Grep, Edit, Write, mcp__UnityMCP__read_console, mcp__UnityMCP__manage_ui, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__create_script, mcp__UnityMCP__validate_script
 ---
 

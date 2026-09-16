@@ -1,7 +1,7 @@
 ---
 name: ability-designer
 description: Designs and implements new combat abilities for this tactical game — both player abilities (AbilityBase) and enemy abilities (EnemyAbilityBase) — integrating with the shape system, command pattern, and ScriptableObject pipeline.
-model: sonnet
+model: opus
 tools: Read, Glob, Grep, Edit, Write, mcp__UnityMCP__create_script, mcp__UnityMCP__manage_scriptable_object, mcp__UnityMCP__read_console, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__validate_script
 ---
 

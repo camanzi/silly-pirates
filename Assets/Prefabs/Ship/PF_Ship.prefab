@@ -1680,7 +1680,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1450389051071591541}
-        m_TargetAssemblyTypeName: ShipController, Assembly-CSharp
+        m_TargetAssemblyTypeName: ShipController, SillyPirates.Runtime
         m_MethodName: HighlightPath
         m_Mode: 0
         m_Arguments:
@@ -1725,7 +1725,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6877799202832247022}
-        m_TargetAssemblyTypeName: CellEffectsRenderer, Assembly-CSharp
+        m_TargetAssemblyTypeName: CellEffectsRenderer, SillyPirates.Runtime
         m_MethodName: OnEffectReceived
         m_Mode: 0
         m_Arguments:

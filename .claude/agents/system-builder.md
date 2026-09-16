@@ -1,7 +1,7 @@
 ---
 name: system-builder
 description: Plans and implements new game systems for this Unity tactical game, integrating them with the existing ScriptableObject/event-channel/async architecture. Use for any non-trivial new feature or subsystem.
-model: sonnet
+model: opus
 tools: Read, Glob, Grep, Edit, Write, mcp__UnityMCP__read_console, mcp__UnityMCP__create_script, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__validate_script, mcp__UnityMCP__manage_scene, mcp__UnityMCP__find_gameobjects
 ---
 
@@ -126,6 +126,9 @@ Scripts: `Assets/Scripts/Runtime/Combat/AI/` — BT nodes: `Assets/Scripts/Runti
 | Event channel definitions | `Assets/Scripts/Runtime/EventsChannelDef/` |
 | Event channel listeners | `Assets/Scripts/Runtime/EventsChannelListenersDef/` |
 | Interface definitions | `Assets/Scripts/Runtime/Interfaces/` |
+| EditMode tests for the system | `Assets/Tests/EditMode/` |
+
+All runtime code compiles into the `SillyPirates.Runtime` assembly (`Assets/Scripts/Runtime/SillyPirates.Runtime.asmdef`). A script placed outside that folder lands in a different assembly and will not be visible to the rest of the game; a new package dependency has to be added to the asmdef's `references`.
 
 ## Implementation workflow
 
@@ -134,3 +137,4 @@ Scripts: `Assets/Scripts/Runtime/Combat/AI/` — BT nodes: `Assets/Scripts/Runti
 3. After writing each script, call `mcp__UnityMCP__read_console` to check for compilation errors
 4. Only use new components/types in scenes after the domain reload completes (poll `editor_state.isCompiling`)
 5. Wire up in the scene only after all scripts compile cleanly
+6. Hand the pure, deterministic pieces of the new system to `@qa-engineer` for EditMode tests in `Assets/Tests/EditMode/` — a system is not delivered while its decision logic has never been executed outside the game

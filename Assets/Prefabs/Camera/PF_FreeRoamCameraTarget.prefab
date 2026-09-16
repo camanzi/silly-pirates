@@ -73,7 +73,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4048333577892378373}
-        m_TargetAssemblyTypeName: FreeRoamTarget, Assembly-CSharp
+        m_TargetAssemblyTypeName: FreeRoamTarget, SillyPirates.Runtime
         m_MethodName: OnTurnAgentStart
         m_Mode: 0
         m_Arguments:
