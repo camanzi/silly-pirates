@@ -229,7 +229,7 @@ public class GridCharacter : InteractableGridElement, IMovable, IPassableOccupan
     public void OnCombatLeave()
     {
         _directionalSpriteController?.SetDeadVisual();
-        _lifecycleAnimator?.Play(LifecyclePhase.Leave); // fire-and-forget: gli alleati non vengono disattivati
+        _lifecycleAnimator?.Play(LifecyclePhase.Leave); // fire-and-forget: allies are never deactivated
         this.HandleCombatLeave();
     }
 

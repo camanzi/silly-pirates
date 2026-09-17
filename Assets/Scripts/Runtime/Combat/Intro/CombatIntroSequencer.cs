@@ -4,15 +4,15 @@ using System.Threading;
 using UnityEngine;
 
 /// <summary>
-/// Regista della sequenza di intro al combattimento: spawn dei nemici uno per uno, arrivo della
-/// nave da sinistra, sblocco del turn loop. Ordine di esecuzione anticipato (-1000) perché
-/// <see cref="Awake"/> deve alzare <see cref="CombatIntroStateSO.IsIntroActive"/> PRIMA che
-/// <see cref="HostileCharacter.OnEnable"/> lo consulti.
+/// The director of the combat intro sequence: enemies spawning one by one, the ship arriving from the
+/// left, the turn loop being unblocked. Its script execution order is moved early (-1000) because
+/// <see cref="Awake"/> has to raise <see cref="CombatIntroStateSO.IsIntroActive"/> BEFORE
+/// <see cref="HostileCharacter.OnEnable"/> reads it.
 /// </summary>
 [DefaultExecutionOrder(-1000)]
 public class CombatIntroSequencer : MonoBehaviour
 {
-    [Header("Stato & Config")]
+    [Header("State & Config")]
     [SerializeField] private CombatIntroStateSO _introState;
     [SerializeField] private CombatIntroSequenceSO _sequence;
     [SerializeField] private SpawnPointManagerSO _spawnPointManager;
@@ -22,25 +22,25 @@ public class CombatIntroSequencer : MonoBehaviour
     [SerializeField] private CameraDirectorStateSO _directorState;
     [SerializeField] private AbilityExecutionCueEventChannel _cueChannel;
 
-    [Header("Eventi")]
+    [Header("Events")]
     [SerializeField] private VoidEventChannel _onCombatStarted;
     [SerializeField] private StringEventChannel _flavorTextChannel;
 
-    [Tooltip("Sopprime la UI world-space (menu radiale degli equipaggiamenti) per tutta la durata dell'intro")]
+    [Tooltip("Suppresses the world-space UI (the equipment radial menu) for the whole duration of the intro")]
     [SerializeField] private BoolEventChannel _showUIChannel;
 
     [Header("Audio")]
     [SerializeField] private MusicCueEventChannel _musicChannel;
 
     [Header("Debug")]
-    [Tooltip("Salta la sequenza: il combattimento parte subito, come oggi")]
+    [Tooltip("Skips the sequence: combat starts immediately, exactly as it does today")]
     [SerializeField] private bool _skipIntro;
 
     private ShipEntranceAnimator _shipEntrance;
     private bool _skipped;
 
-    // True non appena la musica di combattimento e' stata richiesta: da quel momento il
-    // sequencer non ne e' piu' proprietario, e OnDestroy non deve fermarla.
+    // True as soon as the combat music has been requested: from that moment on the sequencer no longer
+    // owns it, and OnDestroy must not stop it.
     private bool _combatMusicStarted;
 
     private void Awake()
@@ -51,16 +51,16 @@ public class CombatIntroSequencer : MonoBehaviour
             return;
         }
 
-        // Alzato per primo, prima di qualunque OnEnable di HostileCharacter: sopprime lo spawn automatico.
+        // Raised first, before any HostileCharacter OnEnable: it suppresses the automatic spawn.
         _introState?.BeginIntro();
     }
 
     private void OnEnable()
     {
-        // La nave NON può essere risolta in Awake: l'ordine di esecuzione -1000 di questo componente
-        // lo fa girare prima di qualunque OnEnable, e quindi prima che ShipController si registri.
-        // Pull-then-subscribe copre entrambi gli ordinamenti; il primo uso vero è in Start, che
-        // Unity garantisce dopo tutti gli OnEnable.
+        // The ship can NOT be resolved in Awake: this component's -1000 execution order makes it run
+        // before any OnEnable, and therefore before ShipController registers itself.
+        // Pull-then-subscribe covers both orderings; the first real use is in Start, which Unity
+        // guarantees to run after every OnEnable.
         if (_shipAnchor == null) return;
 
         HandleShipChanged(_shipAnchor.Value);
@@ -77,10 +77,10 @@ public class CombatIntroSequencer : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Rete di sicurezza: se il sequencer viene distrutto a meta' cinematica (beat saltato,
-        // eccezione, scena chiusa) la musica d'intro resterebbe appesa in loop perche' nessun
-        // altro la ferma. Ma se il fight e' gia' partito, la traccia corrente e' quella di
-        // combattimento e non appartiene piu' a questo sequencer: non va toccata.
+        // A safety net: if the sequencer is destroyed mid-cinematic (a skipped beat, an exception, a
+        // closed scene) the intro music would be left hanging in a loop, because nothing else stops it.
+        // But if the fight has already begun, the current track is the combat one and no longer belongs
+        // to this sequencer: it must be left alone.
         if (!_combatMusicStarted) _musicChannel?.RaiseEvent(MusicCue.Stop());
     }
 
@@ -88,24 +88,24 @@ public class CombatIntroSequencer : MonoBehaviour
     {
         if (_skipped)
         {
-            // _skipIntro spegne solo la cinematica, non l'audio: saltare la sequenza non deve
-            // lasciare il combattimento muto. MusicDirector.OnEnable gira prima di qualunque
-            // Start() (l'ordine di esecuzione -1000 di questo componente non cambia le cose per
-            // OnEnable), quindi la sottoscrizione al canale c'e' gia' a questo punto.
+            // _skipIntro only switches off the cinematic, not the audio: skipping the sequence must not
+            // leave the combat silent. MusicDirector.OnEnable runs before any Start() (this component's
+            // -1000 execution order changes nothing for OnEnable), so the channel subscription is
+            // already in place by this point.
             PlayCombatMusic();
             return;
         }
 
-        // Deve stare in Start e NON in Awake: Unity esegue tutti gli OnEnable degli oggetti presenti
-        // al caricamento scena prima di qualunque Start, quindi qui i GridElement figli della nave
-        // hanno già risolto la loro tilemap con la nave alla posizione di attracco. Spostandola
-        // prima, il loro raycast di InitializePosition mancherebbe il pavimento e li lascerebbe
-        // senza tilemap e senza occupancy registrata.
-        // Start gira comunque prima del primo render, quindi non esiste un frame con la nave attraccata.
+        // This belongs in Start and NOT in Awake: Unity runs every OnEnable of the objects present at
+        // scene load before any Start, so by this point the GridElement children of the ship have already
+        // resolved their tilemap with the ship at its docking position. Moving it earlier would make their
+        // InitializePosition raycast miss the floor and leave them with no tilemap and no registered
+        // occupancy.
+        // Start still runs before the first render, so there is no frame showing the ship already docked.
         if (_shipEntrance == null)
             Debug.LogError(
-                $"[{nameof(CombatIntroSequencer)}] Nessuna nave con {nameof(ShipEntranceAnimator)} registrata su " +
-                $"{nameof(ShipControllerAnchorSO)}: il beat di arrivo verrà saltato.", this);
+                $"[{nameof(CombatIntroSequencer)}] No ship with a {nameof(ShipEntranceAnimator)} registered on " +
+                $"{nameof(ShipControllerAnchorSO)}: the arrival beat will be skipped.", this);
 
         _shipEntrance?.SnapToEntry();
 
@@ -115,12 +115,12 @@ public class CombatIntroSequencer : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
-            // Distrutto durante la sequenza: nulla da riprodurre.
+            // Destroyed during the sequence: nothing to play.
         }
         finally
         {
-            // L'intro non deve mai poter bloccare il gioco né lasciare la UI soppressa,
-            // qualunque cosa fallisca sopra.
+            // The intro must never be able to block the game or leave the UI suppressed, whatever fails
+            // above.
             _showUIChannel?.RaiseEvent(true);
 
             _introState?.CompleteIntro();
@@ -129,10 +129,11 @@ public class CombatIntroSequencer : MonoBehaviour
 
     private async Awaitable RunAsync(CancellationToken token)
     {
-        await Awaitable.NextFrameAsync(token); // lascia girare gli Start() degli SpawnPoint (claim via OverlapSphere)
+        await Awaitable.NextFrameAsync(token); // lets the SpawnPoints' Start() run (claim via OverlapSphere)
 
-        // Va alzato DOPO il frame di attesa: CombatStateManager.Start() transisce all'IdleStateSO
-        // indipendentemente dall'intro e alza ShowUI(true), quindi farlo prima verrebbe sovrascritto.
+        // This has to be raised AFTER the wait frame: CombatStateManager.Start() transitions to
+        // IdleStateSO regardless of the intro and raises ShowUI(true), so doing it earlier would be
+        // overwritten.
         _showUIChannel?.RaiseEvent(false);
 
         StartIntroMusic();
@@ -157,8 +158,7 @@ public class CombatIntroSequencer : MonoBehaviour
         _onCombatStarted?.RaiseEvent();
         if (_sequence != null) _flavorTextChannel?.RaiseEvent(_sequence.OpeningLine);
 
-        // La musica di combattimento parte sullo stesso beat del banner "combattimento iniziato"
-        // e della flavor text.
+        // The combat music starts on the same beat as the "combat started" banner and the flavour text.
         PlayCombatMusic();
     }
 
@@ -208,9 +208,9 @@ public class CombatIntroSequencer : MonoBehaviour
     }
 
     /// <summary>
-    /// Una sola cue fa entrambe le cose: sfuma la musica d'intro ancora in riproduzione (se
-    /// presente) e accende la soundtrack di combattimento. Da qui in poi la traccia non
-    /// appartiene piu' a questo sequencer: e' il MusicDirector a possederne l'handle.
+    /// A single cue does both things: it fades out the intro music still playing (if any) and brings up
+    /// the combat soundtrack. From here on the track no longer belongs to this sequencer: the
+    /// MusicDirector is the one owning its handle.
     /// </summary>
     private void PlayCombatMusic()
     {
@@ -222,9 +222,9 @@ public class CombatIntroSequencer : MonoBehaviour
     }
 
     /// <summary>
-    /// Raccoglie i nemici da mostrare in intro, ordinati per distanza crescente dal punto di
-    /// attracco. Unico seam per un futuro spawner dinamico: sostituire questo metodo per popolare
-    /// la sequenza senza toccare il resto dell'orchestrazione.
+    /// Collects the enemies to show during the intro, ordered by increasing distance from the docking
+    /// point. The single seam for a future dynamic spawner: replace this method to populate the sequence
+    /// without touching the rest of the orchestration.
     /// </summary>
     protected virtual List<IntroSpawnEntry> CollectIntroEnemies()
     {

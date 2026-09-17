@@ -35,8 +35,8 @@ public class ShipOccluderRegistry : MonoBehaviour
             }
         }
 
-        // Registrazione DOPO aver popolato la lista: il fader inizializza i renderer appena viene
-        // notificato, e li vuole trovare già pronti.
+        // Registration comes AFTER the list has been populated: the fader initializes the renderers as
+        // soon as it is notified, and expects to find them ready.
         if (_registry != null) _registry.Register(this);
     }
 

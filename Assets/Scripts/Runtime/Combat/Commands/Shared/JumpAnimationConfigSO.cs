@@ -2,25 +2,25 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Parametri di tuning per un salto in stile squash&amp;stretch (anticipazione, stacco, salita, apice,
-/// caduta, atterraggio). Riusabile da qualunque comando che debba far "saltare" il pivot visivo
-/// di un personaggio prima/durante/dopo un'azione. Consumata da <see cref="JumpSquashStretchHelper"/>.
+/// Tuning parameters for a squash&amp;stretch jump (anticipation, launch, rise, apex, fall, landing).
+/// Reusable by any command that needs to make a character's visual pivot "jump" before, during or after
+/// an action. Consumed by <see cref="JumpSquashStretchHelper"/>.
 /// </summary>
 [CreateAssetMenu(fileName = "Jump Animation Config", menuName = "Combat/Animation/Jump Animation Config")]
 public class JumpAnimationConfigSO : ScriptableObject
 {
     /// <summary>
-    /// Fattori di scala coerenti con un pivot billboardato: X e Z restano sempre uguali fra loro
-    /// (<see cref="Horizontal"/>) perché il figlio Sprite ruota solo in yaw — con X != Z comparirebbe
-    /// uno shear visibile quando la camera non è frontale. Solo Y (<see cref="Vertical"/>) è indipendente,
-    /// che è esattamente la lettura classica "schiaccia in verticale, compensa in orizzontale".
+    /// Scale factors consistent with a billboarded pivot: X and Z always stay equal to each other
+    /// (<see cref="Horizontal"/>) because the Sprite child only rotates in yaw — with X != Z a visible
+    /// shear would appear whenever the camera is not head-on. Only Y (<see cref="Vertical"/>) is
+    /// independent, which is exactly the classic "squash vertically, compensate horizontally" reading.
     /// </summary>
     [System.Serializable]
     public struct SquashStretchScale
     {
-        [Tooltip("Fattore di scala applicato sia a X che a Z (piano orizzontale).")]
+        [Tooltip("Scale factor applied to both X and Z (the horizontal plane).")]
         public float Horizontal;
-        [Tooltip("Fattore di scala su Y (verticale).")]
+        [Tooltip("Scale factor on Y (vertical).")]
         public float Vertical;
 
         public SquashStretchScale(float horizontal, float vertical)
@@ -30,58 +30,58 @@ public class JumpAnimationConfigSO : ScriptableObject
         }
     }
 
-    [Header("Altezza apice (world space)")]
-    [Tooltip("Offset aggiunto alla Y del target per calcolare l'apice, es. per far sporgere il personaggio oltre il bordo del ponte.")]
+    [Header("Apex height (world space)")]
+    [Tooltip("Offset added to the target's Y to compute the apex, e.g. to make the character rise past the edge of the deck.")]
     [SerializeField] private float _peakHeightOffset = 0.5f;
-    [Tooltip("Altezza minima dell'apice sopra la posa di riposo, applicata anche se il target è più basso del caster.")]
+    [Tooltip("Minimum apex height above the rest pose, applied even when the target sits lower than the caster.")]
     [SerializeField] private float _minPeakHeight = 0.75f;
-    [Tooltip("Altezza massima dell'apice, per evitare salti abnormi su target molto in alto.")]
+    [Tooltip("Maximum apex height, to avoid absurd leaps at targets that sit very high up.")]
     [SerializeField] private float _maxPeakHeight = 3f;
 
-    [Header("1) Anticipazione (schiacciamento pre-salto)")]
+    [Header("1) Anticipation (pre-jump squash)")]
     [SerializeField] private float _anticipationDuration = 0.10f;
     [SerializeField] private SquashStretchScale _anticipationScale = new(1.20f, 0.65f);
     [SerializeField] private Ease _anticipationEase = Ease.OutQuad;
 
-    [Header("2) Stacco (stiramento al lancio)")]
+    [Header("2) Launch (stretch on take-off)")]
     [SerializeField] private float _launchDuration = 0.07f;
     [SerializeField] private SquashStretchScale _launchScale = new(0.75f, 1.35f);
     [SerializeField] private Ease _launchEase = Ease.OutExpo;
 
-    [Header("3) Salita verso l'apice")]
+    [Header("3) Rise towards the apex")]
     [SerializeField] private float _riseDuration = 0.20f;
-    [Tooltip("Deve decelerare (OutQuad/OutCubic): è ciò che distingue un salto da una levitazione.")]
+    [Tooltip("Must decelerate (OutQuad/OutCubic): that is what tells a jump apart from levitation.")]
     [SerializeField] private Ease _riseEase = Ease.OutQuad;
 
-    [Header("4) Apice (assestamento in sospensione)")]
+    [Header("4) Apex (settling while suspended)")]
     [SerializeField] private float _apexSettleDuration = 0.10f;
     [SerializeField] private SquashStretchScale _apexScale = new(0.95f, 1.08f);
 
-    [Header("5) Pausa sospesa opzionale prima dell'azione")]
-    [Tooltip("Attesa extra all'apice prima che il comando agisca. 0 = nessuna: il volo del proiettile fa già da hang time.")]
+    [Header("5) Optional hang before the action")]
+    [Tooltip("Extra wait at the apex before the command acts. 0 = none: the projectile's flight already serves as hang time.")]
     [SerializeField] private float _hangHoldDuration = 0f;
 
-    [Header("6) Caduta dall'apice")]
+    [Header("6) Fall from the apex")]
     [SerializeField] private float _fallDuration = 0.16f;
     [SerializeField] private SquashStretchScale _fallScale = new(0.90f, 1.15f);
-    [Tooltip("Deve accelerare (InQuad/InCubic): è il segnale di peso più forte della sequenza.")]
+    [Tooltip("Must accelerate (InQuad/InCubic): it is the strongest signal of weight in the whole sequence.")]
     [SerializeField] private Ease _fallEase = Ease.InQuad;
 
-    [Header("7) Atterraggio (schiacciamento da impatto)")]
+    [Header("7) Landing (squash from the impact)")]
     [SerializeField] private float _landingSquashDuration = 0.08f;
     [SerializeField] private SquashStretchScale _landingScale = new(1.30f, 0.55f);
     [SerializeField] private Ease _landingSquashEase = Ease.OutQuad;
 
-    [Header("8) Recupero elastico verso la posa di riposo")]
+    [Header("8) Elastic recovery back to the rest pose")]
     [SerializeField] private float _landingRecoveryDuration = 0.22f;
     [SerializeField] private Ease _landingRecoveryEase = Ease.OutElastic;
 
     [Header("Splash VFX")]
-    [Tooltip("Opzionale: riprodotto allo stacco e all'atterraggio. Se null, lo spawn viene saltato.")]
+    [Tooltip("Optional: played on take-off and on landing. When null, the spawn is skipped.")]
     [SerializeField] private VFXController _splashVfxPrefab;
-    [Tooltip("Canale su cui inoltrare lo splash al VfxDirector. Se null, lo spawn viene saltato.")]
+    [Tooltip("The channel the splash is forwarded to the VfxDirector on. When null, the spawn is skipped.")]
     [SerializeField] private VfxCueEventChannel _vfxChannel;
-    [Tooltip("Offset verticale del punto di spawn dello splash rispetto alla posizione del caster (livello dell'acqua).")]
+    [Tooltip("Vertical offset of the splash spawn point relative to the caster's position (the water level).")]
     [SerializeField] private float _splashYOffset = 0.05f;
 
     public float AnticipationDuration => _anticipationDuration;
@@ -116,8 +116,8 @@ public class JumpAnimationConfigSO : ScriptableObject
     public float SplashYOffset => _splashYOffset;
 
     /// <summary>
-    /// Altezza locale dell'apice relativa alla posa di riposo, derivata dalla Y del target e clampata.
-    /// Co-locata qui con i parametri che la vincolano, per non duplicare la formula nei chiamanti.
+    /// The apex's local height relative to the rest pose, derived from the target's Y and clamped.
+    /// Co-located here with the parameters that constrain it, so the formula is not duplicated in callers.
     /// </summary>
     public float ComputeApexHeight(float casterRootWorldY, float targetWorldY)
     {

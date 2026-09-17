@@ -6,8 +6,8 @@ public abstract class PassiveAbilitySO : ScriptableObject
     [SerializeField] private PassiveRemovalTiming _removalTiming = PassiveRemovalTiming.AnyTurn;
 
     [Header("Reapplication")]
-    [Tooltip("Rilevante solo per le passive che implementano IStackablePassive: cosa mostrare " +
-             "quando la passiva viene riapplicata su un bersaglio che già la possiede.")]
+    [Tooltip("Only relevant for passives implementing IStackablePassive: what to show " +
+             "when the passive is reapplied to a target that already has it.")]
     [SerializeField] private PassiveReapplyFeedback _reapplyFeedback = PassiveReapplyFeedback.ShowGain;
 
     [Header("UI Rendering")]

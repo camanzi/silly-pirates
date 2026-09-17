@@ -15,11 +15,11 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
     private readonly List<IAVModifier> _avModifierBuffer = new();
 
     /// <summary>
-    /// Varianza massima (frazione del AV base) applicata al primo AV di un agente il cui
-    /// TurnAgentDataSO.RandomizeInitialAV è attivo. Modificare qui per cambiare quanta varietà
-    /// ha l'ordine dei turni all'inizio del combattimento.
+    /// Maximum variance (as a fraction of the base AV) applied to the first AV of an agent whose
+    /// TurnAgentDataSO.RandomizeInitialAV is on. Change it here to tune how much variety the turn order
+    /// has at the start of a combat.
     /// </summary>
-    public const float InitialAVVarianceRatio = 0.2f; // ±1/5 del AV base
+    public const float InitialAVVarianceRatio = 0.2f; // ±1/5 of the base AV
 
     public void StartActiveTurn()
     {
@@ -88,7 +88,7 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
         _turnQueue.Add(newState);
 
         if (agent is MonoBehaviour mono)
-            Debug.Log($"Ho aggiunto un nuovo Agent {mono.name} con AV: {initialAV}{(randomized ? " (randomizzato)" : "")}");
+            Debug.Log($"Added a new Agent {mono.name} with AV: {initialAV}{(randomized ? " (randomized)" : "")}");
 
         SortQueue();
         _onQueueUpdated?.RaiseEvent();
@@ -133,12 +133,12 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
     }
 
     /// <summary>
-    /// Spedisce l'agente in fondo alla coda in modo deterministico: invece di sperare che una penalita' di
-    /// agilita' basti, gli assegna un AV oltre il massimo attualmente in coda.
+    /// Sends the agent to the back of the queue deterministically: rather than hoping an agility penalty
+    /// will be enough, it assigns it an AV beyond the maximum currently in the queue.
     ///
-    /// Limite noto: se l'agente sta eseguendo il proprio turno, <see cref="CompleteActiveTurn"/> gli
-    /// ricalcola comunque il CurrentAV a fine turno e l'effetto si perde. Nel flusso reale chi chiama
-    /// questo metodo (rottura di una parte) agisce durante il turno di qualcun altro.
+    /// Known limitation: if the agent is executing its own turn, <see cref="CompleteActiveTurn"/>
+    /// recomputes its CurrentAV at the end of the turn anyway and the effect is lost. In the real flow,
+    /// whoever calls this method (a part breaking) acts during somebody else's turn.
     /// </summary>
     public void SendToBack(ITurnAgent agent)
     {

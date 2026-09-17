@@ -72,7 +72,7 @@ public class PassiveAbilityController : MonoBehaviour
             if (existing is IStackablePassive stackable)
             {
                 stackable.OnReapplied(this, instance);
-                // Riapplicare non è una perdita: si mostra solo il guadagno, mai il rosso.
+                // Reapplying is not a loss: only the gain is shown, never the red.
                 if (existing.ReapplyFeedback == PassiveReapplyFeedback.ShowGain)
                     RaisePassiveNotification(existing, wasAdded: true);
             }

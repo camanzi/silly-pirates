@@ -1,18 +1,18 @@
 /// <summary>
-/// Identifica un oggetto gestibile da una <see cref="ComponentPool{T}"/>.
-/// Implementare direttamente solo se non si puo' ereditare da <see cref="PooledBehaviour"/>.
+/// Marks an object manageable by a <see cref="ComponentPool{T}"/>.
+/// Implement it directly only when inheriting from <see cref="PooledBehaviour"/> is not possible.
 /// </summary>
 public interface IPoolable
 {
-    /// <summary>La pool proprietaria. Assegnata dalla pool alla creazione, mai dal chiamante.</summary>
+    /// <summary>The owning pool. Assigned by the pool at creation time, never by the caller.</summary>
     IPoolReleaser Releaser { get; set; }
 
-    /// <summary>True mentre l'oggetto e' prestato. Gestita dalla pool: rende Release() idempotente.</summary>
+    /// <summary>True while the object is lent out. Managed by the pool: it is what makes Release() idempotent.</summary>
     bool IsInUse { get; set; }
 
-    /// <summary>Chiamata dalla pool quando l'oggetto viene prestato.</summary>
+    /// <summary>Called by the pool when the object is lent out.</summary>
     void OnAcquired();
 
-    /// <summary>Chiamata dalla pool quando l'oggetto rientra. Deve riportarlo a uno stato pulito.</summary>
+    /// <summary>Called by the pool when the object comes back. It has to return it to a clean state.</summary>
     void OnReleased();
 }

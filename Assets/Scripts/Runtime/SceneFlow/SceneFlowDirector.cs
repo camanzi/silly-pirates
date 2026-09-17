@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Orchestratore delle transizioni fra le scene di contenuto (MainMenu e combattimento), che vengono
-/// caricate in additivo sopra la scena persistente. Vive nella persistente e non viene mai scaricato.
+/// The orchestrator of transitions between the content scenes (MainMenu and combat), which are loaded
+/// additively on top of the persistent scene. It lives in the persistent one and is never unloaded.
 ///
-/// L'ordine delle tre operazioni non è negoziabile: SCARICO della scena vecchia, poi RESET dello
-/// stato di sessione, poi CARICO della nuova. Resettare dopo il carico cancellerebbe le
-/// registrazioni appena fatte dagli OnEnable della scena entrante (occupancy della griglia, agenti
-/// nella coda dei turni), che è esattamente il bug che il reset dovrebbe prevenire.
+/// The order of the three operations is non-negotiable: UNLOAD the old scene, then RESET the session
+/// state, then LOAD the new one. Resetting after the load would wipe the registrations the incoming
+/// scene's OnEnable calls have just made (grid occupancy, agents in the turn queue), which is precisely
+/// the bug the reset is meant to prevent.
 /// </summary>
 public class SceneFlowDirector : MonoBehaviour
 {
@@ -18,24 +18,24 @@ public class SceneFlowDirector : MonoBehaviour
     [SerializeField] private SceneReferenceSO _mainMenuScene;
     [SerializeField] private SceneReferenceSO _combatScene;
 
-    [Header("Sessione")]
-    [Tooltip("Elenco degli SO con stato runtime azzerati fra uno scarico e il carico successivo.")]
+    [Header("Session")]
+    [Tooltip("The list of SOs with runtime state cleared between one unload and the next load.")]
     [SerializeField] private CombatSessionSO _combatSession;
 
-    [Header("Canali")]
+    [Header("Channels")]
     [SerializeField] private VoidEventChannel _startCombatRequested;
     [SerializeField] private VoidEventChannel _returnToMenuRequested;
     [SerializeField] private FloatEventChannel _loadingProgress;
     [SerializeField] private BoolEventChannel _loadingVisible;
 
     [Header("Config")]
-    [Tooltip("Permanenza minima dell'overlay. Le scene qui sono piccole e senza questo la barra " +
-             "lampeggerebbe senza che si riesca a leggere la percentuale.")]
+    [Tooltip("Minimum time the overlay stays up. The scenes here are small, and without this the bar " +
+             "would flash past before the percentage could be read.")]
     [Min(0f)] [SerializeField] private float _minimumDisplaySeconds = 0.75f;
 
     private const float LoadWatchdogSeconds = 30f;
 
-    // Scena di contenuto attualmente caricata. La persistente non compare mai qui: non si scarica.
+    // The content scene currently loaded. The persistent one never appears here: it is never unloaded.
     private string _currentSceneName;
     private bool _isTransitioning;
 
@@ -53,9 +53,9 @@ public class SceneFlowDirector : MonoBehaviour
 
     private void Start()
     {
-        // Se una scena di contenuto è già caricata siamo stati avviati dal PersistentSceneBootstrapper
-        // (Play diretto su una scena di gameplay in Editor): la si adotta invece di caricare il menu
-        // sopra, che darebbe due scene di contenuto vive insieme.
+        // If a content scene is already loaded, we were started by the PersistentSceneBootstrapper
+        // (hitting Play directly on a gameplay scene in the Editor): it is adopted instead of loading the
+        // menu on top, which would leave two content scenes alive at once.
         if (TryAdoptLoadedContentScene()) return;
 
         _ = TransitionToAsync(_mainMenuScene, destroyCancellationToken);
@@ -89,12 +89,12 @@ public class SceneFlowDirector : MonoBehaviour
     {
         if (target == null || !target.IsValid)
         {
-            Debug.LogError($"[{nameof(SceneFlowDirector)}] scena di destinazione non assegnata o senza nome.", this);
+            Debug.LogError($"[{nameof(SceneFlowDirector)}] destination scene not assigned, or nameless.", this);
             return;
         }
 
-        // Un secondo click sul bottone mentre la transizione è in corso scaricherebbe una scena a
-        // metà caricamento: si ignora invece di accodare.
+        // A second click on the button while the transition is running would unload a scene halfway
+        // through loading: it is ignored rather than queued.
         if (_isTransitioning) return;
         _isTransitioning = true;
 
@@ -103,11 +103,11 @@ public class SceneFlowDirector : MonoBehaviour
             _loadingVisible?.RaiseEvent(true);
             _loadingProgress?.RaiseEvent(0f);
 
-            // unscaledTime: una transizione non deve dipendere dal timeScale del gioco.
+            // unscaledTime: a transition must not depend on the game's timeScale.
             float overlayShownAt = Time.unscaledTime;
 
-            // Si cede sempre almeno un frame prima di toccare le scene, così questo metodo non può
-            // mai completarsi in modo sincrono e l'overlay ha un frame per disegnarsi.
+            // At least one frame is always yielded before touching the scenes, so this method can never
+            // complete synchronously and the overlay gets a frame to draw itself.
             await Awaitable.NextFrameAsync(token);
 
             await UnloadCurrentSceneAsync(token);
@@ -120,7 +120,7 @@ public class SceneFlowDirector : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
-            // Director distrutto a metà transizione (uscita dal Play Mode): nulla da riportare.
+            // The director was destroyed mid-transition (leaving Play Mode): nothing to report.
         }
         finally
         {
@@ -150,19 +150,19 @@ public class SceneFlowDirector : MonoBehaviour
         if (load == null)
         {
             Debug.LogError(
-                $"[{nameof(SceneFlowDirector)}] '{target.SceneName}' non è caricabile: manca dalla " +
-                "lista in Build Settings?", this);
+                $"[{nameof(SceneFlowDirector)}] '{target.SceneName}' cannot be loaded: is it missing " +
+                "from the list in Build Settings?", this);
             return;
         }
 
-        // Con l'attivazione bloccata Unity ferma progress a 0.9: si rinormalizza per avere una
-        // percentuale che arriva davvero a 100 invece che a 90.
+        // With activation held back, Unity caps progress at 0.9: it is renormalized so the percentage
+        // actually reaches 100 instead of stopping at 90.
         load.allowSceneActivation = false;
 
-        // Un unico loop guidato da isDone. La versione precedente attendeva prima "progress >= 0.9"
-        // e poi "isDone" in due cicli separati, e si appendeva: il confronto secco con 0.9 non è
-        // affidabile (il valore può assestarsi appena sotto) e i due cicli si escludevano a vicenda.
-        // Qui la condizione di uscita è una sola e l'attivazione è un effetto collaterale.
+        // A single loop driven by isDone. The previous version waited first on "progress >= 0.9" and
+        // then on "isDone" in two separate loops, and would hang: the bare comparison against 0.9 is not
+        // reliable (the value can settle just below it) and the two loops excluded each other. Here there
+        // is a single exit condition and activation is a side effect.
         float startedAt = Time.unscaledTime;
         bool activationRequested = false;
 
@@ -179,14 +179,14 @@ public class SceneFlowDirector : MonoBehaviour
                 activationRequested = true;
             }
 
-            // Watchdog: uno stallo qui lascerebbe l'overlay a schermo per sempre senza un solo
-            // messaggio. Meglio un errore che dice a che punto si è fermato.
+            // Watchdog: a stall here would leave the overlay on screen forever without a single message.
+            // Better an error that says where it got stuck.
             if (Time.unscaledTime - startedAt > LoadWatchdogSeconds)
             {
                 Debug.LogError(
-                    $"[{nameof(SceneFlowDirector)}] caricamento di '{target.SceneName}' fermo da " +
-                    $"{LoadWatchdogSeconds}s (progress={load.progress:F3}, attivazione richiesta=" +
-                    $"{activationRequested}). Transizione interrotta.", this);
+                    $"[{nameof(SceneFlowDirector)}] loading of '{target.SceneName}' stuck for " +
+                    $"{LoadWatchdogSeconds}s (progress={load.progress:F3}, activation requested=" +
+                    $"{activationRequested}). Transition aborted.", this);
                 return;
             }
 
@@ -196,8 +196,8 @@ public class SceneFlowDirector : MonoBehaviour
         _loadingProgress?.RaiseEvent(1f);
         _currentSceneName = target.SceneName;
 
-        // Scena attiva = quella che fornisce illuminazione e skybox. Senza questo la persistente
-        // resterebbe attiva e la scena di combattimento verrebbe renderizzata con le sue impostazioni.
+        // The active scene is the one providing lighting and the skybox. Without this the persistent one
+        // would stay active and the combat scene would be rendered with its settings.
         Scene loaded = SceneManager.GetSceneByName(target.SceneName);
         if (loaded.IsValid() && loaded.isLoaded) SceneManager.SetActiveScene(loaded);
     }

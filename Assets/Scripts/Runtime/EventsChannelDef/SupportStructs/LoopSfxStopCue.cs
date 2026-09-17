@@ -1,6 +1,6 @@
 /// <summary>
-/// Ferma un suono in loop. Un handle sconosciuto (loop gia' fermato, o mai avviato)
-/// e' un no-op silenzioso: il doppio stop e' un caso normale, non un errore.
+/// Stops a looping sound. An unknown handle (a loop already stopped, or never started) is a silent
+/// no-op: a double stop is a normal case, not an error.
 /// </summary>
 public struct LoopSfxStopCue
 {

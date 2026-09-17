@@ -1,7 +1,7 @@
 /// <summary>
-/// Esito di un combattimento. <see cref="None"/> significa "ancora in corso" (vedi
-/// <see cref="CombatOutcomeStateSO.IsCombatOver"/>): non è un "nessuno dei due" a fine partita, è
-/// lo stato di default finché nessuno ha chiamato <see cref="CombatOutcomeStateSO.Resolve"/>.
+/// The outcome of a combat. <see cref="None"/> means "still in progress" (see
+/// <see cref="CombatOutcomeStateSO.IsCombatOver"/>): it is not a "neither of the two" at the end of a
+/// match, it is the default state until somebody calls <see cref="CombatOutcomeStateSO.Resolve"/>.
 /// </summary>
 public enum CombatOutcome
 {

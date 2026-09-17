@@ -1,31 +1,31 @@
 using UnityEngine;
 
 /// <summary>
-/// Richiesta di riprodurre un effetto particellare. Fire-and-forget come <see cref="SfxCue"/>:
-/// nessuno aspetta che finisca, e il VfxDirector rimette l'istanza nel pool da solo.
+/// A request to play a particle effect. Fire-and-forget like <see cref="SfxCue"/>: nobody waits for it
+/// to end, and the VfxDirector returns the instance to the pool on its own.
 ///
-/// L'unica eccezione e' il VFX persistente, che porta un <see cref="VfxHandle"/> valido e va
-/// fermato esplicitamente sul canale di stop.
+/// The one exception is the persistent VFX, which carries a valid <see cref="VfxHandle"/> and has to be
+/// stopped explicitly on the stop channel.
 /// </summary>
 public struct VfxCue
 {
     public VFXController Prefab;
 
-    /// <summary>Posizione nel mondo. Ignorata se FollowTarget e' valorizzato.</summary>
+    /// <summary>Position in the world. Ignored when FollowTarget is set.</summary>
     public Vector3 Position;
 
     public Quaternion Rotation;
 
-    /// <summary>Scala uniforme applicata all'istanza. 0 viene letto come 1.</summary>
+    /// <summary>Uniform scale applied to the instance. 0 is read as 1.</summary>
     public float Scale;
 
-    /// <summary>Se valorizzato, l'istanza insegue questo Transform invece di stare ferma.</summary>
+    /// <summary>When set, the instance follows this Transform instead of standing still.</summary>
     public Transform FollowTarget;
 
-    /// <summary>Valido = effetto persistente: nessun rilascio automatico, si ferma con lo stop channel.</summary>
+    /// <summary>Valid = a persistent effect: no automatic release, it is stopped through the stop channel.</summary>
     public VfxHandle Handle;
 
-    /// <summary>Effetto one-shot in un punto fisso: nessun costo per frame.</summary>
+    /// <summary>A one-shot effect at a fixed point: no per-frame cost.</summary>
     public static VfxCue At(VFXController prefab, Vector3 position, float scale = 1f) => new()
     {
         Prefab = prefab,
@@ -36,7 +36,7 @@ public struct VfxCue
         Handle = VfxHandle.None
     };
 
-    /// <summary>Effetto one-shot orientato, per muzzle flash e impatti direzionali.</summary>
+    /// <summary>An oriented one-shot effect, for muzzle flashes and directional impacts.</summary>
     public static VfxCue At(VFXController prefab, Vector3 position, Quaternion rotation, float scale = 1f) => new()
     {
         Prefab = prefab,
@@ -47,7 +47,7 @@ public struct VfxCue
         Handle = VfxHandle.None
     };
 
-    /// <summary>Effetto one-shot che insegue un bersaglio in movimento.</summary>
+    /// <summary>A one-shot effect that follows a moving target.</summary>
     public static VfxCue Follow(VFXController prefab, Transform target, float scale = 1f) => new()
     {
         Prefab = prefab,
@@ -59,8 +59,8 @@ public struct VfxCue
     };
 
     /// <summary>
-    /// Effetto che resta acceso finche' non viene fermato con l'handle. Insegue il bersaglio
-    /// invece di essergli parentato: un oggetto del pool non va mai riparentato su un oggetto di gameplay.
+    /// An effect that stays on until it is stopped through its handle. It follows the target instead of
+    /// being parented to it: a pooled object must never be reparented onto a gameplay object.
     /// </summary>
     public static VfxCue Persistent(VFXController prefab, Transform target, VfxHandle handle, float scale = 1f) => new()
     {
@@ -73,10 +73,10 @@ public struct VfxCue
     };
 
     /// <summary>
-    /// Effetto che resta acceso finche' non viene fermato con l'handle, ma fermo in un punto del mondo
-    /// invece di inseguire un Transform (es. schiuma sul pelo dell'acqua: il punto di emersione non si
-    /// muove). Evita anche il costo per frame in VfxDirector.LateUpdate che Persistent() pagherebbe per
-    /// un effetto che non ne ha bisogno.
+    /// An effect that stays on until it is stopped through its handle, but pinned to a world point
+    /// instead of following a Transform (e.g. foam on the waterline: the emergence point does not move).
+    /// It also avoids the per-frame cost in VfxDirector.LateUpdate that Persistent() would pay for an
+    /// effect that has no need of it.
     /// </summary>
     public static VfxCue PersistentAt(VFXController prefab, Vector3 position, VfxHandle handle, float scale = 1f) => new()
     {

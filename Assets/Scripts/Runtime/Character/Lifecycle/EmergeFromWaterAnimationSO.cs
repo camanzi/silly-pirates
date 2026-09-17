@@ -2,7 +2,7 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Il personaggio emerge da sotto il pelo dell'acqua verso la sua posa a riposo, insieme ai suoi satelliti.
+/// The character emerges from below the waterline towards its rest pose, together with its satellites.
 /// </summary>
 [CreateAssetMenu(menuName = "Combat/Lifecycle Animations/Emerge From Water")]
 public class EmergeFromWaterAnimationSO : LifecycleAnimationSO
@@ -11,14 +11,14 @@ public class EmergeFromWaterAnimationSO : LifecycleAnimationSO
     [SerializeField] private float _depth = 2f;
     [SerializeField] private float _duration = 0.8f;
     [SerializeField] private Ease _ease = Ease.OutQuad;
-    [SerializeField] private bool _fadeIn = true; // maschera lo sprite visibile sotto il pelo dell'acqua
+    [SerializeField] private bool _fadeIn = true; // masks the sprite still visible below the waterline
 
     public override void PrepareTarget(in LifecycleAnimationTarget target)
     {
         if (target.Pivot == null) return;
 
-        // La scala torna a riposo perché l'avvio di una fase interrompe i tween altrui (es. lo scale-up di
-        // un telegraph), che potrebbero averla lasciata a metà.
+        // The scale goes back to rest because starting a phase interrupts other people's tweens (e.g. a
+        // telegraph's scale-up), which may have left it halfway through.
         target.Pivot.localPosition = target.RestLocalPosition + Vector3.down * _depth;
         target.Pivot.localScale = target.RestLocalScale;
 

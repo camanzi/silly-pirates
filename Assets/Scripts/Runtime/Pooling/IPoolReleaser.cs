@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Riferimento non generico a una pool. Permette a un oggetto poolable di restituirsi
-/// da solo senza conoscere il tipo concreto della pool che lo possiede.
+/// A non-generic reference to a pool. It lets a poolable object return itself without knowing the
+/// concrete type of the pool that owns it.
 /// </summary>
 public interface IPoolReleaser
 {

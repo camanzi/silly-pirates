@@ -1,25 +1,25 @@
 using UnityEngine;
 
 /// <summary>
-/// Richiesta di riprodurre un suono one-shot. Fire-and-forget: nessuno aspetta che finisca.
+/// A request to play a one-shot sound. Fire-and-forget: nobody waits for it to end.
 /// </summary>
 public struct SfxCue
 {
     public SoundEventSO Sound;
 
-    /// <summary>Posizione nel mondo. Null = suono 2D non posizionale (UI).</summary>
+    /// <summary>Position in the world. Null = a non-positional 2D sound (UI).</summary>
     public Vector3? WorldPosition;
 
-    /// <summary>Se valorizzato, la voce insegue questo Transform e ignora WorldPosition.</summary>
+    /// <summary>When set, the voice follows this Transform and ignores WorldPosition.</summary>
     public Transform FollowTarget;
 
-    /// <summary>Moltiplicatore sul volume estratto dal SoundEventSO.</summary>
+    /// <summary>Multiplier on the volume drawn from the SoundEventSO.</summary>
     public float VolumeScale;
 
-    /// <summary>Moltiplicatore sul pitch estratto dal SoundEventSO.</summary>
+    /// <summary>Multiplier on the pitch drawn from the SoundEventSO.</summary>
     public float PitchScale;
 
-    /// <summary>One-shot posizionale fisso: nessun costo per frame.</summary>
+    /// <summary>A one-shot at a fixed position: no per-frame cost.</summary>
     public static SfxCue At(SoundEventSO sound, Vector3 worldPosition, float volumeScale = 1f) => new()
     {
         Sound = sound,
@@ -29,7 +29,7 @@ public struct SfxCue
         PitchScale = 1f
     };
 
-    /// <summary>One-shot che insegue un bersaglio in movimento.</summary>
+    /// <summary>A one-shot that follows a moving target.</summary>
     public static SfxCue Follow(SoundEventSO sound, Transform target, float volumeScale = 1f) => new()
     {
         Sound = sound,
@@ -39,7 +39,7 @@ public struct SfxCue
         PitchScale = 1f
     };
 
-    /// <summary>Suono 2D non posizionale (UI, stinger).</summary>
+    /// <summary>A non-positional 2D sound (UI, stingers).</summary>
     public static SfxCue TwoD(SoundEventSO sound, float volumeScale = 1f) => new()
     {
         Sound = sound,

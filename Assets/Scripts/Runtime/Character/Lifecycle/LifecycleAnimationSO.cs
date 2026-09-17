@@ -5,15 +5,15 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Animazione di lifecycle per un personaggio (spawn, morte, ecc.), mirror di <see cref="HealthBehaviorSO"/>.
-/// Le implementazioni devono restare stateless: tutto lo stato mutabile vive in <see cref="LifecycleAnimationContext"/>
-/// e in <see cref="LifecycleVfxSession"/>, così un solo asset condiviso può essere referenziato da più prefab
-/// senza Instantiate per-istanza.
+/// A lifecycle animation for a character (spawn, death, and so on), the mirror of <see cref="HealthBehaviorSO"/>.
+/// Implementations have to stay stateless: all mutable state lives in <see cref="LifecycleAnimationContext"/>
+/// and in <see cref="LifecycleVfxSession"/>, so a single shared asset can be referenced by several prefabs
+/// with no per-instance Instantiate.
 ///
-/// L'animazione è espressa per SINGOLO bersaglio (<see cref="PrepareTarget"/> / <see cref="PlayTarget"/>) e
-/// applicata a tutti i bersagli del contesto: il corpo e i satelliti registrati (parti di nemici compositi,
-/// cappelli, armi), che sono fuori dalla gerarchia del pivot e altrimenti resterebbero immobili.
-/// Lavorare per-bersaglio permette anche di agganciare un satellite registrato a fase già iniziata.
+/// The animation is expressed per SINGLE target (<see cref="PrepareTarget"/> / <see cref="PlayTarget"/>) and
+/// applied to every target in the context: the body and the registered satellites (parts of composite
+/// enemies, hats, weapons), which live outside the pivot's hierarchy and would otherwise stay motionless.
+/// Working per-target is also what lets a satellite registered mid-phase be hooked in.
 /// </summary>
 public abstract class LifecycleAnimationSO : ScriptableObject
 {
@@ -21,32 +21,32 @@ public abstract class LifecycleAnimationSO : ScriptableObject
     [SerializeField] private VfxCueEventChannel _vfxChannel;
     [SerializeField] private VfxStopEventChannel _vfxStopChannel;
 
-    // protected e non private: il drawer del package risolve il campo con Type.GetField() sul tipo
-    // dell'ASSET (una sottoclasse), e .NET non restituisce i campi private ereditati — il drawer
-    // riceverebbe null e andrebbe in NullReferenceException a ogni repaint dell'Inspector.
-    // I protected ereditati invece li trova. Nessuna sottoclasse deve leggerlo direttamente.
-    [Tooltip("VFX della fase, raggruppati per momento interno. Gli spec dello stesso stage partono insieme.")]
+    // protected and not private: the package's drawer resolves the field with Type.GetField() on the
+    // ASSET's type (a subclass), and .NET does not return inherited private fields — the drawer would get
+    // null and throw a NullReferenceException on every Inspector repaint. Inherited protected fields it
+    // does find. No subclass should read this directly.
+    [Tooltip("The phase's VFX, grouped by inner moment. Specs of the same stage start together.")]
     [SerializeField] protected SerializedDictionary<LifecycleVfxStage, List<LifecycleVfxSpec>> _vfx = new();
 
-    [Header("Loop successivo")]
-    [Tooltip("A fase conclusa, avvia l'animazione in loop configurata per questa fase sul personaggio.")]
+    [Header("Follow-up loop")]
+    [Tooltip("Once the phase is over, start the looping animation configured for that phase on the character.")]
     [SerializeField] private bool _startsLoopOnComplete = true;
 
-    [Tooltip("Quale fase in loop incatenare. Ignorato se il flag sopra è falso.")]
+    [Tooltip("Which looping phase to chain into. Ignored when the flag above is false.")]
     [SerializeField] private LifecyclePhase _loopPhaseOnComplete = LifecyclePhase.Idle;
 
-    // Sostituisce un `if (phase == Spawn) StartLoop(Idle)` cablato nell'animator: un domani `PostDeath`
-    // che deve incatenare un loop diverso (o nessuno) si configura sull'asset, senza toccare codice.
+    // Replaces an `if (phase == Spawn) StartLoop(Idle)` hard-wired into the animator: a future `PostDeath`
+    // that needs to chain a different loop (or none) is configured on the asset, with no code change.
     public bool StartsLoopOnComplete => _startsLoopOnComplete;
     public LifecyclePhase LoopPhaseOnComplete => _loopPhaseOnComplete;
 
     /// <summary>
-    /// Applica istantaneamente lo stato iniziale a tutti i bersagli (es. sprite già sott'acqua).
-    /// Chiamata nello stesso frame in cui il GO viene attivato, prima del rendering.
+    /// Instantly applies the initial state to every target (e.g. the sprite already underwater).
+    /// Called in the same frame the GameObject is activated, before rendering.
     ///
-    /// Puramente visiva: i VFX di <see cref="LifecycleVfxStage.Prepare"/> li alza il chiamante con
-    /// <see cref="BeginVfx"/> subito dopo, così l'ordine "stato applicato → effetto" è garantito e la
-    /// ri-preparazione di una fase già preparata non li fa ripartire.
+    /// Purely visual: the <see cref="LifecycleVfxStage.Prepare"/> VFX are raised by the caller with
+    /// <see cref="BeginVfx"/> right afterwards, so the "state applied → effect" ordering is guaranteed and
+    /// re-preparing an already prepared phase does not restart them.
     /// </summary>
     public virtual void Prepare(in LifecycleAnimationContext ctx)
     {
@@ -55,18 +55,18 @@ public abstract class LifecycleAnimationSO : ScriptableObject
             PrepareTarget(targets[i]);
     }
 
-    /// <summary>Stato iniziale di un singolo bersaglio.</summary>
+    /// <summary>The initial state of a single target.</summary>
     public virtual void PrepareTarget(in LifecycleAnimationTarget target) { }
 
     /// <summary>
-    /// Avvia le tween su un singolo bersaglio e restituisce quella "portante" (il movimento), l'unica da
-    /// attendere. <c>default</c> significa "niente da attendere".
+    /// Starts the tweens on a single target and returns the "carrying" one (the movement), the only one
+    /// worth awaiting. <c>default</c> means "nothing to await".
     /// </summary>
     public virtual Tween PlayTarget(in LifecycleAnimationTarget target) => default;
 
     /// <summary>
-    /// Apre la sessione VFX della fase e alza lo stage <see cref="LifecycleVfxStage.Prepare"/>.
-    /// Chiamata una sola volta per fase, subito dopo <see cref="Prepare"/>.
+    /// Opens the phase's VFX session and raises the <see cref="LifecycleVfxStage.Prepare"/> stage.
+    /// Called exactly once per phase, right after <see cref="Prepare"/>.
     /// </summary>
     public void BeginVfx(LifecycleVfxSession session, in LifecycleAnimationContext ctx)
     {
@@ -74,24 +74,25 @@ public abstract class LifecycleAnimationSO : ScriptableObject
 
         session.Begin(_vfxStopChannel);
 
-        // Wiring dimenticato: un loop senza canale di stop resterebbe acceso per sempre. Un solo log per
-        // fase (questo metodo gira una volta a fase, non per frame), niente stato da tracciare.
+        // Forgotten wiring: a loop with no stop channel would stay on forever. A single log per phase
+        // (this method runs once per phase, not per frame), with no state to track.
         if (_vfxStopChannel == null && HasLoopingSpec())
-            Debug.LogWarning($"[{name}] VFX in loop senza _vfxStopChannel assegnato: non verranno mai fermati.", this);
+            Debug.LogWarning($"[{name}] Looping VFX with no _vfxStopChannel assigned: they will never be stopped.", this);
 
         RaiseVfxStage(LifecycleVfxStage.Prepare, in ctx, session);
     }
 
     /// <summary>
-    /// Riproduce la fase: movimento di tutti i bersagli, con i VFX degli stage
-    /// <see cref="LifecycleVfxStage.Movement"/> ed <see cref="LifecycleVfxStage.End"/> ai loro appigli.
+    /// Plays the phase: the movement of every target, with the <see cref="LifecycleVfxStage.Movement"/>
+    /// and <see cref="LifecycleVfxStage.End"/> VFX at their respective hooks.
     ///
-    /// I persistenti aperti qui e in <see cref="BeginVfx"/> NON vengono spenti da questo metodo: lo fa il
-    /// <c>finally</c> del <see cref="CharacterLifecycleAnimator"/>, che copre anche la cancellazione del
-    /// token (personaggio distrutto a metà emersione) e la fase preparata e mai giocata.
+    /// The persistent effects opened here and in <see cref="BeginVfx"/> are NOT stopped by this method:
+    /// that is done by the <see cref="CharacterLifecycleAnimator"/>'s <c>finally</c>, which also covers
+    /// token cancellation (a character destroyed halfway through emerging) and the phase that was prepared
+    /// and never played.
     ///
-    /// Il <paramref name="token"/> non è consumato dal template ma resta in firma: è il contratto per una
-    /// sottoclasse che avesse bisogno di attendere qualcosa, e l'animator lo propaga già.
+    /// The <paramref name="token"/> is not consumed by the template but stays in the signature: it is the
+    /// contract for a subclass that needs to await something, and the animator already propagates it.
     /// </summary>
     public virtual async Awaitable PlayAsync(
         LifecycleAnimationContext ctx, LifecycleVfxSession session, CancellationToken token)
@@ -102,8 +103,8 @@ public abstract class LifecycleAnimationSO : ScriptableObject
     }
 
     /// <summary>
-    /// Avvia <see cref="PlayTarget"/> su tutti i bersagli e attende solo quella del corpo: hanno tutti la
-    /// stessa durata, quindi finiscono insieme e non serve una <c>Sequence</c>.
+    /// Starts <see cref="PlayTarget"/> on every target and awaits only the body's: they all share the
+    /// same duration, so they finish together and no <c>Sequence</c> is needed.
     /// </summary>
     protected async Awaitable PlayAllTargetsAsync(LifecycleAnimationContext ctx)
     {
@@ -111,16 +112,16 @@ public abstract class LifecycleAnimationSO : ScriptableObject
         if (targets.Count == 0) return;
 
         for (int i = 1; i < targets.Count; i++)
-            _ = PlayTarget(targets[i]);   // i satelliti accompagnano il corpo: nessuno li attende
+            _ = PlayTarget(targets[i]);   // the satellites tag along with the body: nobody awaits them
 
         Tween bodyTween = PlayTarget(targets[0]);
         if (bodyTween.isAlive) await bodyTween;
     }
 
     /// <summary>
-    /// Alza tutti gli spec di uno stage e registra nella sessione gli handle dei persistenti.
-    /// Stage assente dal dizionario = no-op silenzioso: è la configurazione voluta, non tutte le fasi
-    /// hanno un VFX per ogni momento.
+    /// Raises every spec of a stage and registers the persistent effects' handles with the session.
+    /// A stage missing from the dictionary is a silent no-op: that is the intended configuration, since
+    /// not every phase has a VFX for every moment.
     /// </summary>
     protected void RaiseVfxStage(
         LifecycleVfxStage stage, in LifecycleAnimationContext ctx, LifecycleVfxSession session)

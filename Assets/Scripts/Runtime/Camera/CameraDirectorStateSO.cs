@@ -47,8 +47,8 @@ public class CameraDirectorStateSO : ScriptableObject, ICombatSessionResettable
 
     private void OnEnable() => IsFocused = true;
 
-    // Se un cue restasse a metà (comando interrotto dallo scarico scena), IsFocused resterebbe
-    // false per sempre e il prossimo WaitUntilFocused del nuovo combattimento si bloccherebbe fino
-    // al timeout di sicurezza invece di partire libero.
+    // Were a cue to be left halfway (a command interrupted by a scene unload), IsFocused would stay false
+    // forever and the new combat's next WaitUntilFocused would block until the safety timeout instead of
+    // starting free.
     public void ResetForNewCombat() => IsFocused = true;
 }

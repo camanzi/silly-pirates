@@ -5,14 +5,14 @@ using AYellowpaper.SerializedCollections;
 using UnityEngine;
 
 /// <summary>
-/// Riproduce animazioni di lifecycle (spawn, morte, ecc.) su un personaggio, agnostico rispetto
-/// a <see cref="HostileCharacter"/> / <see cref="GridCharacter"/>. Le <see cref="LifecycleAnimationSO"/>
-/// referenziate sono stateless e condivise: nessun Instantiate per-istanza.
+/// Plays lifecycle animations (spawn, death, and so on) on a character, agnostic to whether it is a
+/// <see cref="HostileCharacter"/> or a <see cref="GridCharacter"/>. The <see cref="LifecycleAnimationSO"/>
+/// assets it references are stateless and shared: no per-instance Instantiate.
 ///
-/// Oltre al pivot del corpo l'animator gestisce dei "satelliti" registrati da terzi
-/// (<see cref="RegisterSatellite"/>): oggetti che appartengono visivamente al personaggio ma vivono fuori
-/// dalla gerarchia del pivot — le parti di un nemico composito, per esempio — e che quindi non
-/// erediterebbero nulla dalle animazioni del corpo.
+/// Besides the body pivot, the animator handles "satellites" registered by third parties
+/// (<see cref="RegisterSatellite"/>): objects that visually belong to the character but live outside the
+/// pivot's hierarchy — the parts of a composite enemy, for instance — and would therefore inherit
+/// nothing from the body's animations.
 /// </summary>
 public class CharacterLifecycleAnimator : MonoBehaviour
 {
@@ -22,31 +22,31 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
     public bool IsPlaying { get; private set; }
 
-    /// <summary>Sollevato dopo il <c>Prepare</c> di una fase, sia in <see cref="PrepareHidden"/> sia in <see cref="PlayAsync"/>.</summary>
+    /// <summary>Raised after a phase's <c>Prepare</c>, both in <see cref="PrepareHidden"/> and in <see cref="PlayAsync"/>.</summary>
     public event Action<LifecyclePhase> OnPhaseStarted;
 
-    /// <summary>Sollevato solo al completamento effettivo (non su cancellazione).</summary>
+    /// <summary>Raised only on actual completion (never on cancellation).</summary>
     public event Action<LifecyclePhase> OnPhaseCompleted;
 
-    /// <summary>Fase preparata o in corso; <c>null</c> quando il personaggio è a riposo.</summary>
+    /// <summary>The prepared or running phase; <c>null</c> when the character is at rest.</summary>
     public LifecyclePhase? ActivePhase => _activeAnimation != null ? _activePhase : null;
 
     /// <summary>
-    /// Binario indipendente da <see cref="ActivePhase"/>/<see cref="IsPlaying"/>: una transizione (Spawn,
-    /// Leave) e un loop (Idle, domani PostDeath) non sono mai attivi insieme, ma nessun consumatore
-    /// esistente deve accorgersi del loop, quindi i due stati restano separati invece di essere unificati.
+    /// A track independent of <see cref="ActivePhase"/>/<see cref="IsPlaying"/>: a transition (Spawn,
+    /// Leave) and a loop (Idle, and tomorrow PostDeath) are never active together, but no existing
+    /// consumer should ever notice the loop, so the two states stay separate rather than being unified.
     /// </summary>
     public bool IsLoopingAnimationPlaying => _loopingAnimation != null;
 
-    /// <summary>Fase in loop attiva; <c>null</c> quando il personaggio è a riposo rispetto a questo binario.</summary>
+    /// <summary>The active looping phase; <c>null</c> when the character is at rest on this track.</summary>
     public LifecyclePhase? LoopingPhase => _loopingAnimation != null ? _loopingPhase : null;
 
     /// <summary>
-    /// Pivot visivo (es. MeshHolder) per animazioni una-tantum esterne alle <see cref="LifecyclePhase"/>,
-    /// come i salti in combattimento. Se il prefab non ha un pivot dedicato, <see cref="EnsureRestPoseCaptured"/>
-    /// ha già fatto fallback su <c>transform</c> loggando un errore: i chiamanti devono trattare
-    /// "<c>AnimationRoot == transform</c>" come "nessun pivot sicuro disponibile" e NON animarlo,
-    /// per non spostare collider e posizione di griglia.
+    /// The visual pivot (e.g. MeshHolder) for one-off animations outside the <see cref="LifecyclePhase"/>
+    /// set, such as combat jumps. If the prefab has no dedicated pivot, <see cref="EnsureRestPoseCaptured"/>
+    /// has already fallen back to <c>transform</c> and logged an error: callers must read
+    /// "<c>AnimationRoot == transform</c>" as "no safe pivot available" and must NOT animate it, or they
+    /// will move the collider and the grid position along with it.
     /// </summary>
     public Transform AnimationRoot
     {
@@ -58,9 +58,9 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Tutti i bersagli visivi: <c>[0]</c> è il corpo, gli altri i satelliti registrati. Esposta perché
-    /// anche le animazioni fuori dalle <see cref="LifecyclePhase"/> (i salti) devono muovere il corpo
-    /// INSIEME ai satelliti, altrimenti le parti resterebbero a terra mentre il corpo salta.
+    /// Every visual target: <c>[0]</c> is the body, the rest are the registered satellites. Exposed
+    /// because animations outside the <see cref="LifecyclePhase"/> set (the jumps) have to move the body
+    /// TOGETHER with its satellites, or the parts would stay on the ground while the body leaps.
     /// </summary>
     public IReadOnlyList<LifecycleAnimationTarget> Targets
     {
@@ -73,48 +73,48 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
     private readonly List<LifecycleAnimationTarget> _targets = new();
 
-    // Per-istanza e non nella SO (condivisa fra prefab): tiene gli handle dei VFX persistenti della fase
-    // in corso. Riusata fase dopo fase, così spawn ripetuti non allocano.
+    // Per-instance and not on the SO (which is shared between prefabs): it holds the handles of the
+    // running phase's persistent VFX. Reused phase after phase, so repeated spawns allocate nothing.
     private readonly LifecycleVfxSession _vfxSession = new();
 
-    // Binario loop, separato dai campi sopra e non riusato: _vfxSession.StopAll() gira a ogni BeginPhase
-    // (con la guardia "resuming"), condividerla spegnerebbe i VFX del loop a ogni Spawn e intreccerebbe
-    // i due binari che il piano vuole indipendenti.
+    // The loop track, separate from the fields above and deliberately not reused: _vfxSession.StopAll()
+    // runs on every BeginPhase (behind the "resuming" guard), so sharing it would kill the loop's VFX on
+    // every Spawn and entangle the two tracks the design wants independent.
     private readonly LifecycleTweenSession _loopTweenSession = new();
     private readonly LifecycleVfxSession _loopVfxSession = new();
 
     private LifecycleAnimationContext _context;
     private bool _restPoseCaptured;
 
-    // true da Start in poi. Prima di quel momento la scena si sta ancora inizializzando: alzare un cue
-    // significa parlare a un director che può non aver ancora fatto Awake, o a un listener non ancora
-    // iscritto — e in quel secondo caso il cue si perde in silenzio, senza nessun errore. Lo stato
-    // visivo invece si applica subito: Prepare non comunica con nessuno.
+    // true from Start onwards. Before that the scene is still initializing: raising a cue means talking
+    // to a director that may not have run Awake yet, or to a listener that has not subscribed yet — and
+    // in that second case the cue is lost silently, with no error at all. The visual state, by contrast,
+    // is applied right away: Prepare talks to nobody.
     private bool _initialized;
     private bool _pendingVfxBegin;
 
-    // Non-null solo fra l'inizio di una fase e il suo completamento: serve ad agganciare alla fase in
-    // corso un satellite che si registra in ritardo.
+    // Non-null only between the start of a phase and its completion: it is what lets a late-registering
+    // satellite hook into the phase already in flight.
     private LifecycleAnimationSO _activeAnimation;
     private LifecyclePhase _activePhase;
 
-    // Specchio dei tre campi sopra ma per il binario loop. _pendingLoopStart replica la stessa finestra di
-    // inizializzazione di _pendingVfxBegin: StartLoop può essere chiamato da OnEnable, prima di Start.
+    // A mirror of the three fields above, but for the loop track. _pendingLoopStart replicates the same
+    // initialization window as _pendingVfxBegin: StartLoop can be called from OnEnable, before Start.
     private LoopingLifecycleAnimationSO _loopingAnimation;
     private LifecyclePhase _loopingPhase;
     private bool _pendingLoopStart;
 
-    // Bool e non contatore: i tre punti di sospensione del progetto (salto, shake di telegraph, orbita
-    // dello scettro) non sono mai concorrenti sullo stesso personaggio, e StopLoop() lo azzera comunque a
-    // ogni transizione — non serve un refcount per uno stato che è già garantito non annidarsi.
+    // A bool and not a counter: the project's three suspension points (jump, telegraph shake, sceptre
+    // orbit) are never concurrent on the same character, and StopLoop() clears it on every transition
+    // anyway — no refcount is needed for a state that is already guaranteed not to nest.
     private bool _loopSuspended;
 
     private void Awake() => EnsureRestPoseCaptured();
 
     /// <summary>
-    /// Fine della finestra di inizializzazione: è l'unico momento garantito dopo TUTTI gli Awake e gli
-    /// OnEnable della scena, ed è comunque nello stesso frame in cui il personaggio è stato attivato,
-    /// prima che venga renderizzato — quindi il VFX rimandato qui non si vede partire in ritardo.
+    /// The end of the initialization window: the only moment guaranteed to be after ALL of the scene's
+    /// Awake and OnEnable calls, and still within the same frame in which the character was activated,
+    /// before it is rendered — so a VFX deferred to here is never seen starting late.
     /// </summary>
     private void Start()
     {
@@ -122,14 +122,14 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         FlushPendingVfxBegin();
         FlushPendingLoopStart();
 
-        // Copre il personaggio senza uno slot Spawn configurato: Play(Spawn) gira in OnEnable e imposta
-        // _activeAnimation in modo sincrono (vedi commento su OnPhaseCompleted), quindi se a questo punto
-        // non c'è né una transizione né un loop già in corso, nessuno lo avvierà mai da solo.
+        // Covers the character with no Spawn slot configured: Play(Spawn) runs in OnEnable and sets
+        // _activeAnimation synchronously (see the comment on OnPhaseCompleted), so if by this point there
+        // is neither a transition nor a loop already running, nothing will ever start one on its own.
         if (_activeAnimation == null && _loopingAnimation == null)
             StartLoop(LifecyclePhase.Idle);
     }
 
-    /// <summary>Alza i VFX di <see cref="LifecycleVfxStage.Prepare"/> rimandati da <see cref="BeginPhase"/>.</summary>
+    /// <summary>Raises the <see cref="LifecycleVfxStage.Prepare"/> VFX deferred by <see cref="BeginPhase"/>.</summary>
     private void FlushPendingVfxBegin()
     {
         if (!_pendingVfxBegin) return;
@@ -138,7 +138,7 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         _activeAnimation?.BeginVfx(_vfxSession, in _context);
     }
 
-    /// <summary>Avvia il loop rimandato da <see cref="StartLoop"/> quando chiamato prima di <see cref="Start"/>.</summary>
+    /// <summary>Starts the loop deferred by <see cref="StartLoop"/> when it was called before <see cref="Start"/>.</summary>
     private void FlushPendingLoopStart()
     {
         if (!_pendingLoopStart) return;
@@ -148,25 +148,25 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Rete di sicurezza per la fase preparata e mai giocata: <see cref="PrepareHidden"/> apre la sessione
-    /// VFX, e se il personaggio viene distrutto o disattivato durante l'intro nessun <c>finally</c> di
-    /// <see cref="PlayAsync"/> la chiuderebbe. Il fallback di ultima istanza resta
-    /// <c>VfxDirector.OnDisable</c> → <c>StopEverything()</c>, ma non deve essere l'unico.
+    /// A safety net for the phase that was prepared and never played: <see cref="PrepareHidden"/> opens
+    /// the VFX session, and if the character is destroyed or disabled during the intro no <c>finally</c>
+    /// in <see cref="PlayAsync"/> would ever close it. The last-resort fallback is still
+    /// <c>VfxDirector.OnDisable</c> → <c>StopEverything()</c>, but it must not be the only one.
     /// </summary>
     private void OnDisable()
     {
         _vfxSession.StopAll();
-        _pendingVfxBegin = false;   // disattivato prima di Start: al risveglio non deve accendere nulla
+        _pendingVfxBegin = false;   // disabled before Start: on waking up it must not light anything
         StopLoop();
     }
 
     /// <summary>
-    /// Cattura una sola volta la posa a riposo, risolvendo prima i riferimenti mancanti.
-    /// Lazy e idempotente perché su <c>Object.Instantiate</c> l'<c>OnEnable</c> di un altro componente
-    /// (<see cref="HostileCharacter.OnCombatJoin"/> → <see cref="Play"/>) può girare prima di questo
-    /// <c>Awake</c>: senza la cattura lazy il contesto resterebbe <c>default</c> e l'animazione
-    /// verrebbe saltata in silenzio. Il flag garantisce che la posa non venga mai ricatturata dopo
-    /// che un'animazione l'ha spostata — requisito di <see cref="ResetToRest"/>.
+    /// Captures the rest pose exactly once, resolving any missing references first.
+    /// Lazy and idempotent because on <c>Object.Instantiate</c> another component's <c>OnEnable</c>
+    /// (<see cref="HostileCharacter.OnCombatJoin"/> → <see cref="Play"/>) can run before this
+    /// <c>Awake</c>: without the lazy capture the context would stay <c>default</c> and the animation
+    /// would be skipped silently. The flag guarantees the pose is never recaptured after an animation
+    /// has moved it — a requirement of <see cref="ResetToRest"/>.
     /// </summary>
     private void EnsureRestPoseCaptured()
     {
@@ -179,23 +179,23 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         {
             _animationRoot = transform;
             Debug.LogError(
-                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': _animationRoot non assegnato. " +
-                "Le animazioni sposteranno il transform di griglia (collider inclusi) invece del solo " +
-                "pivot visivo. Assegnare un child pivot (es. MeshHolder).", this);
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': _animationRoot not assigned. " +
+                "The animations will move the grid transform (colliders included) instead of just the " +
+                "visual pivot. Assign a child pivot (e.g. MeshHolder).", this);
         }
 
-        // Il corpo occupa sempre l'indice 0; i satelliti si accodano dopo.
+        // The body always occupies index 0; satellites queue up after it.
         _targets.Add(LifecycleAnimationTarget.Capture(_animationRoot, _spriteRenderer));
         _context = new LifecycleAnimationContext(transform, _targets);
     }
 
     /// <summary>
-    /// Aggiunge un satellite alle animazioni del personaggio. La posa a riposo è catturata ORA: registrare
-    /// un oggetto già spostato da qualcun altro ne falserebbe il riposo.
+    /// Adds a satellite to the character's animations. The rest pose is captured NOW: registering an
+    /// object somebody else has already moved would record a false rest pose for it.
     ///
-    /// Registrazione tardiva: l'ordine fra l'<c>Awake</c> di chi registra e l'<c>OnEnable</c> di chi avvia
-    /// lo spawn non è garantito, quindi se una fase è già stata preparata il satellite la recupera subito —
-    /// altrimenti resterebbe visibile in superficie mentre il corpo è sott'acqua.
+    /// Late registration: the ordering between the registrant's <c>Awake</c> and the <c>OnEnable</c> that
+    /// starts the spawn is not guaranteed, so if a phase has already been prepared the satellite catches
+    /// up with it at once — otherwise it would sit visible on the surface while the body is underwater.
     /// </summary>
     public void RegisterSatellite(Transform pivot, SpriteRenderer renderer = null)
     {
@@ -210,9 +210,9 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         var target = LifecycleAnimationTarget.Capture(pivot, renderer);
         _targets.Add(target);
 
-        // I due binari sono mutuamente esclusivi (BeginPhase ferma sempre il loop prima di una
-        // transizione), ma un satellite può registrarsi mentre gira l'uno o l'altro: stesso recupero
-        // per entrambi, altrimenti resterebbe indietro finché la fase/il loop in corso non ricomincia.
+        // The two tracks are mutually exclusive (BeginPhase always stops the loop before a transition),
+        // but a satellite can register while either one is running: the same catch-up applies to both, or
+        // it would lag behind until the running phase or loop starts over.
         if (_activeAnimation != null)
         {
             _activeAnimation.PrepareTarget(target);
@@ -230,7 +230,7 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     {
         if (pivot == null) return;
 
-        // Si parte da 1: l'indice 0 è il corpo e non è rimovibile.
+        // Start from 1: index 0 is the body and cannot be removed.
         for (int i = 1; i < _targets.Count; i++)
         {
             if (_targets[i].Pivot != pivot) continue;
@@ -239,7 +239,7 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         }
     }
 
-    /// <summary>Fire-and-forget: avvia l'animazione senza attendere il completamento.</summary>
+    /// <summary>Fire-and-forget: starts the animation without awaiting its completion.</summary>
     public async void Play(LifecyclePhase phase)
     {
         try
@@ -248,16 +248,16 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
-            // Distrutto durante l'animazione: nulla da fare.
+            // Destroyed during the animation: nothing to do.
         }
     }
 
     /// <summary>
-    /// Applica istantaneamente lo stato "nascosto" di una fase (es. pivot sott'acqua, alpha 0) senza
-    /// riprodurre l'animazione. Usato dalla sequenza di intro al combattimento per sopprimere lo
-    /// spawn automatico di <see cref="HostileCharacter.OnCombatJoin"/> finché il regista non decide
-    /// di rigiocarlo con <see cref="PlayAsync"/>. Stessa risoluzione della SO di <see cref="PlayAsync"/>,
-    /// stessi messaggi di log: la SO resta stateless, tutto lo stato mutabile vive nel contesto.
+    /// Instantly applies a phase's "hidden" state (e.g. pivot underwater, alpha 0) without playing the
+    /// animation. Used by the combat intro sequence to suppress the automatic spawn of
+    /// <see cref="HostileCharacter.OnCombatJoin"/> until the director decides to replay it with
+    /// <see cref="PlayAsync"/>. Same SO resolution as <see cref="PlayAsync"/> and the same log messages:
+    /// the SO stays stateless, all mutable state lives in the context.
     /// </summary>
     public void PrepareHidden(LifecyclePhase phase)
     {
@@ -274,9 +274,9 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
         if (!TryResolveAnimation(phase, out LifecycleAnimationSO animation)) return;
 
-        // Un Play() scritto per errore su una fase in loop (es. Idle) non deve MAI finire su
-        // `await bodyTween`: quel tween non torna mai, e l'await bloccherebbe per sempre sia questo
-        // metodo sia IsPlaying. Si ridirige sul binario giusto invece di crashare o impiccarsi.
+        // A Play() written by mistake against a looping phase (e.g. Idle) must NEVER end up on
+        // `await bodyTween`: that tween never returns, and the await would block both this method and
+        // IsPlaying forever. Redirect to the right track instead of crashing or hanging.
         if (animation is LoopingLifecycleAnimationSO)
         {
             StartLoop(phase);
@@ -288,11 +288,12 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         IsPlaying = true;
         try
         {
-            // IsPlaying è già vero qui sopra, sincrono: WaitUntilIdleAsync (SpawnAlliesCommand) non deve
-            // mai vedere l'animator a riposo fra il Play e la prima attesa.
+            // IsPlaying is already true just above, synchronously: WaitUntilIdleAsync
+            // (SpawnAlliesCommand) must never catch the animator at rest between the Play and the first
+            // await.
             //
-            // Play() è async void e gira sincrono dentro OnEnable: senza questa attesa anche lo stage
-            // Movement partirebbe verso sistemi non ancora inizializzati. Costo zero a scena avviata.
+            // Play() is async void and runs synchronously inside OnEnable: without this wait the Movement
+            // stage too would fire at systems that are not initialized yet. Zero cost once the scene is up.
             while (!_initialized)
                 await Awaitable.NextFrameAsync(token);
 
@@ -304,47 +305,47 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         {
             IsPlaying = false;
 
-            // Qui e non dentro la SO: copre la cancellazione del token (personaggio distrutto a metà
-            // emersione), che altrimenti lascerebbe i persistenti accesi per sempre.
+            // Here and not inside the SO: this covers token cancellation (a character destroyed halfway
+            // through emerging), which would otherwise leave the persistent effects on forever.
             _vfxSession.StopAll();
         }
 
-        // Fuori dal finally: una fase cancellata non è una fase completata.
+        // Outside the finally: a cancelled phase is not a completed phase.
         _activeAnimation = null;
         OnPhaseCompleted?.Invoke(phase);
 
-        // Un solo punto che copre sia lo spawn normale sia quello dell'intro al combattimento (che passa
-        // comunque da qui), invece di ramificare "se è uno spawn, avvia l'idle" in più posti.
+        // A single place covering both the normal spawn and the combat intro one (which goes through here
+        // anyway), instead of branching on "if this is a spawn, start the idle" in several places.
         if (animation.StartsLoopOnComplete) StartLoop(animation.LoopPhaseOnComplete);
     }
 
     /// <summary>
-    /// Prende possesso dei bersagli e ne applica lo stato iniziale. I tween altrui vengono fermati prima:
-    /// uno shake di telegraph o un salto interrotto a metà scrivono sugli stessi <c>localPosition</c> che
-    /// l'animazione di lifecycle sta per animare, e se ne contenderebbero il controllo.
+    /// Takes ownership of the targets and applies their initial state. Other people's tweens are stopped
+    /// first: a telegraph shake or a jump interrupted halfway write to the same <c>localPosition</c> the
+    /// lifecycle animation is about to animate, and the two would fight over control of it.
     ///
-    /// I VFX di <see cref="LifecycleVfxStage.Prepare"/> partono qui, subito dopo lo stato iniziale — ma
-    /// SOLO alla prima preparazione della fase. <see cref="PrepareHidden"/> e <see cref="PlayAsync"/>
-    /// passano entrambi di qui per la stessa fase durante l'intro al combattimento: senza la guardia le
-    /// bolle di un'emersione ripartirebbero da capo nel momento in cui il mostro comincia a salire.
+    /// The <see cref="LifecycleVfxStage.Prepare"/> VFX start here, right after the initial state — but
+    /// ONLY on the phase's first preparation. <see cref="PrepareHidden"/> and <see cref="PlayAsync"/> both
+    /// come through here for the same phase during the combat intro: without the guard, the bubbles of an
+    /// emergence would restart from scratch at the moment the monster begins to rise.
     ///
-    /// Se la scena si sta ancora inizializzando (questo metodo è raggiunto dall'OnEnable del personaggio)
-    /// i VFX vengono messi in coda e alzati da <see cref="Start"/>: lo stato visivo non può aspettare,
-    /// i cue verso gli altri sistemi sì.
+    /// If the scene is still initializing (this method is reached from the character's OnEnable) the VFX
+    /// are queued and raised by <see cref="Start"/>: the visual state cannot wait, the cues towards the
+    /// other systems can.
     /// </summary>
     private void BeginPhase(LifecyclePhase phase, LifecycleAnimationSO animation)
     {
-        // In testa e non delegato a StopActiveTweens sotto: quello uccide comunque i tween del loop
-        // (sono sugli stessi Transform), ma non gli handle registrati in _loopTweenSession, non i VFX
-        // del loop e non il flag di sospensione — StopLoop() è l'unico che chiude tutti e tre insieme.
+        // Up front and not delegated to StopActiveTweens below: that one does kill the loop's tweens
+        // (they are on the same Transforms), but not the handles registered in _loopTweenSession, not the
+        // loop's VFX and not the suspension flag — StopLoop() is the only one closing all three together.
         StopLoop();
 
-        // Anche il begin rimandato conta come sessione già aperta: senza, PrepareHidden e PlayAsync
-        // sulla stessa fase lo metterebbero in coda due volte.
+        // A deferred begin counts as an already-open session too: without this, PrepareHidden and
+        // PlayAsync on the same phase would queue it twice.
         bool resuming = (_vfxSession.IsOpen || _pendingVfxBegin)
                         && _activeAnimation == animation && _activePhase == phase;
 
-        // Fase diversa da quella preparata: i persistenti rimasti aperti non le appartengono.
+        // A different phase from the prepared one: any persistent effects left open do not belong to it.
         if (!resuming)
         {
             _vfxSession.StopAll();
@@ -372,29 +373,29 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     {
         animation = null;
 
-        // Dizionario vuoto: non è mai una configurazione voluta — un prefab senza animazioni di
-        // lifecycle non ha nemmeno questo componente. In build indica che i dati serializzati sono
-        // andati persi sul clone (vedi SerializedDictionary.OnAfterDeserialize, che in player
-        // svuota la lista di backing dopo la prima deserializzazione).
+        // An empty dictionary is never an intended configuration — a prefab with no lifecycle animations
+        // does not carry this component at all. In a build it means the serialized data was lost on the
+        // clone (see SerializedDictionary.OnAfterDeserialize, which in the player empties the backing list
+        // after the first deserialization).
         if (_animations == null || _animations.Count == 0)
         {
             Debug.LogWarning(
-                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': dizionario animazioni vuoto, " +
-                $"fase {phase} ignorata.", this);
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': empty animation dictionary, " +
+                $"phase {phase} ignored.", this);
             return false;
         }
 
-        // Fase non configurata: silenzioso, è la configurazione voluta (non tutti i personaggi
-        // hanno un'animazione per ogni fase).
+        // An unconfigured phase: silent, because that is the intended configuration (not every character
+        // has an animation for every phase).
         if (!_animations.TryGetValue(phase, out animation))
             return false;
 
-        // Entry presente ma senza SO: quasi certamente un wiring dimenticato, non un'assenza voluta.
+        // Entry present but with no SO: almost certainly forgotten wiring, not a deliberate absence.
         if (animation == null)
         {
             Debug.LogWarning(
-                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': la fase {phase} è nel dizionario " +
-                "ma non ha una LifecycleAnimationSO assegnata.", this);
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': phase {phase} is in the dictionary " +
+                "but has no LifecycleAnimationSO assigned.", this);
             return false;
         }
 
@@ -402,9 +403,9 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Spin-wait su <see cref="IsPlaying"/>: necessario perché l'Awaitable di Unity è single-consumption
-    /// e non può essere salvato in un campo da <see cref="Play"/> per essere atteso altrove
-    /// (stesso pattern di <c>EnemyTurnDriver.ExecuteTurnAsync</c>).
+    /// A spin-wait on <see cref="IsPlaying"/>: necessary because Unity's Awaitable is single-consumption
+    /// and cannot be stashed in a field by <see cref="Play"/> to be awaited elsewhere
+    /// (the same pattern as <c>EnemyTurnDriver.ExecuteTurnAsync</c>).
     /// </summary>
     public async Awaitable WaitUntilIdleAsync(CancellationToken token)
     {
@@ -433,11 +434,11 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Avvia il binario loop sulla fase indicata — oggi solo <see cref="LifecyclePhase.Idle"/>, domani
-    /// anche un <c>PostDeath</c>: il meccanismo non sa e non deve sapere quale fase gira sopra di lui.
-    /// Stessa risoluzione di <see cref="PlayAsync"/> (<see cref="TryResolveAnimation"/>, stessi log), ma
-    /// NON passa mai da <c>LifecycleAnimationSO.PlayAsync</c>: quel binario presuppone un tween che
-    /// finisce, un loop no.
+    /// Starts the loop track on the given phase — today only <see cref="LifecyclePhase.Idle"/>, tomorrow
+    /// a <c>PostDeath</c> as well: the mechanism does not know, and must not know, which phase runs on top
+    /// of it. Same resolution as <see cref="PlayAsync"/> (<see cref="TryResolveAnimation"/>, same logs),
+    /// but it NEVER goes through <c>LifecycleAnimationSO.PlayAsync</c>: that track assumes a tween that
+    /// ends, and a loop has none.
     /// </summary>
     public void StartLoop(LifecyclePhase phase)
     {
@@ -448,13 +449,13 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         if (animation is not LoopingLifecycleAnimationSO loopingAnimation)
         {
             Debug.LogWarning(
-                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': la fase {phase} non è una " +
-                $"{nameof(LoopingLifecycleAnimationSO)}, StartLoop ignorato.", this);
+                $"[{nameof(CharacterLifecycleAnimator)}] '{name}': phase {phase} is not a " +
+                $"{nameof(LoopingLifecycleAnimationSO)}, StartLoop ignored.", this);
             return;
         }
 
-        // Chiude un loop precedente (VFX, tween, sospensione) prima di prenderne possesso: stesso motivo
-        // per cui BeginPhase ferma i tween altrui prima di animare gli stessi pivot.
+        // Closes any previous loop (VFX, tweens, suspension) before taking ownership: the same reason
+        // BeginPhase stops other people's tweens before animating the same pivots.
         StopLoop();
 
         _loopingAnimation = loopingAnimation;
@@ -462,8 +463,8 @@ public class CharacterLifecycleAnimator : MonoBehaviour
 
         loopingAnimation.Prepare(in _context);
 
-        // Stessa finestra di inizializzazione di BeginPhase/_pendingVfxBegin: un cue alzato prima di Start
-        // può parlare a un director non ancora sveglio o perdersi su un listener non ancora iscritto.
+        // The same initialization window as BeginPhase/_pendingVfxBegin: a cue raised before Start can
+        // talk to a director that is not awake yet, or be lost on a listener that has not subscribed yet.
         if (!_initialized)
         {
             _pendingLoopStart = true;
@@ -473,7 +474,7 @@ public class CharacterLifecycleAnimator : MonoBehaviour
         BeginLoopPlayback(loopingAnimation);
     }
 
-    /// <summary>Alza Prepare+Movement e avvia i tween su tutti i bersagli. Condiviso fra <see cref="StartLoop"/> (percorso sincrono) e <see cref="FlushPendingLoopStart"/> (percorso rimandato).</summary>
+    /// <summary>Raises Prepare+Movement and starts the tweens on every target. Shared between <see cref="StartLoop"/> (the synchronous path) and <see cref="FlushPendingLoopStart"/> (the deferred path).</summary>
     private void BeginLoopPlayback(LoopingLifecycleAnimationSO animation)
     {
         animation.BeginVfx(_loopVfxSession, in _context);
@@ -484,14 +485,14 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Ferma il binario loop: VFX (stage End), tween e registrazione dell'animazione, con ripristino della
-    /// sola posizione dei bersagli. Chiamata da <see cref="BeginPhase"/>, <see cref="ResetToRest"/> e
-    /// <c>OnDisable</c> per rimettere il personaggio "a riposo" rispetto a questo binario.
+    /// Stops the loop track: VFX (End stage), tweens and the animation registration, restoring only the
+    /// targets' position. Called by <see cref="BeginPhase"/>, <see cref="ResetToRest"/> and
+    /// <c>OnDisable</c> to put the character back "at rest" with respect to this track.
     ///
-    /// Azzera anche <see cref="_loopSuspended"/>, ma quello è un ripiego, non una rete su cui contare: si
-    /// attiva solo quando il personaggio cambia fase, e chi sospende resta tipicamente vivo e a riposo per
-    /// tutto il prestito. Ogni <see cref="SuspendLoop"/> deve avere il suo <see cref="ResumeLoop"/> su un
-    /// percorso che gira davvero (cfr. <see cref="MultiStepAbilityStepSO.EndPartShake"/>).
+    /// It also clears <see cref="_loopSuspended"/>, but that is a stopgap and not a net to rely on: it
+    /// only fires when the character changes phase, and whoever suspended typically stays alive and idle
+    /// for the whole loan. Every <see cref="SuspendLoop"/> must have its own <see cref="ResumeLoop"/> on a
+    /// path that actually runs (cf. <see cref="MultiStepAbilityStepSO.EndPartShake"/>).
     /// </summary>
     public void StopLoop()
     {
@@ -515,10 +516,10 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Sospende il SOLO movimento del loop: usata dai comandi che tweenano lo stesso <c>localPosition</c>
-    /// di un bersaglio registrato (salto, shake di telegraph, orbita dello scettro) e che altrimenti se ne
-    /// contenderebbero il controllo. Animazione e VFX restano registrati — non è un conflitto di effetti,
-    /// solo di transform — così <see cref="ResumeLoop"/> riparte senza rigiocare Prepare/Movement.
+    /// Suspends ONLY the loop's movement: used by the commands that tween the same <c>localPosition</c>
+    /// of a registered target (jump, telegraph shake, sceptre orbit) and would otherwise fight over
+    /// control of it. The animation and its VFX stay registered — this is not a clash of effects, only of
+    /// transforms — so <see cref="ResumeLoop"/> resumes without replaying Prepare/Movement.
     /// </summary>
     public void SuspendLoop()
     {
@@ -532,15 +533,16 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Controparte di <see cref="SuspendLoop"/>: riavvia i tween su tutti i bersagli correnti. Non serve
-    /// distinguere quelli registrati durante la sospensione: <see cref="RegisterSatellite"/> li aggiunge
-    /// già a <c>_targets</c>, e <see cref="LoopingLifecycleAnimationSO.StartLoops"/> li itera tutti.
+    /// The counterpart of <see cref="SuspendLoop"/>: restarts the tweens on all current targets. There is
+    /// no need to single out the ones registered during the suspension: <see cref="RegisterSatellite"/>
+    /// already adds them to <c>_targets</c>, and <see cref="LoopingLifecycleAnimationSO.StartLoops"/>
+    /// iterates over all of them.
     ///
-    /// Ripristina la posa PRIMA di ripartire, gemello di quello che <see cref="SuspendLoop"/> fa in uscita:
-    /// la sospensione è un prestito del transform, e chi lo restituisce non deve sapere dov'era il riposo.
-    /// Serve davvero — <c>Tween.Stop()</c> di PrimeTween è un kill, non un rewind: uno shake infinito
-    /// fermato a metà oscillazione lascia il pivot sfasato, e i tween del loop ripartono dal valore
-    /// corrente, fissando quello sfasamento per sempre.
+    /// It restores the pose BEFORE resuming, the twin of what <see cref="SuspendLoop"/> does on the way
+    /// out: a suspension is a loan of the transform, and whoever gives it back should not have to know
+    /// where rest was. It genuinely matters — PrimeTween's <c>Tween.Stop()</c> is a kill, not a rewind: an
+    /// infinite shake stopped mid-oscillation leaves the pivot offset, and the loop's tweens resume from
+    /// the current value, freezing that offset in place forever.
     /// </summary>
     public void ResumeLoop()
     {
@@ -553,11 +555,11 @@ public class CharacterLifecycleAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Ripristina la sola posizione dei bersagli — MAI la scala. A differenza di
-    /// <see cref="LifecycleAnimationTarget.ResetPoseToRest"/>, che tocca anche <c>localScale</c>, il loop
-    /// non anima e non deve appropriarsi della scala: la stanno già usando
-    /// <see cref="JumpSquashStretchHelper"/> e i comandi legacy di squash-stretch, e un ripristino qui la
-    /// riporterebbe a riposo a metà del loro tween.
+    /// Restores only the targets' position — NEVER their scale. Unlike
+    /// <see cref="LifecycleAnimationTarget.ResetPoseToRest"/>, which also touches <c>localScale</c>, the
+    /// loop does not animate the scale and must not claim it: <see cref="JumpSquashStretchHelper"/> and
+    /// the legacy squash-stretch commands are already using it, and a restore here would snap it back to
+    /// rest halfway through their tween.
     /// </summary>
     private void RestoreLoopPose()
     {

@@ -60,13 +60,13 @@ public static class GridUtils
 
         if (seedX < 0 || seedX >= bounds.size.x || seedY < 0 || seedY >= bounds.size.y)
         {
-            Debug.LogError("Seed position fuori dai bounds della tilemap!");
+            Debug.LogError("Seed position outside the tilemap bounds!");
             return innerArea;
         }
 
         if (border[seedX, seedY])
         {
-            Debug.LogError("Seed position non valida: NON puó essere un bordo.");
+            Debug.LogError("Invalid seed position: it can NOT be a border.");
             return innerArea;
         }
 

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Cuore dello scudo elementale. Vive sulla parte (PF_ElementalShield) e riscrive a runtime le resistenze
-/// del personaggio che la indossa.
+/// The heart of the elemental shield. It lives on the part (PF_ElementalShield) and rewrites at runtime
+/// the resistances of the character wearing it.
 ///
-/// Scudo attivo: l'owner e' resistente a tutti e quattro gli elementi, tranne quello selezionato, che
-/// invece lo CURA del danno inflitto — l'elemento estratto e' quello da evitare sul corpo, ma resta anche
-/// l'unico che rompe la parte scudo (vedi <see cref="ElementalShieldHitBehaviorSO"/>), quindi va scaricato
-/// li' e mai sul corpo. Scudo rotto: l'owner perde tutto e diventa vulnerabile a tutti e quattro, finche'
-/// il PartRegenBehaviorSO della parte non lo rimette in piedi.
+/// Shield up: the owner is resistant to all four elements except the selected one, which instead HEALS it
+/// for the damage dealt — the drawn element is the one to avoid on the body, but it also remains the only
+/// one that breaks the shield part (see <see cref="ElementalShieldHitBehaviorSO"/>), so it has to be
+/// unloaded there and never on the body. Shield broken: the owner loses everything and becomes vulnerable
+/// to all four, until the part's PartRegenBehaviorSO puts it back up.
 ///
-/// Tutti i behavior concessi all'owner sono tracciati in <see cref="_granted"/>: la revoca tocca solo
-/// quelli, mai i _baseBehaviors del personaggio, che restano attivi e si compongono con questi.
+/// Every behavior granted to the owner is tracked in <see cref="_granted"/>: revocation touches only those,
+/// never the character's own _baseBehaviors, which stay active and compose with these.
 /// </summary>
 [RequireComponent(typeof(HealthController))]
 public class ElementalShieldController : MonoBehaviour
@@ -28,12 +28,12 @@ public class ElementalShieldController : MonoBehaviour
         public Color Tint;
     }
 
-    [Header("Elementi")]
-    [Tooltip("Una riga per elemento (Physical, Fire, Ice, Lightning): gli asset di resistenza, assorbimento e vulnerabilita' da concedere all'owner.")]
+    [Header("Elements")]
+    [Tooltip("One row per element (Physical, Fire, Ice, Lightning): the resistance, absorption and vulnerability assets to grant to the owner.")]
     [SerializeField] private ElementBehaviors[] _elements;
 
-    [Header("Configurazione scudo")]
-    [Tooltip("Colpi con l'elemento attivo necessari a rompere lo scudo. Ogni colpo vale MaxHp / questo valore.")]
+    [Header("Shield configuration")]
+    [Tooltip("Hits with the active element needed to break the shield. Each hit is worth MaxHp / this value.")]
     [SerializeField] private int _hitsToBreak = 3;
     [SerializeField] private ElementalShieldTrackerBehaviorSO _tracker;
     [SerializeField] private ShieldBreakSlowPassiveSO _breakPassive;
@@ -57,8 +57,8 @@ public class ElementalShieldController : MonoBehaviour
         _shieldHealth = GetComponent<HealthController>();
         _owner = GetComponentInParent<HostileCharacter>();
 
-        // Si ascolta l'HealthController della parte e non IPartOwner.OnPartBroken: quest'ultimo non ha un
-        // gemello "riparato" e riemette a ogni rigenerazione, mentre qui servono entrambe le transizioni.
+        // The part's HealthController is what gets listened to, not IPartOwner.OnPartBroken: the latter has
+        // no "repaired" twin and re-fires on every regeneration, whereas both transitions are needed here.
         _shieldHealth.OnDeath  += HandleBreak;
         _shieldHealth.OnRevive += HandleRestore;
     }
@@ -72,7 +72,7 @@ public class ElementalShieldController : MonoBehaviour
         _shieldHealth.OnRevive -= HandleRestore;
     }
 
-    /// <summary>Conta un colpo per elemento. Chiamato sia dallo scudo sia dall'owner, anche per i colpi che l'assorbimento ha trasformato in cura.</summary>
+    /// <summary>Counts one hit per element. Called by both the shield and the owner, including for hits that absorption has turned into healing.</summary>
     public void RegisterHit(DamageType type)
     {
         if (type == DamageType.None) return;
@@ -81,9 +81,9 @@ public class ElementalShieldController : MonoBehaviour
     }
 
     /// <summary>
-    /// Fra i tre elementi diversi da quello attivo, quello che il giocatore ha usato di piu': passare li'
-    /// rende la cannoniera che ha gia' in mano lo strumento che cura il nemico invece di ferirlo, negando
-    /// il suo piano. Parita' risolta a caso.
+    /// Of the three elements other than the active one, the one the player has used the most: switching to
+    /// it turns the cannon they already have in hand into the tool that heals the enemy instead of hurting
+    /// it, denying their plan. Ties are broken at random.
     /// </summary>
     public DamageType PickDenialElement()
     {
@@ -111,7 +111,7 @@ public class ElementalShieldController : MonoBehaviour
         return candidates.Count == 0 ? ActiveElement : candidates[UnityEngine.Random.Range(0, candidates.Count)];
     }
 
-    /// <summary>Rende l'owner resistente a tutti e quattro gli elementi, tranne <paramref name="element"/>, che invece lo cura.</summary>
+    /// <summary>Makes the owner resistant to all four elements except <paramref name="element"/>, which heals it instead.</summary>
     public void SetElement(DamageType element, bool silent = false)
     {
         RevokeAll();
@@ -138,16 +138,16 @@ public class ElementalShieldController : MonoBehaviour
         for (int i = 0; i < _elements.Length; i++)
             if (_elements[i].Element != DamageType.None) Grant(_elements[i].Vulnerability);
 
-        // Il tracker resta anche a scudo rotto: i colpi presi ora dicono comunque cosa ha in mano il giocatore.
+        // The tracker stays even with the shield broken: the hits taken now still tell what the player is holding.
         GrantTracker();
 
         if (_breakPassive != null && _owner != null && _owner.PassiveAbilityController != null)
             _owner.PassiveAbilityController.AddPassive(Instantiate(_breakPassive));
     }
 
-    // La rigenerazione riestrae l'elemento fra tutti e quattro, incluso quello appena usato per rompere lo
-    // scudo: con la nuova regola ripescarlo non e' un regalo, e' la trappola migliore che ci sia, perche' la
-    // cannoniera che il giocatore ha appena usato per bucare la parte tornerebbe a curare il corpo.
+    // Regeneration redraws the element from all four, including the one just used to break the shield:
+    // under the new rule drawing it again is no gift, it is the best trap there is, because the cannon the
+    // player has just used to punch through the part would go back to healing the body.
     private void HandleRestore() => SetElement(PickRandomElement());
 
     private DamageType PickRandomElement()
@@ -192,9 +192,9 @@ public class ElementalShieldController : MonoBehaviour
     }
 
     /// <summary>
-    /// Colore associato a un elemento. Esposto perche' il feedback di guardia
-    /// (<see cref="ElementalShieldGuardAnimator"/>) deve lampeggiare col colore dell'elemento IN ARRIVO,
-    /// che non e' quello attivo e quindi non e' leggibile dal tint corrente dello sprite.
+    /// The colour associated with an element. Exposed because the guard feedback
+    /// (<see cref="ElementalShieldGuardAnimator"/>) has to flash with the colour of the INCOMING element,
+    /// which is not the active one and therefore cannot be read off the sprite's current tint.
     /// </summary>
     public bool TryGetTint(DamageType element, out Color tint)
     {

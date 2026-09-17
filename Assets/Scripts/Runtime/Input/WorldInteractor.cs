@@ -24,7 +24,7 @@ public class WorldInteractor : MonoBehaviour
 
         if (_mainCameraAnchor == null)
         {
-            Debug.LogError($"{nameof(WorldInteractor)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{nameof(WorldInteractor)}: no {nameof(MainCameraAnchorSO)} assigned.", this);
             return;
         }
 
@@ -58,8 +58,8 @@ public class WorldInteractor : MonoBehaviour
 
     private void PerformHoverCheck()
     {
-        // Con l'auto-bootstrap la camera può arrivare un frame dopo questo componente:
-        // senza guardia, ScreenPointToRay su null esplode ogni frame finché non arriva.
+        // With auto-bootstrap the camera can arrive a frame after this component: without the guard,
+        // ScreenPointToRay on null blows up every frame until it does.
         if (_mainCamera == null) return;
 
         if (UIPointerTracker.IsPointerOverUI(_mousePosition))

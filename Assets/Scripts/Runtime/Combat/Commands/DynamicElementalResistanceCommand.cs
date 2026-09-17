@@ -39,7 +39,7 @@ public class DynamicElementalResistanceCommand : ICommand
             await _cameraDirectorState.RaiseCueAndWaitAsync(_cameraCueChannel, cue);
         }
 
-        // Carica e scarica: lo scudo si contrae, poi sbotta nel nuovo elemento.
+        // Wind up and release: the shield contracts, then bursts into the new element.
         Vector3 originalScale = shieldTransform.localScale;
         await Tween.Scale(shieldTransform, originalScale * 0.75f, 0.18f, Ease.InQuad);
 

@@ -4,11 +4,12 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Regista audio di scena: ascolta i canali di cue e riproduce i suoni usando un pool di AudioVoice.
+/// The scene's audio director: it listens to the cue channels and plays sounds using a pool of
+/// AudioVoice.
 ///
-/// Come CameraDirector, e' un MonoBehaviour di scena che possiede direttamente i propri oggetti
-/// (mai dentro un ScriptableObject) e si iscrive ai canali in OnEnable/OnDisable.
-/// A differenza di CameraDirector non esiste nessun handshake: l'audio non blocca mai il turn loop.
+/// Like CameraDirector, it is a scene MonoBehaviour that owns its objects directly (never inside a
+/// ScriptableObject) and subscribes to the channels in OnEnable/OnDisable.
+/// Unlike CameraDirector there is no handshake at all: audio never blocks the turn loop.
 /// </summary>
 public class AudioDirector : MonoBehaviour
 {
@@ -20,15 +21,15 @@ public class AudioDirector : MonoBehaviour
     [SerializeField] private LoopSfxStopEventChannel _loopStopChannel;
 
     [Header("Pool")]
-    [Tooltip("Voci create all'avvio")]
+    [Tooltip("Voices created at start-up")]
     [Min(0)] [SerializeField] private int _prewarmSize = 12;
-    [Tooltip("Tetto massimo di voci. Oltre questo si ruba il one-shot meno importante, non si cresce")]
+    [Tooltip("Hard cap on voices. Past it the least important one-shot is stolen rather than growing the pool")]
     [Min(1)] [SerializeField] private int _maxPoolSize = 24;
 
     private ComponentPool<AudioVoice> _voices;
     private Transform _poolRoot;
 
-    // Solo le voci che stanno inseguendo un Transform: le altre non costano nulla per frame.
+    // Only the voices currently following a Transform: the others cost nothing per frame.
     private readonly List<AudioVoice> _followers = new();
 
     private readonly Dictionary<Guid, AudioVoice> _activeLoops = new();
@@ -39,9 +40,9 @@ public class AudioDirector : MonoBehaviour
     private void Awake() => EnsureVoicePool();
 
     /// <summary>
-    /// Lazy e idempotente, come <c>VfxDirector.EnsureRegistry</c>: un cue puo' arrivare dalla finestra
-    /// di inizializzazione della scena (l'OnEnable di un personaggio che entra in combattimento), dove
-    /// l'ordine fra gli Awake e gli OnEnable di oggetti diversi non e' garantito.
+    /// Lazy and idempotent, like <c>VfxDirector.EnsureRegistry</c>: a cue can arrive from the scene's
+    /// initialization window (the OnEnable of a character entering combat), where the ordering between
+    /// the Awake and OnEnable calls of different objects is not guaranteed.
     /// </summary>
     private void EnsureVoicePool()
     {
@@ -66,7 +67,7 @@ public class AudioDirector : MonoBehaviour
         if (_loopStartChannel != null) _loopStartChannel.OnEventRaised -= HandleLoopStart;
         if (_loopStopChannel != null) _loopStopChannel.OnEventRaised -= HandleLoopStop;
 
-        // I canali sono asset SO che sopravvivono alla scena: il cleanup deve essere completo.
+        // The channels are SO assets that outlive the scene: the cleanup has to be complete.
         StopEverything();
     }
 
@@ -74,7 +75,8 @@ public class AudioDirector : MonoBehaviour
 
     private void LateUpdate()
     {
-        // LateUpdate e non Update: PrimeTween muove i visual in Update, la posizione va copiata dopo.
+        // LateUpdate and not Update: PrimeTween moves the visuals in Update, so the position has to be
+        // copied afterwards.
         if (_followers.Count == 0) return;
 
         for (int i = _followers.Count - 1; i >= 0; i--)
@@ -89,7 +91,7 @@ public class AudioDirector : MonoBehaviour
 
             if (voice.FollowTarget == null)
             {
-                // Il bersaglio e' stato distrutto a meta' riproduzione: la voce torna nel pool.
+                // The target was destroyed mid-playback: the voice goes back into the pool.
                 _followers.RemoveAt(i);
                 ReleaseVoice(voice);
                 continue;
@@ -113,7 +115,7 @@ public class AudioDirector : MonoBehaviour
         if (sound.Loop)
         {
 #if UNITY_EDITOR
-            Debug.LogWarning($"[AudioDirector] '{sound.name}' e' marcato come Loop: va avviato dal canale di loop, non come one-shot.", sound);
+            Debug.LogWarning($"[AudioDirector] '{sound.name}' is marked as Loop: it has to be started from the loop channel, not as a one-shot.", sound);
 #endif
             return;
         }
@@ -147,7 +149,7 @@ public class AudioDirector : MonoBehaviour
 
         if (!cue.Handle.IsValid)
         {
-            Debug.LogWarning("[AudioDirector] LoopSfxStartCue senza handle valido: usa AudioLoopHandle.New().");
+            Debug.LogWarning("[AudioDirector] LoopSfxStartCue with no valid handle: use AudioLoopHandle.New().");
             return;
         }
 
@@ -157,7 +159,7 @@ public class AudioDirector : MonoBehaviour
         if (!sound.Loop)
         {
 #if UNITY_EDITOR
-            Debug.LogWarning($"[AudioDirector] '{sound.name}' non e' marcato come Loop: non puo' essere avviato dal canale di loop.", sound);
+            Debug.LogWarning($"[AudioDirector] '{sound.name}' is not marked as Loop: it cannot be started from the loop channel.", sound);
 #endif
             return;
         }
@@ -198,7 +200,7 @@ public class AudioDirector : MonoBehaviour
 
     private void HandleLoopStop(LoopSfxStopCue cue)
     {
-        // Miss del dizionario = no-op silenzioso: il doppio stop e' un caso normale.
+        // A dictionary miss is a silent no-op: a double stop is a normal case.
         if (!_activeLoops.TryGetValue(cue.Handle.Id, out AudioVoice voice)) return;
 
         _activeLoops.Remove(cue.Handle.Id);
@@ -216,7 +218,7 @@ public class AudioDirector : MonoBehaviour
         ReleaseVoice(voice);
     }
 
-    /// <summary>Preleva una voce libera, o applica la policy di steal se il pool e' esaurito.</summary>
+    /// <summary>Takes a free voice, or applies the steal policy when the pool is exhausted.</summary>
     private AudioVoice AcquireVoice()
     {
         EnsureVoicePool();
@@ -229,7 +231,7 @@ public class AudioDirector : MonoBehaviour
         if (victim == null)
         {
 #if UNITY_EDITOR
-            Debug.LogWarning($"[AudioDirector] Pool esaurito ({_voices.TotalCount} voci, tutte in loop): cue scartato.", this);
+            Debug.LogWarning($"[AudioDirector] Pool exhausted ({_voices.TotalCount} voices, all looping): cue dropped.", this);
 #endif
             return null;
         }
@@ -239,8 +241,8 @@ public class AudioDirector : MonoBehaviour
     }
 
     /// <summary>
-    /// Il one-shot attivo meno importante: prima la priorita' piu' bassa, a parita' il piu' vecchio.
-    /// Un loop non viene mai rubato — chi ne possiede l'handle non deve vederselo invalidare.
+    /// The least important active one-shot: lowest priority first, and the oldest among ties.
+    /// A loop is never stolen — whoever holds its handle must not have it invalidated under them.
     /// </summary>
     private AudioVoice FindStealVictim()
     {
@@ -288,7 +290,7 @@ public class AudioDirector : MonoBehaviour
         AudioClip clip = sound.PickClip(previous);
         if (clip == null) return false;
 
-        // Uno scale a 0 viene dai payload costruiti a mano senza i factory method: si legge come "default".
+        // A scale of 0 comes from payloads built by hand without the factory methods: it reads as "default".
         float safeVolumeScale = volumeScale > 0f ? volumeScale : 1f;
         float safePitchScale = pitchScale > 0f ? pitchScale : 1f;
 
@@ -305,7 +307,7 @@ public class AudioDirector : MonoBehaviour
         return true;
     }
 
-    /// <summary>Rilascio centralizzato: aggiorna i conteggi e sfila la voce da ogni registro.</summary>
+    /// <summary>Centralized release: it updates the counters and removes the voice from every register.</summary>
     private void ReleaseVoice(AudioVoice voice)
     {
         if (voice == null || !voice.IsInUse) return;
@@ -319,15 +321,15 @@ public class AudioDirector : MonoBehaviour
         int index = _followers.IndexOf(voice);
         if (index >= 0) _followers.RemoveAt(index);
 
-        // Un fade ancora in volo riscriverebbe il volume di una voce gia' riassegnata.
+        // A fade still in flight would rewrite the volume of a voice that has already been reassigned.
         Tween.StopAll(voice.Source);
 
         _voices.Release(voice);
     }
 
     /// <summary>
-    /// Riporta nel pool un one-shot posizionale fisso quando la clip e' finita.
-    /// Nessun costo per frame: una sola continuazione asincrona per voce.
+    /// Returns a fixed-position one-shot to the pool once its clip is over.
+    /// No per-frame cost: a single async continuation per voice.
     /// </summary>
     private async void ScheduleRelease(AudioVoice voice)
     {
@@ -351,8 +353,8 @@ public class AudioDirector : MonoBehaviour
     {
         uint playId = voice.PlayId;
 
-        // Il tween e' volutamente non atteso: qui si aspetta la stessa durata con Awaitable,
-        // cosi' la continuazione resta cancellabile con destroyCancellationToken.
+        // The tween is deliberately not awaited: the same duration is waited out here with an Awaitable,
+        // so the continuation stays cancellable through destroyCancellationToken.
         _ = Tween.AudioVolume(voice.Source, 0f, seconds);
 
         try

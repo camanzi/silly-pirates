@@ -1,6 +1,6 @@
 public interface IStackablePassive
 {
-    // incoming è l'istanza appena creata dal chiamante, scartata subito dopo:
-    // serve alle passive che sovrascrivono il proprio valore invece di stackare.
+    // incoming is the instance the caller has just created and discards right afterwards:
+    // it is there for the passives that overwrite their own value instead of stacking.
     void OnReapplied(PassiveAbilityController controller, PassiveAbilitySO incoming);
 }

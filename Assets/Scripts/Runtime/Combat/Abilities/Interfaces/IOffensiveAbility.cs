@@ -1,19 +1,19 @@
 /// <summary>
-/// Abilita' ostile verso il proprio bersaglio: danno, debuff, controllo. E' un'interfaccia e non una classe
-/// base perche' la gerarchia e' gia' impegnata — le abilita' offensive nemiche devono estendere
-/// EnemyAbilityBase e non potrebbero ereditare anche da OffensiveAbilityBase.
+/// An ability hostile to its target: damage, debuffs, control. It is an interface and not a base class
+/// because the hierarchy is already taken — offensive enemy abilities have to extend EnemyAbilityBase and
+/// could not inherit from an OffensiveAbilityBase as well.
 /// </summary>
 public interface IOffensiveAbility : IAbilityIntent
 {
     AbilityIntent IAbilityIntent.Intent => AbilityIntent.Offensive;
 
     /// <summary>
-    /// Elemento con cui questa abilita' colpira', dato il caster. Non e' una property secca perche' per le
-    /// abilita' da equipaggiamento l'elemento dipende dal cannone montato, non dall'asset dell'abilita'
-    /// (vedi <see cref="DamageTypeResolver"/>).
+    /// The element this ability will strike with, given the caster. It is not a plain property because for
+    /// equipment abilities the element depends on the mounted cannon, not on the ability asset
+    /// (see <see cref="DamageTypeResolver"/>).
     ///
-    /// <see cref="DamageType.None"/> significa "ostile ma senza elemento": una rete, una maledizione, o
-    /// un'abilita' composita il cui elemento vive negli step e non e' risolvibile da qui.
+    /// <see cref="DamageType.None"/> means "hostile but elementless": a net, a curse, or a composite
+    /// ability whose element lives in its steps and cannot be resolved from here.
     /// </summary>
     DamageType ResolveDamageElement(IInteractableElement caster);
 }

@@ -11,10 +11,10 @@ public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbili
     [SerializeField] private int _baseDMG;
     [SerializeField] private DamageType _baseDMGType;
 
-    [Tooltip("Suono dello sparo, riprodotto sul frame esatto del colpo (non all'avvio dell'abilita')")]
+    [Tooltip("Shot sound, played on the exact frame of the hit (not when the ability starts)")]
     [SerializeField] private SoundEventSO _fireSfx;
 
-    [Tooltip("Nube di fumo emessa dalla bocca del cannone sul frame dello sparo.")]
+    [Tooltip("Smoke puff emitted from the cannon muzzle on the frame of the shot.")]
     [SerializeField] private VFXController _muzzleVfx;
 
     public int MaxTargets => _maxTargets;
@@ -43,7 +43,7 @@ public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbili
         return new AbilityPreviewData(affectedCells: new(), interactionArea: new(), freeAimTargets: _selectionCtx.CurrentTargets);
     }
 
-    // Stessa regola di ShootCommand.ResolveDMGType: l'elemento vero e' quello del cannone montato.
+    // Same rule as ShootCommand.ResolveDMGType: the real element is the one of the mounted cannon.
     public DamageType ResolveDamageElement(IInteractableElement caster)
         => DamageTypeResolver.Resolve(caster, _baseDMGType);
 }

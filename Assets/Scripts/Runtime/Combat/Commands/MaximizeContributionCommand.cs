@@ -31,8 +31,8 @@ public class MaximizeContributionCommand : ICommand
         if (_caster is ITurnAgent turnAgent)
             turnAgent.RemainingActionPoints += _apCost;
 
-        // Rimuovere i punti riporta l'overcap al valore precedente: il passivo lo
-        // aggiorna (o rimuove) ShipEquipment.RefreshOvercapPassive.
+        // Removing the points brings the overcap back to its previous value: the passive is updated
+        // (or removed) by ShipEquipment.RefreshOvercapPassive.
         int delta = _target.CurrentAwakeningPoints - _pointsBeforeAdd;
         if (delta > 0)
             _target.RemoveAwakeningPoints(delta);

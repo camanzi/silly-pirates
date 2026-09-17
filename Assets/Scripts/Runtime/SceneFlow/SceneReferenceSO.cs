@@ -1,17 +1,17 @@
 using UnityEngine;
 
 /// <summary>
-/// Nome di una scena impacchettato in un asset, così che director e bootstrapper si riferiscano a
-/// una scena tramite una reference assegnabile in Inspector invece che con stringhe sparse nel
-/// codice. Rinominare la scena richiede di aggiornare un solo asset.
+/// A scene's name packaged into an asset, so that directors and bootstrappers refer to a scene through
+/// an Inspector-assignable reference rather than through strings scattered across the code. Renaming the
+/// scene means updating a single asset.
 ///
-/// Deliberatamente NON usa gli indici di build: sono posizionali e si rompono in silenzio appena si
-/// riordina la lista in Build Settings.
+/// It deliberately does NOT use build indices: those are positional and break silently the moment the
+/// list in Build Settings is reordered.
 /// </summary>
 [CreateAssetMenu(fileName = "SceneRef", menuName = "Scene Flow/Scene Reference")]
 public class SceneReferenceSO : ScriptableObject
 {
-    [Tooltip("Nome della scena come compare in Build Settings, senza percorso né estensione.")]
+    [Tooltip("The scene's name as it appears in Build Settings, with no path and no extension.")]
     [SerializeField] private string _sceneName;
 
     public string SceneName => _sceneName;
@@ -23,7 +23,7 @@ public class SceneReferenceSO : ScriptableObject
         if (IsValid) return;
 
         Debug.LogError(
-            $"[{nameof(SceneReferenceSO)}] '{name}' non ha un nome di scena: qualunque transizione " +
-            "verso questa reference fallirà a runtime.", this);
+            $"[{nameof(SceneReferenceSO)}] '{name}' has no scene name: any transition towards this " +
+            "reference will fail at runtime.", this);
     }
 }

@@ -2,22 +2,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Elenco esplicito e ispezionabile degli ScriptableObject con stato runtime da azzerare tra un
-/// combattimento e il successivo. Niente reflection, niente auto-discovery: quello che finisce
-/// nella lista si vede dall'Inspector, e OnValidate segnala subito un asset che non implementa il
-/// contratto invece di fallire in silenzio a runtime.
+/// An explicit, inspectable list of the ScriptableObjects carrying runtime state that has to be cleared
+/// between one combat and the next. No reflection, no auto-discovery: whatever ends up in the list is
+/// visible in the Inspector, and OnValidate flags an asset that does not implement the contract straight
+/// away instead of failing silently at runtime.
 ///
-/// SceneFlowDirector (Fase 2) chiama ResetForNewCombat() fra lo scarico della scena di combattimento
-/// vecchia e il caricamento di quella nuova: resettare DOPO il load cancellerebbe le registrazioni
-/// già fatte dagli OnEnable della scena appena caricata.
+/// SceneFlowDirector (Phase 2) calls ResetForNewCombat() between unloading the old combat scene and
+/// loading the new one: resetting AFTER the load would wipe the registrations the incoming scene's
+/// OnEnable calls have just made.
 /// </summary>
 [CreateAssetMenu(fileName = "CombatSession", menuName = "Scene Flow/Combat Session")]
 public class CombatSessionSO : ScriptableObject
 {
-    [Tooltip("L'ordine di reset segue l'ordine della lista, ma per come è oggi nessun elemento " +
-             "dipende da un altro: ogni ResetForNewCombat tocca solo il proprio stato. Se un domani " +
-             "servisse una dipendenza d'ordine, è il segnale che quel reset sta facendo troppo — " +
-             "meglio renderlo indipendente che documentare un ordine da rispettare qui.")]
+    [Tooltip("The reset order follows the list's order, but as things stand no element depends on " +
+             "another: each ResetForNewCombat touches only its own state. If an order dependency were " +
+             "ever needed, that is the signal that the reset in question is doing too much — better to " +
+             "make it independent than to document an order to respect here.")]
     [SerializeField] private List<ScriptableObject> _resettables;
 
     public void ResetForNewCombat()
@@ -36,15 +36,15 @@ public class CombatSessionSO : ScriptableObject
             else
             {
                 Debug.LogError(
-                    $"[{nameof(CombatSessionSO)}] '{entry.name}' non implementa " +
-                    $"{nameof(ICombatSessionResettable)}: rimuovilo dalla lista o correggi il tipo, " +
-                    "altrimenti resta invisibilmente non resettato tra un combattimento e l'altro.", this);
+                    $"[{nameof(CombatSessionSO)}] '{entry.name}' does not implement " +
+                    $"{nameof(ICombatSessionResettable)}: remove it from the list or fix the type, " +
+                    "otherwise it stays invisibly un-reset between one combat and the next.", this);
             }
         }
     }
 
-    // Segnala subito in Inspector un asset trascinato per sbaglio, invece di scoprirlo al secondo
-    // combattimento della sessione.
+    // Flags an asset dragged in by mistake right there in the Inspector, instead of discovering it in
+    // the session's second combat.
     private void OnValidate()
     {
         if (_resettables == null) return;
@@ -57,8 +57,8 @@ public class CombatSessionSO : ScriptableObject
             if (entry is not ICombatSessionResettable)
             {
                 Debug.LogError(
-                    $"[{nameof(CombatSessionSO)}] elemento #{i} ('{entry.name}') non implementa " +
-                    $"{nameof(ICombatSessionResettable)}: asset sbagliato trascinato nella lista?", this);
+                    $"[{nameof(CombatSessionSO)}] item #{i} ('{entry.name}') does not implement " +
+                    $"{nameof(ICombatSessionResettable)}: wrong asset dragged into the list?", this);
             }
         }
     }

@@ -20,7 +20,7 @@ public class HitChanceIndicator : MonoBehaviour
     {
         if (_mainCameraAnchor == null)
         {
-            Debug.LogError($"{nameof(HitChanceIndicator)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{nameof(HitChanceIndicator)}: no {nameof(MainCameraAnchorSO)} assigned.", this);
             return;
         }
 

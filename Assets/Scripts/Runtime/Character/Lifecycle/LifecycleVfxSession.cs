@@ -1,27 +1,29 @@
 using System.Collections.Generic;
 
 /// <summary>
-/// Handle dei VFX persistenti aperti durante una fase di lifecycle, con il canale su cui vanno spenti.
+/// The handles of the persistent VFX opened during a lifecycle phase, together with the channel they have
+/// to be stopped on.
 ///
-/// Vive nel <see cref="CharacterLifecycleAnimator"/> e NON nella <see cref="LifecycleAnimationSO"/>: quella
-/// è un asset condiviso fra prefab diversi, quindi un campo lì verrebbe sovrascritto se due personaggi
-/// eseguissero la stessa fase nello stesso frame. L'animator invece è per-istanza, ed è anche l'unico che
-/// sa quando la fase finisce davvero — inclusa la fase preparata da <see cref="CharacterLifecycleAnimator.PrepareHidden"/>
-/// e mai giocata, che nessun <c>finally</c> dentro la SO potrebbe intercettare.
+/// It lives on the <see cref="CharacterLifecycleAnimator"/> and NOT on the <see cref="LifecycleAnimationSO"/>:
+/// that is an asset shared between different prefabs, so a field there would be overwritten if two
+/// characters ran the same phase in the same frame. The animator, by contrast, is per-instance, and it is
+/// also the only one that knows when the phase truly ends — including the phase prepared by
+/// <see cref="CharacterLifecycleAnimator.PrepareHidden"/> and never played, which no <c>finally</c> inside
+/// the SO could ever catch.
 ///
-/// Una sola istanza riusata fase dopo fase: nessuna allocazione per spawn ripetuto.
+/// A single instance reused phase after phase: no allocation per repeated spawn.
 /// </summary>
 public sealed class LifecycleVfxSession
 {
     private readonly List<VfxHandle> _open = new();
     private VfxStopEventChannel _stopChannel;
 
-    /// <summary>Una fase ha già alzato i suoi VFX di <see cref="LifecycleVfxStage.Prepare"/>.</summary>
+    /// <summary>A phase has already raised its <see cref="LifecycleVfxStage.Prepare"/> VFX.</summary>
     public bool IsOpen { get; private set; }
 
     /// <summary>
-    /// Apre la sessione per una nuova fase. Difensivo: chiude quella precedente se fosse rimasta aperta,
-    /// così un loop non può mai sopravvivere alla fase che l'ha acceso.
+    /// Opens the session for a new phase. Defensive: it closes the previous one if it was left open, so a
+    /// loop can never outlive the phase that started it.
     /// </summary>
     public void Begin(VfxStopEventChannel stopChannel)
     {
@@ -31,7 +33,7 @@ public sealed class LifecycleVfxSession
         IsOpen = true;
     }
 
-    /// <summary>Registra un handle da spegnere a fine fase. Gli handle dei one-shot sono invalidi e si ignorano.</summary>
+    /// <summary>Registers a handle to be stopped when the phase ends. One-shot handles are invalid and are ignored.</summary>
     public void Track(VfxHandle handle)
     {
         if (!handle.IsValid) return;
@@ -39,8 +41,8 @@ public sealed class LifecycleVfxSession
     }
 
     /// <summary>
-    /// Spegne tutti i persistenti aperti e chiude la sessione. Idempotente: un secondo stop sullo stesso
-    /// handle è un miss no-op lato <see cref="VfxDirector"/>.
+    /// Stops every open persistent effect and closes the session. Idempotent: a second stop on the same
+    /// handle is a no-op miss on <see cref="VfxDirector"/>'s side.
     /// </summary>
     public void StopAll()
     {

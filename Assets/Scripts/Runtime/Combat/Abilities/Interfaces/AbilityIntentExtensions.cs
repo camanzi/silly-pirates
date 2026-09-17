@@ -1,6 +1,6 @@
 /// <summary>
-/// Unico punto di lettura dell'intent di un'abilita'. Il cast a <see cref="IAbilityIntent"/> e' necessario:
-/// <c>Intent</c> e' un default interface member e non esiste sul tipo concreto.
+/// The single place an ability's intent is read from. The cast to <see cref="IAbilityIntent"/> is required:
+/// <c>Intent</c> is a default interface member and does not exist on the concrete type.
 /// </summary>
 public static class AbilityIntentExtensions
 {

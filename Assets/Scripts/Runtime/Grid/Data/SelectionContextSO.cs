@@ -23,8 +23,8 @@ public class SelectionContextSO : ScriptableObject, ICombatSessionResettable
         ClearTargets();
     }
 
-    // Senza questo, CurrentCaster e i target restano puntatori a IInteractableElement distrutti
-    // dallo scarico della scena precedente.
+    // Without this, CurrentCaster and the targets stay as pointers to IInteractableElement instances
+    // destroyed by the previous scene's unload.
     public void ResetForNewCombat() => ClearCtx();
 
     public void ClearTargets()

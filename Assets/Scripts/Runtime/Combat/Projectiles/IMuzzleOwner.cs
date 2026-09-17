@@ -1,9 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// Implementato da chi vuole dichiarare esplicitamente la propria origine di tiro,
-/// scavalcando la ricerca automatica del <see cref="MuzzleAnchor"/> in hierarchy.
-/// Puo' restituire null: la catena di fallback e' responsabilita' di <see cref="MuzzleUtils"/>.
+/// Implemented by anything that wants to declare its own firing origin explicitly, bypassing the
+/// automatic <see cref="MuzzleAnchor"/> lookup in the hierarchy.
+/// It may return null: the fallback chain is <see cref="MuzzleUtils"/>'s responsibility.
 /// </summary>
 public interface IMuzzleOwner
 {

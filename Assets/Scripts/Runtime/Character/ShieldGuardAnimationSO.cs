@@ -2,37 +2,37 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Parametri della reazione di guardia dello scudo elementale. Stateless e condivisibile fra piu' scudi,
-/// come le LifecycleAnimationSO: tutto lo stato mutabile (pose a riposo, handle dei tween) vive nel
-/// <see cref="ElementalShieldGuardAnimator"/>.
+/// The parameters of the elemental shield's guard reaction. Stateless and shareable between several
+/// shields, like the LifecycleAnimationSO assets: all mutable state (rest poses, tween handles) lives on
+/// the <see cref="ElementalShieldGuardAnimator"/>.
 /// </summary>
 [CreateAssetMenu(fileName = "Shield Guard Animation", menuName = "Character/Shield Guard Animation")]
 public class ShieldGuardAnimationSO : ScriptableObject
 {
-    [Header("Posa di guardia")]
-    [Tooltip("Posizione locale che lo scudo assume da alzato. Coordinate assolute nello spazio del padre, non uno scostamento dal riposo: si legge direttamente sul Transform in scena.")]
+    [Header("Guard pose")]
+    [Tooltip("The local position the shield takes when raised. Absolute coordinates in the parent's space, not an offset from rest: it can be read straight off the Transform in the scene.")]
     [SerializeField] private Vector3 _guardLocalPosition = new(0f, 0f, -0.25f);
     [SerializeField] private float _guardScaleMultiplier = 1.25f;
 
-    [Header("Salita / discesa")]
+    [Header("Raise / lower")]
     [SerializeField] private float _raiseDuration = 0.22f;
     [SerializeField] private Ease _raiseEase = Ease.OutBack;
     [SerializeField] private float _lowerDuration = 0.28f;
     [SerializeField] private Ease _lowerEase = Ease.OutQuad;
 
-    [Header("Para (elemento diverso da quello attivo: danno azzerato)")]
-    [Tooltip("Lampeggio col colore dell'elemento in arrivo, poi ritorno al tint dell'elemento attivo.")]
+    [Header("Block (element other than the active one: damage nullified)")]
+    [Tooltip("Flash with the incoming element's colour, then return to the active element's tint.")]
     [SerializeField] private float _blockFlashDuration = 0.12f;
     [SerializeField] private int _blockFlashCycles = 2;
-    [Tooltip("Colore usato quando l'abilita' e' ostile ma senza elemento (rete, maledizione).")]
+    [Tooltip("The colour used when the ability is hostile but elementless (net, curse).")]
     [SerializeField] private Color _colorlessFlashTint = new(1f, 1f, 1f, 1f);
 
-    [Header("Incassa (elemento giusto: lo scudo si sta rompendo)")]
+    [Header("Take the hit (the right element: the shield is breaking)")]
     [SerializeField] private Vector3 _absorbShakeStrength = new(0.12f, 0.04f, 0f);
     [SerializeField] private float _absorbShakeDuration = 0.35f;
     [SerializeField] private int _absorbShakeCycles = 6;
 
-    [Header("VFX (opzionale)")]
+    [Header("VFX (optional)")]
     [SerializeField] private VFXController _blockVfx;
     [SerializeField] private VfxCueEventChannel _vfxChannel;
 
@@ -49,7 +49,7 @@ public class ShieldGuardAnimationSO : ScriptableObject
     public float AbsorbShakeDuration => _absorbShakeDuration;
     public int AbsorbShakeCycles => _absorbShakeCycles;
 
-    /// <summary>Alza il VFX di para, se configurato. Doppio null-check come ovunque nel progetto: entrambi i campi sono opzionali.</summary>
+    /// <summary>Raises the block VFX, when configured. A double null-check as everywhere else in the project: both fields are optional.</summary>
     public void RaiseBlockVfx(Vector3 position)
     {
         if (_blockVfx == null || _vfxChannel == null) return;

@@ -27,8 +27,8 @@ public class PartShakeTelegraphCommand : ICommand
 
         if (_partTransform != null)
         {
-            // Lo shake scrive localPosition della parte satellite: stesso canale dell'idle in loop.
-            // _caster è la root del personaggio (il comando la riceve così, non un HostileCharacter).
+            // The shake writes the satellite part's localPosition: the same channel as the looping idle.
+            // _caster is the character's root (that is how the command receives it, not a HostileCharacter).
             CharacterLifecycleAnimator lifecycleAnimator = _caster.GetComponent<CharacterLifecycleAnimator>();
             lifecycleAnimator?.SuspendLoop();
 
@@ -41,11 +41,11 @@ public class PartShakeTelegraphCommand : ICommand
     }
 
     /// <summary>
-    /// NON è il teardown di questo shake: <c>ICommand.Undo()</c> non viene invocato da nessuna parte in
-    /// questo progetto. Lo shake lo chiudono <see cref="SlimeBombingCommand"/> (percorso normale) e
-    /// <see cref="ThreatenAreaStepSO.OnRolledBack"/> (interruzione), entrambi via
-    /// <see cref="MultiStepAbilityStepSO.EndPartShake"/> — la stessa chiamata usata qui, così che se un
-    /// giorno l'undo venisse cablato non ci sia un secondo teardown divergente da tenere allineato.
+    /// This is NOT this shake's teardown: <c>ICommand.Undo()</c> is invoked nowhere in this project. The
+    /// shake is closed by <see cref="SlimeBombingCommand"/> (the normal path) and
+    /// <see cref="ThreatenAreaStepSO.OnRolledBack"/> (an interruption), both through
+    /// <see cref="MultiStepAbilityStepSO.EndPartShake"/> — the same call used here, so that if undo is
+    /// ever wired up one day there is no second, divergent teardown to keep in sync.
     /// </summary>
     public void Undo()
     {

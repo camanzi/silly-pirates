@@ -19,13 +19,13 @@ public abstract class AbilityBase : ScriptableObject
     [SerializeField] private CameraCueProfileSO _cameraCueProfile;
 
     [Header("Audio")]
-    [Tooltip("Serve solo alle abilita' che passano il canale ai propri comandi per SFX a tempo preciso")]
+    [Tooltip("Only needed by abilities that hand the channel to their own commands for precisely timed SFX")]
     [SerializeField] protected SfxCueEventChannel _sfxChannel;
-    [Tooltip("Suono generico di lancio, riprodotto all'ingresso nello stato di esecuzione")]
+    [Tooltip("Generic cast sound, played on entering the execution state")]
     [SerializeField] private SoundEventSO _castSfx;
 
     [Header("VFX")]
-    [Tooltip("Serve solo alle abilita' che passano il canale ai propri comandi per VFX a tempo preciso")]
+    [Tooltip("Only needed by abilities that hand the channel to their own commands for precisely timed VFX")]
     [SerializeField] protected VfxCueEventChannel _vfxChannel;
 
     public Sprite Icon => _icon;

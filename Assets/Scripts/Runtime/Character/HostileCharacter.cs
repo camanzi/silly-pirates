@@ -37,7 +37,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
     [Header("Combat Intro")]
-    [Tooltip("Se assegnato e IsIntroActive, sopprime lo spawn automatico: la fase Spawn viene rigiocata dal CombatIntroSequencer al momento giusto")]
+    [Tooltip("When assigned and IsIntroActive, suppresses the automatic spawn: the Spawn phase is replayed by the CombatIntroSequencer at the right moment")]
     [SerializeField] private CombatIntroStateSO _introState;
 
     public EnemyRole Role => _role;
@@ -183,10 +183,10 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
 
     public void OnCombatJoin()
     {
-        SetInteractable(true);                  // ripristina i collider se il GO viene riattivato dopo una morte
+        SetInteractable(true);                  // restores the colliders if the GameObject is reactivated after a death
 
-        // Durante l'intro lo spawn è orchestrato dal CombatIntroSequencer: qui si prepara solo lo
-        // stato nascosto (pivot sott'acqua, alpha 0), senza riprodurre l'animazione.
+        // During the intro the spawn is orchestrated by the CombatIntroSequencer: all that happens here is
+        // preparing the hidden state (pivot underwater, alpha 0), without playing the animation.
         if (_introState != null && _introState.IsIntroActive)
             _lifecycleAnimator?.PrepareHidden(LifecyclePhase.Spawn);
         else
@@ -199,8 +199,8 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         _spawnPoint?.Release();
         _spawnPoint = null;
 
-        this.HandleCombatLeave();               // PRIMA di tutto: esce subito dal turn order
-        SetInteractable(false);                 // collider + outline off: non cliccabile mentre affonda
+        this.HandleCombatLeave();               // FIRST of all: it leaves the turn order immediately
+        SetInteractable(false);                 // colliders + outline off: not clickable while it sinks
         _directionalSpriteController?.SetDeadVisual();
 
         try
@@ -210,7 +210,7 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         }
         catch (OperationCanceledException) { return; }
 
-        if (this == null) return;               // distrutto durante l'animazione
+        if (this == null) return;               // destroyed during the animation
         gameObject.SetActive(false);
     }
 

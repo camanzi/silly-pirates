@@ -22,9 +22,9 @@ public class CommandQueueSO : ScriptableObject, ICombatSessionResettable
         if (_isProcessing) return;
         _isProcessing = true;
 
-        // finally obbligatorio: senza, un'eccezione da un qualsiasi comando lascerebbe _isProcessing
-        // a true per sempre e questa SO — condivisa fra tutti i turni — rifiuterebbe silenziosamente
-        // ogni comando successivo.
+        // The finally is mandatory: without it an exception from any command would leave _isProcessing
+        // true forever, and this SO — shared across every turn — would silently reject every subsequent
+        // command.
         try
         {
             while (_commandQueue.Count > 0)

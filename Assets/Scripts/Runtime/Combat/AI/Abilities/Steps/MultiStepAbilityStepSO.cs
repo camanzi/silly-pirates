@@ -34,16 +34,16 @@ public abstract class MultiStepAbilityStepSO : ScriptableObject
     public const string ThreatKeyKey = "ThreatKey";
 
     /// <summary>
-    /// Chiude il telegraph con shake avviato da <see cref="PartShakeTelegraphCommand"/>: ferma il tween
-    /// infinito e restituisce al binario loop il pivot che gli era stato tolto in prestito con
+    /// Closes the shake telegraph started by <see cref="PartShakeTelegraphCommand"/>: it stops the
+    /// infinite tween and gives the loop track back the pivot that had been borrowed from it with
     /// <see cref="CharacterLifecycleAnimator.SuspendLoop"/>.
     ///
-    /// Va chiamata da OGNI percorso che spegne lo shake — lo strike che segue il telegraph e il rollback di
-    /// una sequenza interrotta. Non ci si può appoggiare a un teardown del comando: <c>ICommand.Undo()</c>
-    /// non è mai invocato in questo progetto, quindi la sospensione resterebbe aperta per sempre.
+    /// It has to be called from EVERY path that turns the shake off — the strike following the telegraph
+    /// and the rollback of an interrupted sequence. A teardown on the command cannot be relied on:
+    /// <c>ICommand.Undo()</c> is never invoked in this project, so the suspension would stay open forever.
     ///
-    /// Il ripristino della SCALA resta a ogni chiamante: i percorsi la trattano legittimamente in modo
-    /// diverso (atteso, fire-and-forget, assegnazione secca) ed è un canale indipendente dal loop.
+    /// Restoring the SCALE is left to each caller: the paths legitimately treat it differently (awaited,
+    /// fire-and-forget, plain assignment) and it is a channel independent of the loop.
     /// </summary>
     public static void EndPartShake(StepState state, CharacterLifecycleAnimator animator)
     {
@@ -52,8 +52,8 @@ public abstract class MultiStepAbilityStepSO : ScriptableObject
         if (state.Extra.TryGetValue(ShakeTweenKey, out var tObj) && tObj is Tween tween && tween.isAlive)
             tween.Stop();
 
-        // Rimossa e non solo fermata: l'handle è morto, e un secondo passaggio (strike dopo un rollback
-        // parziale) non deve ritrovarsi un Tween stantio da interrogare.
+        // Removed and not merely stopped: the handle is dead, and a second pass (a strike after a partial
+        // rollback) must not find a stale Tween to interrogate.
         state.Extra.Remove(ShakeTweenKey);
 
         animator?.ResumeLoop();

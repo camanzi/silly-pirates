@@ -16,8 +16,8 @@ public partial class CrewMemberIndicator : VisualElement
 
     private Tween _colorTween;
     private Tween _healthTween;
-    // Percentuale corrente del fill: il tween deve partire da qui e non da resolvedStyle.width,
-    // che e' in pixel (unit mismatch: la barra restava piena per tutta la durata del tween).
+    // The fill's current percentage: the tween has to start from here and not from resolvedStyle.width,
+    // which is in pixels (unit mismatch: the bar stayed full for the whole duration of the tween).
     private float _healthFillPercent = 100f;
 
     private VisualElement _passivesContainer;
@@ -61,7 +61,7 @@ public partial class CrewMemberIndicator : VisualElement
         if (_health != null)
         {
             _health.OnHpChanged += HandleHpChanged;
-            // Snap: l'elemento e' appena stato clonato, un tween qui partirebbe da valori non ancora risolti.
+            // Snap: the element has just been cloned, a tween here would start from unresolved values.
             UpdateHealth(_health.CurrentHp, _health.MaxHp, animate: false);
         }
 

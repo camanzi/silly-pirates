@@ -9,7 +9,7 @@ public class SlimyBallAbility : EnemyAbilityBase, IOffensiveAbility
     [SerializeField] private int _baseDamage = 15;
     [SerializeField] private DamageType _damageType = DamageType.Physical;
     [SerializeField] private SlimyCellDataSO _slimyCellData;
-    [Tooltip("Salto squash&stretch fuori dall'acqua prima dello sparo. Se null, si usa il vecchio squash sul posto.")]
+    [Tooltip("Squash&stretch leap out of the water before the shot. When null, the old in-place squash is used.")]
     [SerializeField] private JumpAnimationConfigSO _jumpConfig;
 
     protected override float ComputeScore(AIContext context, out TargetingData targeting)

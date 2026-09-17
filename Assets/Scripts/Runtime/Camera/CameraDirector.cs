@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class CameraDirector : MonoBehaviour
 {
-    // Il rig camera vive in altri prefab, quindi non è referenziabile da qui: arriva via anchor SO,
-    // risolti col contratto pull-then-subscribe documentato su RuntimeAnchorSO.
+    // The camera rig lives in other prefabs and so cannot be referenced from here: it arrives through
+    // anchor SOs, resolved with the pull-then-subscribe contract documented on RuntimeAnchorSO.
     [Header("Camera Rig (anchors)")]
     [SerializeField] private CinemachineCameraAnchorSO _actionCameraAnchor;
     [SerializeField] private CinemachineTargetGroupAnchorSO _targetGroupAnchor;
@@ -72,8 +72,8 @@ public class CameraDirector : MonoBehaviour
         if (_directorState != null) _directorState.OnFocusEnded += OnFocusEnded;
         if (_cueChannel != null) _cueChannel.OnEventRaised += HandleCue;
 
-        // Pull-then-subscribe: la pull prende il rig già in scena, la subscribe quello che arriva
-        // dopo (director nella scena persistente, rig in quella di combattimento additiva).
+        // Pull-then-subscribe: the pull picks up the rig already in the scene, the subscribe picks up the
+        // one arriving later (director in the persistent scene, rig in the additive combat one).
         if (_actionCameraAnchor != null)
         {
             HandleActionCameraChanged(_actionCameraAnchor.Value);
@@ -105,8 +105,8 @@ public class CameraDirector : MonoBehaviour
 
     private void HandleActionCameraChanged(CinemachineCamera camera)
     {
-        // Il tween di orbita pilota il transform della camera precedente: va fermato prima di
-        // perderne il riferimento, altrimenti continua a ruotare un oggetto che non governiamo più.
+        // The orbit tween drives the previous camera's transform: it has to be stopped before that
+        // reference is lost, or it keeps rotating an object we no longer govern.
         _orbitTween.Stop();
 
         _actionCamera = camera;
@@ -116,11 +116,10 @@ public class CameraDirector : MonoBehaviour
             return;
         }
 
-        // Catturati qui — non in Awake, e non "al primo cue con un flag one-shot". Al secondo
-        // combattimento della sessione arriva una NUOVA istanza di action camera: una cattura
-        // one-shot userebbe come base la rotazione di quella precedente, ormai distrutta. In questo
-        // punto il transform è ancora quello autorato, perché nessun cue può partire prima che il
-        // rig si sia registrato.
+        // Captured here — not in Awake, and not "on the first cue behind a one-shot flag". The session's
+        // second combat brings a NEW action camera instance: a one-shot capture would use the rotation of
+        // the previous, now destroyed one as its base. At this point the transform is still the authored
+        // one, because no cue can start before the rig has registered itself.
         _groupFraming = camera.GetComponent<CinemachineGroupFraming>();
         _baseCameraRotation = camera.transform.rotation;
     }
@@ -238,8 +237,8 @@ public class CameraDirector : MonoBehaviour
 
         // Never hand the vcam back to the player rotated
         StopOrbit();
-        // Il rig può essere sparito durante l'hold (scarico di scena): StopOrbit già lo tollera,
-        // questo no.
+        // The rig may have gone away during the hold (a scene unload): StopOrbit tolerates that already,
+        // this does not.
         if (_actionCamera != null) _actionCamera.enabled = false;
         _activeProfile = null;
     }

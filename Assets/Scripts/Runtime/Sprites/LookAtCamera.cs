@@ -10,7 +10,7 @@ public class LookAtCamera : MonoBehaviour
     {
         if (_mainCameraAnchor == null)
         {
-            Debug.LogError($"{nameof(LookAtCamera)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{nameof(LookAtCamera)}: no {nameof(MainCameraAnchorSO)} assigned.", this);
             return;
         }
 

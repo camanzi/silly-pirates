@@ -33,7 +33,7 @@ public class WorldSpaceContainer : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"{GetType().Name}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{GetType().Name}: no {nameof(MainCameraAnchorSO)} assigned.", this);
         }
 
         UpdateUIPosition();
@@ -66,9 +66,9 @@ public class WorldSpaceContainer : MonoBehaviour
             });
         }
 
-        // Allinea subito _isVisible/opacity/display al gate corrente senza tween: al frame zero
-        // _isVisible parte a false per default del campo, quindi un ApplyVisibility() normale
-        // tenterebbe un fade-out da opacità 1 (lampeggio) invece di un semplice nascondere silenzioso.
+        // Aligns _isVisible/opacity/display to the current gate right away, with no tween: on frame zero
+        // _isVisible starts false by field default, so a normal ApplyVisibility() would attempt a fade-out
+        // from opacity 1 (a flash) instead of simply hiding quietly.
         ApplyVisibilityImmediate();
     }
 
@@ -93,9 +93,9 @@ public class WorldSpaceContainer : MonoBehaviour
     }
 
 
-    // Gate in AND dei tre permessi: richiesta esplicita (proximity/menu), stato di combattimento
-    // (es. intro), stato interno dell'elemento (es. morte). Condiviso tra ApplyVisibility() e
-    // ApplyVisibilityImmediate() per non rischiare che le due formule divergano nel tempo.
+    // AND gate of the three permissions: explicit request (proximity/menu), combat state (e.g. the
+    // intro), the element's own internal state (e.g. death). Shared between ApplyVisibility() and
+    // ApplyVisibilityImmediate() so the two formulas cannot drift apart over time.
     private bool FinalVisibility => _isRequested && _isAllowedByCombatState && _isAllowedByElementState;
 
     protected void ApplyVisibility()
@@ -116,9 +116,9 @@ public class WorldSpaceContainer : MonoBehaviour
 
         if (finalVisibility)
         {
-            // Il container potrebbe essere stato messo a display:None da un OnCompleteHide precedente:
-            // va ripristinato prima di animare l'opacità, altrimenti il tween scrive su un elemento
-            // che il layout non renderizza comunque.
+            // The container may have been set to display:None by an earlier OnCompleteHide: it has to be
+            // restored before animating the opacity, or the tween writes to an element the layout does
+            // not render anyway.
             Container.style.display = DisplayStyle.Flex;
             ShowUI();
             float startOpacity = Container.style.opacity.value;
@@ -135,9 +135,9 @@ public class WorldSpaceContainer : MonoBehaviour
     }
 
     /// <summary>
-    /// Applica il gate corrente senza tween, scrivendo opacità e display in un solo frame.
-    /// Va usata in Awake (prima frame utile, un fade da opacità 1 lampeggerebbe) e ogni volta che
-    /// un permesso viene deciso prima che il container sia mai stato mostrato una volta.
+    /// Applies the current gate with no tween, writing opacity and display within a single frame.
+    /// Use it in Awake (the first usable frame, where a fade from opacity 1 would flash) and every time a
+    /// permission is decided before the container has ever been shown once.
     /// </summary>
     protected void ApplyVisibilityImmediate()
     {

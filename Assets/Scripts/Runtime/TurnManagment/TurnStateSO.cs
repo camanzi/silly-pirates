@@ -31,9 +31,9 @@ public class TurnStateSO : ScriptableObject, ICombatSessionResettable
 
     public async Awaitable WaitUntilTurnFinished() => await _turnTaskSource.Awaitable;
 
-    // Prima azzerava solo _activeAgent. _currentActionIndex sopravviveva al reset e veniva letto
-    // da TurnOrderController.RebuildDisplayList con il valore del combattimento precedente;
-    // _turnTaskSource e _isPlayerTurn restavano stale, pronti a confondere il primo turno nuovo.
+    // It used to clear only _activeAgent. _currentActionIndex survived the reset and was read by
+    // TurnOrderController.RebuildDisplayList holding the previous combat's value; _turnTaskSource and
+    // _isPlayerTurn stayed stale, ready to confuse the first new turn.
     public void Clear()
     {
         _activeAgent = null;

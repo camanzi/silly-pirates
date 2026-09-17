@@ -1,60 +1,61 @@
 using UnityEngine;
 
 /// <summary>
-/// Tuning della sequenza di intro al combattimento. Nessuno stato runtime: solo dati di
-/// configurazione condivisibili tra scene.
+/// Tuning for the combat intro sequence. No runtime state: configuration data only, shareable between
+/// scenes.
 /// </summary>
 [CreateAssetMenu(fileName = "CombatIntroSequence", menuName = "Combat/Intro/Combat Intro Sequence")]
 public class CombatIntroSequenceSO : ScriptableObject
 {
     [Header("Timing")]
-    [Tooltip("Attesa prima del primo beat di camera, dopo che gli spawn point hanno rivendicato i loro occupanti")]
+    [Tooltip("Wait before the first camera beat, after the spawn points have claimed their occupants")]
     [Min(0f)]
     [SerializeField] private float _preSequenceDelay = 0.25f;
 
-    [Tooltip("Hold della camera sullo spawn point PRIMA che il nemico emerga")]
+    [Tooltip("Camera hold on the spawn point BEFORE the enemy emerges")]
     [Min(0f)]
     [SerializeField] private float _perEnemyPreHold = 0.3f;
 
-    [Tooltip("Hold della camera sullo spawn point DOPO che il nemico è emerso")]
+    [Tooltip("Camera hold on the spawn point AFTER the enemy has emerged")]
     [Min(0f)]
     [SerializeField] private float _perEnemyPostHold = 0.4f;
 
-    [Tooltip("Hold della camera sul punto di attracco DOPO che la nave si è fermata")]
+    [Tooltip("Camera hold on the docking point AFTER the ship has come to a stop")]
     [Min(0f)]
     [SerializeField] private float _shipArrivalHold = 0.6f;
 
-    [Tooltip("Attesa dopo l'attracco, prima di sbloccare il turn loop e mostrare la HUD")]
+    [Tooltip("Wait after docking, before unblocking the turn loop and showing the HUD")]
     [Min(0f)]
     [SerializeField] private float _postDockDelay = 0.2f;
 
-    [Header("Testo")]
-    [SerializeField] private string _openingLine = "Il combattimento ha inizio!";
+    [Header("Text")]
+    [SerializeField] private string _openingLine = "The battle begins!";
 
     [Header("Camera")]
     [SerializeField] private CameraCueProfileSO _enemyFocusProfile;
     [SerializeField] private CameraCueProfileSO _shipFocusProfile;
 
     [Header("Audio")]
-    [Tooltip("Musica della cinematica di presentazione: suona mentre la camera passa sui nemici e " +
-        "la nave attracca, e si spegne quando parte il fight. Deve avere _loop = true e _is3D = false " +
-        "(loop 2D non posizionale sul mixer Music) — il loop serve a poterla fermare in fade-out, non a ripeterla.")]
+    [Tooltip("Music for the presentation cinematic: it plays while the camera sweeps over the enemies " +
+        "and the ship docks, and fades out when the fight starts. It must have _loop = true and " +
+        "_is3D = false (a non-positional 2D loop on the Music mixer) — the loop is what makes it " +
+        "stoppable with a fade-out, not a way to repeat it.")]
     [SerializeField] private SoundEventSO _introMusic;
 
-    [Tooltip("Durata del fade-in della musica d'intro, in secondi")]
+    [Tooltip("Fade-in duration of the intro music, in seconds")]
     [Min(0f)]
     [SerializeField] private float _introMusicFadeIn = 0.5f;
 
-    [Tooltip("Durata del fade-out della musica d'intro quando parte il fight, in secondi")]
+    [Tooltip("Fade-out duration of the intro music when the fight starts, in seconds")]
     [Min(0f)]
     [SerializeField] private float _introMusicFadeOut = 1f;
 
-    [Tooltip("Soundtrack principale del combattimento: parte in concomitanza col banner \"The hunt is open!\" " +
-        "e continua in loop per tutto lo scontro. Deve avere _loop = true e _is3D = false " +
-        "(loop 2D non posizionale sul mixer Music).")]
+    [Tooltip("The combat's main soundtrack: it starts together with the \"The hunt is open!\" banner " +
+        "and loops for the whole fight. It must have _loop = true and _is3D = false " +
+        "(a non-positional 2D loop on the Music mixer).")]
     [SerializeField] private SoundEventSO _combatMusic;
 
-    [Tooltip("Durata del fade-in della musica di combattimento, sul beat del banner")]
+    [Tooltip("Fade-in duration of the combat music, on the banner's beat")]
     [Min(0f)]
     [SerializeField] private float _combatMusicFadeIn = 0.5f;
 

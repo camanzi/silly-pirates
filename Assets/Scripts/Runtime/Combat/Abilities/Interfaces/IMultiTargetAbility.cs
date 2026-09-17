@@ -1,5 +1,5 @@
-/// <summary>Ability che accumula più bersagli prima di eseguirsi.
-/// Lo stesso bersaglio può essere scelto più volte (es. 2 colpi su A, 1 su B).</summary>
+/// <summary>An ability that collects several targets before executing.
+/// The same target can be picked more than once (e.g. 2 shots on A, 1 on B).</summary>
 public interface IMultiTargetAbility
 {
     int MaxTargets { get; }

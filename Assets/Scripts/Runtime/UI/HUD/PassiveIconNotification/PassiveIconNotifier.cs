@@ -7,7 +7,7 @@ public class PassiveIconNotifier : WorldSpaceContainer
 {
     [Header("Passive Notification")]
     [SerializeField] private PassiveNotificationEventChannel _channel;
-    [Tooltip("Transform del personaggio proprietario: solo gli eventi con questo Source vengono mostrati.")]
+    [Tooltip("The owning character's transform: only events carrying this Source are shown.")]
     [SerializeField] private Transform _owner;
 
     [Header("Animation")]
@@ -25,14 +25,14 @@ public class PassiveIconNotifier : WorldSpaceContainer
     protected override void Awake()
     {
         base.Awake();
-        // Nessun CloneTree() per evento: l'elemento icon-image è unico e viene riusato per ogni
-        // notifica, così da azzerare le allocazioni per ogni guadagno/perdita di passiva.
+        // No CloneTree() per event: the icon-image element is unique and is reused for every
+        // notification, which brings the allocations per passive gain/loss down to zero.
         _iconImage = _uiDocument.rootVisualElement.Q<VisualElement>("icon-image");
 
         if (_owner == null)
         {
             _owner = transform.parent;
-            Debug.LogError($"{GetType().Name}: nessun owner assegnato, uso transform.parent come fallback.", this);
+            Debug.LogError($"{GetType().Name}: no owner assigned, falling back to transform.parent.", this);
         }
     }
 
@@ -47,8 +47,8 @@ public class PassiveIconNotifier : WorldSpaceContainer
         base.OnDisable();
         if (_channel != null) _channel.OnEventRaised -= HandleNotification;
 
-        // Ferma l'animazione in corso e svuota la coda: al riabilitarsi del componente
-        // non deve restare uno stato "in riproduzione" stantio.
+        // Stops the running animation and clears the queue: when the component re-enables there must be
+        // no stale "playing" state left behind.
         _sequence.Stop();
         _pending.Clear();
         _isPlaying = false;
@@ -73,20 +73,20 @@ public class PassiveIconNotifier : WorldSpaceContainer
         float toScale = evt.WasAdded ? 1f : _shrunkScale;
         float fromRotation = evt.WasAdded ? _gainRotation : 0f;
         float toRotation = evt.WasAdded ? 0f : _lossRotation;
-        // In UI Toolkit +Y punta verso il basso: guadagno sale (delta negativo),
-        // perdita scende (delta positivo). Stessa convenzione di PassiveNotificationManager.cs.
+        // In UI Toolkit +Y points down: a gain rises (negative delta), a loss falls (positive delta).
+        // The same convention as PassiveNotificationManager.cs.
         float yDelta = evt.WasAdded ? -_floatDistance : _floatDistance;
 
-        // Stato iniziale coerente con la direzione scelta, applicato prima di avviare il tween.
+        // Initial state consistent with the chosen direction, applied before starting the tween.
         _iconImage.style.scale = new StyleScale(new Scale(new Vector3(fromScale, fromScale, 1f)));
         _iconImage.style.rotate = new StyleRotate(new Rotate(new Angle(fromRotation, AngleUnit.Degree)));
         _iconImage.style.translate = new StyleTranslate(new Translate(0f, 0f));
 
         ToggleRequested(true);
-        // ToggleRequested rimette il container a display:Flex, ma left/top sono ancora quelli di
-        // prima che venisse nascosto: UpdateUIPosition() esce in anticipo finché il display è None
-        // (WorldSpaceContainer.cs), quindi senza questa chiamata il primo frame disegnerebbe l'icona
-        // nell'angolo del pannello, prima che il LateUpdate la riporti sul personaggio.
+        // ToggleRequested puts the container back to display:Flex, but left/top are still the ones from
+        // before it was hidden: UpdateUIPosition() bails out early while the display is None
+        // (WorldSpaceContainer.cs), so without this call the first frame would draw the icon in the corner
+        // of the panel, before LateUpdate brings it back onto the character.
         UpdateUIPosition();
 
         _sequence = Sequence.Create(
@@ -97,8 +97,8 @@ public class PassiveIconNotifier : WorldSpaceContainer
             .Group(Tween.Custom(_iconImage, 0f, yDelta, _duration,
                     static (el, v) => el.style.translate = new StyleTranslate(new Translate(0f, v)), Ease.OutQuad))
             .OnComplete(this, static self => self.OnAnimationComplete());
-        // NON tweenare mai l'opacità qui: è il gate di ApplyVisibility() nella base class,
-        // altrimenti i due tween si contenderebbero la stessa proprietà.
+        // NEVER tween the opacity here: it is ApplyVisibility()'s gate in the base class, and the two
+        // tweens would fight over the same property.
     }
 
     private void OnAnimationComplete()

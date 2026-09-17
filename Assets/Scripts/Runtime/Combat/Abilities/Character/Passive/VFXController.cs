@@ -1,46 +1,46 @@
 using UnityEngine;
 
 /// <summary>
-/// Un effetto particellare prestabile dal pool. Non decide da solo quando finire: e' il
-/// <see cref="VfxDirector"/> a rimetterlo nel pool dopo <see cref="MaxLifetime"/>.
+/// A particle effect that can be borrowed from the pool. It does not decide on its own when to end: it is
+/// the <see cref="VfxDirector"/> that returns it to the pool after <see cref="MaxLifetime"/>.
 ///
-/// L'emissione non parte su OnAcquired ma su <see cref="Play"/>: la pool attiva l'oggetto
-/// prima che il consumatore lo abbia posizionato, e un ParticleSystem in playOnAwake
-/// emetterebbe un frame nel punto sbagliato.
+/// Emission does not start on OnAcquired but on <see cref="Play"/>: the pool activates the object before
+/// the consumer has positioned it, and a ParticleSystem with playOnAwake would emit one frame in the
+/// wrong place.
 /// </summary>
 public class VFXController : PooledBehaviour
 {
-    [Tooltip("Solo per le istanze NON poolate (piazzate a mano in scena): si autodistruggono a fine effetto")]
+    [Tooltip("Only for NON-pooled instances (placed by hand in the scene): they self-destruct when the effect ends")]
     [SerializeField] private bool _autoDestroy = true;
 
     private ParticleSystem[] _particles;
-    // Il loop autorato sul prefab: StopEmitting lo azzera, e su un oggetto riciclato non tornerebbe mai.
+    // The loop as authored on the prefab: StopEmitting clears it, and on a recycled object it would never come back.
     private bool[] _authoredLoop;
-    // Scala autorata di ogni sistema e se quel sistema legge la scala del root o la propria (vedi ApplyScale).
+    // Each system's authored scale, and whether that system reads the root's scale or its own (see ApplyScale).
     private Vector3[] _particleRestScale;
     private bool[] _scalesFromHierarchy;
     private Vector3 _restScale;
     private bool _initialized;
 
-    /// <summary>Durata oltre la quale l'effetto e' certamente finito. Calcolata una volta sola.</summary>
+    /// <summary>The duration past which the effect is certainly over. Computed once and only once.</summary>
     public float MaxLifetime { get; private set; }
 
-    /// <summary>Incrementato a ogni Play: permette alle continuazioni asincrone di accorgersi
-    /// che l'istanza e' stata nel frattempo rilasciata e riusata per un altro effetto.</summary>
+    /// <summary>Incremented on every Play: it lets async continuations notice that the instance has
+    /// meanwhile been released and reused for another effect.</summary>
     public uint PlayId { get; private set; }
 
-    /// <summary>Se valorizzato, il VfxDirector copia la posizione del target ogni LateUpdate.</summary>
+    /// <summary>When set, the VfxDirector copies the target's position every LateUpdate.</summary>
     public Transform FollowTarget { get; set; }
 
-    /// <summary>Handle dell'effetto persistente in corso, o None. Serve a ripulire la mappa dei
-    /// persistenti anche quando l'istanza viene rilasciata da un percorso diverso dallo stop esplicito.</summary>
+    /// <summary>Handle of the persistent effect in flight, or None. It is what lets the map of persistent
+    /// effects be cleaned up even when the instance is released through a path other than an explicit stop.</summary>
     public VfxHandle Handle { get; set; }
 
     private void Awake() => Initialize();
 
     private void Start()
     {
-        // Istanza non poolata: vale il vecchio contratto di autodistruzione.
+        // Non-pooled instance: the old self-destruction contract applies.
         if (Releaser == null && _autoDestroy)
             Destroy(gameObject, MaxLifetime);
     }
@@ -59,38 +59,38 @@ public class VFXController : PooledBehaviour
 
         FollowTarget = null;
         Handle = VfxHandle.None;
-        ApplyScale(1f);   // anche i figli: un'istanza riciclata erediterebbe la scala del cue precedente
+        ApplyScale(1f);   // children too: a recycled instance would inherit the previous cue's scale
 
         base.OnReleased();
     }
 
     /// <summary>
-    /// Applica la scala richiesta dal cue. Non basta scalare il root: un ParticleSystem in
-    /// <see cref="ParticleSystemScalingMode.Local"/> (il default di questo progetto) usa SOLO la scala
-    /// del proprio Transform e ignora quella dei parent, quindi su un prefab con i sistemi sui figli
-    /// — la forma di gran lunga più comune — la scala scritta sul root verrebbe scartata in silenzio.
+    /// Applies the scale requested by the cue. Scaling the root is not enough: a ParticleSystem in
+    /// <see cref="ParticleSystemScalingMode.Local"/> (this project's default) uses ONLY its own Transform's
+    /// scale and ignores the parents', so on a prefab with the systems on the children — by far the most
+    /// common shape — the scale written on the root would be silently discarded.
     ///
-    /// I sistemi in <see cref="ParticleSystemScalingMode.Hierarchy"/> vanno invece lasciati stare:
-    /// ereditano già il root, e riapplicare la scala anche a loro darebbe scale².
+    /// Systems in <see cref="ParticleSystemScalingMode.Hierarchy"/> must be left alone instead: they
+    /// already inherit the root, and reapplying the scale to them as well would give scale².
     /// </summary>
     public void ApplyScale(float scale)
     {
         Initialize();
 
-        transform.localScale = _restScale * scale;   // copre anche i figli non particellari (luci, trail)
+        transform.localScale = _restScale * scale;   // also covers non-particle children (lights, trails)
 
         for (int i = 0; i < _particles.Length; i++)
         {
             if (_scalesFromHierarchy[i]) continue;
 
             Transform particleTransform = _particles[i].transform;
-            if (particleTransform == transform) continue;   // già scalato sopra
+            if (particleTransform == transform) continue;   // already scaled above
 
             particleTransform.localScale = _particleRestScale[i] * scale;
         }
     }
 
-    /// <summary>Avvia l'effetto. Da chiamare dopo aver posizionato e scalato l'istanza.</summary>
+    /// <summary>Starts the effect. To be called after the instance has been positioned and scaled.</summary>
     public void Play()
     {
         Initialize();
@@ -102,14 +102,14 @@ public class VFXController : PooledBehaviour
             main.loop = _authoredLoop[i];
         }
 
-        // Play(false): i sistemi figli sono gia' tutti nell'array, avviarli due volte li resetterebbe.
+        // Play(false): the child systems are all in the array already, starting them twice would reset them.
         for (int i = 0; i < _particles.Length; i++)
             _particles[i].Play(false);
     }
 
     /// <summary>
-    /// Chiude l'effetto lasciando esaurire le particelle gia' vive. Non rimette nel pool:
-    /// il rilascio arriva dal director dopo MaxLifetime, altrimenti l'effetto sparirebbe di colpo.
+    /// Closes the effect, letting the already-alive particles run out. It does not return to the pool:
+    /// the release comes from the director after MaxLifetime, otherwise the effect would vanish abruptly.
     /// </summary>
     public void StopEmitting()
     {

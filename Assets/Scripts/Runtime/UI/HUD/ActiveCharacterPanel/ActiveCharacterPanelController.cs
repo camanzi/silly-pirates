@@ -24,8 +24,8 @@ public class ActiveCharacterPanelController : MonoBehaviour
     private PassiveAbilityController _cachedPassiveController;
 
     private Tween _hpTween;
-    // Percentuale corrente del fill: il tween deve partire da qui e non da resolvedStyle.width,
-    // che e' in pixel (unit mismatch -> la barra sbordava dal container per tutta la durata del tween).
+    // The fill's current percentage: the tween has to start from here and not from resolvedStyle.width,
+    // which is in pixels (unit mismatch -> the bar overflowed the container for the whole tween).
     private float _hpFillPercent = 100f;
 
     private void Awake()
@@ -60,7 +60,7 @@ public class ActiveCharacterPanelController : MonoBehaviour
         if (_cachedHealth != null)
         {
             _cachedHealth.OnHpChanged += HandleHpChanged;
-            // Snap: al cambio di character la barra si posiziona subito, senza animazione.
+            // Snap: on a character change the bar positions itself immediately, with no animation.
             SetHealth(_cachedHealth.CurrentHp, _cachedHealth.MaxHp, animate: false);
         }
 

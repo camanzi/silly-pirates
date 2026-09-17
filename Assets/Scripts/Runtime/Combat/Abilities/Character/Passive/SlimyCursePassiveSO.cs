@@ -23,8 +23,8 @@ public class SlimyCursePassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnStar
         _turnStartCount = 0;
         if (controller.TryGetComponent<GridCharacter>(out var character))
             _activeCurseTargets.Add(character);
-        // Il VFX insegue il personaggio invece di essergli parentato: un oggetto del pool
-        // non va mai riparentato su un oggetto di gameplay.
+        // The VFX follows the character instead of being parented to it: a pooled object
+        // must never be reparented onto a gameplay object.
         if (_vfxPrefab != null && _vfxChannel != null && !_vfxHandle.IsValid)
         {
             _vfxHandle = VfxHandle.New();
@@ -43,8 +43,8 @@ public class SlimyCursePassiveSO : PassiveAbilitySO, IOnCellEntered, IOnTurnStar
         _controller = null;
     }
 
-    // HashSet statico condiviso fra tutti i cloni: senza reset, i personaggi del combattimento
-    // precedente (distrutti) restano dentro e IsActiveOn continuerebbe a segnalarli come maledetti.
+    // Static HashSet shared by every clone: without a reset the (destroyed) characters of the previous
+    // combat stay in it and IsActiveOn would keep reporting them as cursed.
     public void ResetForNewCombat() => _activeCurseTargets.Clear();
 
     void IOnCellEntered.OnCellEntered(Vector3Int cell) => _slimyCellData?.Apply(cell);

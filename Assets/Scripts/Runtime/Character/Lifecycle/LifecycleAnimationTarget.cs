@@ -2,17 +2,17 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Un singolo bersaglio visivo animato dal lifecycle: il pivot del corpo (es. <c>MeshHolder</c>) oppure un
-/// "satellite" — una parte di nemico composito, un cappello, un'arma — che semanticamente fa parte dello
-/// stesso corpo ma vive FUORI dalla gerarchia del pivot, quindi non ne eredita le animazioni.
+/// A single visual target animated by the lifecycle: the body pivot (e.g. <c>MeshHolder</c>) or a
+/// "satellite" — a part of a composite enemy, a hat, a weapon — that semantically belongs to the same body
+/// but lives OUTSIDE the pivot's hierarchy, and therefore inherits none of its animations.
 ///
-/// La posa a riposo viene catturata al momento della registrazione e non è più aggiornata: è il
-/// riferimento da cui ogni animazione parte e a cui ogni reset torna.
+/// The rest pose is captured at registration time and never updated again: it is the reference every
+/// animation starts from and every reset returns to.
 /// </summary>
 public readonly struct LifecycleAnimationTarget
 {
     public readonly Transform Pivot;
-    public readonly SpriteRenderer Renderer;   // può essere null: un satellite senza sprite si limita a muoversi
+    public readonly SpriteRenderer Renderer;   // may be null: a satellite with no sprite simply moves
     public readonly Vector3 RestLocalPosition;
     public readonly Vector3 RestLocalScale;
     public readonly Color RestColor;
@@ -33,7 +33,7 @@ public readonly struct LifecycleAnimationTarget
         RestColor = restColor;
     }
 
-    /// <summary>Cattura la posa corrente di <paramref name="pivot"/> come posa a riposo.</summary>
+    /// <summary>Captures <paramref name="pivot"/>'s current pose as its rest pose.</summary>
     public static LifecycleAnimationTarget Capture(Transform pivot, SpriteRenderer renderer)
     {
         Color restColor = renderer != null ? renderer.color : Color.white;
@@ -41,7 +41,7 @@ public readonly struct LifecycleAnimationTarget
             pivot, renderer, pivot.localPosition, pivot.localScale, restColor);
     }
 
-    /// <summary>Ripristina la sola posa del transform. Sicuro su oggetti già distrutti.</summary>
+    /// <summary>Restores the transform pose only. Safe on already destroyed objects.</summary>
     public void ResetPoseToRest()
     {
         if (Pivot == null) return;
@@ -49,7 +49,7 @@ public readonly struct LifecycleAnimationTarget
         Pivot.localScale = RestLocalScale;
     }
 
-    /// <summary>Ripristina posa e colore pieno (RGBA): usato dai revive, dove il tint "morto" va rimosso.</summary>
+    /// <summary>Restores the pose and the full colour (RGBA): used by revives, where the "dead" tint has to go.</summary>
     public void ResetToRest()
     {
         ResetPoseToRest();
@@ -57,9 +57,9 @@ public readonly struct LifecycleAnimationTarget
     }
 
     /// <summary>
-    /// Scrive il solo canale alpha preservando l'RGB: il tint applicato da
-    /// <see cref="DirectionalSpriteController.SetDeadVisual"/> a una parte rotta deve sopravvivere al fade
-    /// di lifecycle, altrimenti una parte distrutta tornerebbe del colore di quella viva mentre affonda.
+    /// Writes the alpha channel only, preserving the RGB: the tint
+    /// <see cref="DirectionalSpriteController.SetDeadVisual"/> applies to a broken part has to survive the
+    /// lifecycle fade, or a destroyed part would go back to a living part's colour while it sinks.
     /// </summary>
     public void SetAlpha(float alpha)
     {
@@ -70,9 +70,9 @@ public readonly struct LifecycleAnimationTarget
     }
 
     /// <summary>
-    /// Ferma i tween che altri sistemi stanno già facendo girare su questo bersaglio (lo shake infinito di
-    /// un telegraph, un salto interrotto a metà, un fade precedente). Senza questo continuerebbero a
-    /// scrivere sullo stesso <c>localPosition</c>/colore che il lifecycle sta animando.
+    /// Stops the tweens other systems are already running on this target (a telegraph's infinite shake, a
+    /// jump interrupted halfway, an earlier fade). Without this they would keep writing to the same
+    /// <c>localPosition</c>/colour the lifecycle is animating.
     /// </summary>
     public void StopActiveTweens()
     {

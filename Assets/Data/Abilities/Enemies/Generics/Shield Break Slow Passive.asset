@@ -16,8 +16,8 @@ MonoBehaviour:
   _removalTiming: 1
   _reapplyFeedback: 0
   _icon: {fileID: 0}
-  _description: 'Lo scudo elementale e'' caduto: l''agente perde il posto in coda
-    e finisce ultimo.'
+  _description: 'The elemental shield is down: the agent loses its place in the queue
+    and ends up last.'
   _turnOrderData: {fileID: 11400000, guid: 0a1ab61cf033d9440abaf94b4181a5a0, type: 2}
   _flatPenalty: 0
   _percentPenalty: 0

@@ -2,43 +2,43 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 /// <summary>
-/// L'unita' di autoring di un suono: clip, mix, spazializzazione, anti-spam.
-/// Stateless per contratto — la memoria di "cosa e' stato suonato per ultimo" vive
-/// sull'AudioDirector, non qui, cosi' un solo asset puo' essere condiviso da piu' chiamanti.
+/// The authoring unit of a sound: clips, mix, spatialization, anti-spam.
+/// Stateless by contract — the memory of "what was played last" lives on the AudioDirector and not here,
+/// so a single asset can be shared by several callers.
 /// </summary>
 [CreateAssetMenu(fileName = "SoundEvent", menuName = "Audio/Sound Event")]
 public class SoundEventSO : ScriptableObject
 {
     [Header("Clips")]
-    [Tooltip("Se piu' di una, ne viene scelta una a caso a ogni riproduzione")]
+    [Tooltip("With more than one, a random clip is picked on every playback")]
     [SerializeField] private AudioClip[] _clips;
 
     [Header("Mix")]
     [SerializeField] private AudioMixerGroup _mixerGroup;
-    [Tooltip("Volume estratto a caso in questo intervallo")]
+    [Tooltip("Volume drawn at random from this range")]
     [SerializeField] private Vector2 _volumeRange = new(1f, 1f);
-    [Tooltip("Pitch estratto a caso in questo intervallo")]
+    [Tooltip("Pitch drawn at random from this range")]
     [SerializeField] private Vector2 _pitchRange = new(0.95f, 1.05f);
 
     [Header("Spatial")]
-    [Tooltip("True = suono posizionale nel mondo, False = 2D (UI, musica)")]
+    [Tooltip("True = a positional sound in the world, False = 2D (UI, music)")]
     [SerializeField] private bool _is3D = true;
     [SerializeField] private AudioRolloffMode _rolloffMode = AudioRolloffMode.Logarithmic;
     [SerializeField] private float _minDistance = 3f;
     [SerializeField] private float _maxDistance = 25f;
 
     [Header("Looping")]
-    [Tooltip("I suoni in loop vanno avviati dal canale di loop e fermati con il loro handle")]
+    [Tooltip("Looping sounds have to be started from the loop channel and stopped through their handle")]
     [SerializeField] private bool _loop;
 
     [Header("Anti-spam")]
-    [Tooltip("Secondi minimi fra due riproduzioni di QUESTO suono, chiunque sia il chiamante")]
+    [Tooltip("Minimum seconds between two playbacks of THIS sound, whoever the caller is")]
     [Min(0f)] [SerializeField] private float _cooldownSeconds;
-    [Tooltip("Voci simultanee massime di QUESTO suono nell'intera scena")]
+    [Tooltip("Maximum simultaneous voices of THIS sound across the whole scene")]
     [Min(1)] [SerializeField] private int _maxConcurrentInstances = 4;
 
     [Header("Pool")]
-    [Tooltip("Piu' basso = viene rubato per primo quando il pool e' esaurito")]
+    [Tooltip("Lower = stolen first when the pool is exhausted")]
     [Range(0, 10)] [SerializeField] private int _stealPriority = 5;
 
     public AudioMixerGroup MixerGroup => _mixerGroup;
@@ -55,8 +55,8 @@ public class SoundEventSO : ScriptableObject
     public bool HasClips => _clips != null && _clips.Length > 0;
 
     /// <summary>
-    /// Sceglie una clip. Puro: nessuno stato conservato. Il chiamante passa l'ultima clip
-    /// suonata in <paramref name="avoid"/> per evitare ripetizioni immediate.
+    /// Picks a clip. Pure: no state is kept. The caller passes the clip played last in
+    /// <paramref name="avoid"/> to avoid immediate repeats.
     /// </summary>
     public AudioClip PickClip(AudioClip avoid = null)
     {

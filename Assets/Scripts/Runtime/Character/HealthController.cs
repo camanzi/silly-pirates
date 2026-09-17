@@ -58,10 +58,10 @@ public class HealthController : MonoBehaviour, IDamageable
     }
 
     /// <summary>
-    /// Aggiunge un behavior a runtime. Il chiamante passa un'istanza GIA' clonata (Instantiate) e ne resta
-    /// proprietario: <see cref="RemoveBehavior"/> smonta esattamente quella istanza e mai i _baseBehaviors.
-    /// Non esistono overload per tipo o per indice proprio per rendere impossibile cancellare per sbaglio
-    /// un behavior di base del personaggio.
+    /// Adds a behavior at runtime. The caller passes an ALREADY cloned instance (Instantiate) and stays
+    /// its owner: <see cref="RemoveBehavior"/> unmounts exactly that instance and never the _baseBehaviors.
+    /// There are deliberately no overloads by type or by index, precisely so that one of the character's
+    /// base behaviors cannot be removed by mistake.
     /// </summary>
     public void AddBehavior(HealthBehaviorSO instance)
     {

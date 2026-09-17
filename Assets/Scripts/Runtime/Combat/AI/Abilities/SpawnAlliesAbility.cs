@@ -13,9 +13,9 @@ public class SpawnAlliesAbility : EnemyAbilityBase
 
     [Header("Apex flash")]
     [SerializeField] private VFXController _apexVfx;
-    [Tooltip("Offset in WORLD space sommato alla posizione attuale della parte. Non usare lo spazio locale " +
-             "della parte: lo sprite ha LookAtCamera, che ne azzera l'inclinazione a ogni LateUpdate, quindi " +
-             "la punta visibile sta sempre lungo world-up.")]
+    [Tooltip("Offset in WORLD space added to the part's current position. Do not use the part's local " +
+             "space: the sprite carries LookAtCamera, which clears its tilt every LateUpdate, so the " +
+             "visible tip always points along world-up.")]
     [SerializeField] private Vector3 _apexVfxWorldOffset = new(0f, 0.85f, 0f);
     [SerializeField] private float _apexVfxScale = 1f;
 

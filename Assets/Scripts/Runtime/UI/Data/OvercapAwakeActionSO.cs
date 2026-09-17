@@ -25,6 +25,6 @@ public class OvercapAwakeActionSO : AwakeActionSO, IInPlaceSwappable
             && awakable.CurrentAwakeningPoints < awakable.OvercapLimit;
     }
 
-    // ExecuteAction è quella della base: il passivo di overcap lo applica
+    // ExecuteAction is the base one: the overcap passive is what applies it
     // ShipEquipment.RefreshOvercapPassive in base ai punti risultanti.
 }

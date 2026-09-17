@@ -1,18 +1,18 @@
 using UnityEngine;
 
 /// <summary>
-/// Punizione inflitta a chi si vede rompere lo scudo elementale: l'agente perde il posto in coda e
-/// finisce ultimo. La penalita' di agilita' e' a zero di default perche' il colpo e' il salto in coda,
-/// non un debuff prolungato; resta serializzata per il tuning.
+/// The punishment inflicted on whoever gets their elemental shield broken: the agent loses its place in
+/// the queue and ends up last. The agility penalty is zero by default because the blow IS the drop to the
+/// back of the queue, not a lasting debuff; it stays serialized for tuning.
 ///
-/// Con penalita' a zero <c>HostileCharacter.HandlePassivesChanged</c> non emette alcun AVDelta, che
-/// altrimenti si sommerebbe al SendToBack falsandolo.
+/// With a zero penalty <c>HostileCharacter.HandlePassivesChanged</c> emits no AVDelta, which would
+/// otherwise add itself to the SendToBack and skew it.
 ///
-/// Classe a se' e non un asset di <see cref="SlowPassiveSO"/>: PassiveAbilityController.AddPassive
-/// deduplica per GetType() esatto, quindi un secondo SlowPassiveSO si stackerebbe con "Entangled".
+/// A class of its own rather than an asset of <see cref="SlowPassiveSO"/>: PassiveAbilityController.AddPassive
+/// deduplicates by exact GetType(), so a second SlowPassiveSO would stack with "Entangled".
 ///
-/// Con durata 0 e RemovalTiming.OwnerTurnStart la passiva sparisce al turno successivo dell'owner,
-/// in sincrono con la rigenerazione dello scudo.
+/// With a duration of 0 and RemovalTiming.OwnerTurnStart the passive disappears on the owner's next turn,
+/// in sync with the shield regenerating.
 /// </summary>
 [CreateAssetMenu(fileName = "Shield Break Slow Passive", menuName = "Abilities/Character/Passives/Shield Break Slow")]
 public class ShieldBreakSlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEnd, IOnTurnStart, IOnTurnEnd

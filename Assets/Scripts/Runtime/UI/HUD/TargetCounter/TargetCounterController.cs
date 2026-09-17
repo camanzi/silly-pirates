@@ -86,8 +86,8 @@ public class TargetCounterController : MonoBehaviour
     {
         if (_container.panel == null) return;
 
-        // InputReader restituisce coordinate schermo con origine in basso a sinistra,
-        // il panel space di UI Toolkit ha origine in alto a sinistra.
+        // InputReader returns screen coordinates with the origin at the bottom left,
+        // while UI Toolkit's panel space has its origin at the top left.
         Vector2 flippedScreenPos = new(_screenPos.x, Screen.height - _screenPos.y);
 
         Vector2 panelPos = RuntimePanelUtils.ScreenToPanel(_container.panel, flippedScreenPos);

@@ -61,8 +61,8 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
         _controller = null;
     }
 
-    // Stesso motivo del gemello in SlimyCursePassiveSO: HashSet statico condiviso, va svuotato o
-    // trattiene nemici distrutti dal combattimento precedente.
+    // Same reason as its twin in SlimyCursePassiveSO: a shared static HashSet, which has to be cleared
+    // or it holds on to enemies destroyed in the previous combat.
     public void ResetForNewCombat() => _activeTargets.Clear();
 
     int IAgilityModifier.GetFlatAgilityBonus() => _flatBonus;

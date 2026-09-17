@@ -4,24 +4,24 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Esegue una sequenza di salto squash&amp;stretch sui pivot visivi di un personaggio (tipicamente il
-/// MeshHolder più i suoi satelliti, es. le parti di un nemico composito), mai sul transform di griglia:
-/// collider e occupancy restano fermi.
+/// Runs a squash&amp;stretch jump sequence on a character's visual pivots (typically the MeshHolder plus
+/// its satellites, e.g. the parts of a composite enemy), never on the grid transform: colliders and
+/// occupancy stay put.
 ///
-/// Tutti i bersagli si muovono insieme con la stessa durata; viene attesa solo la tween del corpo
-/// (<c>targets[0]</c>), che le altre accompagnano — così scettro e cappello saltano col loro proprietario
-/// invece di restare a terra.
+/// Every target moves together over the same duration; only the body's tween (<c>targets[0]</c>) is
+/// awaited, and the others tag along — so a sceptre and a hat jump with their owner instead of staying on
+/// the ground.
 ///
-/// Spezzata in due metà (<see cref="JumpUpAsync"/> / <see cref="FallDownAsync"/>) invece di essere
-/// un unico metodo con callback, così il chiamante può inserire un'azione qualunque — sparare un
-/// proiettile, alzare una cue camera — mentre il personaggio è sospeso all'apice, con un semplice
-/// await in sequenza e senza indirection via delegati.
+/// Split into two halves (<see cref="JumpUpAsync"/> / <see cref="FallDownAsync"/>) rather than being a
+/// single method with a callback, so the caller can slot any action in — firing a projectile, raising a
+/// camera cue — while the character hangs at the apex, with a plain sequential await and no indirection
+/// through delegates.
 /// </summary>
 public static class JumpSquashStretchHelper
 {
     /// <summary>
-    /// Anticipazione, stacco (con splash) e salita fino all'apice, con assestamento finale.
-    /// Al termine i pivot sono fermi in posizione di apice, pronti per l'hang time del chiamante.
+    /// Anticipation, take-off (with a splash) and the rise up to the apex, with a final settle.
+    /// When it returns the pivots sit still at apex position, ready for the caller's hang time.
     /// </summary>
     public static async Awaitable JumpUpAsync(
         IReadOnlyList<LifecycleAnimationTarget> targets,
@@ -30,32 +30,32 @@ public static class JumpSquashStretchHelper
         Vector3 splashWorldPosition,
         CancellationToken token = default)
     {
-        // L'altezza arriva in unità mondo (derivata dalla Y del target), ma i tween muovono una
-        // localPosition: se il parent è scalato le due non coincidono. I satelliti condividono il parent
-        // del corpo, quindi il fattore è lo stesso per tutti.
+        // The height arrives in world units (derived from the target's Y), but the tweens move a
+        // localPosition: if the parent is scaled the two do not coincide. The satellites share the body's
+        // parent, so the factor is the same for all of them.
         Transform bodyPivot = targets[0].Pivot;
         float parentScaleY = bodyPivot.parent != null ? bodyPivot.parent.lossyScale.y : 1f;
         float apexLocalHeight = Mathf.Approximately(parentScaleY, 0f) ? apexWorldHeight : apexWorldHeight / parentScaleY;
 
-        // 1) Anticipazione: si schiaccia decelerando, "carica" l'energia prima dello scatto.
+        // 1) Anticipation: it squashes while decelerating, "loading" the energy before the burst.
         await ScaleAll(targets, config.AnticipationScale, config.AnticipationDuration, config.AnticipationEase);
         token.ThrowIfCancellationRequested();
 
-        // 2) Stacco: spruzzo d'acqua + stiramento verticale secco, in parallelo alla salita.
-        //    La salita decelera (RiseEase) come un corpo che perde velocità sotto gravità.
+        // 2) Take-off: a water splash + a sharp vertical stretch, in parallel with the rise.
+        //    The rise decelerates (RiseEase) like a body losing speed under gravity.
         SpawnSplash(config, splashWorldPosition);
         _ = ScaleAll(targets, config.LaunchScale, config.LaunchDuration, config.LaunchEase);
         await MoveAll(targets, apexLocalHeight, config.RiseDuration, config.RiseEase);
         token.ThrowIfCancellationRequested();
 
-        // 3) Apice: la stiratura si riassorbe quasi del tutto, altrimenti in sospensione leggerebbe
-        //    come gommoso invece che "in bilico".
+        // 3) Apex: the stretch is almost entirely reabsorbed, otherwise while suspended it would read as
+        //    rubbery rather than "poised".
         await ScaleAll(targets, config.ApexScale, config.ApexSettleDuration, Ease.OutQuad);
     }
 
     /// <summary>
-    /// Caduta dall'apice, impatto con splash e recupero elastico. Ripristina SEMPRE posizione e scala
-    /// di riposo, anche in caso di eccezione o cancellazione.
+    /// The fall from the apex, the impact with its splash and the elastic recovery. It ALWAYS restores the
+    /// rest position and scale, exceptions and cancellation included.
     /// </summary>
     public static async Awaitable FallDownAsync(
         IReadOnlyList<LifecycleAnimationTarget> targets,
@@ -65,18 +65,18 @@ public static class JumpSquashStretchHelper
     {
         try
         {
-            // 4) Caduta: accelera (FallEase), con leggero stiramento residuo mentre precipita.
+            // 4) Fall: it accelerates (FallEase), with a slight residual stretch on the way down.
             _ = ScaleAll(targets, config.FallScale, config.FallDuration * 0.6f, Ease.InQuad);
             await MoveAll(targets, 0f, config.FallDuration, config.FallEase);
             token.ThrowIfCancellationRequested();
 
-            // 5) Impatto in acqua: spruzzo + schiacciamento, più marcato dell'anticipazione perché
-            //    l'energia da dissipare all'arrivo è maggiore di quella accumulata alla partenza.
+            // 5) Impact with the water: a splash + a squash, more pronounced than the anticipation
+            //    because there is more energy to dissipate on arrival than was stored at the start.
             SpawnSplash(config, splashWorldPosition);
             await ScaleAll(targets, config.LandingScale, config.LandingSquashDuration, config.LandingSquashEase);
             token.ThrowIfCancellationRequested();
 
-            // 6) Follow-through elastico: rende l'impatto assorbito e non troncato.
+            // 6) Elastic follow-through: it makes the impact read as absorbed rather than cut short.
             await ScaleAllToRest(targets, config.LandingRecoveryDuration, config.LandingRecoveryEase);
         }
         finally
@@ -86,9 +86,9 @@ public static class JumpSquashStretchHelper
     }
 
     /// <summary>
-    /// Riporta i pivot alla posa di riposo. Sicuro su oggetti già distrutti (il confronto con null
-    /// di Unity li intercetta). Da chiamare anche dal chiamante, per coprire i fallimenti che
-    /// avvengono prima di <see cref="FallDownAsync"/>.
+    /// Returns the pivots to their rest pose. Safe on already destroyed objects (Unity's null comparison
+    /// catches them). The caller should call it too, to cover failures that happen before
+    /// <see cref="FallDownAsync"/>.
     /// </summary>
     public static void ResetToRest(IReadOnlyList<LifecycleAnimationTarget> targets)
     {
@@ -99,8 +99,8 @@ public static class JumpSquashStretchHelper
     }
 
     /// <summary>
-    /// Avvia la scalata su tutti i bersagli e restituisce quella del corpo, l'unica da attendere:
-    /// stessa durata per tutti, quindi finiscono insieme.
+    /// Starts the scaling on every target and returns the body's, the only one worth awaiting:
+    /// same duration for all of them, so they finish together.
     /// </summary>
     private static Tween ScaleAll(
         IReadOnlyList<LifecycleAnimationTarget> targets,
@@ -133,7 +133,7 @@ public static class JumpSquashStretchHelper
         return Tween.Scale(body.Pivot, body.RestLocalScale, duration, ease);
     }
 
-    /// <summary>Solleva tutti i bersagli di <paramref name="localHeight"/> sopra la rispettiva posa a riposo.</summary>
+    /// <summary>Raises every target by <paramref name="localHeight"/> above its own rest pose.</summary>
     private static Tween MoveAll(
         IReadOnlyList<LifecycleAnimationTarget> targets, float localHeight, float duration, Ease ease)
     {
@@ -155,7 +155,7 @@ public static class JumpSquashStretchHelper
 
     private static void SpawnSplash(JumpAnimationConfigSO config, Vector3 worldPosition)
     {
-        // splash non configurato: è una scelta, non un errore
+        // splash not configured: that is a choice, not an error
         if (config.SplashVfxPrefab == null || config.VfxChannel == null) return;
         config.VfxChannel.RaiseEvent(VfxCue.At(config.SplashVfxPrefab, worldPosition));
     }

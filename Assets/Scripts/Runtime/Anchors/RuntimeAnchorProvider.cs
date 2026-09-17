@@ -1,9 +1,10 @@
 using UnityEngine;
 
 /// <summary>
-/// Lato produttore del pattern anchor: pubblica un'istanza di scena su un <see cref="RuntimeAnchorSO{T}"/>
-/// finché è attiva. Stessa forma di SpawnPoint (Register in OnEnable, Unregister in OnDisable), così
-/// il ciclo di vita segue esattamente quello dell'oggetto e lo scarico di una scena si pulisce da sé.
+/// The producer side of the anchor pattern: it publishes a scene instance on a
+/// <see cref="RuntimeAnchorSO{T}"/> for as long as it is active. The same shape as SpawnPoint (Register
+/// in OnEnable, Unregister in OnDisable), so the lifetime tracks the object's exactly and unloading a
+/// scene cleans up after itself.
 /// </summary>
 public abstract class RuntimeAnchorProvider<TAnchor, TValue> : MonoBehaviour
     where TAnchor : RuntimeAnchorSO<TValue>
@@ -11,25 +12,25 @@ public abstract class RuntimeAnchorProvider<TAnchor, TValue> : MonoBehaviour
 {
     [SerializeField] private TAnchor _anchor;
 
-    /// <summary>Il valore da pubblicare. Chiamato una volta per abilitazione.</summary>
+    /// <summary>The value to publish. Called once per enable.</summary>
     protected abstract TValue Resolve();
 
-    // Si ricorda cosa è stato registrato: Resolve() potrebbe non restituire più lo stesso oggetto
-    // al momento del teardown, e un Unregister con l'istanza sbagliata lascerebbe l'anchor sporco.
+    // It remembers what was registered: Resolve() may no longer return the same object at teardown time,
+    // and an Unregister with the wrong instance would leave the anchor dirty.
     private TValue _registered;
 
     private void OnEnable()
     {
         if (_anchor == null)
         {
-            Debug.LogError($"{GetType().Name}: nessun anchor assegnato.", this);
+            Debug.LogError($"{GetType().Name}: no anchor assigned.", this);
             return;
         }
 
         _registered = Resolve();
         if (_registered == null)
         {
-            Debug.LogError($"{GetType().Name}: non ho trovato un {typeof(TValue).Name} da registrare su '{_anchor.name}'.", this);
+            Debug.LogError($"{GetType().Name}: found no {typeof(TValue).Name} to register on '{_anchor.name}'.", this);
             return;
         }
 

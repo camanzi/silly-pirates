@@ -6,8 +6,8 @@ public class AccuracyOvercapPassiveSO : PassiveAbilitySO, IAccuracyModifier, IOv
     private int _accuracyBonus;
     private int _applications;
 
-    // Contatore puramente cosmetico: alimenta il "x2"/"x3" del popup e del badge.
-    // Il bonus non si somma, viene sovrascritto a ogni riapplicazione.
+    // Purely cosmetic counter: it feeds the "x2"/"x3" on the popup and the badge.
+    // The bonus does not add up, it is overwritten on every reapplication.
     public int CurrentStacks => _applications;
     public int MaxStacks => int.MaxValue;
 
@@ -28,9 +28,9 @@ public class AccuracyOvercapPassiveSO : PassiveAbilitySO, IAccuracyModifier, IOv
             eq.RemoveAccuracyModifier(this);
     }
 
-    // Non stacka: il bonus viene ricalcolato ogni volta dai punti di overcap,
-    // quindi la riapplicazione sovrascrive il valore. L'istanza esistente resta
-    // registrata come modifier, senza ciclo OnUnequip/OnEquip.
+    // Does not stack: the bonus is recomputed from the overcap points every time, so
+    // reapplying overwrites the value. The existing instance stays registered as a
+    // modifier, with no OnUnequip/OnEquip cycle.
     void IStackablePassive.OnReapplied(PassiveAbilityController controller, PassiveAbilitySO incoming)
     {
         if (incoming is not AccuracyOvercapPassiveSO overcap) return;

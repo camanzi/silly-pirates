@@ -1,16 +1,16 @@
 /// <summary>
-/// Query di sola lettura sulla coda dei turni. Centralizza in un unico punto lo stesso loop
-/// "conta i vivi per squadra" che oggi è replicato a mano in diverse ability nemiche
-/// (SlimyBallAbility, SlimyCurseAbility, SuperSlimyBallAbility, HealingWaterAbility,
-/// SpeedBoostAbility, HighestHpTargetSelectionSO). Quelle non vengono toccate qui: sono AI già
-/// funzionante e non c'è motivo di rifattorizzarle per aggiungere questa feature. L'helper nasce
-/// comunque nella forma giusta per essere il punto d'appoggio di eventuali refactor futuri.
+/// Read-only queries over the turn queue. It centralizes in one place the same "count the living per
+/// team" loop that is currently hand-rolled in several enemy abilities (SlimyBallAbility,
+/// SlimyCurseAbility, SuperSlimyBallAbility, HealingWaterAbility, SpeedBoostAbility,
+/// HighestHpTargetSelectionSO). Those are deliberately left alone here: they are working AI and there is
+/// no reason to refactor them just to add this feature. The helper is nevertheless written in the right
+/// shape to serve as the foothold for any future refactor.
 /// </summary>
 public static class TurnOrderQueries
 {
-    // Nemico = agente della coda che è effettivamente un HostileCharacter; qualunque altro
-    // ITurnAgent (GridCharacter e derivati) è per definizione un giocante. Lo stesso identico
-    // filtro usato nelle ability AI citate sopra.
+    // An enemy is a queue agent that actually is a HostileCharacter; any other ITurnAgent (GridCharacter
+    // and its derivatives) is by definition a player character. Exactly the same filter used in the AI
+    // abilities cited above.
     public static int CountAliveEnemies(this TurnOrderDataSO turnOrder)
     {
         if (turnOrder == null) return 0;

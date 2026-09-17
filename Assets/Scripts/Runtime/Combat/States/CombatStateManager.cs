@@ -14,7 +14,7 @@ public class CombatStateManager : MonoBehaviour
     [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
     [SerializeField] private AbilityExecutionCueEventChannel _cameraCueChannel;
     [SerializeField] private SfxCueEventChannel _sfxChannel;
-    [Tooltip("Annuncia ai bersagli che un'abilita' sta per colpirli, e quando l'esecuzione e' finita")]
+    [Tooltip("Announces to the targets that an ability is about to hit them, and when the execution is over")]
     [SerializeField] private AbilityThreatEventChannel _threatChannel;
 
     [Header("State Settings")]

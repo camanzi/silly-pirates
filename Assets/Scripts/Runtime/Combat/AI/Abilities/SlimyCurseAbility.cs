@@ -66,6 +66,6 @@ public class SlimyCurseAbility : EnemyAbilityBase, IOffensiveAbility
             _cameraDirectorState
         );
 
-    // Ostile ma senza danno: applica una passiva di maledizione.
+    // Hostile but damageless: it applies a curse passive.
     public DamageType ResolveDamageElement(IInteractableElement caster) => DamageType.None;
 }

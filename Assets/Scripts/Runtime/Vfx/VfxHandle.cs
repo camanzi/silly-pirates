@@ -1,11 +1,11 @@
 using System;
 
 /// <summary>
-/// Riferimento a un VFX persistente, coniato dal chiamante e usato per fermarlo.
+/// A reference to a persistent VFX, minted by the caller and used to stop it.
 ///
-/// Stessa scelta di <see cref="AudioLoopHandle"/>: e' un GUID e non un indice di slot del pool,
-/// quindi uno stop duplicato o tardivo e' un semplice miss (no-op sicuro) e non puo' mai colpire
-/// un effetto diverso riciclato nello stesso slot.
+/// The same choice as <see cref="AudioLoopHandle"/>: it is a GUID and not a pool slot index, so a
+/// duplicate or late stop is simply a miss (a safe no-op) and can never hit a different effect recycled
+/// into the same slot.
 /// </summary>
 public readonly struct VfxHandle : IEquatable<VfxHandle>
 {

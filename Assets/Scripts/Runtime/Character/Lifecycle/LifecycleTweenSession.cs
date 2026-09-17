@@ -2,27 +2,28 @@ using System.Collections.Generic;
 using PrimeTween;
 
 /// <summary>
-/// Handle dei tween PrimeTween aperti dal binario loop di lifecycle (vedi <see cref="LoopingLifecycleAnimationSO"/>).
-/// Gemello di <see cref="LifecycleVfxSession"/> ma per i tween invece che per i VFX, e con la stessa
-/// motivazione: vive nel <see cref="CharacterLifecycleAnimator"/> e NON nella SO, che resta condivisa fra
-/// prefab diversi e quindi non può possedere handle per-istanza — due nemici con lo stesso asset di idle
-/// si contenderebbero un unico campo.
+/// The handles of the PrimeTween tweens opened by the lifecycle loop track (see
+/// <see cref="LoopingLifecycleAnimationSO"/>). The twin of <see cref="LifecycleVfxSession"/> but for
+/// tweens rather than VFX, and for the same reason: it lives on the
+/// <see cref="CharacterLifecycleAnimator"/> and NOT on the SO, which stays shared between different
+/// prefabs and therefore cannot own per-instance handles — two enemies using the same idle asset would
+/// fight over a single field.
 ///
-/// È plurale perché un bersaglio composito (corpo + satelliti) fa partire N tween che vanno fermati
-/// insieme; il corpo di un nemico standard è semplicemente il caso N=1.
+/// It is plural because a composite target (body + satellites) starts N tweens that have to be stopped
+/// together; a standard enemy's body is simply the N=1 case.
 ///
-/// Una sola istanza riusata loop dopo loop: nessuna allocazione per accensione ripetuta.
+/// A single instance reused loop after loop: no allocation per repeated start.
 /// </summary>
 public sealed class LifecycleTweenSession
 {
     private readonly List<Tween> _open = new();
 
-    /// <summary>Il loop è attualmente registrato come acceso. Specchio di <see cref="LifecycleVfxSession.IsOpen"/>.</summary>
+    /// <summary>The loop is currently registered as running. Mirrors <see cref="LifecycleVfxSession.IsOpen"/>.</summary>
     public bool IsOpen { get; private set; }
 
     /// <summary>
-    /// Apre la sessione per un nuovo loop. Difensivo come <see cref="LifecycleVfxSession.Begin"/>: ferma
-    /// quella precedente, così un loop non può mai sopravvivere a quello che l'ha rimpiazzato.
+    /// Opens the session for a new loop. Defensive like <see cref="LifecycleVfxSession.Begin"/>: it stops
+    /// the previous one, so a loop can never outlive the one that replaced it.
     /// </summary>
     public void Begin()
     {
@@ -30,15 +31,15 @@ public sealed class LifecycleTweenSession
         IsOpen = true;
     }
 
-    /// <summary>Registra un tween da fermare con <see cref="StopAll"/>. I tween già morti (durata zero, target distrutto) si ignorano.</summary>
+    /// <summary>Registers a tween to be stopped by <see cref="StopAll"/>. Already dead tweens (zero duration, destroyed target) are ignored.</summary>
     public void Track(Tween tween)
     {
         if (tween.isAlive) _open.Add(tween);
     }
 
     /// <summary>
-    /// Ferma tutti i tween aperti e chiude la sessione. Idempotente: uno <c>Stop()</c> su un tween già
-    /// concluso è un no-op lato PrimeTween.
+    /// Stops every open tween and closes the session. Idempotent: a <c>Stop()</c> on an already finished
+    /// tween is a no-op on PrimeTween's side.
     /// </summary>
     public void StopAll()
     {

@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Annulla completamente il danno di un elemento. Gemello di <see cref="ResistanceBehaviorSO"/> e
-/// <see cref="VulnerabilityBehaviorSO"/>: stesso moltiplicatore costante, solo a zero.
+/// Nullifies an element's damage entirely. The twin of <see cref="ResistanceBehaviorSO"/> and
+/// <see cref="VulnerabilityBehaviorSO"/>: the same constant multiplier, only at zero.
 /// </summary>
 [CreateAssetMenu(fileName = "ImmunityBehavior", menuName = "Combat/Health Behaviors/Immunity")]
 public class ImmunityBehaviorSO : HealthBehaviorSO

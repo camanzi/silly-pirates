@@ -9,6 +9,6 @@ public class MouseTest : MonoBehaviour
 
     private void TestClick()
     {
-        Debug.Log("<color=green>Click rilevato con successo dalla mappa UI!</color>");
+        Debug.Log("<color=green>Click successfully detected by the UI map!</color>");
     }
 }

@@ -31,7 +31,7 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IPl
         _gameInput.Player.Disable();
     }
 
-    // --- Implementazione IUIActions ---
+    // --- IUIActions implementation ---
     
     public void OnPoint(InputAction.CallbackContext context)
     {
@@ -48,7 +48,7 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IPl
         if (context.performed && context.ReadValueAsButton()) RightClickEvent?.Invoke();
     }
 
-    // Metodi dell'interfaccia UI che dobbiamo dichiarare
+    // UI interface methods we are required to declare
     public void OnNavigate(InputAction.CallbackContext context) { }
     public void OnSubmit(InputAction.CallbackContext context) { }
     public void OnCancel(InputAction.CallbackContext context) { }
@@ -57,7 +57,7 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IPl
     public void OnTrackedDevicePosition(InputAction.CallbackContext context) { }
     public void OnTrackedDeviceOrientation(InputAction.CallbackContext context) { }
 
-    // --- Implementazione IPlayerActions (Per completezza) ---
+    // --- IPlayerActions implementation (for completeness) ---
 
     public void OnMoveCamera(InputAction.CallbackContext context) { }
     public void OnTacticalView(InputAction.CallbackContext context) { }

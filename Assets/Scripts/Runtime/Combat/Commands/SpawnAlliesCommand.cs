@@ -34,17 +34,17 @@ public class SpawnAlliesCommand : ICommand
 
     public async Awaitable ExecuteAsync()
     {
-        // _partTransform è nullable per costruzione (EnemyAbilityBase.GetRequiredPartTransform usa ?.):
-        // se la parte non è registrata o è rotta, lo spawn deve avvenire comunque, senza l'animazione
-        // dello scettro.
+        // _partTransform is nullable by construction (EnemyAbilityBase.GetRequiredPartTransform uses ?.):
+        // if the part is not registered or is broken, the spawn must happen anyway, without the sceptre's
+        // animation.
         bool hasPart = _partTransform != null;
         Vector3 origin = hasPart ? _partTransform.position : Vector3.zero;
 
         if (hasPart)
         {
-            // AnimatePart tweena part.position in coordinate MONDO, leggendo la posizione corrente come
-            // origine: lo stesso canale su cui gira l'idle in loop del caster (localPosition sullo stesso
-            // pivot, se la parte è il corpo o un satellite registrato).
+            // AnimatePart tweens part.position in WORLD coordinates, reading the current position as its
+            // origin: the same channel that carries the caster's looping idle (localPosition on the same
+            // pivot, when the part is the body or a registered satellite).
             _caster.LifecycleAnimator?.SuspendLoop();
         }
 
@@ -65,8 +65,8 @@ public class SpawnAlliesCommand : ICommand
                     _spawnedAnimators.Add(spawned.LifecycleAnimator);
             }
 
-            // Il token è quello dello spawnato, non del caster: è la sua animazione che stiamo
-            // attendendo, ed è la sua distruzione che deve sbloccare l'attesa.
+            // The token is the spawned one's, not the caster's: it is its animation that is being awaited,
+            // and its destruction is what has to unblock the wait.
             foreach (var animator in _spawnedAnimators)
             {
                 try
@@ -75,8 +75,8 @@ public class SpawnAlliesCommand : ICommand
                 }
                 catch (OperationCanceledException)
                 {
-                    // Spawnato distrutto durante l'emersione: passa al successivo senza abortire
-                    // il rientro dello scettro.
+                    // The spawned one was destroyed while emerging: move on to the next without aborting
+                    // the sceptre's return.
                 }
             }
 
@@ -85,9 +85,9 @@ public class SpawnAlliesCommand : ICommand
         }
         finally
         {
-            // Nel finally e non dopo il rientro dello scettro: se lo spawn esplode a metà, il loop del
-            // caster deve tornare a girare comunque. La rete di sicurezza di StopLoop() copre solo chi
-            // cambia fase, e il caster di questa abilità resta vivo e a riposo.
+            // In the finally and not after the sceptre comes back down: if the spawn blows up halfway, the
+            // caster's loop has to start running again regardless. StopLoop()'s safety net only covers
+            // whoever changes phase, and this ability's caster stays alive and idle.
             if (hasPart) _caster.LifecycleAnimator?.ResumeLoop();
         }
 

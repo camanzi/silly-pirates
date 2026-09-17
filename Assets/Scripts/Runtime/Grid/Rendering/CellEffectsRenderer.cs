@@ -61,8 +61,9 @@ public class CellEffectsRenderer : MonoBehaviour
         var renderer = go.AddComponent<TilemapRenderer>();
         renderer.sortingLayerName = _sortingLayerName;
         renderer.sortingOrder = _baseSortingOrder + _sortingCounter++;
-        // sharedMaterial e non `new Material(...)`: qui non si imposta nessuna proprieta' per-istanza,
-        // e una Material creata a mano non verrebbe distrutta con il GameObject (leak a ogni ciclo crea/cancella).
+        // sharedMaterial and not `new Material(...)`: no per-instance property is set here, and a
+        // hand-created Material would not be destroyed with the GameObject (a leak on every
+        // create/destroy cycle).
         renderer.sharedMaterial = material;
 
         _tilemapByKey[key] = tilemap;

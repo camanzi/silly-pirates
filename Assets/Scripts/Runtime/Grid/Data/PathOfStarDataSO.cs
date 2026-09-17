@@ -59,12 +59,12 @@ public class PathOfStarDataSO : ScriptableObject, ICellCostModifier, ICombatSess
         RaiseEffectEvent(new List<Vector3Int>(_cellCountdowns.Keys));
     }
 
-    // Le celle del combattimento appena finito non devono sopravvivere al prossimo, e il canale va
-    // rialzato a vuoto per spegnerne anche il visual.
-    // Il Register è una rete di sicurezza, non un obbligo: CellCostRegistrySO non svuota più la
-    // propria lista, quindi la registrazione fatta in OnEnable regge già. Resta perché è idempotente
-    // (il registry fa dedup) e ripara il caso in cui la registrazione sia andata persa — OnEnable
-    // qui non riscatta più, l'asset è già in memoria.
+    // The cells of the combat that has just ended must not survive into the next one, and the channel
+    // has to be raised empty so its visuals are switched off too.
+    // The Register is a safety net, not an obligation: CellCostRegistrySO no longer clears its own list,
+    // so the registration done in OnEnable already holds. It stays because it is idempotent (the registry
+    // deduplicates) and it repairs the case where the registration was lost — OnEnable no longer fires
+    // again here, the asset is already in memory.
     public void ResetForNewCombat()
     {
         _cellCountdowns.Clear();

@@ -41,17 +41,17 @@ public class ShipOcclusionFader : MonoBehaviour
 
     private readonly Dictionary<Renderer, RendererFadeState> _states = new();
 
-    // Serve a intercettare la deregistrazione di una nave senza modificare ShipOccluderRegistrySO
-    // (che non espone un evento OnUnregistered ed è nella lista dei file da non toccare): teniamo
-    // la lista dei renderer per ogni registry noto e la confrontiamo ad ogni frame con quella
-    // corrente esposta dal registry SO. Il fader diventerà persistente (scena Persistent), quindi
-    // il proprio OnDisable non scatterà più fra un combattimento e l'altro per ripulire da solo.
+    // This catches a ship unregistering without having to modify ShipOccluderRegistrySO (which exposes
+    // no OnUnregistered event and is on the do-not-touch list): the list of renderers is kept per known
+    // registry and compared every frame against the current one exposed by the registry SO. The fader
+    // will become persistent (the Persistent scene), so its own OnDisable will no longer fire between one
+    // combat and the next to clean up by itself.
     private readonly Dictionary<ShipOccluderRegistry, List<Renderer>> _rendererOwners = new();
     private readonly List<ShipOccluderRegistry> _staleRegistriesBuffer = new();
 
     private void OnEnable()
     {
-        // Pull-then-subscribe, come CameraDirector: il rig può esistere già o arrivare dopo.
+        // Pull-then-subscribe, like CameraDirector: the rig may exist already or arrive later.
         if (_actionCameraAnchor != null)
         {
             _actionCamera = _actionCameraAnchor.Value;
@@ -83,11 +83,10 @@ public class ShipOcclusionFader : MonoBehaviour
     private void HandleTargetGroupChanged(CinemachineTargetGroup targetGroup) => _targetGroup = targetGroup;
 
     /// <summary>
-    /// Porta ogni renderer candidato a "pienamente visibile" invece di lasciarlo indefinito fino
-    /// alla prima valutazione di occlusione: SetTargetFade uscirebbe subito per uno stato appena
-    /// creato il cui target coincide già con lo 0f di default, senza mai scrivere un
-    /// MaterialPropertyBlock. Chiamato anche per i registry che si registrano più tardi (nave che
-    /// arriva nell'intro, scena caricata in additivo).
+    /// Brings every candidate renderer to "fully visible" instead of leaving it undefined until the first
+    /// occlusion evaluation: SetTargetFade would bail out immediately for a freshly created state whose
+    /// target already matches the default 0f, without ever writing a MaterialPropertyBlock. Also called
+    /// for registries that register later (the ship arriving in the intro, an additively loaded scene).
     /// </summary>
     private void InitializeRenderers(ShipOccluderRegistry registry)
     {
@@ -124,10 +123,10 @@ public class ShipOcclusionFader : MonoBehaviour
     }
 
     /// <summary>
-    /// Confronta i registry di cui teniamo traccia con quelli attualmente vivi in
-    /// ShipOccluderRegistrySO.Registries e libera lo stato dei renderer di chi si è deregistrato
-    /// (nave distrutta o disattivata) — altrimenti _states continuerebbe a referenziare renderer
-    /// della scena di combattimento scaricata per il resto della sessione.
+    /// Compares the registries being tracked against those currently alive in
+    /// ShipOccluderRegistrySO.Registries and frees the renderer state of anything that has unregistered
+    /// (a ship destroyed or disabled) — otherwise _states would keep referencing renderers from the
+    /// unloaded combat scene for the rest of the session.
     /// </summary>
     private void PruneUnregisteredShips()
     {
@@ -243,8 +242,8 @@ public class ShipOcclusionFader : MonoBehaviour
     private static void ApplyFade(RendererFadeState state, float fadeAmount)
     {
         state.CurrentFade = fadeAmount;
-        // Ora che i registry vanno e vengono (nave distrutta, scena scaricata), _states può
-        // contenere renderer già distrutti — anche a metà di un tween in corso.
+        // Now that registries come and go (a destroyed ship, an unloaded scene), _states can hold
+        // already-destroyed renderers — even midway through a running tween.
         if (state.Renderer == null) return;
 
         state.Mpb.SetFloat(FadeId, fadeAmount);

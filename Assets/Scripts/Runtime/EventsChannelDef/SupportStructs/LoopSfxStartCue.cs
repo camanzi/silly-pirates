@@ -1,18 +1,18 @@
 using UnityEngine;
 
 /// <summary>
-/// Avvia un suono in loop. L'handle va coniato dal chiamante con <see cref="AudioLoopHandle.New"/>
-/// e conservato: e' l'unico modo per fermare il loop.
+/// Starts a looping sound. The handle has to be minted by the caller with
+/// <see cref="AudioLoopHandle.New"/> and kept: it is the only way to stop the loop.
 /// </summary>
 public struct LoopSfxStartCue
 {
     public AudioLoopHandle Handle;
     public SoundEventSO Sound;
 
-    /// <summary>Posizione nel mondo. Null = suono 2D non posizionale.</summary>
+    /// <summary>Position in the world. Null = a non-positional 2D sound.</summary>
     public Vector3? WorldPosition;
 
-    /// <summary>Se valorizzato, la voce insegue questo Transform e ignora WorldPosition.</summary>
+    /// <summary>When set, the voice follows this Transform and ignores WorldPosition.</summary>
     public Transform FollowTarget;
 
     public float VolumeScale;

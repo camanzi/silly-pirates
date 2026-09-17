@@ -1,44 +1,45 @@
 using System;
 using UnityEngine;
 
-/// <summary>Dove il VFX di fase viene ancorato nel mondo.</summary>
+/// <summary>Where the phase's VFX is anchored in the world.</summary>
 public enum LifecycleVfxAnchor
 {
-    /// <summary>Transform di griglia del personaggio: fermo durante l'animazione, è il pelo dell'acqua.</summary>
+    /// <summary>The character's grid transform: still during the animation, it is the waterline.</summary>
     CharacterRoot,
 
-    /// <summary>Pivot visivo del corpo, campionato una volta al momento del Raise (effetto fisso).</summary>
+    /// <summary>The body's visual pivot, sampled once at Raise time (a fixed effect).</summary>
     BodyPivot,
 
-    /// <summary>Insegue il pivot visivo del corpo per tutta la durata dell'effetto.</summary>
+    /// <summary>Follows the body's visual pivot for the whole duration of the effect.</summary>
     FollowBody
 }
 
 /// <summary>
-/// Momento interno di una <see cref="LifecycleAnimationSO"/> a cui è agganciata una lista di VFX.
-/// Usato come chiave di dizionario, quindi i valori esistenti non vanno mai rinumerati
-/// (stesso vincolo di <see cref="LifecyclePhase"/>).
+/// An inner moment of a <see cref="LifecycleAnimationSO"/> that a list of VFX is attached to.
+/// Used as a dictionary key, so existing values must never be renumbered
+/// (the same constraint as <see cref="LifecyclePhase"/>).
 /// </summary>
 public enum LifecycleVfxStage
 {
     /// <summary>
-    /// Subito dopo che lo stato iniziale della fase è stato applicato (es. sprite già sott'acqua), prima
-    /// che il movimento cominci. È l'unico stage raggiunto anche da <see cref="CharacterLifecycleAnimator.PrepareHidden"/>:
-    /// durante l'intro al combattimento parte qui e resta acceso finché il regista non conclude la fase.
+    /// Right after the phase's initial state has been applied (e.g. the sprite already underwater), before
+    /// the movement begins. It is the only stage also reached by
+    /// <see cref="CharacterLifecycleAnimator.PrepareHidden"/>: during the combat intro it starts here and
+    /// stays on until the director closes the phase.
     /// </summary>
     Prepare,
 
-    /// <summary>In sincro con l'avvio delle tween.</summary>
+    /// <summary>In sync with the tweens starting.</summary>
     Movement,
 
-    /// <summary>A movimento concluso.</summary>
+    /// <summary>Once the movement is over.</summary>
     End
 }
 
 /// <summary>
-/// Descrittore inline di un VFX agganciato a uno stage di <see cref="LifecycleAnimationSO"/>.
-/// <c>[Serializable]</c> e non uno ScriptableObject a parte: la configurazione va editata nello stesso
-/// Inspector dell'animazione a cui appartiene, senza un asset satellite da creare e collegare.
+/// An inline descriptor of a VFX attached to a stage of a <see cref="LifecycleAnimationSO"/>.
+/// <c>[Serializable]</c> and not a separate ScriptableObject: the configuration is meant to be edited in
+/// the same Inspector as the animation it belongs to, with no satellite asset to create and wire up.
 /// </summary>
 [Serializable]
 public class LifecycleVfxSpec
@@ -46,11 +47,11 @@ public class LifecycleVfxSpec
     [SerializeField] private VFXController _prefab;
     [SerializeField] private LifecycleVfxAnchor _anchor = LifecycleVfxAnchor.CharacterRoot;
 
-    [Tooltip("Effetto persistente: resta acceso finché la fase non finisce, invece di esaurirsi da solo.")]
+    [Tooltip("A persistent effect: it stays on until the phase ends, instead of running out on its own.")]
     [SerializeField] private bool _loop;
 
-    [Tooltip("Si applica solo agli ancoraggi fissi (CharacterRoot/BodyPivot): con FollowBody il VfxDirector " +
-             "sovrascrive la posizione ad ogni LateUpdate (VfxDirector.cs), quindi l'offset verrebbe perso.")]
+    [Tooltip("Applies only to the fixed anchors (CharacterRoot/BodyPivot): with FollowBody the VfxDirector " +
+             "overwrites the position every LateUpdate (VfxDirector.cs), so the offset would be lost.")]
     [SerializeField] private Vector3 _offset;
 
     [SerializeField] private float _scale = 1f;
@@ -60,9 +61,9 @@ public class LifecycleVfxSpec
     public bool Loop => _loop;
 
     /// <summary>
-    /// Risolve l'ancoraggio, alza la cue giusta sul canale e restituisce l'handle coniato (solo per gli
-    /// spec in <see cref="Loop"/>; <see cref="VfxHandle.None"/> per i one-shot).
-    /// No-op difensivo se il canale manca o lo spec non è configurato.
+    /// Resolves the anchor, raises the right cue on the channel and returns the minted handle (only for
+    /// specs in <see cref="Loop"/>; <see cref="VfxHandle.None"/> for one-shots).
+    /// A defensive no-op when the channel is missing or the spec is not configured.
     /// </summary>
     public VfxHandle Raise(VfxCueEventChannel channel, in LifecycleAnimationContext ctx)
     {
@@ -75,8 +76,8 @@ public class LifecycleVfxSpec
 
     private VfxCue BuildCue(in LifecycleAnimationContext ctx, VfxHandle handle)
     {
-        // Fallback difensivo: un satellite/corpo senza pivot valido non deve far crashare il Raise, si
-        // ancora al transform di griglia come se fosse CharacterRoot.
+        // Defensive fallback: a satellite or body with no valid pivot must not crash the Raise, it
+        // anchors to the grid transform as if it were CharacterRoot.
         Transform bodyPivot = ctx.Body.Pivot != null ? ctx.Body.Pivot : ctx.Root;
 
         switch (_anchor)

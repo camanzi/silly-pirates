@@ -103,9 +103,9 @@ public class OceanCurrentsPassiveSO : PassiveAbilitySO, IMovementExtension, IPas
         }
     }
 
-    // s_equippedCount è un refcount che si desincronizza in modo PERMANENTE se la scena viene
-    // scaricata mentre passive equipaggiate sono ancora vive: nessun OnUnequip le decrementa mai.
-    // Va nella lista di CombatSessionSO come il resto dello stato condiviso fra i cloni.
+    // s_equippedCount is a refcount that desynchronizes PERMANENTLY if the scene is unloaded while
+    // equipped passives are still alive: no OnUnequip ever decrements them.
+    // It belongs in the CombatSessionSO list like the rest of the state shared between clones.
     public void ResetForNewCombat()
     {
         s_equippedCount = 0;

@@ -36,11 +36,10 @@ public class GridElement : MonoBehaviour
 
     protected virtual void OnDisable()
     {
-        // Senza questo, scaricare la scena lascia il GridElement distrutto dentro
-        // GridStateDataSO._occupiedCells: IsOccupied() è una lookup su dizionario, non un null check
-        // Unity, quindi al combattimento successivo la cella risulta occupata per sempre e il
-        // pathfinding muore. Le sottoclassi che fanno override di OnDisable DEVONO chiamare
-        // base.OnDisable() per non silenziare questo unregister.
+        // Without this, unloading the scene leaves the destroyed GridElement inside
+        // GridStateDataSO._occupiedCells: IsOccupied() is a dictionary lookup, not a Unity null check, so
+        // in the next combat that cell reads as occupied forever and pathfinding dies. Subclasses that
+        // override OnDisable MUST call base.OnDisable() so they do not silence this unregister.
         if (_gridStateData != null)
             _gridStateData.UnregisterOccupancy(_gridPosition, this);
     }
@@ -59,12 +58,12 @@ public class GridElement : MonoBehaviour
         }
         else
         {
-            // Non è mai una condizione voluta: senza tilemap l'elemento non registra occupancy
-            // (il pathfinding considera libera la sua cella) e ogni ability che legge activeTilemap
-            // esplode con una NullReference molto più tardi, lontano dalla vera causa.
+            // This is never an intended condition: with no tilemap the element registers no occupancy
+            // (pathfinding treats its cell as free) and every ability reading activeTilemap blows up with
+            // a NullReference much later, far away from the real cause.
             Debug.LogError(
-                $"[{nameof(GridElement)}] '{name}': nessun pavimento trovato sotto {transform.position} " +
-                $"(layer '{floorGridLayer.value}'). L'elemento resta senza tilemap e senza occupancy.", this);
+                $"[{nameof(GridElement)}] '{name}': no floor found below {transform.position} " +
+                $"(layer '{floorGridLayer.value}'). The element is left with no tilemap and no occupancy.", this);
         }
     }
 }

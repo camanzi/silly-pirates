@@ -16,9 +16,9 @@ public class InteractionMenuController : WorldSpaceContainer
     [SerializeField] private AbilityCostEventChannel _abilityHoverChannel;
 
     [Header("Combat Intro")]
-    [Tooltip("Se non assegnato il menu si comporta come oggi: nessuna regressione nelle scene senza CombatIntroSequencer.")]
+    [Tooltip("When unassigned the menu behaves exactly as it does today: no regression in scenes without a CombatIntroSequencer.")]
     [SerializeField] private CombatIntroStateSO _introState;
-    [Tooltip("Obbligatorio se _introState è assegnato: è l'unico segnale che riapre il menu a fine intro.")]
+    [Tooltip("Mandatory when _introState is assigned: it is the only signal that reopens the menu when the intro ends.")]
     [SerializeField] private VoidEventChannel _onCombatStarted;
 
     private Dictionary<InteractionActionSO, InteractionButton> _activeButtons = new();
@@ -34,9 +34,10 @@ public class InteractionMenuController : WorldSpaceContainer
 
         if (IsIntroGateActive)
         {
-            // Si usa lo slot "element state" e non quello "combat state": quest'ultimo è già guidato
-            // dal BoolChannelListener su ShowUIEventChannel, che CombatStateManager.Start() rialza a
-            // true nello stesso frame entrando nello stato Idle — il gate dell'intro verrebbe perso.
+            // The "element state" slot is used rather than the "combat state" one: the latter is already
+            // driven by the BoolChannelListener on ShowUIEventChannel, which CombatStateManager.Start()
+            // raises back to true in the same frame on entering the Idle state — the intro gate would be
+            // lost.
             _isAllowedByElementState = false;
             ApplyVisibilityImmediate();
         }
@@ -52,7 +53,7 @@ public class InteractionMenuController : WorldSpaceContainer
 
             if (_onCombatStarted == null)
             {
-                Debug.LogWarning($"{nameof(InteractionMenuController)}: _introState assegnato senza _onCombatStarted, il menu resterebbe nascosto per sempre. Gate ignorato.", this);
+                Debug.LogWarning($"{nameof(InteractionMenuController)}: _introState assigned without _onCombatStarted, the menu would stay hidden forever. Gate ignored.", this);
                 return false;
             }
 
@@ -89,8 +90,8 @@ public class InteractionMenuController : WorldSpaceContainer
         if (_onCombatStarted != null)
             _onCombatStarted.OnEventRaised += HandleCombatStarted;
 
-        // Copre sia le riattivazioni dopo il combat start sia le scene senza sequencer di intro:
-        // in entrambi i casi il permesso va concesso da subito.
+        // Covers both re-activations after the combat start and scenes with no intro sequencer:
+        // in either case the permission has to be granted right away.
         if (_introState == null || !_introState.IsIntroActive)
             SetIntroPermission(true);
     }
@@ -119,20 +120,20 @@ public class InteractionMenuController : WorldSpaceContainer
             _onCombatStarted.OnEventRaised -= HandleCombatStarted;
     }
 
-    // Fade-in standard (.25s) quando il combattimento comincia davvero.
+    // Standard fade-in (.25s) for when combat actually begins.
     private void HandleCombatStarted() => SetIntroPermission(true);
 
     private void SetIntroPermission(bool isAllowed)
     {
-        SetElementStatePermission(isAllowed);     // menu radiale: gate della base class
+        SetElementStatePermission(isAllowed);     // radial menu: the base class gate
         ApplyStatusVisibility(immediate: false);  // anello di stato: gate locale
     }
 
     /// <summary>
-    /// L'anello di stato dell'equipaggiamento vive fuori dal Container gestito da
-    /// <see cref="WorldSpaceContainer"/>, quindi nessuno dei permessi della base class lo tocca:
-    /// senza questo resterebbe a schermo (e hoverabile) per tutta l'intro. Segue lo stesso flag
-    /// _isAllowedByElementState del menu radiale, con lo stesso fade di .25s.
+    /// The equipment status ring lives outside the Container managed by
+    /// <see cref="WorldSpaceContainer"/>, so none of the base class permissions touch it: without this it
+    /// would stay on screen (and hoverable) for the whole intro. It follows the same
+    /// _isAllowedByElementState flag as the radial menu, with the same .25s fade.
     /// </summary>
     private void ApplyStatusVisibility(bool immediate)
     {
@@ -148,8 +149,8 @@ public class InteractionMenuController : WorldSpaceContainer
             return;
         }
 
-        // Il container potrebbe essere a display:None da un fade-out precedente: va ripristinato
-        // prima di animare, altrimenti il tween scrive su un elemento che il layout non renderizza.
+        // The container may be at display:None from an earlier fade-out: it has to be restored before
+        // animating, or the tween writes to an element the layout does not render.
         if (visible) _statusContainer.style.display = DisplayStyle.Flex;
 
         _statusVisibilityTween = Tween.Custom(

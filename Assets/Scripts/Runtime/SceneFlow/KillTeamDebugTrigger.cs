@@ -3,27 +3,26 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Trigger PROVVISORIO per azzerare una delle due squadre e verificare il pannello di fine
-/// combattimento. Vive nella scena di combattimento, non nella persistente, così i tasti non fanno
-/// nulla mentre si è nel menu.
+/// A TEMPORARY trigger for wiping out one of the two teams and checking the end-of-combat panel. It
+/// lives in the combat scene, not in the persistent one, so the keys do nothing while in the menu.
 ///
-/// Esiste soprattutto per la SCONFITTA, che altrimenti è intestabile: non c'è modo di far morire
-/// tutta la ciurma giocando.
+/// It exists mostly for DEFEAT, which is otherwise untestable: there is no way to get the whole crew
+/// killed through normal play.
 ///
-/// Come <see cref="ReturnToMenuDebugTrigger"/> legge la tastiera direttamente invece di passare da
-/// InputReader: è codice di servizio destinato a sparire, e aggiungere due azioni a GameInput per
-/// qualcosa che verrà rimosso lascerebbe in giro action orfane.
+/// Like <see cref="ReturnToMenuDebugTrigger"/> it reads the keyboard directly instead of going through
+/// InputReader: this is scaffolding destined to disappear, and adding two actions to GameInput for
+/// something that will be removed would leave orphaned actions behind.
 /// </summary>
 public class KillTeamDebugTrigger : MonoBehaviour
 {
     [SerializeField] private TurnOrderDataSO _turnOrder;
 
-    // Abbondantemente sopra qualunque pool di HP del gioco: serve solo a garantire la morte in un
-    // colpo, non a essere un valore sensato.
+    // Comfortably above any HP pool in the game: it exists only to guarantee a one-shot kill, not to be
+    // a sensible value.
     private const float LethalAmount = 9999f;
 
-    // Riusato fra una pressione e l'altra: lo snapshot serve a ogni invocazione, non ha senso
-    // riallocarlo.
+    // Reused between key presses: the snapshot is needed on every invocation, so there is no point
+    // reallocating it.
     private readonly List<ITurnAgent> _snapshot = new();
 
     private void Update()
@@ -36,17 +35,17 @@ public class KillTeamDebugTrigger : MonoBehaviour
     }
 
     /// <summary>
-    /// Nemico = agente che è un <see cref="HostileCharacter"/>; qualunque altro ITurnAgent è per
-    /// definizione un giocante. Stesso identico filtro di TurnOrderQueries, che è ciò che poi
-    /// conterà i sopravvissuti.
+    /// An enemy is an agent that is a <see cref="HostileCharacter"/>; any other ITurnAgent is by
+    /// definition a player character. Exactly the same filter as TurnOrderQueries, which is what will
+    /// then count the survivors.
     /// </summary>
     private void KillTeam(bool killEnemies)
     {
         if (_turnOrder == null) return;
 
-        // Snapshot obbligatorio: TurnQueue avvolge la lista VIVA della coda, e la prima morte
-        // arriva fino a TurnOrderDataSO.RemoveEntity in modo sincrono. Iterare direttamente la
-        // coda mentre la si svuota lancerebbe InvalidOperationException al secondo agente.
+        // The snapshot is mandatory: TurnQueue wraps the queue's LIVE list, and the first death reaches
+        // TurnOrderDataSO.RemoveEntity synchronously. Iterating the queue directly while emptying it
+        // would throw an InvalidOperationException on the second agent.
         _snapshot.Clear();
         foreach (EntityTurnState state in _turnOrder.TurnQueue)
         {
@@ -61,9 +60,9 @@ public class KillTeamDebugTrigger : MonoBehaviour
             HealthController health = agent.Health;
             if (health == null || !health.IsAlive) continue;
 
-            // Si passa dal danno vero e non da CombatOutcomeStateSO.Resolve: solo così scatta
-            // OnDeath e con esso l'intera catena (OnCombatLeave, uscita dalla coda, animazione di
-            // morte, valutazione dell'esito). Scorciatoie qui non verificherebbero nulla.
+            // Real damage is used rather than CombatOutcomeStateSO.Resolve: only that way does OnDeath
+            // fire, and with it the whole chain (OnCombatLeave, leaving the queue, the death animation,
+            // the outcome evaluation). A shortcut here would verify nothing.
             health.TakeDamage(new DamagePayload(LethalAmount));
         }
 

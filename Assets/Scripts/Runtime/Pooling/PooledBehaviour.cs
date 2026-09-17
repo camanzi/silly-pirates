@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Base per i MonoBehaviour poolable: azzera il boilerplate di <see cref="IPoolable"/>.
-/// Le sottoclassi fanno override di OnAcquired/OnReleased chiamando sempre base.
+/// The base for poolable MonoBehaviours: it removes <see cref="IPoolable"/>'s boilerplate.
+/// Subclasses override OnAcquired/OnReleased, always calling base.
 /// </summary>
 public abstract class PooledBehaviour : MonoBehaviour, IPoolable
 {
@@ -13,6 +13,6 @@ public abstract class PooledBehaviour : MonoBehaviour, IPoolable
 
     public virtual void OnReleased() => gameObject.SetActive(false);
 
-    /// <summary>Auto-restituzione alla pool, usabile dall'oggetto stesso quando ha finito il suo lavoro.</summary>
+    /// <summary>Self-return to the pool, usable by the object itself once its work is done.</summary>
     protected void ReleaseSelf() => Releaser?.Release(this);
 }

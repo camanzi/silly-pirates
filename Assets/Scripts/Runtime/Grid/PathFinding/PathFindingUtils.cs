@@ -85,7 +85,7 @@ public static class PathFindingUtils
 
         while (openSet.Count > 0)
         {
-            // Prendiamo il nodo con il fCost minore (o hCost se fCost è uguale)
+            // Take the node with the lowest fCost (or hCost when the fCost ties)
             Vector3Int currentPos = openSet[0];
             for (int i = 1; i < openSet.Count; i++)
             {
@@ -109,7 +109,7 @@ public static class PathFindingUtils
                 if (closedSet.Contains(neighborPos) || !walkabilityCheck(neighborPos, state))
                     continue;
 
-                int newMovementCostToNeighbor = allNodes[currentPos].gCost + 10; // 10 è il costo base per ogni tile
+                int newMovementCostToNeighbor = allNodes[currentPos].gCost + 10; // 10 is the base cost for each tile
 
                 if (!allNodes.ContainsKey(neighborPos) || newMovementCostToNeighbor < allNodes[neighborPos].gCost)
                 {
@@ -162,7 +162,7 @@ public static class PathFindingUtils
                 if (!walkabilityCheck(neighborPos, state))
                     continue;
 
-                int newCost = costSoFar[currentPos] + 1; // Ogni movimento costa 1
+                int newCost = costSoFar[currentPos] + 1; // Each move costs 1
 
                 if (newCost <= maxMovementCost)
                 {
@@ -245,7 +245,7 @@ public static class PathFindingUtils
 
     public static int GetDistance(Vector3Int a, Vector3Int b)
     {
-        // Per gli esagoni la distanza Manhattan non funziona. Usiamo le coordinate assiali/cubiche.
+        // Manhattan distance does not work for hexes. Axial/cube coordinates are used instead.
         Vector3Int ac = OffsetToCube(a);
         Vector3Int bc = OffsetToCube(b);
         return (Mathf.Abs(ac.x - bc.x) + Mathf.Abs(ac.y - bc.y) + Mathf.Abs(ac.z - bc.z)) / 2 * 10;

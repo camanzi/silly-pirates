@@ -57,7 +57,7 @@ public class FreeRoamTarget : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Project-Wide Actions non configurate! Vai in Project Settings -> Input System Package.");
+            Debug.LogError("Project-Wide Actions not configured! Go to Project Settings -> Input System Package.");
         }
     }
 
@@ -70,7 +70,7 @@ public class FreeRoamTarget : MonoBehaviour
 
         if (_mainCameraAnchor == null)
         {
-            Debug.LogError($"{nameof(FreeRoamTarget)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{nameof(FreeRoamTarget)}: no {nameof(MainCameraAnchorSO)} assigned.", this);
             return;
         }
 
@@ -104,7 +104,7 @@ public class FreeRoamTarget : MonoBehaviour
     {
         if (agent is not MonoBehaviour mono) return;
 
-        // Se il tempo trascorso in secondi é minore del mio timer NON muovo la telecamera 
+        // If the elapsed time in seconds is below the timer, do NOT move the camera 
         if (Time.time - _lastInputTime < _enableAutomovingTimer) return;
 
         _cameraMoveTween.Stop();

@@ -21,7 +21,7 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     [SerializeField] private UnityEvent _onCommandExecuted;
     public UnityEvent OnCommandExecuted => _onCommandExecuted;
 
-    [Tooltip("Origine di proiettili e VFX di sparo. Se vuoto viene cercato in automatico un MuzzleAnchor fra i figli; in mancanza si usa la radice dell'equipaggiamento.")]
+    [Tooltip("The origin of projectiles and muzzle VFX. When empty a MuzzleAnchor is looked up automatically among the children; failing that, the equipment's root is used.")]
     [SerializeField] private Transform _muzzleAnchor;
     public Transform Muzzle => _muzzleAnchor;
 
@@ -91,8 +91,8 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     protected override void Awake()
     {
         base.Awake();
-        // Il campo serializzato e' l'override manuale: se vuoto, il marker sul prefab
-        // e' la sorgente di verita' e viene risolto una volta sola, non a ogni colpo.
+        // The serialized field is the manual override: when empty, the marker on the prefab is the source
+        // of truth, and it is resolved once and not on every shot.
         if (_muzzleAnchor == null)
             _muzzleAnchor = GetComponentInChildren<MuzzleAnchor>(true)?.transform;
         _stateMachine = GetComponent<EquipmentStateMachine>();
@@ -121,8 +121,8 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
         AwakeningPoints = 0;
     }
 
-    // Il bonus di overcap dipende dallo stato dei punti, non da chi li ha aggiunti:
-    // qualunque sorgente (azione base, azione overcap, Maximize Contribution) passa di qui.
+    // The overcap bonus depends on the state of the points, not on who added them: every source (base
+    // action, overcap action, Maximize Contribution) comes through here.
     private void RefreshOvercapPassive()
     {
         if (_passiveAbilityController == null) return;
@@ -140,8 +140,8 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
         var template = _statsConfig?.OvercapPassiveTemplate;
         if (template == null) return;
 
-        // AddPassive gestisce la riapplicazione: l'istanza esistente sovrascrive il proprio
-        // bonus con quello ricalcolato dal totale e questa copia viene distrutta.
+        // AddPassive handles reapplication: the existing instance overwrites its own bonus with the one
+        // recomputed from the total, and this copy is destroyed.
         var instance = Instantiate(template);
         (instance as IOvercapPassive)?.Initialize(_statsConfig.GetOvercapBonus(extra));
         _passiveAbilityController.AddPassive(instance);

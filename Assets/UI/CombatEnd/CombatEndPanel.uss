@@ -1,11 +1,11 @@
-/* Pannello di fine combattimento. Vive nella scena di combattimento, su un PanelSettings a
-   sortingOrder 50: sopra la HUD (10) e sotto l'overlay di caricamento (100), che deve poterlo
-   coprire quando parte la transizione di scena.
+/* The end-of-combat panel. It lives in the combat scene, on a PanelSettings at sortingOrder 50:
+   above the HUD (10) and below the loading overlay (100), which has to be able to cover it when
+   the scene transition starts.
 
-   Il fondo è scuro ma TRASPARENTE di proposito: la scena resta leggibile dietro, e il pannello
-   blocca gli input invece di congelare il gioco. Il blocco non è codice: essendo il root a tutto
-   schermo e pickabile, UIPointerTracker.IsPointerOverUI lo intercetta e WorldInteractor /
-   GridInputHandler smettono di raccogliere click sul mondo. */
+   The backdrop is dark but TRANSPARENT on purpose: the scene stays readable behind it, and the
+   panel blocks input instead of freezing the game. That blocking is not code: because the root is
+   full-screen and pickable, UIPointerTracker.IsPointerOverUI catches it and WorldInteractor /
+   GridInputHandler stop picking up clicks on the world. */
 
 .combat-end-root {
     position: absolute;
@@ -14,8 +14,8 @@
     background-color: rgba(0, 0, 0, 0.55);
     align-items: center;
     justify-content: center;
-    /* display: none quando nascosto — NON solo opacity 0. Un elemento trasparente ma disegnato
-       resterebbe pickabile e mangerebbe i click per tutto il combattimento. */
+    /* display: none when hidden — NOT just opacity 0. A transparent but still drawn element would
+       stay pickable and would eat clicks for the whole combat. */
     display: none;
     opacity: 0;
 }

@@ -27,7 +27,7 @@ public class GridInputHandler : MonoBehaviour
 
         if (_mainCameraAnchor == null)
         {
-            Debug.LogError($"{nameof(GridInputHandler)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{nameof(GridInputHandler)}: no {nameof(MainCameraAnchorSO)} assigned.", this);
             return;
         }
 
@@ -46,8 +46,8 @@ public class GridInputHandler : MonoBehaviour
 
     private void HandleCameraChanged(Camera camera) => _mainCamera = camera;
 
-    // Prima era una lambda anonima mai rimossa: InputReader è uno ScriptableObject, quindi ogni
-    // caricamento scena aggiungeva una closure morta alla sua invocation list per sempre.
+    // This used to be an anonymous lambda that was never removed: InputReader is a ScriptableObject, so
+    // every scene load added a dead closure to its invocation list, forever.
     private void OnClickStarted() => _wasClickPressedThisFrame = true;
 
     private void LateUpdate()
@@ -91,18 +91,17 @@ public class GridInputHandler : MonoBehaviour
             Vector3Int cellPos;
             if (target is GridElement gridElement)
             {
-                // Fonte autorevole: è la stessa cella con cui l'elemento si registra in
-                // GridStateDataSO (GridElement.InitializePosition), quindi targeting e
-                // occupancy non possono divergere.
+                // The authoritative source: it is the very cell the element registers itself with in
+                // GridStateDataSO (GridElement.InitializePosition), so targeting and occupancy cannot
+                // diverge.
                 cellPos = gridElement.gridPosition;
             }
             else
             {
                 cellPos = _grid.WorldToCell(finalWorldPos);
-                // La griglia è mono-layer (FloorMap ha tile solo su z=0), ma con
-                // cellSwizzle YZX e cellSize.z = 1 la Z della cella è l'altezza sopra il
-                // ponte: qualunque punto colpito sopra 1 unità produrrebbe una Z che non
-                // corrisponde a nessuna cella reale.
+                // The grid is single-layer (FloorMap only has tiles at z=0), but with a YZX cellSwizzle
+                // and cellSize.z = 1 the cell's Z is the height above the deck: any point hit more than
+                // 1 unit up would produce a Z matching no real cell at all.
                 cellPos.z = 0;
             }
 

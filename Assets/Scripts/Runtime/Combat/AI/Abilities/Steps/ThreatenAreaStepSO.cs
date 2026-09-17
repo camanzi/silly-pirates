@@ -18,7 +18,7 @@ public class ThreatenAreaStepSO : MultiStepAbilityStepSO
     [SerializeField] private string _threatKey;
 
     [Header("Optional Part Shake (visual feedback while telegraphing)")]
-    // FIXME Later, dobbiamo predisporre un SO che indichi il comportamento pre - durante -post telegrap
+    // FIXME Later: we need an SO describing the pre / during / post telegraph behaviour
     [SerializeField] private bool _shakeRequiredPart;
 
     public override float ComputeScore(AIContext context, StepState previousState, out TargetingData targeting)
@@ -78,8 +78,8 @@ public class ThreatenAreaStepSO : MultiStepAbilityStepSO
     {
         if (_shakeRequiredPart)
         {
-            // Percorso di interruzione (parte rotta / caster morto / precondizioni fallite): lo strike non
-            // arriverà mai a chiudere il telegraph, quindi tocca a noi restituire il loop al caster.
+            // The interruption path (broken part / dead caster / failed preconditions): the strike will
+            // never get to close the telegraph, so it falls to us to give the loop back to the caster.
             EndPartShake(state, caster != null ? caster.LifecycleAnimator : null);
 
             if (caster != null && state.Extra.TryGetValue(CasterOriginalScaleKey, out var csObj) && csObj is Vector3 cs && cs != Vector3.zero)

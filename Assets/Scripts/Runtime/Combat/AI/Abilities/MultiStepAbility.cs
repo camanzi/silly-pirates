@@ -139,6 +139,6 @@ public class MultiStepAbility : EnemyAbilityBase, IThreatenedAreaProvider, IOffe
         }
     }
 
-    // L'elemento vero vive nello step attivo: da qui non e' risolvibile senza aprire la sequenza.
+    // The real element lives in the active step: it cannot be resolved from here without opening the sequence.
     public DamageType ResolveDamageElement(IInteractableElement caster) => DamageType.None;
 }

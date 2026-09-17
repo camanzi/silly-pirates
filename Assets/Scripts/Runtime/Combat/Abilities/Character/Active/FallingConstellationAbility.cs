@@ -85,6 +85,6 @@ public class FallingConstellationAbility : AbilityBase, IOffensiveAbility
         cache = new ConstellationFallCache { ValidCells = validCells };
     }
 
-    // Il danno lo infligge il ConstellationFragment quando atterra, non l'abilita': nessun elemento qui.
+    // The damage is dealt by the ConstellationFragment when it lands, not by the ability: no element here.
     public DamageType ResolveDamageElement(IInteractableElement caster) => DamageType.None;
 }

@@ -41,8 +41,8 @@ public class GridStateDataSO : ScriptableObject, ICombatSessionResettable
     
     public void ClearAll() => _occupiedCells.Clear();
 
-    // Cintura e bretelle: l'unregister per-elemento in GridElement.OnDisable copre lo scarico
-    // ordinato della scena, questo copre tutto il resto (elementi distrutti senza passare da
-    // OnDisable, occupanti "fantasma" da bug futuri).
+    // Belt and braces: the per-element unregister in GridElement.OnDisable covers an orderly scene
+    // unload, this covers everything else (elements destroyed without going through OnDisable, "ghost"
+    // occupants from future bugs).
     public void ResetForNewCombat() => ClearAll();
 }

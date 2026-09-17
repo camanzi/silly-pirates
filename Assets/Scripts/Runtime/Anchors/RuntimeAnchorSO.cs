@@ -3,34 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Riferimento a un'istanza di scena risolto a runtime, così che i prefab consumatori non debbano
-/// contenere riferimenti cross-oggetto — che dentro un prefab non sono assegnabili — e restino
-/// quindi utilizzabili in qualunque scena senza ricablaggi a mano.
+/// A reference to a scene instance resolved at runtime, so that consumer prefabs need not hold
+/// cross-object references — which cannot be assigned inside a prefab — and therefore stay usable in
+/// any scene with no manual rewiring.
 ///
-/// CONTRATTO PER I CONSUMATORI — <i>pull-then-subscribe</i>, sempre in OnEnable:
+/// THE CONTRACT FOR CONSUMERS — <i>pull-then-subscribe</i>, always in OnEnable:
 /// <code>
 /// private void OnEnable()
 /// {
-///     HandleAnchorChanged(_anchor.Value);             // ciò che è GIÀ registrato
-///     _anchor.OnValueChanged += HandleAnchorChanged;  // ciò che arriverà DOPO
+///     HandleAnchorChanged(_anchor.Value);             // whatever is registered ALREADY
+///     _anchor.OnValueChanged += HandleAnchorChanged;  // whatever arrives LATER
 /// }
 /// private void OnDisable() => _anchor.OnValueChanged -= HandleAnchorChanged;
 /// </code>
-/// La pull copre "produttore già registrato" (stessa scena, o scena additiva caricata prima); la
-/// subscribe copre "produttore che arriva dopo" (consumatore nella scena persistente, rig nella
-/// scena di combattimento). Un solo pattern copre entrambi gli ordinamenti: non aggiungere
-/// risoluzioni lazy nei call site.
+/// The pull covers "the producer has already registered" (same scene, or an additive scene loaded
+/// earlier); the subscribe covers "the producer arrives later" (consumer in the persistent scene, rig in
+/// the combat one). A single pattern covers both orderings: do not add lazy resolution at the call
+/// sites.
 ///
-/// I registrant sono tenuti in una lista e vince il più recente. Serve per lo swap additivo: si
-/// carica la scena nuova (il suo produttore si registra) e solo dopo si scarica la vecchia (il suo
-/// Unregister diventa un no-op sul valore). In questa finestra due produttori sono legittimamente
-/// vivi insieme, e Value non deve mai passare per null.
+/// Registrants are kept in a list and the most recent one wins. That is what the additive swap needs:
+/// the new scene is loaded (its producer registers) and only afterwards is the old one unloaded (its
+/// Unregister becomes a no-op on the value). Within that window two producers are legitimately alive at
+/// once, and Value must never pass through null.
 /// </summary>
 public abstract class RuntimeAnchorSO<T> : ScriptableObject where T : Component
 {
     private readonly List<T> _registrants = new();
 
-    /// <summary>Il registrant vivo più recente, o null se non ce ne sono.</summary>
+    /// <summary>The most recent live registrant, or null when there are none.</summary>
     public T Value
     {
         get
@@ -46,10 +46,10 @@ public abstract class RuntimeAnchorSO<T> : ScriptableObject where T : Component
 
     public event Action<T> OnValueChanged;
 
-    // NON è load-bearing per le transizioni di scena. Come SpawnPointManagerSO.OnEnable, scatta una
-    // volta per caricamento dell'asset in memoria (avvio app / domain reload), non a ogni load di
-    // scena. La correttezza sui load ripetuti viene interamente dal protocollo Register/Unregister:
-    // non "semplificare" questa riga pensando che sia lei a reggere le transizioni.
+    // This is NOT load-bearing for scene transitions. Like SpawnPointManagerSO.OnEnable, it fires once
+    // per load of the asset into memory (app start / domain reload), not on every scene load. Correctness
+    // across repeated loads comes entirely from the Register/Unregister protocol: do not "simplify" this
+    // line believing it is what holds the transitions together.
     private void OnEnable() => _registrants.Clear();
 
     public void Register(T instance)
@@ -71,10 +71,9 @@ public abstract class RuntimeAnchorSO<T> : ScriptableObject where T : Component
     }
 
     /// <summary>
-    /// Due produttori nella STESSA scena sono sempre un errore di authoring (es. due PF_ActionCamera
-    /// lasciate attive). Due produttori in scene DIVERSE sono invece la normale finestra di
-    /// sovrapposizione di uno swap additivo, e non vanno segnalati: un warning lì sarebbe rumore a
-    /// ogni transizione.
+    /// Two producers in the SAME scene are always an authoring mistake (e.g. two PF_ActionCamera left
+    /// active). Two producers in DIFFERENT scenes, on the other hand, are the normal overlap window of an
+    /// additive swap and must not be flagged: a warning there would be noise on every transition.
     /// </summary>
     private void WarnIfDuplicateInSameScene(T incoming)
     {
@@ -85,9 +84,9 @@ public abstract class RuntimeAnchorSO<T> : ScriptableObject where T : Component
             if (existing.gameObject.scene != incoming.gameObject.scene) continue;
 
             Debug.LogWarning(
-                $"[{name}] '{incoming.name}' e '{existing.name}' sono registrati sullo stesso anchor " +
-                $"nella stessa scena ('{incoming.gameObject.scene.name}'). L'invariante è un solo " +
-                $"produttore attivo: vince il più recente.", incoming);
+                $"[{name}] '{incoming.name}' and '{existing.name}' are registered on the same anchor " +
+                $"in the same scene ('{incoming.gameObject.scene.name}'). The invariant is a single " +
+                $"active producer: the most recent one wins.", incoming);
             return;
         }
     }

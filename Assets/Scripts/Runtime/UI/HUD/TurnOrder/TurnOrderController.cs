@@ -34,7 +34,7 @@ public class TurnOrderController : MonoBehaviour
 
         if (_turnCardRow == null)
         {
-            Debug.LogError("VisualElement 'turn-card-row' non trovato nel UXML!");
+            Debug.LogError("VisualElement 'turn-card-row' not found in the UXML!");
             return;
         }
 

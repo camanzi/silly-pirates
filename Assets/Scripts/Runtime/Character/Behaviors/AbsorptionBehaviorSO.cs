@@ -1,15 +1,15 @@
 using UnityEngine;
 
 /// <summary>
-/// Trasforma il danno di un elemento in cura. Gemello di <see cref="ResistanceBehaviorSO"/>,
-/// <see cref="ImmunityBehaviorSO"/> e <see cref="VulnerabilityBehaviorSO"/>: stesso moltiplicatore
-/// costante, questa volta negativo — <see cref="HealthController.ApplyDamage"/> dirotta gia' da solo
-/// un Amount negativo su ApplyHeal, quindi non serve altro codice per curare.
+/// Turns an element's damage into healing. The twin of <see cref="ResistanceBehaviorSO"/>,
+/// <see cref="ImmunityBehaviorSO"/> and <see cref="VulnerabilityBehaviorSO"/>: the same constant
+/// multiplier, negative this time — <see cref="HealthController.ApplyDamage"/> already reroutes a negative
+/// Amount to ApplyHeal on its own, so no extra code is needed to heal.
 ///
-/// Trappola di composizione: i quattro behavior filtrano su <see cref="DamageType"/> diversi e non si
-/// sommano mai fra loro, ma una Resistance sullo stesso elemento nei _baseBehaviors del personaggio
-/// comporrebbe con questa (x0.5 poi x-1 = mezza cura). Oggi non succede — i bersagli che usano questo
-/// behavior hanno _baseBehaviors vuoti — ma va tenuto a mente aggiungendone di nuovi.
+/// A composition trap: the four behaviors filter on different <see cref="DamageType"/> values and never
+/// add up with each other, but a Resistance on the same element in the character's _baseBehaviors would
+/// compose with this one (x0.5 then x-1 = half healing). It does not happen today — the targets using this
+/// behavior have empty _baseBehaviors — but it is worth keeping in mind when adding new ones.
 /// </summary>
 [CreateAssetMenu(fileName = "AbsorptionBehavior", menuName = "Combat/Health Behaviors/Absorption")]
 public class AbsorptionBehaviorSO : HealthBehaviorSO

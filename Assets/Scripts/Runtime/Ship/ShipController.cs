@@ -15,7 +15,7 @@ public class ShipController : MonoBehaviour
     [SerializeField] private Tile _defaultFloorTile;
 
     [Header("Anchors")]
-    [Tooltip("Pubblica questa nave per chi la cerca senza poterla referenziare (es. CombatIntroSequencer)")]
+    [Tooltip("Publishes this ship for anything that looks it up without being able to reference it (e.g. CombatIntroSequencer)")]
     [SerializeField] private ShipControllerAnchorSO _shipAnchor;
 
     private Grid _shipGrid;

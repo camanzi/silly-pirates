@@ -77,8 +77,8 @@ public class ShootCommand : ICommand
         { Projectile = p; Start = s; ControlPoint = cp; End = e; }
     }
 
-    // Condivisa con ShootWithEquipmentAbility.ResolveDamageElement: l'elemento annunciato ai reattori
-    // prima dell'impatto deve essere lo stesso che arriva davvero qui.
+    // Shared with ShootWithEquipmentAbility.ResolveDamageElement: the element announced to the reactors
+    // before the impact has to be the same one that actually lands here.
     private DamageType ResolveDMGType() => DamageTypeResolver.Resolve(_caster, _baseDMGType);
 
     private async Awaitable LaunchProjectile(ITargettable target)
@@ -94,7 +94,7 @@ public class ShootCommand : ICommand
 
         if (_caster is ShipEquipment equipment) equipment.OnCommandExecuted.Invoke();
 
-        // Il boom cade sul frame dello sparo, non all'inizio dell'abilita'.
+        // The boom lands on the frame of the shot, not at the start of the ability.
         if (_fireSfx != null && _sfxChannel != null)
             _sfxChannel.RaiseEvent(SfxCue.At(_fireSfx, start));
 

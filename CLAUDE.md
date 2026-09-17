@@ -153,24 +153,24 @@ test assemblies, or the tests measure themselves. Output lands in `CodeCoverage/
 
 ## Design Reference
 
-Mockup su Figma: board **"Silly Pirates - Mockups"**, fileKey `gOTH97KrEjOmsApwDI4FI7`, pagina unica `0:1`.
-Passare il fileKey ai tool del Figma MCP (`get_metadata`, `get_design_context`, `get_screenshot`).
+Mockups live on Figma: board **"Silly Pirates - Mockups"**, fileKey `gOTH97KrEjOmsApwDI4FI7`, single page
+`0:1`. Pass the fileKey to the Figma MCP tools (`get_metadata`, `get_design_context`, `get_screenshot`).
 
 | Canvas | node-id |
 |---|---|
-| Main Menu | `136:117` (dentro: `Moving Group` `137:127`, gli 8 pezzi del drago) |
+| Main Menu | `136:117` (inside it: `Moving Group` `137:127`, the drake's 8 pieces) |
 | Base Button (component set Default/Selected) | `137:134` |
 | Combat - Overview - Idle | `5:104` |
 | Combat - Overview - Captain abilities selection | `16:91` |
 | PG - Detail | `1:2` |
-| Components (libreria) | `3:19` |
+| Components (library) | `3:19` |
 
-Due trappole viste sul campo:
-- `get_metadata` su alcuni frame (fra cui `136:117`) torna il frame **senza figli**. Non vuol dire che
-  sia appiattito: interrogare direttamente il nodo figlio, o usare `get_design_context`.
-- Gli export PNG di Figma sono @2x e quasi sempre **non sono potenze di due**. Unity di default li
-  riscala alla POT piu' vicina (`nPOTScale: 1`), il che cambia l'aspect ratio e sposta il contenuto
-  dentro l'elemento UI Toolkit. Per gli sfondi importati da Figma va messo `nPOTScale: 0`.
+Two traps seen in practice:
+- `get_metadata` on some frames (`136:117` among them) returns the frame **with no children**. That does
+  not mean it is flattened: query the child node directly, or use `get_design_context`.
+- Figma's PNG exports are @2x and almost never powers of two. By default Unity rescales them to the
+  nearest POT (`nPOTScale: 1`), which changes the aspect ratio and shifts the content inside the UI
+  Toolkit element. Backgrounds imported from Figma need `nPOTScale: 0`.
 
 ## Key Packages
 

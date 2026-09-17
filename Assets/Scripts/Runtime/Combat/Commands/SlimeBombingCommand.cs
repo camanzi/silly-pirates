@@ -64,9 +64,9 @@ public class SlimeBombingCommand : ICommand
 
         if (_state != null)
         {
-            // Percorso normale di chiusura del telegraph: è QUI che lo shake finisce, non in un Undo().
-            // EndPartShake ferma il tween e ridà l'idle in loop al caster (corpo e satelliti), che
-            // PartShakeTelegraphCommand aveva sospeso un turno fa.
+            // The normal path for closing the telegraph: the shake ends HERE, not in an Undo().
+            // EndPartShake stops the tween and gives the looping idle back to the caster (body and
+            // satellites), which PartShakeTelegraphCommand had suspended a turn ago.
             MultiStepAbilityStepSO.EndPartShake(_state, _caster != null ? _caster.LifecycleAnimator : null);
 
             if (_state.Extra.TryGetValue(MultiStepAbilityStepSO.RequiredPartTransformKey, out var ptObj) && ptObj is Transform pt && pt != null

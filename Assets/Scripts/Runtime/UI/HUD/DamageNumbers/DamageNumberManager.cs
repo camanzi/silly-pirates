@@ -34,7 +34,7 @@ public class DamageNumberManager : MonoBehaviour
     {
         if (_mainCameraAnchor == null)
         {
-            Debug.LogError($"{nameof(DamageNumberManager)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{nameof(DamageNumberManager)}: no {nameof(MainCameraAnchorSO)} assigned.", this);
             return;
         }
 
@@ -127,9 +127,9 @@ public class DamageNumberManager : MonoBehaviour
 
         const float epsilon = 0.01f;
         float ratio = evt.Payload.ResistanceMultiplier;
-        // Un ratio negativo non e' una semplice resistenza: il colpo e' stato trasformato in cura
-        // (AbsorptionBehaviorSO). Va controllato PRIMA del ramo "Immune", altrimenti un ratio di -1
-        // ci finirebbe dentro e stamperebbe "Immune" sopra una cura.
+        // A negative ratio is not a plain resistance: the hit has been turned into healing
+        // (AbsorptionBehaviorSO). It has to be checked BEFORE the "Immune" branch, or a ratio of -1 would
+        // fall into it and print "Immune" over a heal.
         if (ratio < -epsilon)
             SpawnModifierLabel("Absorb", elementColor, evt.WorldPosition);
         else if (ratio <= epsilon)

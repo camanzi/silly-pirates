@@ -1,13 +1,13 @@
 using UnityEngine;
 
 /// <summary>
-/// Regista musicale di scena: livello sottile sopra i canali di loop esistenti.
-/// Aggiunge un solo concetto rispetto a quanto gia' offre l'AudioDirector: esiste una sola
-/// traccia musicale corrente, e chiederne un'altra sfuma la vecchia e accende la nuova.
+/// The scene's music director: a thin layer on top of the existing loop channels.
+/// It adds exactly one concept to what the AudioDirector already offers: there is only ever one current
+/// music track, and asking for another fades the old one out and brings the new one in.
 ///
-/// Non tocca mai un AudioSource e non ha una pool propria: alza LoopSfxStartEventChannel /
-/// LoopSfxStopEventChannel e lascia lavorare l'AudioDirector, che resta l'unico proprietario
-/// delle voci audio.
+/// It never touches an AudioSource and has no pool of its own: it raises LoopSfxStartEventChannel /
+/// LoopSfxStopEventChannel and lets the AudioDirector do the work, which remains the sole owner of the
+/// audio voices.
 /// </summary>
 public class MusicDirector : MonoBehaviour
 {
@@ -28,17 +28,17 @@ public class MusicDirector : MonoBehaviour
     {
         if (_musicChannel != null) _musicChannel.OnEventRaised -= HandleCue;
 
-        // I canali sono asset SO che sopravvivono alla scena: senza questo stop esplicito,
-        // una traccia lasciata in loop continuerebbe a suonare oltre la vita di questo director
-        // (stesso ragionamento del cleanup in AudioDirector.OnDisable).
+        // The channels are SO assets that outlive the scene: without this explicit stop, a track left
+        // looping would keep playing beyond this director's life (the same reasoning as the cleanup in
+        // AudioDirector.OnDisable).
         StopCurrent(0f);
     }
 
     private void HandleCue(MusicCue cue)
     {
-        // Richiedere la traccia gia' in riproduzione non la fa ripartire da capo: e' anche
-        // cio' che evita di scontrarsi con _maxConcurrentInstances = 1 dell'asset, che
-        // rifiuterebbe silenziosamente il secondo Play mentre il primo e' ancora attivo.
+        // Asking for the track already playing does not restart it from the top: that is also what avoids
+        // colliding with the asset's _maxConcurrentInstances = 1, which would silently refuse the second
+        // Play while the first is still active.
         if (cue.Track == _currentTrack && _current.IsValid) return;
 
         StopCurrent(cue.FadeOutSeconds);
@@ -48,8 +48,8 @@ public class MusicDirector : MonoBehaviour
         if (!cue.Track.Loop)
         {
 #if UNITY_EDITOR
-            Debug.LogWarning($"[MusicDirector] '{cue.Track.name}' non e' marcato come Loop: " +
-                "una traccia musicale deve avere _loop = true.", cue.Track);
+            Debug.LogWarning($"[MusicDirector] '{cue.Track.name}' is not marked as Loop: " +
+                "a music track has to have _loop = true.", cue.Track);
 #endif
             return;
         }
@@ -59,9 +59,9 @@ public class MusicDirector : MonoBehaviour
         _current = AudioLoopHandle.New();
         _currentTrack = cue.Track;
 
-        // Durante il crossfade convivono due voci sul gruppo Music: sono due SoundEventSO
-        // diversi, quindi ciascuno resta entro il proprio _maxConcurrentInstances, e la pool
-        // dell'AudioDirector (24 voci) ha ampio margine per ospitarle entrambe.
+        // During the crossfade two voices coexist on the Music group: they are two different
+        // SoundEventSO assets, so each stays within its own _maxConcurrentInstances, and the
+        // AudioDirector's pool (24 voices) has ample room for both.
         _loopStartChannel.RaiseEvent(LoopSfxStartCue.TwoD(_current, cue.Track, fadeInSeconds: cue.FadeInSeconds));
     }
 

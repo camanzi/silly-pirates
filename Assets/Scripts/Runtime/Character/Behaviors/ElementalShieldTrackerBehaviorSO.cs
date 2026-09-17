@@ -1,12 +1,12 @@
 using UnityEngine;
 
 /// <summary>
-/// Registra sullo scudo il tipo di ogni colpo diretto all'owner, senza toccare il danno.
-/// Lo scudo lo concede all'owner insieme a resistenza e immunita'.
+/// Records on the shield the type of every hit aimed at the owner, without touching the damage.
+/// The shield grants it to the owner alongside resistance and immunity.
 ///
-/// Serve perche' i colpi annullati dall'immunita' restano l'unico indizio su quali elementi il giocatore
-/// ha davvero in mano: il conteggio e' per numero di colpi e non per Amount, cosi' un colpo azzerato pesa
-/// quanto gli altri e l'ordine dei behavior nella pipeline di danno diventa irrilevante.
+/// It exists because the hits nullified by immunity remain the only clue as to which elements the player
+/// actually has in hand: the count is by number of hits and not by Amount, so a nullified hit weighs as
+/// much as any other and the ordering of behaviors in the damage pipeline becomes irrelevant.
 /// </summary>
 [CreateAssetMenu(fileName = "ElementalShieldTrackerBehavior", menuName = "Combat/Health Behaviors/Elemental Shield Tracker")]
 public class ElementalShieldTrackerBehaviorSO : HealthBehaviorSO

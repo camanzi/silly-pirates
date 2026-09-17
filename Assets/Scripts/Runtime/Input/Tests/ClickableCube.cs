@@ -12,7 +12,7 @@ public class ClickableCube : MonoBehaviour, IClickable
 
     public void OnClick()
     {
-        Debug.Log("Hai cliccato il cubo!");
+        Debug.Log("You clicked the cube!");
         transform.localScale *= 1.1f; // Lo ingrandiamo un po' per feedback
     }
 }

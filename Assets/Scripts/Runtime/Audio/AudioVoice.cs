@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Una voce audio prestabile dal pool. Wrappa un AudioSource e porta lo stato di dominio
-/// (suono di origine, bersaglio da inseguire, loop) che al pool generico non interessa.
+/// An audio voice that can be borrowed from the pool. It wraps an AudioSource and carries the domain
+/// state (originating sound, target to follow, loop) the generic pool has no interest in.
 /// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class AudioVoice : PooledBehaviour
@@ -11,26 +11,26 @@ public class AudioVoice : PooledBehaviour
 
     public AudioSource Source => EnsureSource();
 
-    /// <summary>Il SoundEventSO che ha generato questa voce, o null se libera.</summary>
+    /// <summary>The SoundEventSO that spawned this voice, or null when it is free.</summary>
     public SoundEventSO Sound { get; private set; }
 
-    /// <summary>Se valorizzato, l'AudioDirector copia la posizione del target ogni LateUpdate.</summary>
+    /// <summary>When set, the AudioDirector copies the target's position every LateUpdate.</summary>
     public Transform FollowTarget { get; set; }
 
     public bool IsLooping { get; private set; }
 
-    /// <summary>Handle del loop che sta suonando, o None. Serve a ripulire la mappa dei loop attivi
-    /// anche quando la voce viene rilasciata da un percorso diverso dallo stop esplicito.</summary>
+    /// <summary>The handle of the loop currently playing, or None. It is what lets the map of active
+    /// loops be cleaned up even when the voice is released through a path other than an explicit stop.</summary>
     public AudioLoopHandle LoopHandle { get; set; }
 
-    /// <summary>Incrementato a ogni Play. Permette alle continuazioni asincrone di accorgersi
-    /// che la voce e' stata nel frattempo rilasciata e riusata per un altro suono.</summary>
+    /// <summary>Incremented on every Play. It lets async continuations notice that the voice has
+    /// meanwhile been released and reused for another sound.</summary>
     public uint PlayId { get; private set; }
 
-    /// <summary>Time.time in cui la voce e' partita. Usato dalla policy di steal.</summary>
+    /// <summary>The Time.time at which the voice started. Used by the steal policy.</summary>
     public float StartTime { get; private set; }
 
-    /// <summary>Durata attesa della clip corrente al pitch corrente, in secondi.</summary>
+    /// <summary>The expected duration of the current clip at the current pitch, in seconds.</summary>
     public float ExpectedDuration { get; private set; }
 
     public int StealPriority => Sound != null ? Sound.StealPriority : 0;

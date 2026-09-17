@@ -38,20 +38,20 @@ public class SlimyBallCommand : ICommand
     }
 
     /// <summary>
-    /// Lo slime salta fuori dall'acqua fino all'altezza del ponte (la Y del target), spara mentre è
-    /// sospeso all'apice, e solo dopo ricade in acqua.
+    /// The slime leaps out of the water up to deck height (the target's Y), fires while it hangs at the
+    /// apex, and only then falls back into the water.
     /// </summary>
     public async Awaitable ExecuteAsync()
     {
-        // I bersagli includono il corpo (indice 0) e i suoi satelliti: le parti di un nemico composito
-        // devono saltare insieme a lui, non restare a terra.
+        // The targets include the body (index 0) and its satellites: the parts of a composite enemy have
+        // to jump along with it rather than stay on the ground.
         IReadOnlyList<LifecycleAnimationTarget> targets =
             _caster.LifecycleAnimator != null ? _caster.LifecycleAnimator.Targets : null;
         Transform bodyPivot = targets != null && targets.Count > 0 ? targets[0].Pivot : null;
 
-        // Senza un pivot visivo dedicato (fallback su transform di griglia) o senza config non
-        // animiamo il salto: sposteremmo collider e posizione di cella, o gireremmo con parametri
-        // non pronti. Si degrada al vecchio squash-stretch sul root.
+        // With no dedicated visual pivot (it falls back to the grid transform) or no config, the jump is
+        // not animated: it would move the collider and the cell position, or run with parameters that are
+        // not ready. It degrades to the old squash-stretch on the root.
         bool canAnimateJump = bodyPivot != null && bodyPivot != _caster.Transform && _jumpConfig != null;
 
         if (!canAnimateJump)
@@ -61,14 +61,14 @@ public class SlimyBallCommand : ICommand
             return;
         }
 
-        // Letta prima di qualunque await: il calcolo dell'apice non può fallire più tardi.
+        // Read before any await: the apex computation must not be able to fail later on.
         float targetWorldY = _target.Transform.position.y;
         float apexWorldHeight = _jumpConfig.ComputeApexHeight(_caster.Transform.position.y, targetWorldY);
         Vector3 splashWorldPosition = _caster.Transform.position + Vector3.up * _jumpConfig.SplashYOffset;
         CancellationToken token = _caster.destroyCancellationToken;
 
-        // Il salto scrive localPosition E localScale del pivot: sono gli stessi due canali su cui gira
-        // l'idle in loop. Senza sospenderlo si contenderebbero la Y del pivot ad ogni frame.
+        // The jump writes the pivot's localPosition AND localScale: the same two channels that carry the
+        // looping idle. Without suspending it, the two would fight over the pivot's Y every frame.
         _caster.LifecycleAnimator?.SuspendLoop();
 
         try
@@ -79,7 +79,8 @@ public class SlimyBallCommand : ICommand
             if (_jumpConfig.HangHoldDuration > 0f)
                 await Tween.Delay(_jumpConfig.HangHoldDuration);
 
-            // Il proiettile parte dalla posizione MONDO del pivot sollevato, non dal root a pelo d'acqua.
+            // The projectile leaves from the WORLD position of the raised pivot, not from the root at
+            // water level.
             await LegacySquashStretch();
             await LaunchProjectile(bodyPivot.position);
 
@@ -88,8 +89,8 @@ public class SlimyBallCommand : ICommand
         }
         finally
         {
-            // Ridondante col finally interno di FallDownAsync, ma necessario: se JumpUpAsync o
-            // LaunchProjectile falliscono prima di arrivarci, i pivot non devono restare sospesi in aria.
+            // Redundant with FallDownAsync's own finally, but necessary: if JumpUpAsync or
+            // LaunchProjectile fail before reaching it, the pivots must not be left hanging in mid-air.
             JumpSquashStretchHelper.ResetToRest(targets);
 
             _caster.LifecycleAnimator?.ResumeLoop();
@@ -97,8 +98,8 @@ public class SlimyBallCommand : ICommand
     }
 
     /// <summary>
-    /// Comportamento originale, mantenuto come fallback quando non è disponibile un pivot visivo
-    /// dedicato sicuro da animare.
+    /// The original behaviour, kept as a fallback for when there is no dedicated visual pivot that is
+    /// safe to animate.
     /// </summary>
     private async Awaitable LegacySquashStretch()
     {

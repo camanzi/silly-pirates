@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Regista VFX di scena: ascolta i canali di cue e riproduce gli effetti usando un pool per prefab.
+/// The scene's VFX director: it listens to the cue channels and plays effects using one pool per prefab.
 ///
-/// Gemello di <see cref="AudioDirector"/>: MonoBehaviour di scena che possiede direttamente i propri
-/// oggetti (mai dentro uno ScriptableObject) e si iscrive ai canali in OnEnable/OnDisable.
-/// Come l'audio non blocca mai il turn loop, ma a differenza dell'audio non ruba mai un effetto
-/// attivo quando la pool e' esaurita: un VFX troncato a meta' si vede, uno mancante no.
+/// The twin of <see cref="AudioDirector"/>: a scene MonoBehaviour that owns its objects directly (never
+/// inside a ScriptableObject) and subscribes to the channels in OnEnable/OnDisable.
+/// Like audio it never blocks the turn loop, but unlike audio it never steals an active effect when the
+/// pool is exhausted: a VFX cut off halfway is noticeable, a missing one is not.
 /// </summary>
 public class VfxDirector : MonoBehaviour
 {
     private const float ReleaseGraceSeconds = 0.05f;
 
     [Header("Pool")]
-    [Tooltip("Istanze create all'avvio per ogni prefab. 0 di default: i prefab VFX sono tanti e vari, prewarmarli tutti sarebbe un hitch di caricamento scena")]
+    [Tooltip("Instances created at start-up for each prefab. 0 by default: the VFX prefabs are many and varied, and prewarming them all would be a scene-load hitch")]
     [Min(0)] [SerializeField] private int _prewarmPerPrefab = 0;
-    [Tooltip("Tetto massimo di istanze simultanee per ogni prefab. Oltre questo i cue vengono scartati")]
+    [Tooltip("Hard cap on simultaneous instances per prefab. Beyond it, cues are dropped")]
     [Min(1)] [SerializeField] private int _maxPerPrefab = 8;
 
     private PrefabPoolRegistry<VFXController> _registry;
     private Transform _poolRoot;
 
-    // Solo le istanze che stanno inseguendo un Transform: le altre non costano nulla per frame.
+    // Only the instances currently following a Transform: the others cost nothing per frame.
     private readonly List<VFXController> _followers = new();
 
     private readonly Dictionary<Guid, VFXController> _persistent = new();
@@ -31,9 +31,9 @@ public class VfxDirector : MonoBehaviour
     private void Awake() => EnsureRegistry();
 
     /// <summary>
-    /// Lazy e idempotente: un cue puo' arrivare dall'OnEnable di un altro oggetto, che Unity puo'
-    /// eseguire prima dell'Awake di questo director — e' il caso dello spawn di un personaggio, che
-    /// alza i VFX di lifecycle appena viene attivato. Stesso motivo di
+    /// Lazy and idempotent: a cue can arrive from another object's OnEnable, which Unity may run before
+    /// this director's Awake — that is the case for a character spawning, which raises its lifecycle VFX
+    /// the moment it is activated. The same reason as
     /// <c>CharacterLifecycleAnimator.EnsureRestPoseCaptured</c>.
     /// </summary>
     private void EnsureRegistry()
@@ -55,7 +55,8 @@ public class VfxDirector : MonoBehaviour
 
     private void LateUpdate()
     {
-        // LateUpdate e non Update: PrimeTween muove i visual in Update, la posizione va copiata dopo.
+        // LateUpdate and not Update: PrimeTween moves the visuals in Update, so the position has to be
+        // copied afterwards.
         if (_followers.Count == 0) return;
 
         for (int i = _followers.Count - 1; i >= 0; i--)
@@ -70,7 +71,7 @@ public class VfxDirector : MonoBehaviour
 
             if (vfx.FollowTarget == null)
             {
-                // Il bersaglio e' stato distrutto a meta' effetto: l'istanza torna nel pool.
+                // The target was destroyed mid-effect: the instance goes back into the pool.
                 _followers.RemoveAt(i);
                 ReleaseVfx(vfx);
                 continue;
@@ -87,7 +88,7 @@ public class VfxDirector : MonoBehaviour
 
         EnsureRegistry();
 
-        // Handle gia' attivo = doppia applicazione dello stesso effetto persistente: no-op.
+        // An already active handle means the same persistent effect applied twice: a no-op.
         if (cue.Handle.IsValid && _persistent.ContainsKey(cue.Handle.Id)) return;
 
         VFXController vfx = _registry.Acquire(cue.Prefab);
@@ -95,14 +96,14 @@ public class VfxDirector : MonoBehaviour
         if (vfx == null)
         {
 #if UNITY_EDITOR
-            Debug.LogWarning($"[VfxDirector] Pool di '{cue.Prefab.name}' esaurita ({_maxPerPrefab} istanze): cue scartato.", this);
+            Debug.LogWarning($"[VfxDirector] Pool for '{cue.Prefab.name}' exhausted ({_maxPerPrefab} instances): cue dropped.", this);
 #endif
             return;
         }
 
-        // Uno scale a 0 viene dai payload costruiti a mano senza i factory method: si legge come "default".
+        // A scale of 0 comes from payloads built by hand without the factory methods: it reads as "default".
         float scale = cue.Scale > 0f ? cue.Scale : 1f;
-        vfx.ApplyScale(scale);   // e non transform.localScale: i sistemi figli non ereditano (VFXController.ApplyScale)
+        vfx.ApplyScale(scale);   // and not transform.localScale: child systems do not inherit it (VFXController.ApplyScale)
         vfx.transform.rotation = cue.Rotation;
 
         if (cue.FollowTarget != null)
@@ -120,7 +121,7 @@ public class VfxDirector : MonoBehaviour
 
         if (cue.Handle.IsValid)
         {
-            // Persistente: nessun rilascio automatico, vive finche' non arriva lo stop.
+            // Persistent: no automatic release, it lives until the stop arrives.
             vfx.Handle = cue.Handle;
             _persistent[cue.Handle.Id] = vfx;
             return;
@@ -132,7 +133,7 @@ public class VfxDirector : MonoBehaviour
     // Called by the VfxCueChannelListener when a stop event is raised. 
     public void HandleStop(VfxHandle handle)
     {
-        // Miss del dizionario = no-op silenzioso: il doppio stop e' un caso normale.
+        // A dictionary miss is a silent no-op: a double stop is a normal case.
         if (!handle.IsValid) return;
         if (!_persistent.TryGetValue(handle.Id, out VFXController vfx)) return;
 
@@ -146,8 +147,8 @@ public class VfxDirector : MonoBehaviour
     }
 
     /// <summary>
-    /// Riporta nel pool un effetto quando e' certamente finito.
-    /// Nessun costo per frame: una sola continuazione asincrona per istanza.
+    /// Returns an effect to the pool once it is certainly over.
+    /// No per-frame cost: a single async continuation per instance.
     /// </summary>
     private async void ScheduleRelease(VFXController vfx)
     {
@@ -167,7 +168,7 @@ public class VfxDirector : MonoBehaviour
         ReleaseVfx(vfx);
     }
 
-    /// <summary>Rilascio centralizzato: sfila l'istanza da ogni registro prima di restituirla.</summary>
+    /// <summary>Centralized release: it removes the instance from every register before handing it back.</summary>
     private void ReleaseVfx(VFXController vfx)
     {
         if (vfx == null || !vfx.IsInUse) return;

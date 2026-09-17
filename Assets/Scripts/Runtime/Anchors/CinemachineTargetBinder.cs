@@ -2,13 +2,13 @@ using Unity.Cinemachine;
 using UnityEngine;
 
 /// <summary>
-/// Assegna Tracking/LookAt target di una CinemachineCamera da <see cref="TransformAnchorSO"/>.
+/// Assigns a CinemachineCamera's Tracking/LookAt targets from a <see cref="TransformAnchorSO"/>.
 ///
-/// Serve un componente perché <c>CinemachineCamera.Target</c> è una struct Cinemachine: i suoi campi
-/// non sono assegnabili da un ScriptableObject, ed erano quindi l'unico modo per cui una vcab in
-/// prefab potesse puntare a un oggetto di un altro prefab — cioè un override di scena.
+/// A component is needed because <c>CinemachineCamera.Target</c> is a Cinemachine struct: its fields
+/// cannot be assigned from a ScriptableObject, so the only way a vcam inside a prefab could point at an
+/// object in another prefab was a scene override.
 ///
-/// Riassegna anche su cambio anchor: il bersaglio può registrarsi dopo la camera.
+/// It also reassigns when the anchor changes: the target may register after the camera.
 /// </summary>
 [RequireComponent(typeof(CinemachineCamera))]
 public class CinemachineTargetBinder : MonoBehaviour
@@ -49,9 +49,9 @@ public class CinemachineTargetBinder : MonoBehaviour
     private void ApplyLookAtTarget(Transform target)
     {
         if (_camera == null) return;
-        // CustomLookAtTarget non viene toccato di proposito: è il flag che decide se LookAtTarget
-        // conta davvero o se l'aim ricade su TrackingTarget. Resta com'è autorato sul prefab, così
-        // il comportamento è identico a quello degli override di scena che stiamo sostituendo.
+        // CustomLookAtTarget is deliberately left alone: it is the flag deciding whether LookAtTarget
+        // actually counts or whether the aim falls back to TrackingTarget. It stays as authored on the
+        // prefab, so the behaviour is identical to the scene overrides being replaced here.
         _camera.Target.LookAtTarget = target;
     }
 }

@@ -1,15 +1,15 @@
 using UnityEngine;
 
 /// <summary>
-/// Punto unico di risoluzione dell'origine di tiro di un caster.
-/// Le abilita' sono ScriptableObject e non possono referenziare transform di scena:
-/// il comando risolve qui, alla creazione, partendo dal caster.
+/// The single place a caster's firing origin is resolved.
+/// Abilities are ScriptableObjects and cannot reference scene transforms:
+/// the command resolves it here, at creation time, starting from the caster.
 /// </summary>
 public static class MuzzleUtils
 {
     /// <summary>
-    /// Ordine: override esplicito (<see cref="IMuzzleOwner"/>) -> marker
-    /// <see cref="MuzzleAnchor"/> in hierarchy -> root del caster.
+    /// Order: explicit override (<see cref="IMuzzleOwner"/>) -> a <see cref="MuzzleAnchor"/> marker in
+    /// the hierarchy -> the caster's root.
     /// </summary>
     public static Transform Resolve(IInteractableElement caster)
     {

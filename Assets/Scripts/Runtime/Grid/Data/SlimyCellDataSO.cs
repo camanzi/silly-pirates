@@ -61,9 +61,9 @@ public class SlimyCellDataSO : ScriptableObject, ICellCostModifier, ICombatSessi
         RaiseEffectEvent(new List<Vector3Int>(_cellCountdowns.Keys));
     }
 
-    // Vedi il commento gemello in PathOfStarDataSO: il Register qui è una rete di sicurezza
-    // idempotente, non un obbligo — CellCostRegistrySO non svuota la propria lista, quindi la
-    // registrazione fatta in OnEnable regge già per tutta la sessione.
+    // See the twin comment in PathOfStarDataSO: the Register here is an idempotent safety net and not an
+    // obligation — CellCostRegistrySO does not clear its own list, so the registration done in OnEnable
+    // already holds for the whole session.
     public void ResetForNewCombat()
     {
         _cellCountdowns.Clear();

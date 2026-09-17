@@ -25,7 +25,7 @@ public class CharacterTester : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Project-Wide Actions non configurate! Vai in Project Settings -> Input System Package.");
+            Debug.LogError("Project-Wide Actions not configured! Go to Project Settings -> Input System Package.");
         }
     }
 

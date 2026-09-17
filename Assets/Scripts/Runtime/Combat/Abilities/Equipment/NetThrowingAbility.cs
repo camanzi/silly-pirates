@@ -10,7 +10,7 @@ public class NetThrowingAbility : OffensiveAbilityBase, IMultiTargetAbility, IOf
     [SerializeField] private int _cooldown = 2;
     [SerializeField] private SlowPassiveSO _slowPassiveSO;
 
-    [Tooltip("Nube di fumo emessa dalla bocca del cannone sul frame dello sparo.")]
+    [Tooltip("Smoke puff emitted from the cannon muzzle on the frame of the shot.")]
     [SerializeField] private VFXController _muzzleVfx;
 
     public int MaxTargets => _maxTargets;
@@ -36,6 +36,6 @@ public class NetThrowingAbility : OffensiveAbilityBase, IMultiTargetAbility, IOf
         return new AbilityPreviewData(affectedCells: new(), interactionArea: new(), freeAimTargets: _selectionCtx.CurrentTargets);
     }
 
-    // Ostile ma senza danno: applica solo uno slow, quindi non ha un elemento da annunciare.
+    // Hostile but damageless: it only applies a slow, so it has no element to announce.
     public DamageType ResolveDamageElement(IInteractableElement caster) => DamageType.None;
 }

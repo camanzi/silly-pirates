@@ -49,7 +49,7 @@ public class PassiveNotificationManager : MonoBehaviour
 
         if (_mainCameraAnchor == null)
         {
-            Debug.LogError($"{nameof(PassiveNotificationManager)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{nameof(PassiveNotificationManager)}: no {nameof(MainCameraAnchorSO)} assigned.", this);
             return;
         }
 
@@ -123,7 +123,7 @@ public class PassiveNotificationManager : MonoBehaviour
         popup.pickingMode = PickingMode.Ignore;
 
         var label = popup.Q<Label>("passive-label");
-        // Stessa soglia del badge in PassiveIndicator, così i due elementi concordano.
+        // Same threshold as the badge in PassiveIndicator, so the two elements agree.
         label.text = evt.StackCount >= 2 ? $"{evt.DisplayName} x{evt.StackCount}" : evt.DisplayName;
         label.style.color = evt.WasAdded ? Color.white : Color.red;
 

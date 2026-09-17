@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Disegna gli archi di traiettoria durante la mira. Gli arc renderer vengono prestati da un pool
-/// e non distrutti: l'anteprima viene ridisegnata a ogni movimento del puntatore, e il ciclo
-/// hover-valido -> hover-non-valido -> hover-valido ricreerebbe i GameObject continuamente.
+/// Draws the trajectory arcs while aiming. The arc renderers are borrowed from a pool rather than
+/// destroyed: the preview is redrawn on every pointer movement, and the valid-hover -> invalid-hover ->
+/// valid-hover cycle would recreate the GameObjects over and over.
 /// </summary>
 public class FreeAimRenderer : MonoBehaviour
 {
@@ -13,7 +13,7 @@ public class FreeAimRenderer : MonoBehaviour
 
     [Header("Pool")]
     [Min(0)] [SerializeField] private int _prewarmSize = 2;
-    [Tooltip("Tetto di archi disegnabili insieme. Oltre questo gli archi in eccesso non vengono mostrati")]
+    [Tooltip("Cap on how many arcs can be drawn at once. Beyond it, the surplus arcs are not shown")]
     [Min(1)] [SerializeField] private int _maxPoolSize = 8;
 
     private readonly List<TrajectoryRenderer> _arcRenderers = new();
@@ -25,7 +25,7 @@ public class FreeAimRenderer : MonoBehaviour
     {
         if (_trajectoryRenderer == null)
         {
-            Debug.LogError($"[FreeAimRenderer] Nessun prefab di TrajectoryRenderer assegnato su '{name}'.", this);
+            Debug.LogError($"[FreeAimRenderer] No TrajectoryRenderer prefab assigned on '{name}'.", this);
             return;
         }
 
@@ -54,7 +54,7 @@ public class FreeAimRenderer : MonoBehaviour
         while (_arcRenderers.Count < arcs.Count)
         {
             TrajectoryRenderer renderer = _pool.Acquire();
-            if (renderer == null) break;   // pool esaurita: si disegnano gli archi che ci stanno
+            if (renderer == null) break;   // pool exhausted: only the arcs that fit are drawn
             _arcRenderers.Add(renderer);
         }
 

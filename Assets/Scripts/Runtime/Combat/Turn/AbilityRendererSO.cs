@@ -14,10 +14,10 @@ public class AbilityRendererSO : ScriptableObject
     [SerializeField] private HighlightGridEventChannel _highlightCellsEventChannel;
     [SerializeField] private HighlightFreeAimEventChannel _targetTransformEventChannel;
 
-    // DrawAbilityPreview gira a ogni movimento del puntatore durante la mira: e' il percorso piu'
-    // frequente del combat loop, e allocare qui una collection per chiamata e' la sua voce di GC
-    // dominante. I buffer sono riusabili perche' nessun listener conserva le liste oltre la chiamata
-    // (ShipController.ApplyLayer ne fa una copia, FreeAimRenderer e HitChanceIndicator le leggono e basta).
+    // DrawAbilityPreview runs on every pointer movement while aiming: it is the hottest path in the
+    // combat loop, and allocating a collection per call here is its dominant GC cost. The buffers can be
+    // reused because no listener keeps the lists beyond the call (ShipController.ApplyLayer copies them,
+    // FreeAimRenderer and HitChanceIndicator only read them).
     private readonly List<TrajectoryArc> _arcsBuffer = new();
     private readonly List<CellOverlayLayer> _layersBuffer = new();
     private readonly List<Vector3Int> _interactionCellsBuffer = new();

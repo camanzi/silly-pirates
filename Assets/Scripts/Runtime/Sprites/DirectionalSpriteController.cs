@@ -27,7 +27,7 @@ public class DirectionalSpriteController : MonoBehaviour
     {
         if (_mainCameraAnchor == null)
         {
-            Debug.LogError($"{nameof(DirectionalSpriteController)}: nessun {nameof(MainCameraAnchorSO)} assegnato.", this);
+            Debug.LogError($"{nameof(DirectionalSpriteController)}: no {nameof(MainCameraAnchorSO)} assigned.", this);
             return;
         }
 
@@ -80,7 +80,7 @@ public class DirectionalSpriteController : MonoBehaviour
 
         if (_spriteRenderer == null)
         {
-            Debug.LogError($"[DirectionalSpriteController] SpriteRenderer mancante su '{name}': animazioni disabilitate.", this);
+            Debug.LogError($"[DirectionalSpriteController] SpriteRenderer missing on '{name}': animations disabled.", this);
             return false;
         }
 
@@ -88,13 +88,13 @@ public class DirectionalSpriteController : MonoBehaviour
 
         if (_atlasHelper == null)
         {
-            Debug.LogError($"[DirectionalSpriteController] SpriteAtlasHelper mancante su '{name}': animazioni disabilitate.", this);
+            Debug.LogError($"[DirectionalSpriteController] SpriteAtlasHelper missing on '{name}': animations disabled.", this);
             return false;
         }
 
         if (_animations == null || _animations.Count == 0)
         {
-            Debug.LogWarning($"[DirectionalSpriteController] Nessuna animazione configurata su '{name}'.", this);
+            Debug.LogWarning($"[DirectionalSpriteController] No animation configured on '{name}'.", this);
             return false;
         }
 
@@ -112,11 +112,11 @@ public class DirectionalSpriteController : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError($"[DirectionalSpriteController] Errore caricando la sprite cache su '{name}': {e}", this);
+            Debug.LogError($"[DirectionalSpriteController] Error loading the sprite cache on '{name}': {e}", this);
             return false;
         }
 
-        Debug.Log($"Cache inizializzata con {_spriteCache.Count} animazioni");
+        Debug.Log($"Cache initialized with {_spriteCache.Count} animations");
         return true;
     }
 
@@ -143,7 +143,7 @@ public class DirectionalSpriteController : MonoBehaviour
         }
 
         if (missingCount > 0)
-            Debug.LogWarning($"[DirectionalSpriteController] '{name}': {missingCount}/{config.frameCount * 8} sprite mancanti per l'animazione {anim} (es. {firstMissingName}).", this);
+            Debug.LogWarning($"[DirectionalSpriteController] '{name}': {missingCount}/{config.frameCount * 8} sprites missing for animation {anim} (e.g. {firstMissingName}).", this);
 
         _spriteCache[anim] = animationSprites;
     }
@@ -258,7 +258,7 @@ public class DirectionalSpriteController : MonoBehaviour
 
         if (!_spriteCache.ContainsKey(animation))
         {
-            Debug.LogError($"Animazione '{animation}' non trovata nella cache!");
+            Debug.LogError($"Animation '{animation}' not found in the cache!");
             return;
         }
 

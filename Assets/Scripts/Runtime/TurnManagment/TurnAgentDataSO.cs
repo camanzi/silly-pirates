@@ -9,8 +9,8 @@ public class TurnAgentDataSO : ScriptableObject
     [SerializeField] private int _maxActionPointsPerTurn = 5;
     [SerializeField] private float _maxHp = 100f;
     
-    // FIXME Later Attenzione! Questo oggetto dovrebbe contenere SOLO le info riguardanti i turni
-    // Questo é un dato SOLO della griglia e quindi NON condiviso con i nemici!
+    // FIXME Later. Careful! This object should hold ONLY turn-related information.
+    // This is grid-only data and therefore NOT shared with the enemies!
     [Tooltip("Maximun movement on grid per turn")]
     [SerializeField] private int _maxMovementPoints;
 
@@ -22,9 +22,9 @@ public class TurnAgentDataSO : ScriptableObject
 
     [SerializeField] private int _baseEvasion = 50;
 
-    [Tooltip("Se attivo, il primo Action Value assegnato in coda turni al join (spawn) varia " +
-             "pseudo-casualmente rispetto al valore base, per dare varietà all'ordine dei turni. " +
-             "Dal secondo turno in poi l'AV torna sempre al valore base.")]
+    [Tooltip("When on, the first Action Value assigned in the turn queue on join (spawn) varies " +
+             "pseudo-randomly around the base value, to give the turn order some variety. " +
+             "From the second turn onwards the AV always returns to the base value.")]
     [SerializeField] private bool _randomizeInitialAV;
 
     public int InitialAgility => _initialAgility;

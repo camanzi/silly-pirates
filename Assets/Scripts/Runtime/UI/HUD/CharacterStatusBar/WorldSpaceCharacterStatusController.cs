@@ -8,9 +8,9 @@ public class WorldSpaceCharacterStatusController : WorldSpaceContainer
     [SerializeField] private PassiveAbilityController _passiveAbilityController;
 
     [Header("Combat Intro")]
-    [Tooltip("Se non assegnato la barra si comporta come oggi: nessuna regressione nelle scene senza CombatIntroSequencer.")]
+    [Tooltip("When unassigned the bar behaves exactly as it does today: no regression in scenes without a CombatIntroSequencer.")]
     [SerializeField] private CombatIntroStateSO _introState;
-    [Tooltip("Se non assegnato la barra si comporta come oggi: nessuna regressione nelle scene senza CombatIntroSequencer.")]
+    [Tooltip("When unassigned the bar behaves exactly as it does today: no regression in scenes without a CombatIntroSequencer.")]
     [SerializeField] private VoidEventChannel _onCombatStarted;
 
     private VisualElement _fill;
@@ -25,10 +25,10 @@ public class WorldSpaceCharacterStatusController : WorldSpaceContainer
         _settledPassives   = root.Q<VisualElement>("settled-passives");
         _floatingIconsZone = root.Q<VisualElement>("floating-icons-zone");
 
-        // Durante l'intro la barra deve restare invisibile fino a OnCombatStartedEventChannel: si usa
-        // lo slot "combat state" (non "element state", riservato alla morte della parte in
-        // EnemyPartController) e si applica subito senza tween, altrimenti base.Awake() avrebbe già
-        // mostrato il container a piena opacità per un frame.
+        // During the intro the bar has to stay invisible until OnCombatStartedEventChannel: the "combat
+        // state" slot is used (not "element state", which is reserved for the death of the part in
+        // EnemyPartController) and applied immediately with no tween, otherwise base.Awake() would already
+        // have shown the container at full opacity for one frame.
         if (_introState != null && _introState.IsIntroActive)
         {
             _isAllowedByCombatState = false;
@@ -50,8 +50,8 @@ public class WorldSpaceCharacterStatusController : WorldSpaceContainer
         if (_onCombatStarted != null)
             _onCombatStarted.OnEventRaised += HandleCombatStarted;
 
-        // Copre sia le riattivazioni dopo il combat start sia le scene senza sequencer di intro:
-        // in entrambi i casi il permesso di combattimento deve essere concesso da subito.
+        // Covers both re-activations after the combat start and scenes with no intro sequencer:
+        // in either case the combat permission has to be granted right away.
         if (_introState == null || !_introState.IsIntroActive)
             SetCombatStatePermission(true);
     }
@@ -71,7 +71,7 @@ public class WorldSpaceCharacterStatusController : WorldSpaceContainer
             _onCombatStarted.OnEventRaised -= HandleCombatStarted;
     }
 
-    // Fade-in standard (.25s, gestito dalla base class) quando la HUD compare.
+    // Standard fade-in (.25s, handled by the base class) for when the HUD appears.
     private void HandleCombatStarted() => SetCombatStatePermission(true);
 
     protected override void ShowUI()    => RefreshBar();
@@ -87,7 +87,7 @@ public class WorldSpaceCharacterStatusController : WorldSpaceContainer
         _fill.style.width = new StyleLength(new Length(ratio * 100f, LengthUnit.Percent));
     }
 
-    // TODO: implementare quando PassiveAbilityController esporrà eventi granulari (OnPassiveAdded/Removed)
+    // TODO: implement once PassiveAbilityController exposes granular events (OnPassiveAdded/Removed)
     private void OnPassivesChanged()
     {
         Debug.Log("[WorldSpaceCharacterStatusController] passive changed — da implementare");

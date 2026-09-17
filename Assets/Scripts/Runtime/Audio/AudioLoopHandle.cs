@@ -1,12 +1,12 @@
 using System;
 
 /// <summary>
-/// Riferimento a un suono in loop, coniato dal chiamante e usato per fermarlo.
+/// A reference to a looping sound, minted by the caller and used to stop it.
 ///
-/// E' un GUID e non un indice di slot del pool: l'handle e' la chiave di un dizionario
-/// sull'AudioDirector, quindi uno stop duplicato o tardivo e' un semplice miss (no-op sicuro)
-/// e non puo' mai colpire una voce diversa riciclata nello stesso slot. Il problema ABA
-/// e' evitato per costruzione, senza bisogno di un generation counter.
+/// It is a GUID and not a pool slot index: the handle is a key into a dictionary on the AudioDirector, so
+/// a duplicate or late stop is simply a miss (a safe no-op) and can never hit a different voice recycled
+/// into the same slot. The ABA problem is avoided by construction, with no need for a generation
+/// counter.
 /// </summary>
 public readonly struct AudioLoopHandle : IEquatable<AudioLoopHandle>
 {

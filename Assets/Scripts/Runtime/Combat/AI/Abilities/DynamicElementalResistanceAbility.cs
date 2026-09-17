@@ -1,15 +1,15 @@
 using UnityEngine;
 
 /// <summary>
-/// Cambia l'elemento dello scudo elementale del caster, scegliendo quello che il giocatore ha usato meno.
-/// Gate sulla parte tramite _requiredPart di <see cref="EnemyAbilityBase"/>: a scudo rotto l'abilita'
-/// esce automaticamente dalle candidate.
+/// Changes the element of the caster's elemental shield, picking the one the player has used least.
+/// Gated on the part through <see cref="EnemyAbilityBase"/>'s _requiredPart: with the shield broken the
+/// ability drops out of the candidate set automatically.
 /// </summary>
 [CreateAssetMenu(fileName = "DynamicElementalResistance Ability", menuName = "Abilities/Enemy/Dynamic Elemental Resistance")]
 public class DynamicElementalResistanceAbility : EnemyAbilityBase, IDefensiveAbility
 {
     [Header("Dynamic Elemental Resistance configs")]
-    [Tooltip("Turni di attesa fra un uso e il successivo.")]
+    [Tooltip("Turns to wait between one use and the next.")]
     [SerializeField] private int _cooldownTurns = 1;
 
     [Header("Camera Direction")]
@@ -31,8 +31,8 @@ public class DynamicElementalResistanceAbility : EnemyAbilityBase, IDefensiveAbi
             return float.NegativeInfinity;
         }
 
-        // Il bersaglio e' il caster stesso: non c'e' una convenzione di "self target" in questo progetto,
-        // le abilita' di buff riempiono comunque targeting con il destinatario.
+        // The target is the caster itself: there is no "self target" convention in this project, buff
+        // abilities fill targeting with the recipient all the same.
         targeting = new TargetingData(context.Caster.Transform.position, default, true, context.Caster);
         return 1f;
     }
@@ -49,8 +49,8 @@ public class DynamicElementalResistanceAbility : EnemyAbilityBase, IDefensiveAbi
         var shield = GetShield(hostile);
         if (shield == null) return null;
 
-        // +1 come in SpeedBoostAbility: HostileCharacter.OnStartingTurn decrementa a ogni turno dell'owner,
-        // incluso quello in cui l'abilita' viene usata.
+        // +1 as in SpeedBoostAbility: HostileCharacter.OnStartingTurn decrements on every turn of the
+        // owner, including the one the ability is used on.
         hostile.AbilityCooldowns[this] = _cooldownTurns + 1;
 
         return new DynamicElementalResistanceCommand(hostile, shield, shield.PickDenialElement(), this,

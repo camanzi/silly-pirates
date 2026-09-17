@@ -2,8 +2,8 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Il personaggio affonda sotto il pelo dell'acqua a partire dalla sua posa a riposo, insieme ai suoi
-/// satelliti. Inverso di <see cref="EmergeFromWaterAnimationSO"/>.
+/// The character sinks below the waterline starting from its rest pose, together with its satellites.
+/// The inverse of <see cref="EmergeFromWaterAnimationSO"/>.
 /// </summary>
 [CreateAssetMenu(menuName = "Combat/Lifecycle Animations/Sink Under Water")]
 public class SinkUnderWaterAnimationSO : LifecycleAnimationSO
@@ -18,12 +18,12 @@ public class SinkUnderWaterAnimationSO : LifecycleAnimationSO
     {
         if (target.Pivot == null) return;
 
-        // Difensivo: riporta alla posa a riposo nel caso un'animazione precedente (o un tween di abilità
-        // appena interrotto) avesse lasciato pivot o scala in uno stato intermedio.
+        // Defensive: it returns to the rest pose in case an earlier animation (or an ability tween just
+        // interrupted) left the pivot or the scale in an intermediate state.
         target.Pivot.localPosition = target.RestLocalPosition;
         target.Pivot.localScale = target.RestLocalScale;
 
-        // Solo l'alpha: il tint "morto" di chi è già stato distrutto deve restare visibile mentre affonda.
+        // Alpha only: the "dead" tint of something already destroyed has to stay visible while it sinks.
         target.SetAlpha(target.RestColor.a);
     }
 

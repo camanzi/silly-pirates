@@ -3,15 +3,15 @@ using PrimeTween;
 using UnityEngine;
 
 /// <summary>
-/// Fa interporre lo scudo davanti al proprio owner mentre un'abilita' ostile e' in esecuzione contro di lui,
-/// e lo riporta a riposo quando l'esecuzione finisce.
+/// Interposes the shield in front of its owner while a hostile ability is executing against them, and
+/// brings it back to rest when that execution ends.
 ///
-/// Ascolta <see cref="AbilityThreatEventChannel"/> e non l'HealthController: un HealthBehaviorSO vede il
-/// colpo solo quando e' gia' arrivato, mentre qui serve reagire PRIMA — fra l'annuncio della minaccia e
-/// l'impatto passa tutto il volo del proiettile.
+/// It listens to <see cref="AbilityThreatEventChannel"/> and not to the HealthController: a
+/// HealthBehaviorSO only sees the hit once it has already landed, whereas what is needed here is to react
+/// BEFORE — the whole flight of the projectile sits between the threat being announced and the impact.
 ///
-/// Tenuto separato da <see cref="ElementalShieldController"/>, che possiede le regole (behavior concessi,
-/// elementi, rottura): questo componente e' solo presentazione e puo' essere tolto senza cambiare il gioco.
+/// Kept separate from <see cref="ElementalShieldController"/>, which owns the rules (granted behaviors,
+/// elements, breaking): this component is presentation only and can be removed without changing the game.
 /// </summary>
 [RequireComponent(typeof(ElementalShieldController))]
 public class ElementalShieldGuardAnimator : MonoBehaviour
@@ -20,20 +20,20 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
     [SerializeField] private AbilityThreatEventChannel _threatChannel;
     [SerializeField] private ShieldGuardAnimationSO _config;
 
-    [Tooltip("Sprite dello scudo. Se non assegnato viene cercato fra i figli.")]
+    [Tooltip("The shield's sprite. When unassigned it is looked up among the children.")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
     private ElementalShieldController _shield;
     private HostileCharacter _owner;
 
-    // Posa a riposo catturata una sola volta, prima che qualsiasi tween la sposti.
+    // The rest pose, captured exactly once, before any tween can move it.
     private Vector3 _restLocalPosition;
     private Vector3 _restLocalScale;
     private Vector3 _spriteRestLocalPosition;
 
-    // Handle salvati e fermati prima di rilanciare: stesso pattern di DirectionalSpriteController._colorTween.
-    // Non si usa Tween.StopAll(transform) perche' ucciderebbe anche i tween di
-    // DynamicElementalResistanceCommand, che sta await-ando i propri.
+    // Handles stored and stopped before relaunching: the same pattern as
+    // DirectionalSpriteController._colorTween. Tween.StopAll(transform) is deliberately not used, because
+    // it would also kill DynamicElementalResistanceCommand's tweens, which it is awaiting.
     private Tween _moveTween;
     private Tween _scaleTween;
     private Tween _colorTween;
@@ -53,7 +53,7 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
         if (_spriteRenderer != null) _spriteRestLocalPosition = _spriteRenderer.transform.localPosition;
     }
 
-    // Sola sottoscrizione, nessun cue alzato: in OnEnable i director possono non aver ancora fatto Awake.
+    // Subscription only, no cue raised: in OnEnable the directors may not have run Awake yet.
     private void OnEnable()
     {
         if (_threatChannel != null) _threatChannel.OnEventRaised += HandleThreat;
@@ -85,8 +85,8 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Vero se la minaccia riguarda l'owner o una qualsiasi delle sue parti — lo scudo si alza sia quando si
-    /// mira al corpo sia quando si mira allo scudo stesso, che e' un bersaglio cliccabile a se'.
+    /// True when the threat concerns the owner or any of its parts — the shield goes up both when the body
+    /// is aimed at and when the shield itself is, since that is a clickable target in its own right.
     /// </summary>
     private bool TargetsOwner(IReadOnlyList<ITargettable> targets)
     {
@@ -107,8 +107,9 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
     }
 
     /// <param name="incoming">
-    /// Elemento in arrivo. Diverso da quello attivo (o <see cref="DamageType.None"/>) = para, il danno verra'
-    /// dimezzato dalla resistenza. Uguale = incassa ed assorbe, e' il colpo che il corpo trasforma in cura.
+    /// The incoming element. Different from the active one (or <see cref="DamageType.None"/>) = a block,
+    /// the damage will be halved by the resistance. The same = it takes and absorbs the hit, the one the
+    /// body turns into healing.
     /// </param>
     private void RaiseGuard(DamageType incoming)
     {
@@ -127,8 +128,8 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
         _isGuarding = true;
     }
 
-    // Lampeggio col colore dell'elemento in arrivo e ritorno (Yoyo) al tint dell'elemento attivo, che e'
-    // gia' quello dello sprite in questo istante.
+    // Flash with the incoming element's colour and return (Yoyo) to the active element's tint, which is
+    // already the sprite's colour at this instant.
     private void PlayBlock(DamageType incoming)
     {
         _config.RaiseBlockVfx(transform.position);
@@ -143,8 +144,8 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
                                   Ease.InOutQuad, _config.BlockFlashCycles, CycleMode.Yoyo);
     }
 
-    // Lo shake va sul figlio sprite, non sulla radice: la radice la sta gia' tweenando la salita in guardia
-    // e i due si contenderebbero lo stesso localPosition.
+    // The shake goes on the sprite child, not on the root: the root is already being tweened by the raise
+    // into guard, and the two would fight over the same localPosition.
     private void PlayAbsorb()
     {
         if (_spriteRenderer == null) return;
@@ -167,8 +168,8 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
         _moveTween  = Tween.LocalPosition(transform, _restLocalPosition, _config.LowerDuration, _config.LowerEase);
         _scaleTween = Tween.Scale(transform, _restLocalScale, _config.LowerDuration, _config.LowerEase);
 
-        // Lo sprite torna subito: lo shake e' gia' finito e il colore deve tornare al tint dell'elemento
-        // attivo, che nel frattempo puo' essere cambiato.
+        // The sprite snaps back at once: the shake is over already and the colour has to return to the
+        // active element's tint, which may have changed in the meantime.
         ResetSpriteToRest();
     }
 
@@ -187,8 +188,8 @@ public class ElementalShieldGuardAnimator : MonoBehaviour
         ResetSpriteToRest();
     }
 
-    // Tween.Stop() di PrimeTween e' un kill, non un rewind: uno shake fermato a meta' oscillazione lascia il
-    // pivot sfasato, quindi la posa va riscritta a mano.
+    // PrimeTween's Tween.Stop() is a kill, not a rewind: a shake stopped mid-oscillation leaves the pivot
+    // offset, so the pose has to be rewritten by hand.
     private void ResetSpriteToRest()
     {
         if (_spriteRenderer == null) return;

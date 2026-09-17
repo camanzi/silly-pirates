@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Insieme di <see cref="ComponentPool{T}"/>, una per prefab. Serve ai domini in cui non esiste
-/// "il" prefab ma decine (i VFX): la pool giusta viene creata al primo Acquire e poi riusata.
+/// A set of <see cref="ComponentPool{T}"/>, one per prefab. It serves the domains where there is no
+/// single prefab but dozens of them (the VFX): the right pool is created on the first Acquire and reused
+/// from then on.
 ///
-/// Non aggiunge nessuna policy: propaga il null di esaurimento esattamente come ComponentPool,
-/// e lascia al consumatore la decisione su cosa fare.
+/// It adds no policy of its own: it propagates the exhaustion null exactly as ComponentPool does, and
+/// leaves the decision on what to do to the consumer.
 /// </summary>
 public class PrefabPoolRegistry<T> where T : Component, IPoolable
 {
@@ -24,7 +25,7 @@ public class PrefabPoolRegistry<T> where T : Component, IPoolable
 
     public int PoolCount => _poolsByPrefab.Count;
 
-    /// <summary>Presta un'istanza del prefab richiesto. Null se quella pool e' esaurita.</summary>
+    /// <summary>Lends out an instance of the requested prefab. Null when that pool is exhausted.</summary>
     public T Acquire(T prefab)
     {
         if (prefab == null) return null;
@@ -39,8 +40,8 @@ public class PrefabPoolRegistry<T> where T : Component, IPoolable
     }
 
     /// <summary>
-    /// Restituisce un'istanza alla pool che l'ha creata. Non serve sapere da quale prefab
-    /// provenga: il riferimento alla pool e' gia' su <see cref="IPoolable.Releaser"/>.
+    /// Returns an instance to the pool that created it. There is no need to know which prefab it came
+    /// from: the reference to the pool is already on <see cref="IPoolable.Releaser"/>.
     /// </summary>
     public void Release(T instance)
     {
@@ -48,14 +49,14 @@ public class PrefabPoolRegistry<T> where T : Component, IPoolable
         instance.Releaser?.Release(instance);
     }
 
-    /// <summary>Da chiamare in OnDisable del proprietario.</summary>
+    /// <summary>To be called in the owner's OnDisable.</summary>
     public void ReleaseAll()
     {
         foreach (ComponentPool<T> pool in _poolsByPrefab.Values)
             pool.ReleaseAll();
     }
 
-    /// <summary>Da chiamare in OnDestroy del proprietario.</summary>
+    /// <summary>To be called in the owner's OnDestroy.</summary>
     public void Clear()
     {
         foreach (ComponentPool<T> pool in _poolsByPrefab.Values)
@@ -65,8 +66,8 @@ public class PrefabPoolRegistry<T> where T : Component, IPoolable
     }
 
     /// <summary>
-    /// Ogni prefab ha il suo sotto-root: tenere le istanze raggruppate per tipo rende
-    /// leggibile la gerarchia in Inspector mentre si verifica il riuso.
+    /// Each prefab gets its own sub-root: keeping the instances grouped by type keeps the hierarchy
+    /// readable in the Inspector while reuse is being checked.
     /// </summary>
     private ComponentPool<T> CreatePool(T prefab)
     {

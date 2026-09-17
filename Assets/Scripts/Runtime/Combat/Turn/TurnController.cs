@@ -13,19 +13,19 @@ public class TurnController : MonoBehaviour
     [SerializeField] private CommandQueueSO _commandQueue;
 
     [Header("Combat Intro")]
-    [Tooltip("Se assegnato, il game loop attende il gate della sequenza di intro prima di partire. Lasciare vuoto nelle scene senza intro.")]
+    [Tooltip("When assigned, the game loop waits on the intro sequence's gate before starting. Leave empty in scenes with no intro.")]
     [SerializeField] private CombatIntroStateSO _introState;
 
     [Header("Combat Outcome")]
-    [Tooltip("Se assegnato, il game loop smette di avviare nuovi turni quando il combattimento è risolto. Lasciare vuoto nelle scene senza esito: il gate non introduce alcun comportamento.")]
+    [Tooltip("When assigned, the game loop stops starting new turns once the combat is resolved. Leave empty in scenes with no outcome: the gate then adds no behaviour at all.")]
     [SerializeField] private CombatOutcomeStateSO _outcomeState;
 
-    // Spostati da OnEnable: Unity chiama tutti gli Awake prima di tutti gli OnEnable degli oggetti
-    // presenti al load. Se questi Clear() restassero in OnEnable, funzionerebbero solo grazie
-    // all'await NextFrameAsync qui sotto che rimanda l'avvio del loop — ma qualunque ITurnAgent il
-    // cui OnEnable (e quindi OnAgentJoin) girasse PRIMA di quello del TurnController verrebbe
-    // cancellato dalla coda da questo stesso Clear(). Spostandoli in Awake l'ordine diventa
-    // deterministico invece che dipendente dall'ordine dei sibling in gerarchia.
+    // Moved out of OnEnable: Unity calls every Awake before every OnEnable of the objects present at
+    // load. Were these Clear() calls to stay in OnEnable, they would only work thanks to the
+    // await NextFrameAsync below deferring the start of the loop — but any ITurnAgent whose OnEnable
+    // (and therefore OnAgentJoin) ran BEFORE the TurnController's would be wiped from the queue by this
+    // very Clear(). Moving them into Awake makes the ordering deterministic rather than dependent on
+    // sibling order in the hierarchy.
     private void Awake()
     {
         _turnOrderData.Clear();
@@ -46,15 +46,15 @@ public class TurnController : MonoBehaviour
         {
             await Awaitable.NextFrameAsync(token);
 
-            // Gate della sequenza di intro: se assente o già passante, non introduce ritardo.
+            // The intro sequence's gate: when absent or already open, it adds no delay.
             if (_introState != null) await _introState.WaitUntilCombatReadyAsync(token);
 
             while (!token.IsCancellationRequested)
             {
-                // Gate dell'esito: a combattimento risolto non si avviano più nuovi turni, ma la
-                // scena resta viva (animazioni, camera, VFX continuano) esattamente come col gate
-                // dell'intro qui sopra. Protegge dalla sconfitta: senza questo, in coda restano solo
-                // nemici che continuerebbero a giocare turni all'infinito cercando bersagli inesistenti.
+                // The outcome gate: once the combat is resolved no new turns are started, but the scene
+                // stays alive (animations, camera and VFX keep running) exactly as with the intro gate
+                // above. It guards against defeat: without it the queue would be left with enemies only,
+                // playing turns forever looking for targets that no longer exist.
                 if (_outcomeState != null && _outcomeState.IsCombatOver)
                 {
                     await Awaitable.NextFrameAsync(token);

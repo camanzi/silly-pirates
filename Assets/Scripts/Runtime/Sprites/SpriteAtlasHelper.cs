@@ -7,7 +7,7 @@ public class SpriteAtlasHelper : MonoBehaviour
     [Header("Atlas Configuration")]
     [SerializeField] private SpriteAtlas _spriteAtlas;
 
-    // Cache per evitare lookup ripetuti sull'atlas
+    // A cache to avoid repeated lookups on the atlas
     private Dictionary<string, Sprite> _atlasCache = new Dictionary<string, Sprite>();
 
     void Awake()
@@ -30,7 +30,7 @@ public class SpriteAtlasHelper : MonoBehaviour
             }
         }
 
-        Debug.Log($"Atlas cache precaricata con {_atlasCache.Count} sprite");
+        Debug.Log($"Atlas cache preloaded with {_atlasCache.Count} sprites");
     }
 
     public Sprite GetSprite(string spriteName)

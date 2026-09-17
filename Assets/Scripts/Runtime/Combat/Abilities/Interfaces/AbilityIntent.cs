@@ -1,10 +1,10 @@
 /// <summary>
-/// Intenzione di un'abilita' verso i suoi bersagli. Non e' un flag serializzato: si dichiara implementando
-/// <see cref="IOffensiveAbility"/> o <see cref="IDefensiveAbility"/>, cosi' nessun asset va ri-cablato e una
-/// nuova abilita' non puo' dimenticare di configurarla in Inspector.
+/// An ability's intent towards its targets. It is not a serialized flag: an ability declares it by
+/// implementing <see cref="IOffensiveAbility"/> or <see cref="IDefensiveAbility"/>, so no asset has to be
+/// re-wired and a new ability cannot forget to configure it in the Inspector.
 ///
-/// <see cref="Utility"/> e' il default implicito di chi non implementa nessuna delle due: movimento,
-/// spawn, abilita' che non toccano ne' la vita ne' lo stato di un bersaglio.
+/// <see cref="Utility"/> is the implicit default for anything implementing neither: movement, spawning,
+/// abilities that touch neither the health nor the state of a target.
 /// </summary>
 public enum AbilityIntent
 {

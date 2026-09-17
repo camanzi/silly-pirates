@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Pool generica di Component poolable, agnostica rispetto al dominio: sa creare, prestare,
-/// riprendere e contare. Non applica nessuna policy quando e' esaurita — Acquire() ritorna null
-/// e la decisione (rubare, scartare, loggare) resta al consumatore, che puo' ispezionare Active.
+/// A generic pool of poolable Components, agnostic to the domain: it can create, lend, take back and
+/// count. It applies no policy when exhausted — Acquire() returns null and the decision (steal, drop,
+/// log) is left to the consumer, which can inspect Active.
 ///
-/// Gli oggetti restano SEMPRE parentati al root della pool: non vanno mai riparentati su oggetti
-/// di gameplay, altrimenti la loro distruzione rimpicciolirebbe la pool in modo permanente.
+/// Objects stay parented to the pool's root ALWAYS: they must never be reparented onto gameplay objects,
+/// or their destruction would shrink the pool permanently.
 /// </summary>
 public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
 {
@@ -20,7 +20,7 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
 
     private int _totalCount;
 
-    /// <summary>Pool alimentata da un prefab.</summary>
+    /// <summary>A pool fed by a prefab.</summary>
     public ComponentPool(T prefab, Transform root, int prewarm, int maxSize)
     {
         if (prefab == null) throw new ArgumentNullException(nameof(prefab));
@@ -31,7 +31,7 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
         Prewarm(prewarm);
     }
 
-    /// <summary>Pool alimentata da una factory, per oggetti costruiti via codice senza prefab.</summary>
+    /// <summary>A pool fed by a factory, for objects built in code without a prefab.</summary>
     public ComponentPool(Func<T> factory, Transform root, int prewarm, int maxSize)
     {
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
@@ -40,7 +40,7 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
         Prewarm(prewarm);
     }
 
-    /// <summary>Oggetti attualmente prestati. Sola lettura: serve al consumatore per le sue policy.</summary>
+    /// <summary>The objects currently lent out. Read-only: the consumer needs it for its own policies.</summary>
     public IReadOnlyList<T> Active => _active;
 
     public int TotalCount => _totalCount;
@@ -48,13 +48,13 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
     public int ActiveCount => _active.Count;
     public int MaxSize => _maxSize;
 
-    /// <summary>True quando non ci sono oggetti liberi e non se ne possono piu' creare.</summary>
+    /// <summary>True when there are no free objects left and no more can be created.</summary>
     public bool IsExhausted => _free.Count == 0 && _totalCount >= _maxSize;
 
     /// <summary>
-    /// Presta un oggetto libero, creandone uno nuovo se si e' sotto il cap.
-    /// Ritorna null quando la pool e' esaurita: non e' un errore, e' il segnale
-    /// che il chiamante deve applicare la propria policy.
+    /// Lends out a free object, creating a new one while still under the cap.
+    /// It returns null when the pool is exhausted: that is not an error, it is the signal that the caller
+    /// has to apply its own policy.
     /// </summary>
     public T Acquire()
     {
@@ -73,7 +73,7 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
         return instance;
     }
 
-    /// <summary>Restituisce un oggetto alla pool. Idempotente: un secondo Release e' un no-op.</summary>
+    /// <summary>Returns an object to the pool. Idempotent: a second Release is a no-op.</summary>
     public void Release(T instance)
     {
         if (instance == null) return;
@@ -97,14 +97,14 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
         if (instance is T typed) Release(typed);
     }
 
-    /// <summary>Riporta tutti gli oggetti prestati nella pool. Da chiamare in OnDisable del proprietario.</summary>
+    /// <summary>Brings every lent-out object back into the pool. To be called in the owner's OnDisable.</summary>
     public void ReleaseAll()
     {
         for (int i = _active.Count - 1; i >= 0; i--)
             Release(_active[i]);
     }
 
-    /// <summary>Distrugge ogni oggetto creato dalla pool. Da chiamare in OnDestroy del proprietario.</summary>
+    /// <summary>Destroys every object the pool created. To be called in the owner's OnDestroy.</summary>
     public void Clear()
     {
         ReleaseAll();
@@ -114,7 +114,7 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
             T instance = _free[i];
             if (instance == null) continue;
 
-            // Clear() arriva da OnDestroy, che gira anche fuori dal play mode.
+            // Clear() comes from OnDestroy, which also runs outside play mode.
             if (Application.isPlaying) UnityEngine.Object.Destroy(instance.gameObject);
             else UnityEngine.Object.DestroyImmediate(instance.gameObject);
         }
@@ -134,7 +134,7 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
 
             if (candidate != null) return candidate;
 
-            // L'oggetto e' stato distrutto dall'esterno: lo si scarta e si prova il successivo.
+            // The object was destroyed from outside: it is dropped and the next one is tried.
             _totalCount--;
         }
 
@@ -147,7 +147,7 @@ public class ComponentPool<T> : IPoolReleaser where T : Component, IPoolable
 
         if (instance == null)
         {
-            Debug.LogError($"[ComponentPool<{typeof(T).Name}>] La factory ha restituito null.");
+            Debug.LogError($"[ComponentPool<{typeof(T).Name}>] The factory returned null.");
             return null;
         }
 

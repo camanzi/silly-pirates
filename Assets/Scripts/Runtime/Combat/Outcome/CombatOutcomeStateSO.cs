@@ -2,10 +2,10 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Unico punto di verità sull'esito del combattimento corrente. Ricalcata sullo stesso schema di
-/// <see cref="CombatIntroStateSO"/>: setter privati, metodi-verbo, e un solo metodo di reset privato
-/// richiamato sia da OnEnable (caricamento dell'asset in memoria) sia da ResetForNewCombat
-/// (fra uno scarico e l'altro della scena di combattimento in un'architettura multiscena additiva).
+/// The single source of truth for the current combat's outcome. Modelled on the same scheme as
+/// <see cref="CombatIntroStateSO"/>: private setters, verb methods, and one private reset method called
+/// both from OnEnable (when the asset is loaded into memory) and from ResetForNewCombat (between one
+/// unload of the combat scene and the next, in an additive multi-scene architecture).
 /// </summary>
 [CreateAssetMenu(fileName = "CombatOutcomeState", menuName = "Combat/Outcome/Combat Outcome State")]
 public class CombatOutcomeStateSO : ScriptableObject, ICombatSessionResettable
@@ -17,17 +17,17 @@ public class CombatOutcomeStateSO : ScriptableObject, ICombatSessionResettable
 
     private void OnEnable() => ResetOutcome();
 
-    // Simmetrico a CombatIntroStateSO.ResetForNewCombat: se non richiamato esplicitamente qui,
-    // il secondo combattimento della sessione partirebbe già "risolto" perché OnEnable di uno
-    // ScriptableObject scatta una sola volta per sessione di Play/build, non ad ogni scena.
+    // Symmetrical to CombatIntroStateSO.ResetForNewCombat: without being called explicitly here, the
+    // session's second combat would start already "resolved", because a ScriptableObject's OnEnable
+    // fires once per Play/build session and not once per scene.
     public void ResetForNewCombat() => ResetOutcome();
 
     private void ResetOutcome() => Outcome = CombatOutcome.None;
 
     /// <summary>
-    /// Fissa l'esito e notifica i listener (es. il pannello di fine combattimento). No-op se il
-    /// combattimento è già risolto (l'esito non si sovrascrive) o se viene passato None (non è un
-    /// esito valido da risolvere, è lo stato di partenza).
+    /// Fixes the outcome and notifies the listeners (e.g. the end-of-combat panel). A no-op when the
+    /// combat is already resolved (an outcome is never overwritten) or when None is passed in (that is
+    /// not a valid outcome to resolve to, it is the starting state).
     /// </summary>
     public void Resolve(CombatOutcome outcome)
     {

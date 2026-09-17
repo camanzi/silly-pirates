@@ -3,11 +3,10 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// Nasconde la HUD durante la sequenza di intro al combattimento e la fa comparire con un
-/// fade-in quando <see cref="ShowHud"/> viene invocato (tipicamente da un listener su
-/// <c>OnCombatStartedEventChannel</c>). Nelle scene senza sequencer di intro
-/// (<see cref="CombatIntroStateSO.IsIntroActive"/> sempre falso) la HUD resta visibile fin
-/// dal primo frame, senza alcuna regressione.
+/// Hides the HUD during the combat intro sequence and brings it in with a fade when
+/// <see cref="ShowHud"/> is invoked (typically by a listener on <c>OnCombatStartedEventChannel</c>).
+/// In scenes with no intro sequencer (<see cref="CombatIntroStateSO.IsIntroActive"/> always false) the
+/// HUD stays visible from the very first frame, with no regression.
 /// </summary>
 public class HudVisibilityController : MonoBehaviour
 {

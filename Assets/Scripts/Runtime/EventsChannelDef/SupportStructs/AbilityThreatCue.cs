@@ -1,19 +1,19 @@
 using System.Collections.Generic;
 
 /// <summary>
-/// Annuncia che un'abilita' sta per essere eseguita contro dei bersagli, e che l'esecuzione e' finita.
-/// Alzata nei due (soli) punti dove un comando viene messo in coda ed eseguito: ExecutionStateSO per il
-/// giocatore, EnemyTurnDriver per i nemici.
+/// Announces that an ability is about to be executed against some targets, and that the execution is
+/// over. Raised at the two (and only two) places where a command is queued and executed: ExecutionStateSO
+/// for the player, EnemyTurnDriver for the enemies.
 ///
-/// Serve ai bersagli per reagire PRIMA dell'impatto — il danno arriva tardi dentro il comando, dopo il volo
-/// del proiettile — cosa che un HealthBehaviorSO, che vede il colpo solo quando e' gia' arrivato, non puo'
-/// fare. Gemella di AbilityExecutionCue, che porta gli stessi dati alla regia di camera: separata perche'
-/// quella non ha un evento di chiusura e legarsi al director della camera sarebbe un accoppiamento
-/// sbagliato.
+/// It is what lets the targets react BEFORE the impact — the damage lands late inside the command, after
+/// the projectile's flight — something a HealthBehaviorSO, which only sees the hit once it has arrived,
+/// cannot do. The twin of AbilityExecutionCue, which carries the same data to the camera direction: kept
+/// separate because that one has no closing event, and binding to the camera director would be the wrong
+/// coupling.
 /// </summary>
 public struct AbilityThreatCue
 {
-    /// <summary>false = nessuna minaccia in corso: tutti i reattori tornano a riposo.</summary>
+    /// <summary>false = no threat in flight: every reactor goes back to rest.</summary>
     public bool Active;
 
     public AbilityBase Ability;
@@ -21,7 +21,7 @@ public struct AbilityThreatCue
     public IReadOnlyList<ITargettable> Targets;
     public AbilityIntent Intent;
 
-    /// <summary><see cref="DamageType.None"/> se l'abilita' non e' offensiva o non sa dire il proprio elemento.</summary>
+    /// <summary><see cref="DamageType.None"/> when the ability is not offensive or cannot name its own element.</summary>
     public DamageType Element;
 
     public static AbilityThreatCue Begin(AbilityBase ability, IInteractableElement caster,
@@ -41,8 +41,8 @@ public struct AbilityThreatCue
     }
 
     /// <summary>
-    /// Chiusura globale, non per-bersaglio: regge perche' il turn loop e' sequenziale e Execution e' uno
-    /// stato singolo, quindi non esistono due esecuzioni sovrapposte da distinguere.
+    /// A global close, not a per-target one: it holds because the turn loop is sequential and Execution is
+    /// a single state, so there are never two overlapping executions to tell apart.
     /// </summary>
     public static AbilityThreatCue End => default;
 }
