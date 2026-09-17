@@ -13,6 +13,10 @@ public class WorldInteractor : MonoBehaviour
     [Header("Anchors")]
     [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
 
+    [Header("Interaction")]
+    [Tooltip("When a UI element stands in for a world interactable, hover and click are routed to it.")]
+    [SerializeField] private InteractionProxySO _interactionProxy;
+
     private Camera _mainCamera;
     private IClickable _currentHovered;
     private Vector2 _mousePosition;
@@ -46,7 +50,9 @@ public class WorldInteractor : MonoBehaviour
 
     private void HandleClick()
     {
-        if (UIPointerTracker.IsPointerOverUI(_mousePosition)) return;
+        // A click on UI is swallowed, unless that UI is currently proxying a world element: in that case the
+        // click belongs to the proxied element, exactly as if it had been clicked in the world.
+        if (UIPointerTracker.IsPointerOverUI(_mousePosition) && _interactionProxy?.Current == null) return;
 
         _currentHovered?.OnClick();
     }
@@ -61,6 +67,21 @@ public class WorldInteractor : MonoBehaviour
         // With auto-bootstrap the camera can arrive a frame after this component: without the guard,
         // ScreenPointToRay on null blows up every frame until it does.
         if (_mainCamera == null) return;
+
+        // A proxied element wins over both the UI guard and the raycast: the pointer is over the UI by
+        // definition, and the element it stands for may well be off screen.
+        IClickable proxied = _interactionProxy != null ? _interactionProxy.Current : null;
+        if (proxied != null)
+        {
+            if (proxied != _currentHovered)
+            {
+                ResetHover();
+                _currentHovered = proxied;
+                _currentHovered.OnHoverEnter();
+                _hoverChannel?.RaiseEvent(_currentHovered as IInteractableElement);
+            }
+            return;
+        }
 
         if (UIPointerTracker.IsPointerOverUI(_mousePosition))
         {

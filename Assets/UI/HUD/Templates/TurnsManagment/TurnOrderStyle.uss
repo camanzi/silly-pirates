@@ -68,6 +68,11 @@
     overflow: hidden;
 }
 
+.turn-card--highlighted {
+    border-width: 2px;
+    border-color: rgb(255, 255, 255);
+}
+
 .turn-card-wrapper--waiting {
     opacity: 0.9;
     flex-shrink: 0;

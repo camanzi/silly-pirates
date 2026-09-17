@@ -10,6 +10,7 @@ public partial class TurnCard : VisualElement
     private static readonly string USS_CLASS_WAITING = "turn-card-wrapper--waiting";
     private static readonly string USS_CLASS_SUB_TURN = "turn-card-wrapper--sub-turn";
     private static readonly string USS_CLASS_SUB_TURN_AV_LABEL = "av-label--sub-turn";
+    private static readonly string USS_CLASS_HIGHLIGHTED = "turn-card--highlighted";
 
     private VisualElement _cardWrapper;
     private VisualElement _card;
@@ -72,6 +73,17 @@ public partial class TurnCard : VisualElement
     {
         _cardWrapper.style.translate = StyleKeyword.Initial;
         _healthTween.Stop();
+    }
+
+    /// <summary>Draws (or removes) the hover border around the card body.</summary>
+    public void SetHighlighted(bool highlighted)
+    {
+        if (_card == null) return;
+
+        if (highlighted)
+            _card.AddToClassList(USS_CLASS_HIGHLIGHTED);
+        else
+            _card.RemoveFromClassList(USS_CLASS_HIGHLIGHTED);
     }
 
     public void UpdateHealth(float currentHp, float maxHp)

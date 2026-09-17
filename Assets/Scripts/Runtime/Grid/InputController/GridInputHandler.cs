@@ -14,6 +14,10 @@ public class GridInputHandler : MonoBehaviour
     [Header("Anchors")]
     [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
 
+    [Header("Interaction")]
+    [Tooltip("When a UI element stands in for a world interactable, targeting is computed from it.")]
+    [SerializeField] private InteractionProxySO _interactionProxy;
+
     private Vector2 _latestMousePosition;
     private bool _hasMouseMoved;
     private bool _wasClickPressedThisFrame;
@@ -52,6 +56,10 @@ public class GridInputHandler : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Checked before the UI guard below, which would otherwise raise TargetingData.Empty and wipe the
+        // ability preview the very frame the pointer enters the card that declared the proxy.
+        if (TryHandleProxy()) return;
+
         if (IsPointerOverUI())
         {
             _wasClickPressedThisFrame = false;
@@ -79,6 +87,33 @@ public class GridInputHandler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Mirrors the pointer pipeline onto the element a UI card is standing in for.
+    /// Returns true when the proxy is active and LateUpdate has nothing else to do this frame.
+    /// </summary>
+    private bool TryHandleProxy()
+    {
+        IInteractableElement proxied = _interactionProxy != null ? _interactionProxy.Current : null;
+        if (proxied == null) return false;
+
+        TargetingData data = BuildTargetingData(proxied.Transform.position, proxied as ITargettable);
+
+        if (data.cellPosition != _lastHoveredCell)
+        {
+            _hasMouseMoved = false;
+            _lastHoveredCell = data.cellPosition;
+            _onPointerMoved.RaiseEvent(data);
+        }
+
+        if (_wasClickPressedThisFrame)
+        {
+            _onPointerClicked.RaiseEvent(data);
+            _wasClickPressedThisFrame = false;
+        }
+
+        return true;
+    }
+
     private TargetingData CalculateTargetingData()
     {
         Ray ray = _mainCamera.ScreenPointToRay(_latestMousePosition);
@@ -88,28 +123,33 @@ public class GridInputHandler : MonoBehaviour
             if (hit.collider.TryGetComponent(out ITargettable target))
                 finalWorldPos = hit.collider.transform.position;
 
-            Vector3Int cellPos;
-            if (target is GridElement gridElement)
-            {
-                // The authoritative source: it is the very cell the element registers itself with in
-                // GridStateDataSO (GridElement.InitializePosition), so targeting and occupancy cannot
-                // diverge.
-                cellPos = gridElement.gridPosition;
-            }
-            else
-            {
-                cellPos = _grid.WorldToCell(finalWorldPos);
-                // The grid is single-layer (FloorMap only has tiles at z=0), but with a YZX cellSwizzle
-                // and cellSize.z = 1 the cell's Z is the height above the deck: any point hit more than
-                // 1 unit up would produce a Z matching no real cell at all.
-                cellPos.z = 0;
-            }
-
-            bool isValid = _interactableTilemap.HasTile(cellPos);
-
-            return new TargetingData(finalWorldPos, cellPos, isValid, target);
+            return BuildTargetingData(finalWorldPos, target);
         }
         return TargetingData.Empty;
+    }
+
+    private TargetingData BuildTargetingData(Vector3 worldPosition, ITargettable target)
+    {
+        Vector3Int cellPos;
+        if (target is GridElement gridElement)
+        {
+            // The authoritative source: it is the very cell the element registers itself with in
+            // GridStateDataSO (GridElement.InitializePosition), so targeting and occupancy cannot
+            // diverge.
+            cellPos = gridElement.gridPosition;
+        }
+        else
+        {
+            cellPos = _grid.WorldToCell(worldPosition);
+            // The grid is single-layer (FloorMap only has tiles at z=0), but with a YZX cellSwizzle
+            // and cellSize.z = 1 the cell's Z is the height above the deck: any point hit more than
+            // 1 unit up would produce a Z matching no real cell at all.
+            cellPos.z = 0;
+        }
+
+        bool isValid = _interactableTilemap.HasTile(cellPos);
+
+        return new TargetingData(worldPosition, cellPos, isValid, target);
     }
 
     private void OnPointEvent(Vector2 screenPosition)

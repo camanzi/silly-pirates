@@ -11,6 +11,10 @@ public class TurnOrderController : MonoBehaviour
     [Header("UI Templates")]
     [SerializeField] private VisualTreeAsset _turnCardTemplate;
 
+    [Header("Interaction")]
+    [Tooltip("State SO the cards use to declare that they stand in for a world-space interactable.")]
+    [SerializeField] private InteractionProxySO _interactionProxy;
+
     private const float SlideEpsilon = 0.5f;
 
     private UIDocument _uiDocument;
@@ -45,6 +49,10 @@ public class TurnOrderController : MonoBehaviour
     {
         foreach (var stack in _activeStacks)
         {
+            stack.HoverChanged -= HandleStackHoverChanged;
+            // The HUD can go away with the pointer still on a card, and no PointerLeave follows: left set,
+            // the proxy would keep WorldInteractor pinned to that element and deaf to the raycast.
+            if (_interactionProxy != null) _interactionProxy.ClearProxy(stack.Agent as IInteractableElement);
             stack.Unbind();
             stack.RemoveFromHierarchy();
         }
@@ -94,9 +102,14 @@ public class TurnOrderController : MonoBehaviour
 
             TurnCardStack stack;
             if (pool.Remove(group.State.Agent, out stack))
+            {
                 retainedStacks.Add(stack);
+            }
             else
+            {
                 stack = new TurnCardStack();
+                stack.HoverChanged += HandleStackHoverChanged;
+            }
 
             stack.Bind(group.State, group.SubTurnCount, isActive, _turnCardTemplate);
             stack.SetHovered(_hoveredAgent != null && group.State.Agent == _hoveredAgent);
@@ -110,6 +123,10 @@ public class TurnOrderController : MonoBehaviour
         // Anything left unclaimed in the pool no longer exists in the new display list.
         foreach (var leftover in pool.Values)
         {
+            leftover.HoverChanged -= HandleStackHoverChanged;
+            // A card removed from under the pointer gets no PointerLeave: release the proxy by hand, or it
+            // would keep pointing at an agent that has no card left (and may be about to be destroyed).
+            if (_interactionProxy != null) _interactionProxy.ClearProxy(leftover.Agent as IInteractableElement);
             leftover.Unbind();
             leftover.RemoveFromHierarchy();
         }
@@ -131,6 +148,22 @@ public class TurnOrderController : MonoBehaviour
                     stack.PlaySlideFrom(delta);
             }
         }).ExecuteLater(0);
+    }
+
+    // The card only declares the proxy; the white outline on the card itself still comes back through
+    // OnElementHovered, because WorldInteractor raises the hover channel for the proxied element too.
+    // One authority, no race between the two paths.
+    private void HandleStackHoverChanged(TurnCardStack stack, bool hovered)
+    {
+        if (_interactionProxy == null) return;
+
+        var element = stack.Agent as IInteractableElement;
+        if (element == null) return;
+
+        if (hovered)
+            _interactionProxy.SetProxy(element);
+        else
+            _interactionProxy.ClearProxy(element);
     }
 
     public void OnElementHovered(IInteractableElement element)

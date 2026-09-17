@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
@@ -10,8 +11,6 @@ public partial class TurnCardStack : VisualElement
     private static readonly string USS_CLASS_SUB_CARD = "turn-card-stack__sub-card";
 
     private const float SubCardOffsetX = 12f;
-    private const float WobbleAmount = 15f;
-    private const float WobbleDuration = .75f;
     private const float ShakeAmplitude = 20f;
     private const float ShakeDuration = 0.8f;
     private const int ShakeCycles = 4;
@@ -20,16 +19,35 @@ public partial class TurnCardStack : VisualElement
     private TurnCard _mainCard;
     private readonly List<TurnCard> _subCards = new();
 
-    private bool _isHovered;
-    private Tween _wobbleTween;
     private Tween _shakeTween;
     private Tween _slideTween;
 
     public ITurnAgent Agent { get; private set; }
 
+    /// <summary>
+    /// Raised when the pointer enters (true) or leaves (false) this stack. Never raised while the stack is
+    /// unbound, so a pointer event on a pooled, agent-less stack cannot be mistaken for a real hover.
+    /// </summary>
+    public event Action<TurnCardStack, bool> HoverChanged;
+
     public TurnCardStack()
     {
         AddToClassList(USS_CLASS_STACK);
+
+        RegisterCallback<PointerEnterEvent>(OnPointerEnter);
+        RegisterCallback<PointerLeaveEvent>(OnPointerLeave);
+    }
+
+    private void OnPointerEnter(PointerEnterEvent evt)
+    {
+        if (Agent == null) return;
+        HoverChanged?.Invoke(this, true);
+    }
+
+    private void OnPointerLeave(PointerLeaveEvent evt)
+    {
+        if (Agent == null) return;
+        HoverChanged?.Invoke(this, false);
     }
 
     public void Bind(EntityTurnState state, int subTurnCount, bool isActive, VisualTreeAsset cardTemplate)
@@ -104,7 +122,6 @@ public partial class TurnCardStack : VisualElement
 
     public void Unbind()
     {
-        _wobbleTween.Stop();
         _shakeTween.Stop();
         _slideTween.Stop();
 
@@ -134,21 +151,15 @@ public partial class TurnCardStack : VisualElement
 
     public void SetHovered(bool hovered)
     {
-        _isHovered = hovered;
-        if (_shakeTween.isAlive || _slideTween.isAlive) return;
-        _wobbleTween.Stop();
-        style.translate = StyleKeyword.Initial;
-        if (!hovered) return;
-        _wobbleTween = Tween.Custom(this, 0, WobbleAmount, WobbleDuration,
-            (self, v) => self.style.translate = new StyleTranslate(new Translate(0f, v)),
-            cycles: -1, cycleMode: CycleMode.Rewind, ease: Ease.InOutSine);
+        _mainCard?.SetHighlighted(hovered);
+        foreach (var subCard in _subCards)
+            subCard.SetHighlighted(hovered);
     }
 
     public void PlaySlideFrom(float offsetX)
     {
         // Damage shake always wins; let it play out undisturbed.
         if (_shakeTween.isAlive) return;
-        _wobbleTween.Stop();
         _slideTween.Stop();
         style.translate = new StyleTranslate(new Translate(offsetX, 0f));
         _slideTween = Tween.Custom(this, offsetX, 0f, SlideDuration,
@@ -166,13 +177,12 @@ public partial class TurnCardStack : VisualElement
 
     private void PlayDamageShake()
     {
-        // Shake takes priority over both hover-wobble and an in-flight slide.
-        _wobbleTween.Stop();
+        // Shake takes priority over an in-flight slide.
         _slideTween.Stop();
         _shakeTween = Tween.Custom(this, 0f, 1f, ShakeDuration, (self, t) =>
         {
             float shake = Mathf.Sin(t * Mathf.PI * 2f * ShakeCycles) * (1f - t) * ShakeAmplitude;
             self.style.translate = new StyleTranslate(new Translate(shake, 0f));
-        }, ease: Ease.Linear).OnComplete(() => SetHovered(_isHovered));
+        }, ease: Ease.Linear);
     }
 }

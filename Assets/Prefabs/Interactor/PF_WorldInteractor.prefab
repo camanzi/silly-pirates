@@ -65,3 +65,4 @@ MonoBehaviour:
   _maxDistance: 100
   _hoverChannel: {fileID: 11400000, guid: cde277e7880155241b6f11fb52d26ed2, type: 2}
   _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
+  _interactionProxy: {fileID: 11400000, guid: 74134a057afa7bf45a08bb6f7ccbf4e6, type: 2}

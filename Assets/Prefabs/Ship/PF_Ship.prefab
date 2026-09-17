@@ -1663,6 +1663,7 @@ MonoBehaviour:
   _onPointerMoved: {fileID: 11400000, guid: 219bff90088745048890addef74f5d99, type: 2}
   _onPointerClicked: {fileID: 11400000, guid: 1c9e583d899c4a646b407b480d433ce4, type: 2}
   _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
+  _interactionProxy: {fileID: 11400000, guid: 74134a057afa7bf45a08bb6f7ccbf4e6, type: 2}
 --- !u!114 &5797126308011357101
 MonoBehaviour:
   m_ObjectHideFlags: 0

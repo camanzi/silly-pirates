@@ -104,11 +104,27 @@ public class FreeRoamTarget : MonoBehaviour
     {
         if (agent is not MonoBehaviour mono) return;
 
-        // If the elapsed time in seconds is below the timer, do NOT move the camera 
+        // If the elapsed time in seconds is below the timer, do NOT move the camera
         if (Time.time - _lastInputTime < _enableAutomovingTimer) return;
 
+        MoveTo(mono.transform);
+    }
+
+    /// <summary>
+    /// Centers on the agent unconditionally: unlike the automatic turn-start move, an explicit click always
+    /// wins, even right after the player panned the camera.
+    /// </summary>
+    public void FocusOnAgent(ITurnAgent agent)
+    {
+        if (agent is not MonoBehaviour mono) return;
+
+        MoveTo(mono.transform);
+    }
+
+    private void MoveTo(Transform target)
+    {
         _cameraMoveTween.Stop();
-        _cameraMoveTween = Tween.Position(transform, mono.transform.position, duration: _interpolationDuration, ease: _interpolationCurve);
+        _cameraMoveTween = Tween.Position(transform, target.position, duration: _interpolationDuration, ease: _interpolationCurve);
     }
 
     #region MOVEMENT & ROTATION

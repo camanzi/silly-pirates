@@ -6,6 +6,10 @@ public class IdleStateSO : CombatStateSO
     [SerializeField] private CombatStateSO _targetingStateTemplate;
     [SerializeField] private CombatStateSO _executionStateTemplate;
 
+    [Header("Event Channels")]
+    [Tooltip("Raised when a turn agent is clicked, so the camera centers on it.")]
+    [SerializeField] private TurnAgentEventChannel _focusCameraChannel;
+
     private AbilityBase _armedAbility;
     private InteractableGridElement _armedCaster;
     private object _armedCache;
@@ -57,6 +61,10 @@ public class IdleStateSO : CombatStateSO
 
     public override void HandleElementClick(IInteractableElement element)
     {
+        // Before the early return: clicking a character centers the camera on it even when the active
+        // character has no armed ability.
+        if (element is ITurnAgent agent) _focusCameraChannel?.RaiseEvent(agent);
+
         if (_armedAbility == null) return;
 
         if (element is ITargettable targettable)
