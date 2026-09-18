@@ -8,7 +8,6 @@ public class FreeRoamTarget : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float acceleration = 5f;
-    [SerializeField] private float deceleration = 8f;
 
     [Header("Rotation Settings")]
     [SerializeField] private bool enableRotation = true;
@@ -160,7 +159,7 @@ public class FreeRoamTarget : MonoBehaviour
         }
         else
         {
-            _currentVelocity = Vector3.MoveTowards(_currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+            _currentVelocity = Vector3.zero;
         }
     }
 
