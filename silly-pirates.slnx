@@ -1,7 +1,7 @@
 ﻿<Solution>
   <Project Path="SillyPirates.Runtime.csproj" />
-  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="SillyPirates.Tests.EditMode.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="SillyPirates.Tests.PlayMode.csproj" />
   <Project Path="PrimeTween.Installer.csproj" />
 </Solution>

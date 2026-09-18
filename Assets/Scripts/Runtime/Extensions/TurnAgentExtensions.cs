@@ -17,6 +17,8 @@ public static class TurnAgentExtensions
 
     public static void EmitProximityCheck(this ITurnAgent element, ProximityPayload payload)
     {
-        element.ProximityChannel.RaiseEvent(payload);
+        // Null-conditional like the three raises above: an agent with no proximity channel assigned is a
+        // wiring gap, not a reason to throw in the middle of a turn.
+        element.ProximityChannel?.RaiseEvent(payload);
     }
 }

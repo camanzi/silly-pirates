@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace SillyPirates.Tests.EditMode
+namespace SillyPirates.Tests.EditMode.Utils
 {
     /// <summary>
     /// Smoke coverage for the EditMode test pipeline, on the purest logic in the project.

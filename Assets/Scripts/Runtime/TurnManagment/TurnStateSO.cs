@@ -5,7 +5,9 @@ using UnityEngine;
 public class TurnStateSO : ScriptableObject, ICombatSessionResettable
 {
     [SerializeField] private TurnAgentEventChannel _onAgentActivated;
-    public TurnAgentEventChannel OnAgentActivated => _onAgentActivated;
+    // internal setter (test seam): the raise is null-conditional, so without a channel a test cannot
+    // observe NotifyAgentActivated at all.
+    public TurnAgentEventChannel OnAgentActivated { get => _onAgentActivated; internal set => _onAgentActivated = value; }
 
     public ITurnAgent ActiveAgent => _activeAgent;
     public bool IsPlayerTurn => _isPlayerTurn;
@@ -29,7 +31,19 @@ public class TurnStateSO : ScriptableObject, ICombatSessionResettable
 
     public void SignalTurnEnd() => _turnTaskSource?.SetResult();
 
-    public async Awaitable WaitUntilTurnFinished() => await _turnTaskSource.Awaitable;
+    /// <summary>
+    /// Awaits the end of the active turn.
+    /// Fails fast rather than NullReferencing: awaiting with no active turn is always a caller bug
+    /// (the turn loop asked to wait before SetActiveCharacter, or after Clear()/ResetForNewCombat()),
+    /// and the bare NRE this used to throw pointed at this line instead of at the caller.
+    /// </summary>
+    public async Awaitable WaitUntilTurnFinished()
+    {
+        if (_turnTaskSource == null)
+            throw new InvalidOperationException("No active turn: SetActiveCharacter was never called, or Clear() ran.");
+
+        await _turnTaskSource.Awaitable;
+    }
 
     // It used to clear only _activeAgent. _currentActionIndex survived the reset and was read by
     // TurnOrderController.RebuildDisplayList holding the previous combat's value; _turnTaskSource and

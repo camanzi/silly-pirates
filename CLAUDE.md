@@ -106,6 +106,26 @@ Unity Test Framework 1.6.0, run from the open Editor via MCP. There is no CI.
 Both test assemblies carry `"defineConstraints": ["UNITY_INCLUDE_TESTS"]` — that is what keeps them out of
 game builds. Never drop it.
 
+**Layout:** inside `Assets/Tests/EditMode/` the folders **mirror `Assets/Scripts/Runtime/`**, so a test sits at
+the same relative path as the class it covers — `Runtime/Grid/PathFinding/PathFindingUtils.cs` is tested by
+`Tests/EditMode/Grid/PathFinding/PathFindingUtilsTests.cs`. Folders exist today for `Utils/`, `Grid/PathFinding/`,
+`Grid/Data/`, `Combat/Abilities/Shapes/`, `Combat/Turn/`, `TurnManagment/` and `Extensions/`; add the mirroring
+folder rather than dropping a file at the root. The one exception is `Tests/EditMode/TestSupport/`, which mirrors
+nothing because it holds shared fakes and fixtures (`ScriptableObjectFixture`, `FakeTurnAgent`,
+`TurnAgentDataBuilder`, `TestGrid`, `PathAssert`, `FakeCommand`, `AwaitableTestUtils`) — a new test starts by
+looking there before writing its own helper.
+
+**Namespaces follow the folders**, so the Test Runner tree mirrors the layout instead of listing every fixture
+flat: `Tests/EditMode/Grid/PathFinding/` is `namespace SillyPirates.Tests.EditMode.Grid.PathFinding`. The
+exception is `TestSupport/`, which stays in the **parent** namespace `SillyPirates.Tests.EditMode` on purpose —
+C# searches enclosing namespaces, so every nested fixture reaches the shared fakes with no `using`. Put a new
+helper anywhere deeper and every test that wants it needs an import.
+
+Subfolders and namespaces are organisational only: the asmdef sits at the root of each test assembly and covers
+everything beneath it, so moving a file changes nothing about compilation. Moving one **does** mean moving its
+`.meta` too, or Unity reassigns the GUID. `InternalsVisibleTo` names the *assembly*, not the namespace, and is
+unaffected.
+
 **Running:** `mcp__UnityMCP__run_tests(mode: "EditMode")` returns a `job_id`; poll it with
 `mcp__UnityMCP__get_test_job(job_id, wait_timeout: 60, include_failed_tests: true)`. PlayMode needs
 `init_timeout: 120000` (domain reload). A job orphaned by a domain reload blocks later runs — clear it with
@@ -208,5 +228,7 @@ Project-specific agents are in `.claude/agents/` — invoke with `@<name>` in th
 - New event channels: create a typed subclass of `GenericEventChannelSO<T>` and matching listener.
 - Grid positions use the `Vector2Int` offset coordinate system (odd-row offset for hex).
 - New scripts go under `Assets/Scripts/Runtime/` — anything outside it lands in a different assembly and will not be visible to the game.
-- Tests for new systems go in `Assets/Tests/EditMode/`, named `<ClassUnderTest>Tests.cs`; hand the work to `@qa-engineer`.
+- Tests for new systems go in `Assets/Tests/EditMode/`, named `<ClassUnderTest>Tests.cs`, in a subfolder
+  **mirroring the class's path under `Assets/Scripts/Runtime/`** (`Grid/PathFinding/PathFindingUtilsTests.cs`
+  for `Runtime/Grid/PathFinding/PathFindingUtils.cs`); hand the work to `@qa-engineer`.
 - Code comments, XML doc comments, and Inspector strings (`[Tooltip]`, `[Header]`) are written in English; identifiers and USS names already are.

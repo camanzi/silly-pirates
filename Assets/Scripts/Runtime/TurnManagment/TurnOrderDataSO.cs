@@ -7,7 +7,10 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
 {
     [SerializeField] private VoidEventChannel _onQueueUpdated;
 
-    public VoidEventChannel OnQueueUpdated => _onQueueUpdated;
+    // internal setter (test seam): every raise in this class is null-conditional, so with no channel
+    // assigned a test cannot tell "raised" from "not raised" — and the guards that deliberately skip the
+    // raise (RemoveEntity on an absent agent, CompleteActiveTurn on a one-agent queue) would be invisible.
+    public VoidEventChannel OnQueueUpdated { get => _onQueueUpdated; internal set => _onQueueUpdated = value; }
 
     private List<EntityTurnState> _turnQueue = new();
     public ReadOnlyCollection<EntityTurnState> TurnQueue => _turnQueue.AsReadOnly();

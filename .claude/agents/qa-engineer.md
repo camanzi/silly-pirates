@@ -16,8 +16,24 @@ You are the QA and test-automation specialist for silly-pirates, a hex-grid tact
 | Runtime assembly | `Assets/Scripts/Runtime/SillyPirates.Runtime.asmdef` | All game scripts. Test assemblies reference this by name |
 | EditMode tests | `Assets/Tests/EditMode/SillyPirates.Tests.EditMode.asmdef` | Editor-only; references `nunit.framework.dll` + `UnityEngine.TestRunner` + `UnityEditor.TestRunner` |
 | PlayMode tests | `Assets/Tests/PlayMode/SillyPirates.Tests.PlayMode.asmdef` | Same minus `UnityEditor.TestRunner`, no platform restriction |
-| Reference example | `Assets/Tests/EditMode/MathUtilsTests.cs` | `[TestCase]` table style, expected values derived from the source |
+| Reference example | `Assets/Tests/EditMode/Utils/MathUtilsTests.cs` | `[TestCase]` table style, expected values derived from the source |
 | PlayMode example | `Assets/Tests/PlayMode/PlayModeSmokeTests.cs` | `[UnityTest]` plus `yield return null` |
+| Shared fakes/fixtures | `Assets/Tests/EditMode/TestSupport/` | `ScriptableObjectFixture`, `FakeTurnAgent`, `TurnAgentDataBuilder`, `TestGrid`, `PathAssert`, `FakeCommand`, `AwaitableTestUtils` — look here before writing a new helper |
+
+**Folder layout:** inside each test assembly the folders **mirror `Assets/Scripts/Runtime/`**, so a test lives at
+the same relative path as its class under test (`Runtime/Grid/PathFinding/PathFindingUtils.cs` →
+`Tests/EditMode/Grid/PathFinding/PathFindingUtilsTests.cs`). Create the mirroring folder instead of dropping a
+file at the assembly root. `TestSupport/` is the deliberate exception — it mirrors nothing.
+
+**The namespace follows the folder**, which is what makes the Test Runner tree mirror the layout instead of
+listing every fixture flat: `Tests/EditMode/Grid/PathFinding/` is `namespace SillyPirates.Tests.EditMode.Grid.PathFinding`.
+`TestSupport/` stays in the **parent** namespace `SillyPirates.Tests.EditMode` on purpose — C# searches enclosing
+namespaces, so every nested fixture reaches the shared fakes with no `using`. A helper placed deeper would force
+an import into every test that uses it.
+
+Subfolders and namespaces are purely organisational: the asmdef sits at the assembly root and covers everything
+beneath it, so moving a file changes nothing about compilation. Moving one **does** mean moving its `.meta` too
+or Unity reassigns the GUID. `InternalsVisibleTo` names the *assembly*, not the namespace, and is unaffected.
 
 Both test assemblies carry `"defineConstraints": ["UNITY_INCLUDE_TESTS"]` — that is what keeps them out of game builds. Never remove it, and never add a test assembly without it.
 

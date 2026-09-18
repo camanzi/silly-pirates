@@ -28,11 +28,14 @@ public class TurnAgentDataSO : ScriptableObject
     [SerializeField] private bool _randomizeInitialAV;
 
     public int InitialAgility => _initialAgility;
-    public int MaxActionPointsPerTurn => _maxActionPointsPerTurn;
+    // internal setter (test seam): the field is private + [SerializeField], so a test has no other way to
+    // build an agent data asset in memory. Never set from game code.
+    public int MaxActionPointsPerTurn { get => _maxActionPointsPerTurn; internal set => _maxActionPointsPerTurn = value; }
     public int MaxMovementPoints => _maxMovementPoints;
     public int InteractionRange => _interactionRange;
     public float MaxHp => _maxHp;
     public int ActionsPerTurn => _actionsPerTurn;
     public int BaseEvasion => _baseEvasion;
-    public bool RandomizeInitialAV => _randomizeInitialAV;
+    // internal setter (test seam): see MaxActionPointsPerTurn above.
+    public bool RandomizeInitialAV { get => _randomizeInitialAV; internal set => _randomizeInitialAV = value; }
 }
