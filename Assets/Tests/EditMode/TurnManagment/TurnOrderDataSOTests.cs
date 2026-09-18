@@ -433,5 +433,176 @@ namespace SillyPirates.Tests.EditMode.TurnManagment
 
             Assert.That(_queueUpdatedCount, Is.EqualTo(0));
         }
+
+        // ------------------------------------------------- agility changes moving an agent in the queue
+        //
+        // This is the production path end to end, minus the two links that are not C#: a passive changes the
+        // agent's EffectiveAgility, HandlePassivesChanged turns that into an AV delta, and the delta reaches
+        // AdjustAgentAV. The delta is computed here with StatUtils.BaseAVDelta — the very call the characters
+        // make — so these tests exercise the real arithmetic rather than a restated copy of it.
+        //
+        // Note the game never calls UpdateAgentAV: it nudges by a delta, it does not recompute the countdown.
+
+        /// <summary>
+        /// Agilities 200 / 100 / 80 give AVs 50 / 100 / 125. Halving the middle agent's agility costs it a
+        /// full extra base turn (delta 200 - 100 = +100), taking it to 200 and behind everyone.
+        /// </summary>
+        [Test]
+        public void AdjustAgentAV_AgentSlowedByAnAgilityLoss_FallsToTheBackOfTheQueue()
+        {
+            FakeTurnAgent fast = Agent(200, "fast");     // AV 50
+            FakeTurnAgent middle = Agent(100, "middle"); // AV 100
+            FakeTurnAgent slow = Agent(80, "slow");      // AV 125
+            _turnOrder.AddEntity(fast);
+            _turnOrder.AddEntity(middle);
+            _turnOrder.AddEntity(slow);
+
+            float delta = StatUtils.BaseAVDelta(oldAgility: 100, newAgility: 50);
+            middle.EffectiveAgility = 50; // the passive is live before the delta is emitted
+            _turnOrder.AdjustAgentAV(middle, delta);
+
+            Assert.That(_turnOrder.TurnQueue[0].Agent, Is.SameAs(fast));
+            Assert.That(_turnOrder.TurnQueue[1].Agent, Is.SameAs(slow));
+            Assert.That(_turnOrder.TurnQueue[2].Agent, Is.SameAs(middle));
+            Assert.That(_turnOrder.TurnQueue[2].CurrentAV, Is.EqualTo(200f).Within(Tolerance));
+        }
+
+        /// <summary>
+        /// The mirror case. Agilities 250 / 100 / 80 give AVs 40 / 100 / 125; quadrupling the middle agent's
+        /// agility refunds it 75 AV (25 - 100), taking it to 25 and past the previous leader.
+        /// </summary>
+        [Test]
+        public void AdjustAgentAV_AgentSpedUpByAnAgilityGain_MovesToTheFrontOfTheQueue()
+        {
+            FakeTurnAgent fast = Agent(250, "fast");     // AV 40
+            FakeTurnAgent middle = Agent(100, "middle"); // AV 100
+            FakeTurnAgent slow = Agent(80, "slow");      // AV 125
+            _turnOrder.AddEntity(fast);
+            _turnOrder.AddEntity(middle);
+            _turnOrder.AddEntity(slow);
+
+            float delta = StatUtils.BaseAVDelta(oldAgility: 100, newAgility: 400);
+            middle.EffectiveAgility = 400;
+            _turnOrder.AdjustAgentAV(middle, delta);
+
+            Assert.That(_turnOrder.TurnQueue[0].Agent, Is.SameAs(middle));
+            Assert.That(_turnOrder.TurnQueue[0].CurrentAV, Is.EqualTo(25f).Within(Tolerance));
+            Assert.That(_turnOrder.TurnQueue[1].Agent, Is.SameAs(fast));
+        }
+
+        /// <summary>
+        /// The guard against declaring victory on a reshuffle that happens for any reason: a penalty that does
+        /// not close the gap must leave the order exactly as it was. 100 -> 80 costs 25 AV, and the agent
+        /// behind sits 100 AV away.
+        /// </summary>
+        [Test]
+        public void AdjustAgentAV_SlowTooSmallToCloseTheGap_LeavesTheOrderUnchanged()
+        {
+            FakeTurnAgent fast = Agent(200, "fast");     // AV 50
+            FakeTurnAgent middle = Agent(100, "middle"); // AV 100
+            FakeTurnAgent slow = Agent(50, "slow");      // AV 200
+            _turnOrder.AddEntity(fast);
+            _turnOrder.AddEntity(middle);
+            _turnOrder.AddEntity(slow);
+
+            float delta = StatUtils.BaseAVDelta(oldAgility: 100, newAgility: 80);
+            middle.EffectiveAgility = 80;
+            _turnOrder.AdjustAgentAV(middle, delta);
+
+            Assert.That(_turnOrder.TurnQueue[0].Agent, Is.SameAs(fast));
+            Assert.That(_turnOrder.TurnQueue[1].Agent, Is.SameAs(middle));
+            Assert.That(_turnOrder.TurnQueue[2].Agent, Is.SameAs(slow));
+            Assert.That(_turnOrder.TurnQueue[1].CurrentAV, Is.EqualTo(125f).Within(Tolerance));
+        }
+
+        /// <summary>
+        /// The delta is sized on FULL base AVs but added to a countdown that has already partly elapsed, so
+        /// the shift is not proportional to how close the agent was to acting.
+        ///
+        /// AVs 50 / 100 / 250; StartActiveTurn charges 50 to everyone, leaving the middle agent at 50 — half a
+        /// turn away. Halving its agility then costs it the full 100, not the 50 a proportional penalty would
+        /// have cost, landing it at 150.
+        /// </summary>
+        [Test]
+        public void AdjustAgentAV_AfterStartActiveTurn_ShiftsByTheFullDeltaNotAProportionalOne()
+        {
+            FakeTurnAgent active = Agent(200, "active");   // AV 50
+            FakeTurnAgent middle = Agent(100, "middle");   // AV 100
+            FakeTurnAgent last = Agent(40, "last");        // AV 250
+            _turnOrder.AddEntity(active);
+            _turnOrder.AddEntity(middle);
+            _turnOrder.AddEntity(last);
+
+            _turnOrder.StartActiveTurn();
+            Assert.That(_turnOrder.TurnQueue[1].CurrentAV, Is.EqualTo(50f).Within(Tolerance),
+                "Precondition: the middle agent is half a turn from acting.");
+
+            float delta = StatUtils.BaseAVDelta(oldAgility: 100, newAgility: 50);
+            middle.EffectiveAgility = 50;
+            _turnOrder.AdjustAgentAV(middle, delta);
+
+            Assert.That(_turnOrder.TurnQueue[1].Agent, Is.SameAs(middle));
+            Assert.That(_turnOrder.TurnQueue[1].CurrentAV, Is.EqualTo(150f).Within(Tolerance));
+        }
+
+        /// <summary>
+        /// Slowing the agent whose turn is running does nothing to the queue: StartActiveTurn parks the head
+        /// at 0 and AdjustAgentAV refuses to touch an agent at 0, so no effect can reshuffle the order from
+        /// under the agent that is acting. The new agility is not lost though — CompleteActiveTurn recomputes
+        /// the AV from scratch and picks it up then.
+        /// </summary>
+        [Test]
+        public void AdjustAgentAV_ActiveAgentSlowed_IsDeferredUntilCompleteActiveTurn()
+        {
+            FakeTurnAgent active = Agent(200, "active");  // AV 50
+            FakeTurnAgent other = Agent(100, "other");    // AV 100
+            _turnOrder.AddEntity(active);
+            _turnOrder.AddEntity(other);
+            _turnOrder.StartActiveTurn();
+            _queueUpdatedCount = 0;
+
+            float delta = StatUtils.BaseAVDelta(oldAgility: 200, newAgility: 50);
+            active.EffectiveAgility = 50;
+            _turnOrder.AdjustAgentAV(active, delta);
+
+            Assert.That(_turnOrder.TurnQueue[0].Agent, Is.SameAs(active), "The slow must not reorder mid-turn.");
+            Assert.That(_turnOrder.TurnQueue[0].CurrentAV, Is.EqualTo(0f).Within(Tolerance));
+            Assert.That(_queueUpdatedCount, Is.EqualTo(0));
+
+            _turnOrder.CompleteActiveTurn();
+
+            Assert.That(_turnOrder.TurnQueue[1].Agent, Is.SameAs(active));
+            Assert.That(_turnOrder.TurnQueue[1].CurrentAV, Is.EqualTo(200f).Within(Tolerance),
+                "CompleteActiveTurn recomputes the base AV, so the new agility lands here.");
+        }
+
+        /// <summary>
+        /// The order AddPassive produces when an elemental shield breaks: OnEquip runs first — and that is
+        /// where ShieldBreakSlowPassiveSO calls SendToBack — then OnPassivesChanged emits the agility delta.
+        /// The delta stacks on top of the banishment instead of undoing it, so the agent stays last. This is
+        /// why the shipped asset keeps its penalty at zero: the drop to the back is meant to be the whole
+        /// punishment.
+        /// </summary>
+        [Test]
+        public void SendToBack_FollowedByAnAgilityPenalty_LeavesTheAgentLast()
+        {
+            FakeTurnAgent broken = Agent(200, "broken");  // AV 50
+            FakeTurnAgent second = Agent(100, "second");  // AV 100
+            FakeTurnAgent third = Agent(80, "third");     // AV 125
+            _turnOrder.AddEntity(broken);
+            _turnOrder.AddEntity(second);
+            _turnOrder.AddEntity(third);
+
+            _turnOrder.SendToBack(broken);
+            Assert.That(_turnOrder.TurnQueue[2].Agent, Is.SameAs(broken), "Precondition: SendToBack ran first.");
+            Assert.That(_turnOrder.TurnQueue[2].CurrentAV, Is.EqualTo(175f).Within(Tolerance)); // 125 + 50
+
+            float delta = StatUtils.BaseAVDelta(oldAgility: 200, newAgility: 100);
+            broken.EffectiveAgility = 100;
+            _turnOrder.AdjustAgentAV(broken, delta);
+
+            Assert.That(_turnOrder.TurnQueue[2].Agent, Is.SameAs(broken));
+            Assert.That(_turnOrder.TurnQueue[2].CurrentAV, Is.EqualTo(225f).Within(Tolerance)); // 175 + 50
+        }
     }
 }

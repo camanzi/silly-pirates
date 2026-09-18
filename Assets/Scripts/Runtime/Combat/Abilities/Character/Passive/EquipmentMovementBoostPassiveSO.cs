@@ -50,7 +50,9 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
     private void OnEquipmentAwakened()
     {
         _awakenedThisTurn = true;
-        if (_stacks < 3) _stacks++;
+        // MaxStacks, not a second hardcoded 3: the HUD reads the property, so a literal here would let the
+        // displayed cap and the enforced cap drift apart.
+        if (_stacks < MaxStacks) _stacks++;
         OnStateUpdated?.Invoke();
     }
 

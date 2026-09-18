@@ -23,6 +23,13 @@ public class SlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobalTurnEn
     public int CurrentStacks => _stacks;
     public int MaxStacks => int.MaxValue;
 
+    // Test seams: the configs above are private + [SerializeField] with no other way to build an instance in
+    // memory, and _isExpired is otherwise only observable by triggering the removal it guards.
+    internal int FlatPenalty { get => _flatPenalty; set => _flatPenalty = value; }
+    internal float PercentPenalty { get => _percentPenalty; set => _percentPenalty = value; }
+    internal int DurationInTurns { get => _durationInTurns; set => _durationInTurns = value; }
+    internal bool IsExpired => _isExpired;
+
     public event Action OnStateUpdated;
 
     event Action IPassiveStateNotifier.OnStateChanged

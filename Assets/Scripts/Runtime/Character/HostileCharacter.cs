@@ -70,17 +70,10 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     {
         get
         {
-            if (_passiveAbilityController == null) return AgentData.InitialAgility;
-            int totalFlat = 0;
-            float totalPct = 0f;
-            _passiveAbilityController.GetModifiers(_agilityModifiers);
-            foreach (var m in _agilityModifiers)
-            {
-                totalFlat += m.GetFlatAgilityBonus();
-                totalPct  += m.GetPercentageAgilityBonus();
-            }
-            float modified = (AgentData.InitialAgility + totalFlat) * (1f + totalPct / 100f);
-            return Mathf.Max(1, Mathf.RoundToInt(modified));
+            if (_passiveAbilityController != null) _passiveAbilityController.GetModifiers(_agilityModifiers);
+            else _agilityModifiers.Clear();
+
+            return StatUtils.EvaluateAgility(AgentData.InitialAgility, _agilityModifiers);
         }
     }
 
@@ -88,12 +81,10 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     {
         get
         {
-            if (_passiveAbilityController == null) return AgentData.BaseEvasion;
-            int total = 0;
-            _passiveAbilityController.GetModifiers(_evasionModifiers);
-            for (int i = 0; i < _evasionModifiers.Count; i++)
-                total += _evasionModifiers[i].GetEvasionBonus();
-            return AgentData.BaseEvasion + total;
+            if (_passiveAbilityController != null) _passiveAbilityController.GetModifiers(_evasionModifiers);
+            else _evasionModifiers.Clear();
+
+            return StatUtils.EvaluateEvasion(AgentData.BaseEvasion, _evasionModifiers);
         }
     }
 
@@ -167,9 +158,8 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     {
         int newAgility = EffectiveAgility;
         if (newAgility == _lastKnownEffectiveAgility) return;
-        float oldBaseAV = 10000f / Mathf.Max(1, _lastKnownEffectiveAgility);
-        float newBaseAV = 10000f / Mathf.Max(1, newAgility);
-        _onAgilityChangedChannel?.RaiseEvent(new AgentAVDeltaPayload { Agent = this, AVDelta = newBaseAV - oldBaseAV });
+        float avDelta = StatUtils.BaseAVDelta(_lastKnownEffectiveAgility, newAgility);
+        _onAgilityChangedChannel?.RaiseEvent(new AgentAVDeltaPayload { Agent = this, AVDelta = avDelta });
         _lastKnownEffectiveAgility = newAgility;
     }
 

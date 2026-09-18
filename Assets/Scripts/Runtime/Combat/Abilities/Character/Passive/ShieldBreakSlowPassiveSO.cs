@@ -33,6 +33,13 @@ public class ShieldBreakSlowPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnG
     private int _turnCount;
     private bool _isExpired;
 
+    // Test seams: see SlowPassiveSO. Note OnEquip here dereferences the controller (GetComponent), so a test
+    // configures the penalties directly instead of equipping.
+    internal int FlatPenalty { get => _flatPenalty; set => _flatPenalty = value; }
+    internal float PercentPenalty { get => _percentPenalty; set => _percentPenalty = value; }
+    internal int DurationInTurns { get => _durationInTurns; set => _durationInTurns = value; }
+    internal bool IsExpired => _isExpired;
+
     public override void OnEquip(PassiveAbilityController controller)
     {
         _controller = controller;

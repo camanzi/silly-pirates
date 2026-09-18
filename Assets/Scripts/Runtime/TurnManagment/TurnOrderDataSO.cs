@@ -157,11 +157,7 @@ public class TurnOrderDataSO : ScriptableObject, ICombatSessionResettable
         _onQueueUpdated?.RaiseEvent();
     }
 
-    private float CalculateBaseAV(ITurnAgent a)
-    {
-        float speed = Mathf.Max(1, a.EffectiveAgility);
-        return 10_000f / speed;
-    }
+    private float CalculateBaseAV(ITurnAgent a) => StatUtils.BaseAV(a.EffectiveAgility);
 
     private void SortQueue()
     {

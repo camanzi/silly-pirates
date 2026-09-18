@@ -19,6 +19,13 @@ public class SpeedBoostPassiveSO : PassiveAbilitySO, IAgilityModifier, IOnGlobal
 
     public static bool IsActiveOn(HostileCharacter hostile) => _activeTargets.Contains(hostile);
 
+    // Test seams: see SlowPassiveSO. Note OnEquip here dereferences the controller (TryGetComponent), so a
+    // test configures the bonuses directly instead of equipping.
+    internal int FlatBonus { get => _flatBonus; set => _flatBonus = value; }
+    internal float PercentBonus { get => _percentBonus; set => _percentBonus = value; }
+    internal int DurationInTurns { get => _durationInTurns; set => _durationInTurns = value; }
+    internal bool IsExpired => _isExpired;
+
     private PassiveAbilityController _controller;
     private int _turnCount;
     private bool _isExpired;

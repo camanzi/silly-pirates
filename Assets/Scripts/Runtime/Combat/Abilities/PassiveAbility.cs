@@ -15,7 +15,9 @@ public abstract class PassiveAbilitySO : ScriptableObject
     [SerializeField, TextArea(2, 5)] private string _description;
 
     public virtual string DisplayName => _displayName;
-    public PassiveRemovalTiming RemovalTiming => _removalTiming;
+    // internal setter (test seam): expiry behaviour branches on this, and the AnyTurn default is the one
+    // branch that needs a live controller, so a test has to be able to pick a different timing.
+    public PassiveRemovalTiming RemovalTiming { get => _removalTiming; internal set => _removalTiming = value; }
     public PassiveReapplyFeedback ReapplyFeedback => _reapplyFeedback;
     public virtual Sprite Icon => _icon;
     public virtual string Description => _description;
