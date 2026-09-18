@@ -19,6 +19,10 @@ public class FreeRoamTarget : MonoBehaviour
     [Header("Anchors")]
     [SerializeField] private MainCameraAnchorSO _mainCameraAnchor;
 
+    [Header("Pause")]
+    [Tooltip("Optional: while paused the camera stops reading input. Leave empty in scenes with no pause menu")]
+    [SerializeField] private PauseStateSO _pauseState;
+
     [Header("Automoving Camera configs")]
     [SerializeField] private Ease _interpolationCurve;
     
@@ -92,6 +96,10 @@ public class FreeRoamTarget : MonoBehaviour
 
     private void Update()
     {
+        // The pan is already still at timeScale 0 (it is driven by Time.deltaTime), but the input would
+        // keep being read and accumulated: on resume the camera would jump.
+        if (IsPaused) return;
+
         HandleInput();
         UpdateMovement();
         UpdateRotation();
@@ -190,8 +198,13 @@ public class FreeRoamTarget : MonoBehaviour
         transform.rotation = targetRotation;
     }
     #endregion
+    private bool IsPaused => _pauseState != null && _pauseState.IsPaused;
+
     private void OnToggleTactical(InputAction.CallbackContext ctx)
     {
+        // The action stays enabled while paused: the callback still fires, so it is filtered here.
+        if (IsPaused) return;
+
         if (_isTacticalViewActive)
         {
             disableTacticalViewEventChannel.RaiseEvent();

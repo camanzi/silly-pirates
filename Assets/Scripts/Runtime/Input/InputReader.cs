@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
@@ -8,6 +8,10 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IPl
     public event UnityAction<Vector2> PointEvent = delegate { };
     public event UnityAction ClickStartedEvent = delegate { };
     public event UnityAction RightClickEvent = delegate { };
+
+    /// <summary>Raised by the Player/Pause action (Escape, gamepad Start). The pause menu owns the
+    /// decision of what it means: this reader only reports the press.</summary>
+    public event UnityAction PauseEvent = delegate { };
 
     private GameInput _gameInput;
 
@@ -61,4 +65,11 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IPl
 
     public void OnMoveCamera(InputAction.CallbackContext context) { }
     public void OnTacticalView(InputAction.CallbackContext context) { }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        // 'performed' only: the generated wrapper also forwards started/canceled, which would make a
+        // single key press toggle the pause three times.
+        if (context.performed) PauseEvent?.Invoke();
+    }
 }

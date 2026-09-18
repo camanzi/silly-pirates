@@ -9,9 +9,9 @@ using UnityEngine.InputSystem;
 /// It exists mostly for DEFEAT, which is otherwise untestable: there is no way to get the whole crew
 /// killed through normal play.
 ///
-/// Like <see cref="ReturnToMenuDebugTrigger"/> it reads the keyboard directly instead of going through
-/// InputReader: this is scaffolding destined to disappear, and adding two actions to GameInput for
-/// something that will be removed would leave orphaned actions behind.
+/// It reads the keyboard directly instead of going through InputReader: this is scaffolding destined to
+/// disappear, and adding two actions to GameInput for something that will be removed would leave
+/// orphaned actions behind.
 /// </summary>
 public class KillTeamDebugTrigger : MonoBehaviour
 {

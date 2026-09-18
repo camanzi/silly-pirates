@@ -152,9 +152,6 @@ MonoBehaviour:
   _document: {fileID: 392516012}
   _visibilityChannel: {fileID: 11400000, guid: 1fb638cdac1b4664696b438ec5c9a5c0, type: 2}
   _fadeDuration: 0.25
-  _dotIntervalMs: 1000
-  _quillBobAmplitude: 6
-  _quillBobPeriod: 1.6
 --- !u!114 &392516012
 MonoBehaviour:
   m_ObjectHideFlags: 0

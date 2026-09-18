@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
+using UnityEngine.Audio;
 
 /// <summary>
 /// The scene's audio director: it listens to the cue channels and plays sounds using a pool of
@@ -19,6 +20,13 @@ public class AudioDirector : MonoBehaviour
     [SerializeField] private SfxCueEventChannel _sfxChannel;
     [SerializeField] private LoopSfxStartEventChannel _loopStartChannel;
     [SerializeField] private LoopSfxStopEventChannel _loopStopChannel;
+
+    [Header("Pause")]
+    [SerializeField] private PauseStateSO _pauseState;
+    [Tooltip("Assign the 'Music' group of the MasterMixer: music keeps playing while paused, everything " +
+             "else is suspended. Music goes through this same voice pool, so the group is the only way " +
+             "to tell it apart from SFX and ambience")]
+    [SerializeField] private AudioMixerGroup _musicGroup;
 
     [Header("Pool")]
     [Tooltip("Voices created at start-up")]
@@ -59,6 +67,8 @@ public class AudioDirector : MonoBehaviour
         if (_sfxChannel != null) _sfxChannel.OnEventRaised += HandleSfxCue;
         if (_loopStartChannel != null) _loopStartChannel.OnEventRaised += HandleLoopStart;
         if (_loopStopChannel != null) _loopStopChannel.OnEventRaised += HandleLoopStop;
+
+        if (_pauseState != null) _pauseState.OnPauseChanged += HandlePauseChanged;
     }
 
     private void OnDisable()
@@ -66,6 +76,8 @@ public class AudioDirector : MonoBehaviour
         if (_sfxChannel != null) _sfxChannel.OnEventRaised -= HandleSfxCue;
         if (_loopStartChannel != null) _loopStartChannel.OnEventRaised -= HandleLoopStart;
         if (_loopStopChannel != null) _loopStopChannel.OnEventRaised -= HandleLoopStop;
+
+        if (_pauseState != null) _pauseState.OnPauseChanged -= HandlePauseChanged;
 
         // The channels are SO assets that outlive the scene: the cleanup has to be complete.
         StopEverything();
@@ -75,6 +87,12 @@ public class AudioDirector : MonoBehaviour
 
     private void LateUpdate()
     {
+        // While paused a suspended AudioSource reports isPlaying == false, which the recycling check
+        // below reads as "the clip is over": without this guard every one-shot in flight would be
+        // returned to the pool during the pause and would never resume. Skipping the whole pass costs
+        // nothing — at timeScale 0 no follow target moves either.
+        if (_pauseState != null && _pauseState.IsPaused) return;
+
         // LateUpdate and not Update: PrimeTween moves the visuals in Update, so the position has to be
         // copied afterwards.
         if (_followers.Count == 0) return;
@@ -104,6 +122,30 @@ public class AudioDirector : MonoBehaviour
                 _followers.RemoveAt(i);
                 ReleaseVoice(voice);
             }
+        }
+    }
+
+    /// <summary>
+    /// Suspends SFX and ambience for the duration of the pause, music excluded. Pause/UnPause and not
+    /// Stop/Play: a one-shot has to resume from where it was cut, not restart.
+    /// </summary>
+    private void HandlePauseChanged(bool paused)
+    {
+        // A cue can arrive before the first EnsureVoicePool, so the pool may not exist yet.
+        if (_voices == null) return;
+
+        IReadOnlyList<AudioVoice> active = _voices.Active;
+
+        for (int i = 0; i < active.Count; i++)
+        {
+            AudioVoice voice = active[i];
+            if (voice == null || !voice.IsInUse || voice.Sound == null) continue;
+
+            // Music is identified by its mixer group: MusicDirector borrows the very same voice pool.
+            if (voice.Sound.MixerGroup == _musicGroup) continue;
+
+            if (paused) voice.Source.Pause();
+            else voice.Source.UnPause();
         }
     }
 

@@ -1,0 +1,142 @@
+/* The in-combat pause menu. Lives in the combat scene, on a PanelSettings at sortingOrder 75:
+   above the HUD (10) and above the end-of-combat panel (50), so it can never be drawn underneath
+   either, and below the loading overlay (100), which has to be able to cover it once a restart or
+   a return-to-menu transition starts.
+
+   Unlike the end-of-combat backdrop this one is denser (0.65): the game behind it is frozen at
+   timeScale 0, so the scene is context, not something the player is still reading.
+
+   Two rules carried over from CombatEndPanel.uss, both load-bearing:
+   - hide with 'display: none', NEVER with 'opacity: 0' alone. A transparent but still drawn element
+     stays pickable and would eat clicks on the world for the whole combat.
+   - the buttons are '.pause-button', not '.menu-button'. The main menu's MainMenu.uss hard-codes
+     'position: absolute' and 'font-size: 96px' on '.menu-button', so loading that sheet here would
+     blow the layout apart.
+
+   The hover/active transitions are USS, not tweens, on purpose: UI Toolkit transitions run on panel
+   time rather than Time.time, so they keep animating while the game is paused. */
+
+.pause-root {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.65);
+    align-items: center;
+    justify-content: center;
+    /* See the header: display, not opacity, or the panel keeps swallowing clicks while "hidden". */
+    display: none;
+    opacity: 0;
+}
+
+.pause-panel {
+    align-items: center;
+    justify-content: center;
+    padding-top: 36px;
+    padding-bottom: 36px;
+    padding-left: 56px;
+    padding-right: 56px;
+}
+
+.pause-title {
+    color: rgb(255, 69, 61);
+    font-size: 68px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    white-space: nowrap;
+    margin-bottom: 44px;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(251, 68, 60, 0.686);
+    text-shadow: -5px 10px 0 rgb(0, 0, 0);
+    -unity-font-definition: url("project://database/Assets/Fonts/Jaini-Regular.ttf?fileID=12800000&guid=f87297ce785d8694c9876678ba95904d&type=3#Jaini-Regular");
+}
+
+.pause-buttons {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.pause-button {
+    min-width: 300px;
+    height: 58px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 22px;
+    color: rgb(236, 240, 248);
+    background-color: rgba(255, 69, 61, 0.184);
+    border-color: rgb(255, 69, 61);
+    border-width: 2px;
+    border-radius: 8px;
+    -unity-font-definition: url("project://database/Assets/Fonts/Tektur-VariableFont_wdth,wght.ttf?fileID=12800000&guid=e781eecbbec6f9a42ad1f7250c665308&type=3#Tektur-VariableFont_wdth,wght");
+    transition-property: background-color, scale;
+    transition-duration: 0.12s;
+}
+
+.pause-button:hover {
+    background-color: rgba(255, 69, 61, 0.365);
+    scale: 1.03 1.03;
+}
+
+.pause-button:active {
+    scale: 0.98 0.98;
+}
+
+/* Disabled is styled explicitly because the buttons are switched off on click to block a double
+   request: without it a dead button would look identical to a live one. */
+.pause-button:disabled {
+    opacity: 0.4;
+}
+
+/* The destructive choice inside the confirmation popup: filled instead of outlined, so the two
+   answers are not two identical rectangles. */
+.pause-button--danger {
+    background-color: rgba(255, 69, 61, 0.45);
+    -unity-font-style: bold;
+}
+
+.pause-button--danger:hover {
+    background-color: rgba(255, 69, 61, 0.65);
+}
+
+.pause-confirm {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.55);
+    align-items: center;
+    justify-content: center;
+    /* Same rule as the root: hidden means not drawn, otherwise it would cover the menu it is
+       supposed to sit on top of only when asked. */
+    display: none;
+}
+
+.pause-confirm-panel {
+    align-items: center;
+    justify-content: center;
+    max-width: 760px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: rgba(10, 12, 18, 0.95);
+    border-color: rgb(255, 69, 61);
+    border-width: 2px;
+    border-radius: 12px;
+}
+
+.pause-confirm-text {
+    color: rgb(236, 240, 248);
+    font-size: 24px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-bottom: 28px;
+    -unity-font-definition: url("project://database/Assets/Fonts/Tektur-VariableFont_wdth,wght.ttf?fileID=12800000&guid=e781eecbbec6f9a42ad1f7250c665308&type=3#Tektur-VariableFont_wdth,wght");
+}
+
+.pause-confirm-buttons {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}

@@ -54,6 +54,7 @@ MonoBehaviour:
   enableTacticalViewEventChannel: {fileID: 11400000, guid: 9e7eec016bf71a649b66b2c0381ecaaa, type: 2}
   disableTacticalViewEventChannel: {fileID: 11400000, guid: fc780932b78f00c448d696a01aa1fbcb, type: 2}
   _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
+  _pauseState: {fileID: 11400000, guid: 2b8f41c76d0e4a24b93c57e1f8a6d420, type: 2}
   _interpolationCurve: 1
   _interpolationDuration: 0.5
   _enableAutomovingTimer: 10

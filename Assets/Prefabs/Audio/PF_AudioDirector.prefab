@@ -47,5 +47,7 @@ MonoBehaviour:
   _sfxChannel: {fileID: 11400000, guid: b24a8181c961291499aa268fceeb8766, type: 2}
   _loopStartChannel: {fileID: 11400000, guid: 1d7d68f798de6dc44a13ec7d9d46078c, type: 2}
   _loopStopChannel: {fileID: 11400000, guid: 007d90b919c5cfe469942f7968aa27fe, type: 2}
+  _pauseState: {fileID: 11400000, guid: 2b8f41c76d0e4a24b93c57e1f8a6d420, type: 2}
+  _musicGroup: {fileID: -8314899308197078640, guid: 76b3ca51739b2b64380bbee8e09eb33a, type: 2}
   _prewarmSize: 12
   _maxPoolSize: 24

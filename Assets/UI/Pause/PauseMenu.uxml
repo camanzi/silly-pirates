@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Pause/PauseMenu.uss"/>
+    <ui:VisualElement name="pause-root" class="pause-root">
+        <ui:VisualElement name="pause-panel" class="pause-panel">
+            <ui:Label name="pause-title" picking-mode="Ignore" text="Paused" class="pause-title"/>
+            <ui:VisualElement name="pause-buttons" class="pause-buttons">
+                <ui:Button name="pause-resume" text="Resume" class="pause-button"/>
+                <ui:Button name="pause-restart" text="Restart" class="pause-button"/>
+                <ui:Button name="pause-menu" text="Return to Main Menu" class="pause-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="pause-confirm" class="pause-confirm">
+            <ui:VisualElement name="pause-confirm-panel" class="pause-confirm-panel">
+                <ui:Label name="pause-confirm-text" picking-mode="Ignore" text="Restart the battle? All progress in this fight will be lost." class="pause-confirm-text"/>
+                <ui:VisualElement name="pause-confirm-buttons" class="pause-confirm-buttons">
+                    <ui:Button name="pause-confirm-yes" text="Restart" class="pause-button pause-button--danger"/>
+                    <ui:Button name="pause-confirm-no" text="Cancel" class="pause-button"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

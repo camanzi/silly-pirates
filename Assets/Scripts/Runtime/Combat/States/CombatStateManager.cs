@@ -16,6 +16,8 @@ public class CombatStateManager : MonoBehaviour
     [SerializeField] private SfxCueEventChannel _sfxChannel;
     [Tooltip("Announces to the targets that an ability is about to hit them, and when the execution is over")]
     [SerializeField] private AbilityThreatEventChannel _threatChannel;
+    [Tooltip("Optional: while paused no input reaches the state machine. Leave empty in scenes with no pause menu")]
+    [SerializeField] private PauseStateSO _pauseState;
 
     [Header("State Settings")]
     [SerializeField] private CombatStateSO _initialState;
@@ -115,6 +117,11 @@ public class CombatStateManager : MonoBehaviour
 
     private bool CanProcessInput()
     {
+        // Clicks on the world are already swallowed by the pause menu's full-screen pickable root
+        // (WorldInteractor and GridInputHandler consult UIPointerTracker.IsPointerOverUI first). This
+        // guard makes the intent explicit and covers the paths that are not pointer-driven.
+        if (_pauseState != null && _pauseState.IsPaused) return false;
+
         return Time.frameCount > _lastTransitionFrame;
     }
 
