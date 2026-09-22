@@ -55,6 +55,7 @@ MonoBehaviour:
   _mainCameraAnchor: {fileID: 11400000, guid: 7d4ca4ac43db4874da3697f91ecfcc59, type: 2}
   _pauseState: {fileID: 11400000, guid: 2b8f41c76d0e4a24b93c57e1f8a6d420, type: 2}
   _directorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
+  _turnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _interpolationCurve: 1
   _interpolationDuration: 0.5
   _recenterDeadzone: 1.5

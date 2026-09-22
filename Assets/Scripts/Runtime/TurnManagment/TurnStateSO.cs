@@ -11,6 +11,14 @@ public class TurnStateSO : ScriptableObject, ICombatSessionResettable
 
     public ITurnAgent ActiveAgent => _activeAgent;
     public bool IsPlayerTurn => _isPlayerTurn;
+
+    /// <summary>
+    /// True while a non-player agent holds the turn. Deliberately not the same as !IsPlayerTurn: that one is
+    /// also true with no turn running at all — _isPlayerTurn starts false and Clear() puts it back — so a
+    /// caller gating on it would treat the moments before the first turn, and after a return to the menu, as
+    /// an enemy's turn.
+    /// </summary>
+    public bool IsEnemyTurn => _activeAgent != null && !_isPlayerTurn;
     private ITurnAgent _activeAgent;
     private AwaitableCompletionSource _turnTaskSource;
     private bool _isPlayerTurn = false;

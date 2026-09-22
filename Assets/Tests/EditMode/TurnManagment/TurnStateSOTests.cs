@@ -46,6 +46,47 @@ namespace SillyPirates.Tests.EditMode.TurnManagment
             Assert.That(_turnState.IsPlayerTurn, Is.False);
         }
 
+        /// <summary>
+        /// IsEnemyTurn gates the camera pan, so the case that matters most is the one where there is no turn
+        /// at all: !IsPlayerTurn would be true there and would leave the player unable to pan before the first
+        /// turn has even started.
+        /// </summary>
+        [Test]
+        public void IsEnemyTurn_FreshInstance_IsFalse()
+        {
+            Assert.That(_turnState.IsEnemyTurn, Is.False);
+        }
+
+        [Test]
+        public void IsEnemyTurn_PlayerTaggedAgent_IsFalse()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Player" });
+
+            Assert.That(_turnState.IsEnemyTurn, Is.False);
+        }
+
+        [Test]
+        public void IsEnemyTurn_NonPlayerAgent_IsTrue()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Enemy" });
+
+            Assert.That(_turnState.IsEnemyTurn, Is.True);
+        }
+
+        /// <summary>
+        /// The return-to-menu path: the combat is torn down while an enemy holds the turn. Without the reset
+        /// the next combat would come up with the pan locked and no turn left to unlock it.
+        /// </summary>
+        [Test]
+        public void IsEnemyTurn_AfterResetForNewCombat_IsFalse()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Enemy" });
+
+            _turnState.ResetForNewCombat();
+
+            Assert.That(_turnState.IsEnemyTurn, Is.False);
+        }
+
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(2)]

@@ -29,6 +29,11 @@ public class FreeRoamTarget : MonoBehaviour
              "scenes with no camera direction")]
     [SerializeField] private CameraDirectorStateSO _directorState;
 
+    [Header("Turn")]
+    [Tooltip("Optional: while a non-player agent holds the turn the target cannot be panned. Leave empty " +
+             "in scenes with no turn system")]
+    [SerializeField] private TurnStateSO _turnState;
+
     [Header("Automoving Camera configs")]
     [SerializeField] private Ease _interpolationCurve;
     
@@ -107,7 +112,7 @@ public class FreeRoamTarget : MonoBehaviour
         // keep being read and accumulated: on resume the camera would jump. The velocity is dropped rather
         // than frozen for the same reason: whatever was built up on the last live frame must not be picked
         // back up when control returns.
-        if (IsInputSuspended)
+        if (IsPanSuspended)
         {
             _currentVelocity = Vector3.zero;
             return;
@@ -223,7 +228,20 @@ public class FreeRoamTarget : MonoBehaviour
 
     private bool IsCinematic => _directorState != null && _directorState.IsCinematicActive;
 
+    private bool IsEnemyTurn => _turnState != null && _turnState.IsEnemyTurn;
+
+    /// <summary>
+    /// Every camera input. A pause or a cue means the player is not meant to be driving anything.
+    /// </summary>
     private bool IsInputSuspended => IsPaused || IsCinematic;
+
+    /// <summary>
+    /// The pan only, which is suspended in one more case than the rest: an enemy's turn. The two levels are
+    /// deliberately not the same — most of an enemy's turn is dead time (a second of delay, then the behavior
+    /// tree), and the tactical view is all the player has to read the board while waiting. Moving the target
+    /// under the AI is what has to stop, not looking around.
+    /// </summary>
+    private bool IsPanSuspended => IsInputSuspended || IsEnemyTurn;
 
     private void OnToggleTactical(InputAction.CallbackContext ctx)
     {
