@@ -23,17 +23,24 @@ public class FreeRoamTarget : MonoBehaviour
     [Tooltip("Optional: while paused the camera stops reading input. Leave empty in scenes with no pause menu")]
     [SerializeField] private PauseStateSO _pauseState;
 
+    [Header("Cinematics")]
+    [Tooltip("Optional: while the director is framing an ability the camera stops reading input, so the " +
+             "target cannot be dragged away behind a shot the player is not looking through. Leave empty in " +
+             "scenes with no camera direction")]
+    [SerializeField] private CameraDirectorStateSO _directorState;
+
     [Header("Automoving Camera configs")]
     [SerializeField] private Ease _interpolationCurve;
     
     [Min(0.2f)]
     [SerializeField] private float _interpolationDuration;
     
-    [Tooltip("After this timer passed, Camera starts moving automatically on change turn (S)")]
-    [Min(1f)]
-    [SerializeField] private float _enableAutomovingTimer = 1f;
-
-    private float _lastInputTime = float.NegativeInfinity;
+    [Tooltip("The turn-start recentering is skipped when the target is already this close (world units, " +
+             "Y ignored) to the activating agent. This is the anti-nausea guard: an agent with several " +
+             "actions per turn re-raises the activation event for each one, and without it the camera would " +
+             "tween back and forth between them")]
+    [Min(0f)]
+    [SerializeField] private float _recenterDeadzone = 1.5f;
 
     private Transform _cameraTransform;
     
@@ -97,8 +104,14 @@ public class FreeRoamTarget : MonoBehaviour
     private void Update()
     {
         // The pan is already still at timeScale 0 (it is driven by Time.deltaTime), but the input would
-        // keep being read and accumulated: on resume the camera would jump.
-        if (IsPaused) return;
+        // keep being read and accumulated: on resume the camera would jump. The velocity is dropped rather
+        // than frozen for the same reason: whatever was built up on the last live frame must not be picked
+        // back up when control returns.
+        if (IsInputSuspended)
+        {
+            _currentVelocity = Vector3.zero;
+            return;
+        }
 
         HandleInput();
         UpdateMovement();
@@ -111,15 +124,26 @@ public class FreeRoamTarget : MonoBehaviour
     {
         if (agent is not MonoBehaviour mono) return;
 
-        // If the elapsed time in seconds is below the timer, do NOT move the camera
-        if (Time.time - _lastInputTime < _enableAutomovingTimer) return;
+        // Already on the agent: nothing to do. This is what keeps an agent with several actions per turn from
+        // making the camera bounce — TurnController raises the activation event once per action index, not
+        // once per turn. A character that MOVED between two abilities is past the deadzone, so it is still
+        // followed.
+        if (IsWithinDeadzone(mono.transform.position)) return;
 
         MoveTo(mono.transform);
     }
 
+    // Planar: the target rides at y = 1 while the agents stand on the floor, so a 3D distance would never
+    // fall inside the deadzone.
+    private bool IsWithinDeadzone(Vector3 position)
+    {
+        Vector2 delta = new(position.x - transform.position.x, position.z - transform.position.z);
+        return delta.sqrMagnitude <= _recenterDeadzone * _recenterDeadzone;
+    }
+
     /// <summary>
     /// Centers on the agent unconditionally: unlike the automatic turn-start move, an explicit click always
-    /// wins, even right after the player panned the camera.
+    /// wins, so it is not subject to the deadzone.
     /// </summary>
     public void FocusOnAgent(ITurnAgent agent)
     {
@@ -141,10 +165,7 @@ public class FreeRoamTarget : MonoBehaviour
         _moveInputVector = _moveCameraAction.ReadValue<Vector2>();
 
         if (_moveInputVector.magnitude > 1f)
-        {
             _moveInputVector = _moveInputVector.normalized;
-            _lastInputTime = Time.time;
-        }
     }
 
     private void UpdateMovement()
@@ -200,10 +221,14 @@ public class FreeRoamTarget : MonoBehaviour
     #endregion
     private bool IsPaused => _pauseState != null && _pauseState.IsPaused;
 
+    private bool IsCinematic => _directorState != null && _directorState.IsCinematicActive;
+
+    private bool IsInputSuspended => IsPaused || IsCinematic;
+
     private void OnToggleTactical(InputAction.CallbackContext ctx)
     {
-        // The action stays enabled while paused: the callback still fires, so it is filtered here.
-        if (IsPaused) return;
+        // The action stays enabled while suspended: the callback still fires, so it is filtered here.
+        if (IsInputSuspended) return;
 
         if (_isTacticalViewActive)
         {

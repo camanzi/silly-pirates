@@ -45,7 +45,18 @@ public class EnemyTurnDriver : MonoBehaviour
         }
         finally
         {
-            _cameraDirectorState?.EndFocus();
+            // Released only on the LAST action of the turn. An enemy with several actions per turn would
+            // otherwise have the action camera switched off and straight back on between them, which reads as
+            // the shot bouncing to the enemy and away again twice. Holding it means the next cue only reframes
+            // — the same thing the intermediate beats inside a single command already do.
+            // TurnController raises a second, unconditional EndFocus after the action loop, so a turn cut
+            // short (the enemy dies mid-turn) still releases the camera.
+            // Null-guarded and defaulting to "release": this runs in a finally, so a missing reference must
+            // neither strand the action camera on nor throw over whatever exception brought us here.
+            bool hasMoreActions = _currentTurnStateData != null && _hostile != null
+                                  && _currentTurnStateData.CurrentActionIndex + 1 < _hostile.AgentData.ActionsPerTurn;
+            if (!hasMoreActions) _cameraDirectorState?.EndFocus();
+
             _threatChannel?.RaiseEvent(AbilityThreatCue.End);
 
             await Awaitable.WaitForSecondsAsync(.5f, token);

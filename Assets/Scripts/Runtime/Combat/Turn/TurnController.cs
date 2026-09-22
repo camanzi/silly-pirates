@@ -16,6 +16,10 @@ public class TurnController : MonoBehaviour
     [Tooltip("When assigned, the game loop waits on the intro sequence's gate before starting. Leave empty in scenes with no intro.")]
     [SerializeField] private CombatIntroStateSO _introState;
 
+    [Header("Camera Direction")]
+    [Tooltip("When assigned, the action camera is released here at the end of every agent's turn. This is the safety net behind EnemyTurnDriver holding the shot across an agent's several actions: leave empty in scenes with no camera direction and the release adds no behaviour at all.")]
+    [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
+
     [Header("Combat Outcome")]
     [Tooltip("When assigned, the game loop stops starting new turns once the combat is resolved. Leave empty in scenes with no outcome: the gate then adds no behaviour at all.")]
     [SerializeField] private CombatOutcomeStateSO _outcomeState;
@@ -89,6 +93,15 @@ public class TurnController : MonoBehaviour
                 }
 
                 nextEntity.OnEndingTurn();
+
+                // The turn is over however it ended, so the action camera must be free. EnemyTurnDriver only
+                // releases on what it believes to be the agent's last action; when the loop is cut short
+                // instead (the agent died or left the queue, the break above) nobody else would, and the
+                // camera would stay on the enemy with the player's pan input locked out. Calling it twice in
+                // the normal case is harmless: EndFocus just re-asserts IsFocused, and CameraDirector ignores
+                // the release when no cue is active.
+                _cameraDirectorState?.EndFocus();
+
                 _onAnyTurnEnded?.RaiseEvent(nextEntity);
                 if (agentStillActive)
                     _turnOrderData.CompleteActiveTurn();
