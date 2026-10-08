@@ -3,140 +3,134 @@
    either, and below the loading overlay (100), which has to be able to cover it once a restart or
    a return-to-menu transition starts.
 
-   Unlike the end-of-combat backdrop this one is denser (0.65): the game behind it is frozen at
-   timeScale 0, so the scene is context, not something the player is still reading.
+   Unlike the end-of-combat screen this one does NOT cover the game with parchment: the frozen
+   scene stays visible behind a light veil, and only a torn sheet sits in the middle. The veil is
+   there to separate the sheet from a busy background, not to hide the game.
 
-   Two rules carried over from CombatEndPanel.uss, both load-bearing:
+   The font, the MenuButton reset/underline and the quill come from STL_Menu.uss, included before
+   this sheet. Coordinates are those of the Figma "Pause menu" canvas (1920x1080); font sizes were
+   measured on its export (cap heights), not copied from the main menu.
+
+   Rules that are load-bearing:
    - hide with 'display: none', NEVER with 'opacity: 0' alone. A transparent but still drawn element
      stays pickable and would eat clicks on the world for the whole combat.
-   - the buttons are '.pause-button', not '.menu-button'. The main menu's MainMenu.uss hard-codes
-     'position: absolute' and 'font-size: 96px' on '.menu-button', so loading that sheet here would
-     blow the layout apart.
-
-   The hover/active transitions are USS, not tweens, on purpose: UI Toolkit transitions run on panel
-   time rather than Time.time, so they keep animating while the game is paused. */
+   - nothing here animates on scaled time: the pause sets Time.timeScale to 0. The fades and the
+     quill/underline tweens all run with useUnscaledTime in C#, and there are no USS transitions
+     left that would need it. */
 
 .pause-root {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.65);
-    align-items: center;
-    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.35);
+    overflow: hidden;
     /* See the header: display, not opacity, or the panel keeps swallowing clicks while "hidden". */
     display: none;
     opacity: 0;
 }
 
-.pause-panel {
-    align-items: center;
-    justify-content: center;
-    padding-top: 36px;
-    padding-bottom: 36px;
-    padding-left: 56px;
-    padding-right: 56px;
-}
-
-.pause-title {
-    color: rgb(255, 69, 61);
-    font-size: 68px;
-    -unity-text-align: middle-center;
-    -unity-font-style: bold;
-    white-space: nowrap;
-    margin-bottom: 44px;
-    -unity-text-outline-width: 2px;
-    -unity-text-outline-color: rgba(251, 68, 60, 0.686);
-    text-shadow: -5px 10px 0 rgb(0, 0, 0);
-    -unity-font-definition: url("project://database/Assets/Fonts/Jaini-Regular.ttf?fileID=12800000&guid=f87297ce785d8694c9876678ba95904d&type=3#Jaini-Regular");
-}
-
-.pause-buttons {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.pause-button {
-    min-width: 300px;
-    height: 58px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    margin-left: 10px;
-    margin-right: 10px;
-    font-size: 22px;
-    color: rgb(236, 240, 248);
-    background-color: rgba(255, 69, 61, 0.184);
-    border-color: rgb(255, 69, 61);
-    border-width: 2px;
-    border-radius: 8px;
-    -unity-font-definition: url("project://database/Assets/Fonts/Tektur-VariableFont_wdth,wght.ttf?fileID=12800000&guid=e781eecbbec6f9a42ad1f7250c665308&type=3#Tektur-VariableFont_wdth,wght");
-    transition-property: background-color, scale;
-    transition-duration: 0.12s;
-}
-
-.pause-button:hover {
-    background-color: rgba(255, 69, 61, 0.365);
-    scale: 1.03 1.03;
-}
-
-.pause-button:active {
-    scale: 0.98 0.98;
-}
-
-/* Disabled is styled explicitly because the buttons are switched off on click to block a double
-   request: without it a dead button would look identical to a live one. */
-.pause-button:disabled {
-    opacity: 0.4;
-}
-
-/* The destructive choice inside the confirmation popup: filled instead of outlined, so the two
-   answers are not two identical rectangles. */
-.pause-button--danger {
-    background-color: rgba(255, 69, 61, 0.45);
-    -unity-font-style: bold;
-}
-
-.pause-button--danger:hover {
-    background-color: rgba(255, 69, 61, 0.65);
-}
-
-.pause-confirm {
+/* Same centring technique as .parchment-stage in STL_Menu.uss, minus the background: the game is
+   meant to show through everywhere except the sheet. */
+.pause-stage {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.55);
-    align-items: center;
-    justify-content: center;
-    /* Same rule as the root: hidden means not drawn, otherwise it would cover the menu it is
-       supposed to sit on top of only when asked. */
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 1920px;
+    height: 1080px;
+    flex-shrink: 0;
+}
+
+/* The torn sheet: a full-height 1286x1080 export whose visible paper spans roughly x 511-1412 of
+   the stage. The PNG is NPOT and imported with nPOTScale 0, otherwise Unity would rescale it to a
+   power of two and the paper would shift inside this box. */
+.pause-frame {
+    position: absolute;
+    left: 285px;
+    top: 0;
+    width: 1286px;
+    height: 1080px;
+    background-image: url("project://database/Assets/Imports/2D/UI Icons/Pause/pause_frame.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+/* A page covers just the visible paper, so every coordinate below is sheet-relative and the
+   entries centre on the sheet rather than on the screen (the two differ by ~1px here, but the
+   sheet is what the eye reads). The two pages overlap exactly: the confirmation REPLACES the
+   entries on the same sheet. */
+.pause-page {
+    position: absolute;
+    left: 511px;
+    top: 0;
+    width: 901px;
+    height: 1080px;
+}
+
+/* Hidden by default; PauseMenuController toggles display, same rule as the root. */
+.pause-confirm {
     display: none;
 }
 
-.pause-confirm-panel {
-    align-items: center;
-    justify-content: center;
-    max-width: 760px;
-    padding-top: 32px;
-    padding-bottom: 32px;
-    padding-left: 40px;
-    padding-right: 40px;
-    background-color: rgba(10, 12, 18, 0.95);
-    border-color: rgb(255, 69, 61);
-    border-width: 2px;
-    border-radius: 12px;
+/* Centred on y ~300, as in the mockup. */
+.pause-title {
+    position: absolute;
+    left: 0;
+    top: 240px;
+    width: 100%;
+    height: 120px;
+    margin: 0;
+    padding: 0;
+    font-size: 96px;
+    color: rgb(0, 0, 0);
+    -unity-text-align: middle-center;
+    white-space: nowrap;
 }
 
+/* Fits on two lines inside the paper; replaces the title's slot while the question is asked. */
 .pause-confirm-text {
-    color: rgb(236, 240, 248);
-    font-size: 24px;
+    position: absolute;
+    left: 110px;
+    top: 250px;
+    width: 681px;
+    height: 220px;
+    margin: 0;
+    padding: 0;
+    font-size: 64px;
+    color: rgb(0, 0, 0);
     -unity-text-align: middle-center;
     white-space: normal;
-    margin-bottom: 28px;
-    -unity-font-definition: url("project://database/Assets/Fonts/Tektur-VariableFont_wdth,wght.ttf?fileID=12800000&guid=e781eecbbec6f9a42ad1f7250c665308&type=3#Tektur-VariableFont_wdth,wght");
 }
 
-.pause-confirm-buttons {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+/* The box is the hover/click surface and is wider than the longest entry ("Return to main menu"
+   measures ~415px at this size); the text is centred in it, and the underline and quill anchor to
+   the text, not to this box. */
+.pause-entry {
+    position: absolute;
+    left: 150px;
+    width: 600px;
+    height: 60px;
+    font-size: 72px;
+}
+
+/* Row centres from the mockup: ~505, ~620, ~737. The confirmation's two answers reuse rows 2 and 3. */
+.pause-entry--1 { top: 475px; }
+.pause-entry--2 { top: 590px; }
+.pause-entry--3 { top: 707px; }
+
+/* left/top are only the pre-layout start: SelectionMarker.MoveTo overwrites both. The height is
+   the row's, so the quill below can be centred on it. */
+.pause-marker {
+    left: 150px;
+    top: 475px;
+    height: 60px;
+}
+
+/* Smaller than the main menu's 128px quill, as in the mockup (the entries are smaller too).
+   left: the 112px quill has ~16px of transparent margin on its right at this size, so -136px
+   leaves a visible gap of ~40px to the text. top: (60 - 112) / 2 centres it on the row. */
+.pause-marker .selection-marker__quill {
+    left: -136px;
+    top: -26px;
+    width: 112px;
+    height: 112px;
 }

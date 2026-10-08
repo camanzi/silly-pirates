@@ -74,8 +74,8 @@ MonoBehaviour:
   _retryRequested: {fileID: 11400000, guid: b1cdf997ea3138e48a7c0dd056c43825, type: 2}
   _returnToMenuRequested: {fileID: 11400000, guid: fe533df7f7408f540b555134f12b2680, type: 2}
   _fadeDuration: 0.35
-  _victoryText: Hunt completed
-  _defeatText: Defeat
+  _victoryText: Hunt Completed!
+  _defeatText: Hunt Failed
 --- !u!114 &2254672368717574320
 MonoBehaviour:
   m_ObjectHideFlags: 0

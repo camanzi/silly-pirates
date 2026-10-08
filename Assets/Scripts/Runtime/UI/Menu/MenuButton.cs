@@ -146,12 +146,23 @@ public partial class MenuButton : Button
     /// </summary>
     private void PlaceUnderline()
     {
-        float textWidth = MeasureTextWidth();
         float thickness = _underline.resolvedStyle.height > 0f ? _underline.resolvedStyle.height : 3f;
 
-        _underline.style.left = (contentRect.width - textWidth) * 0.5f;
+        _underline.style.left = TextLeft;
         _underline.style.top = contentRect.height - thickness;
     }
+
+    /// <summary>
+    /// Left edge of the rendered TEXT, in this button's own local coordinates (the text is centred
+    /// in the box, so this is half the slack between box and glyphs). Negative when the glyphs
+    /// overflow a box narrower than they are, which is legitimate: it is still where the text starts.
+    ///
+    /// Public because the underline is not the only thing anchored to the text: the
+    /// <see cref="SelectionMarker"/> quill parks itself at this same edge, so the two signals can
+    /// never disagree about where an entry's text begins. Only meaningful after a resolved layout,
+    /// same caveat as <see cref="MeasureTextWidth"/>: before that it collapses to zero.
+    /// </summary>
+    public float TextLeft => (contentRect.width - MeasureTextWidth()) * 0.5f;
 
     /// <summary>
     /// Before the font is resolved, measuring returns zero/NaN; falling back to the content rect

@@ -1,10 +1,24 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <!-- STL_Menu first: font, full-bleed root, parchment stage, MenuButton reset/underline and the
+         quill are shared with the main menu. CombatEndPanel.uss only carries coordinates. -->
+    <Style src="project://database/Assets/UI/Shared/STL_Menu.uss"/>
     <Style src="project://database/Assets/UI/CombatEnd/CombatEndPanel.uss"/>
-    <ui:VisualElement name="combat-end-root" class="combat-end-root">
-        <ui:Label name="combat-end-title" picking-mode="Ignore" text="Victory" class="combat-end-title"/>
-        <ui:VisualElement name="combat-end-buttons" class="combat-end-buttons">
-            <ui:Button name="retry-button" text="Retry" class="combat-end-button"/>
-            <ui:Button name="menu-button" text="Back to Menu" class="combat-end-button"/>
+    <!-- Full-screen and pickable: this is what blocks clicks on the world once the fight is over.
+         Hidden with display:none until then. Focus target for arrow keys/gamepad. -->
+    <ui:VisualElement name="combat-end-root" class="screen-root combat-end-root">
+        <!-- Fixed 1920x1080 parchment, centred: children use the Figma "Hunt Completed" / "Hunt
+             Failed" coordinates (one layout for both, only the title text changes). -->
+        <ui:VisualElement name="combat-end-stage" picking-mode="Ignore" class="parchment-stage">
+            <!-- Placeholder text: CombatEndController writes the victory/defeat string on Show. -->
+            <ui:Label name="combat-end-title" picking-mode="Ignore" text="Hunt Completed!" class="combat-end-title"/>
+            <!-- Sibling of the entries so it shares their coordinate space (see SelectionMarker.MoveTo). -->
+            <SelectionMarker name="combat-end-marker" picking-mode="Ignore" class="combat-end-marker" slide-duration="0.25" slide-ease="OutCubic"/>
+            <MenuButton name="retry-button" text="Restart" focusable="false" class="combat-end-entry combat-end-entry--1"
+                underline-in-duration="0.24" underline-in-ease="OutQuad" underline-in-delay="0.1"
+                underline-out-duration="0.16" underline-out-ease="InQuad"/>
+            <MenuButton name="menu-button" text="Return to main menu" focusable="false" class="combat-end-entry combat-end-entry--2"
+                underline-in-duration="0.24" underline-in-ease="OutQuad" underline-in-delay="0.1"
+                underline-out-duration="0.16" underline-out-ease="InQuad"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

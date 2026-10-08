@@ -17,7 +17,7 @@ def split_sprites(input_path):
         with Image.open(input_path) as img:
             img = img.convert("RGBA")
             width, height = img.size
-            row_height = 32
+            row_height = height // len(directions)
             
             # Derive the directory and the base name (e.g. "hero_walk")
             file_dir = os.path.dirname(os.path.abspath(input_path))

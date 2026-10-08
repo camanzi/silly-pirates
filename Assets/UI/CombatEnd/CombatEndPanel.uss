@@ -1,70 +1,67 @@
 /* The end-of-combat panel. It lives in the combat scene, on a PanelSettings at sortingOrder 50:
    above the HUD (10) and below the loading overlay (100), which has to be able to cover it when
-   the scene transition starts.
+   the scene transition starts. PS_CombatEnd is ScaleWithScreenSize 1920x1080 + Shrink, like the
+   menus: without that the fixed 1920x1080 stage would not fit the screen.
 
-   The backdrop is dark but TRANSPARENT on purpose: the scene stays readable behind it, and the
-   panel blocks input instead of freezing the game. That blocking is not code: because the root is
-   full-screen and pickable, UIPointerTracker.IsPointerOverUI catches it and WorldInteractor /
-   GridInputHandler stop picking up clicks on the world. */
+   Unlike the pause menu, the fight is over: there is nothing left to read in the scene, so the
+   screen is a full parchment (.screen-root + .parchment-stage from STL_Menu.uss) and the game is
+   not visible behind it. One layout for victory and defeat, as in the mockups: only the title
+   string changes, there is no per-outcome colour.
+
+   Input blocking is not code: because the root is full-screen and pickable,
+   UIPointerTracker.IsPointerOverUI catches it and WorldInteractor / GridInputHandler stop picking
+   up clicks on the world.
+
+   Coordinates and font sizes are measured on the Figma exports (1920x1080). */
 
 .combat-end-root {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.55);
-    align-items: center;
-    justify-content: center;
     /* display: none when hidden — NOT just opacity 0. A transparent but still drawn element would
        stay pickable and would eat clicks for the whole combat. */
     display: none;
     opacity: 0;
 }
 
+/* Centred on y ~350. Same cap height as the pause menu's title in the mockups, hence the same
+   96px, not a larger size. */
 .combat-end-title {
-    color: rgb(255, 69, 61);
-    font-size: 68px;
+    position: absolute;
+    left: 0;
+    top: 290px;
+    width: 100%;
+    height: 120px;
+    margin: 0;
+    padding: 0;
+    font-size: 96px;
+    color: rgb(0, 0, 0);
     -unity-text-align: middle-center;
-    -unity-font-style: bold;
     white-space: nowrap;
-    margin-bottom: 44px;
-    -unity-text-outline-width: 2px;
-    -unity-text-outline-color: rgba(251, 68, 60, 0.686);
-    text-shadow: -5px 10px 0 rgb(0, 0, 0);
-    -unity-font-definition: url("project://database/Assets/Fonts/Jaini-Regular.ttf?fileID=12800000&guid=f87297ce785d8694c9876678ba95904d&type=3#Jaini-Regular");
 }
 
-.combat-end-title.defeat {
-    color: rgb(150, 160, 185);
-    -unity-text-outline-color: rgba(150, 160, 185, 0.6);
+/* The box is the hover/click surface, centred on the stage and wider than the longest entry; the
+   underline and the quill anchor to the text, not to this box. */
+.combat-end-entry {
+    position: absolute;
+    left: 660px;
+    width: 600px;
+    height: 60px;
+    font-size: 72px;
 }
 
-.combat-end-buttons {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+/* Row centres from the mockup: ~655 and ~765. */
+.combat-end-entry--1 { top: 625px; }
+.combat-end-entry--2 { top: 735px; }
+
+/* left/top are only the pre-layout start: SelectionMarker.MoveTo overwrites both. */
+.combat-end-marker {
+    left: 660px;
+    top: 625px;
+    height: 60px;
 }
 
-.combat-end-button {
-    min-width: 240px;
-    height: 58px;
-    margin-left: 10px;
-    margin-right: 10px;
-    font-size: 22px;
-    color: rgb(236, 240, 248);
-    background-color: rgba(255, 69, 61, 0.184);
-    border-color: rgb(255, 69, 61);
-    border-width: 2px;
-    border-radius: 8px;
-    -unity-font-definition: url("project://database/Assets/Fonts/Tektur-VariableFont_wdth,wght.ttf?fileID=12800000&guid=e781eecbbec6f9a42ad1f7250c665308&type=3#Tektur-VariableFont_wdth,wght");
-    transition-property: background-color, scale;
-    transition-duration: 0.12s;
-}
-
-.combat-end-button:hover {
-    background-color: rgba(255, 69, 61, 0.365);
-    scale: 1.03 1.03;
-}
-
-.combat-end-button:active {
-    scale: 0.98 0.98;
+/* Same quill as the pause menu: 112px, ~40px visible gap to the text, centred on the 60px row. */
+.combat-end-marker .selection-marker__quill {
+    left: -136px;
+    top: -26px;
+    width: 112px;
+    height: 112px;
 }
