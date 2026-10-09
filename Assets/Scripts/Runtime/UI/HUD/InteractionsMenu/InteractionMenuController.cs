@@ -26,6 +26,11 @@ public class InteractionMenuController : WorldSpaceContainer
     private EquipmentStatusElement _statusElement;
     private Tween _statusVisibilityTween;
 
+    // Two local gates ANDed into the base class's element-state slot: the intro and the ship's turn.
+    // Kept apart so neither can reopen what the other closed.
+    private bool _introAllowed = true;
+    private bool _turnAllowed = true;
+
     protected override void Awake()
     {
         base.Awake();
@@ -38,6 +43,7 @@ public class InteractionMenuController : WorldSpaceContainer
             // driven by the BoolChannelListener on ShowUIEventChannel, which CombatStateManager.Start()
             // raises back to true in the same frame on entering the Idle state — the intro gate would be
             // lost.
+            _introAllowed = false;
             _isAllowedByElementState = false;
             ApplyVisibilityImmediate();
         }
@@ -87,6 +93,11 @@ public class InteractionMenuController : WorldSpaceContainer
             awakable.OnAwakeningHoverPreview += OnHoverPreview;
         }
 
+        // Pull-then-subscribe: a menu enabled mid-turn starts from the current turn, not from the next event.
+        _turnAllowed = !IsHiddenForTurn(_currentTurnState);
+        if (_currentTurnState != null && _currentTurnState.OnAgentActivated != null)
+            _currentTurnState.OnAgentActivated.OnEventRaised += HandleAgentActivated;
+
         if (_onCombatStarted != null)
             _onCombatStarted.OnEventRaised += HandleCombatStarted;
 
@@ -116,6 +127,9 @@ public class InteractionMenuController : WorldSpaceContainer
             awakable.OnAwakeningHoverPreview -= OnHoverPreview;
         }
 
+        if (_currentTurnState != null && _currentTurnState.OnAgentActivated != null)
+            _currentTurnState.OnAgentActivated.OnEventRaised -= HandleAgentActivated;
+
         if (_onCombatStarted != null)
             _onCombatStarted.OnEventRaised -= HandleCombatStarted;
     }
@@ -125,9 +139,33 @@ public class InteractionMenuController : WorldSpaceContainer
 
     private void SetIntroPermission(bool isAllowed)
     {
-        SetElementStatePermission(isAllowed);     // radial menu: the base class gate
-        ApplyStatusVisibility(immediate: false);  // anello di stato: gate locale
+        _introAllowed = isAllowed;
+        ApplyLocalPermissions();
     }
+
+    // Single writer of the element-state slot.
+    private void ApplyLocalPermissions()
+    {
+        SetElementStatePermission(_introAllowed && _turnAllowed);  // radial menu: the base class gate
+        ApplyStatusVisibility(immediate: false);                   // status ring: local gate
+    }
+
+    // Raised by TurnController right after SetActiveCharacter, so IsShipTurn already reflects the new agent.
+    private void HandleAgentActivated(ITurnAgent agent)
+    {
+        bool allowed = !IsHiddenForTurn(_currentTurnState);
+        if (allowed == _turnAllowed) return;
+
+        _turnAllowed = allowed;
+        _statusElement?.UpdateAgent(_currentTurnState.ActiveAgent);
+        ApplyLocalPermissions();
+    }
+
+    /// <summary>
+    /// Equipment menus (radial buttons and status ring) are hidden for the whole ship's turn: the broadside
+    /// is automatic and its wide shot must not be cluttered by the rings of the firing equipment.
+    /// </summary>
+    internal static bool IsHiddenForTurn(TurnStateSO turnState) => turnState != null && turnState.IsShipTurn;
 
     /// <summary>
     /// The equipment status ring lives outside the Container managed by
@@ -141,6 +179,12 @@ public class InteractionMenuController : WorldSpaceContainer
 
         bool visible = _isAllowedByElementState;
         _statusVisibilityTween.Stop();
+
+        // Not pickable as soon as it starts hiding, not only once the fade reaches display:None.
+        // The element sets its own picking mode, so the parent's alone would not stop the clicks.
+        PickingMode picking = visible ? PickingMode.Position : PickingMode.Ignore;
+        _statusContainer.pickingMode = picking;
+        if (_statusElement != null) _statusElement.pickingMode = picking;
 
         if (immediate)
         {

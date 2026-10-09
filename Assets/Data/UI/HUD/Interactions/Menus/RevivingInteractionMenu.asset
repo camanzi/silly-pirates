@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractionSetSO
   _mainAction: {fileID: 11400000, guid: dbae5969af1bf264080ff3b39077c493, type: 2}
   _cooldownIcon: {fileID: 21300000, guid: a3e696fd2ca12b94cba78a6864693a9f, type: 3}
+  _dormantIcon: {fileID: 21300000, guid: 39405ea7b2754844d9600c98d8ac5481, type: 3}
   _availableActions:
   - {fileID: 11400000, guid: 245070555524e8941b8cab7b7a438712, type: 2}
