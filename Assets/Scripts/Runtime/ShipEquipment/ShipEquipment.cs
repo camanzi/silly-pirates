@@ -15,7 +15,6 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
 
     [Header("Awakable Configs")]
     [SerializeField] private int _toAwakePoints;
-    [SerializeField] [Min(0)] private int _maxExtraAwakeningPoints = 2;
 
     [Header("Feedback Events")]
     [SerializeField] private UnityEvent _onCommandExecuted;
@@ -26,18 +25,7 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     public Transform Muzzle => _muzzleAnchor;
 
     public int MaxAwakeningPoints => _toAwakePoints;
-    public int OvercapLimit => _toAwakePoints + _maxExtraAwakeningPoints;
     public int CurrentAwakeningPoints => _awakeningPoints;
-    public int AwakeningPoints
-    {
-        get => _awakeningPoints;
-        set
-        {
-            _awakeningPoints = value;
-            RefreshOvercapPassive();
-            OnAwakeningCountersChanged?.Invoke();
-        }
-    }
     public bool IsAwake => _stateMachine?.IsActive ?? false;
     public bool IsOnCooldown => _stateMachine?.IsOnCooldown ?? false;
     public int Cooldown
@@ -62,25 +50,7 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
 
     public PassiveAbilityController PassiveAbilityController => _passiveAbilityController;
 
-    private readonly List<IEvasionModifier> _evasionModifiers = new();
-
-    public int EffectiveEvasion
-    {
-        get
-        {
-            int total = 0;
-            if (_passiveAbilityController != null)
-            {
-                _passiveAbilityController.GetModifiers(_evasionModifiers);
-                for (int i = 0; i < _evasionModifiers.Count; i++)
-                    total += _evasionModifiers[i].GetEvasionBonus();
-            }
-            return (StatsConfig?.BaseEvasion ?? 0) + total;
-        }
-    }
-
     private int _awakeningPoints = 0;
-    private int _appliedOvercapExtra = 0;
     private int _cooldown = 0;
     private EquipmentStateMachine _stateMachine;
     private PassiveAbilityController _passiveAbilityController;
@@ -100,56 +70,38 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
         _abilityController = GetComponent<AbilityController>();
     }
 
+    /// <summary>
+    /// Adds points up to <see cref="MaxAwakeningPoints"/>: anything beyond the threshold is discarded, there
+    /// is no overcap. Reaching the threshold awakens the equipment.
+    /// </summary>
     public void AddAwakeningPoints(int count)
     {
-        int newPoints = Mathf.Min(AwakeningPoints + count, OvercapLimit);
+        int newPoints = Mathf.Min(_awakeningPoints + count, _toAwakePoints);
         if (newPoints >= _toAwakePoints && !IsAwake)
             _stateMachine.TransitionTo(new ActiveState(_stateMachine, this));
-        AwakeningPoints = newPoints;
+        SetAwakeningPoints(newPoints);
     }
 
     public void RemoveAwakeningPoints(int count)
     {
-        int newPoints = Mathf.Max(0, AwakeningPoints - count);
+        int newPoints = Mathf.Max(0, _awakeningPoints - count);
         if (newPoints < _toAwakePoints && IsAwake)
             _stateMachine.TransitionTo(new AwakableState(_stateMachine, this));
-        AwakeningPoints = newPoints;
+        SetAwakeningPoints(newPoints);
     }
 
-    public void ConsumeAllAwakeningPoints()
+    public void ConsumeAllAwakeningPoints() => SetAwakeningPoints(0);
+
+    private void SetAwakeningPoints(int value)
     {
-        AwakeningPoints = 0;
-    }
-
-    // The overcap bonus depends on the state of the points, not on who added them: every source (base
-    // action, overcap action, Maximize Contribution) comes through here.
-    private void RefreshOvercapPassive()
-    {
-        if (_passiveAbilityController == null) return;
-
-        int extra = Mathf.Max(0, _awakeningPoints - _toAwakePoints);
-        if (extra == _appliedOvercapExtra) return;
-        _appliedOvercapExtra = extra;
-
-        if (extra <= 0)
-        {
-            _passiveAbilityController.RemovePassiveOfType<IOvercapPassive>();
-            return;
-        }
-
-        var template = _statsConfig?.OvercapPassiveTemplate;
-        if (template == null) return;
-
-        // AddPassive handles reapplication: the existing instance overwrites its own bonus with the one
-        // recomputed from the total, and this copy is destroyed.
-        var instance = Instantiate(template);
-        (instance as IOvercapPassive)?.Initialize(_statsConfig.GetOvercapBonus(extra));
-        _passiveAbilityController.AddPassive(instance);
+        _awakeningPoints = value;
+        OnAwakeningCountersChanged?.Invoke();
     }
 
     public void OnTurnChange(ITurnAgent agent)
     {
-        if (!agent.CompareTag("Player")) return;
+        // Cooldowns tick once per crew turn: neither enemies nor the ship advance them.
+        if (!TurnAgentRoles.IsCrewMember(agent)) return;
         _stateMachine.OnTurnChange();
     }
 }

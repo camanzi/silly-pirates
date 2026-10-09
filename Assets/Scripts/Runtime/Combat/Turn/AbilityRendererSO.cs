@@ -17,7 +17,7 @@ public class AbilityRendererSO : ScriptableObject
     // DrawAbilityPreview runs on every pointer movement while aiming: it is the hottest path in the
     // combat loop, and allocating a collection per call here is its dominant GC cost. The buffers can be
     // reused because no listener keeps the lists beyond the call (ShipController.ApplyLayer copies them,
-    // FreeAimRenderer and HitChanceIndicator only read them).
+    // FreeAimRenderer only reads them).
     private readonly List<TrajectoryArc> _arcsBuffer = new();
     private readonly List<CellOverlayLayer> _layersBuffer = new();
     private readonly List<Vector3Int> _interactionCellsBuffer = new();
@@ -45,12 +45,7 @@ public class AbilityRendererSO : ScriptableObject
         }
 
         if (arcs != null)
-        {
-            ITargettable hovered = targetingData.selectedTarget;
-            float? hitChance = hovered != null ? ability.GetHitChance(caster, targetingData) : null;
-            _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, arcs)
-                { HoveredTarget = hovered, HitChance = hitChance });
-        }
+            _targetTransformEventChannel.RaiseEvent(new HighlightFreeAimPayload(caster, canExecute, data.FreeAimTargets, arcs));
 
         _layersBuffer.Clear();
         if (data.InteractionArea != null)

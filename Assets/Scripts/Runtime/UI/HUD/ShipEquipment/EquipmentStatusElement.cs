@@ -8,16 +8,12 @@ public partial class EquipmentStatusElement : VisualElement
 {
     private static readonly Color WhiteFull = new Color(1f, 1f, 1f, 1f);
     private static readonly Color WhiteEmpty = new Color(1f, 1f, 1f, 0.2f);
-    private static readonly Color GoldFull = new Color(1f, 0.784f, 0.196f, 1f);
-    private static readonly Color GoldEmpty = new Color(1f, 0.784f, 0.196f, 0.2f);
     private static readonly Color PreviewColor = new Color(0.267f, 1f, 0f, 0.7f);
     private static readonly Color RedFull  = new Color(1f, 0.2f, 0.2f, 1f);
     private static readonly Color RedEmpty = new Color(1f, 0.2f, 0.2f, 0.2f);
 
     private const float OuterRingRadius = 55f;
-    private const float InnerRingRadius = 40f;
     private const float OuterRingWidth = 8f;
-    private const float InnerRingWidth = 8f;
     private const float SegmentGapDeg = 6f;
 
     private VisualElement _iconElement;
@@ -153,16 +149,6 @@ public partial class EquipmentStatusElement : VisualElement
         DrawRing(painter, cx, cy, OuterRingRadius, OuterRingWidth,
                  primarySegments, ringFilled, _hoverPreviewSegments,
                  fullColor, emptyColor, PreviewColor);
-
-        if (_awakable.IsAwake && !_awakable.IsOnCooldown)
-        {
-            int overcapTotal = _awakable.OvercapLimit - _awakable.MaxAwakeningPoints;
-            int overcapFilled = Mathf.Max(0, _awakable.CurrentAwakeningPoints - _awakable.MaxAwakeningPoints);
-            if (overcapTotal > 0)
-                DrawRing(painter, cx, cy, InnerRingRadius, InnerRingWidth,
-                         overcapTotal, overcapFilled, _hoverPreviewSegments,
-                         GoldFull, GoldEmpty, GoldFull);
-        }
     }
 
     private void OnGenerateRadialMask(MeshGenerationContext ctx)

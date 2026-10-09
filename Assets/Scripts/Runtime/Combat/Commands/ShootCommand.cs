@@ -12,7 +12,6 @@ public class ShootCommand : ICommand
     private TrajectoryConfigsSO _trajectoryConfigData;
     private readonly int _baseDMG;
     private readonly DamageType _baseDMGType;
-    private readonly int _effectiveAccuracy;
 
     private readonly SoundEventSO _fireSfx;
     private readonly SfxCueEventChannel _sfxChannel;
@@ -23,7 +22,7 @@ public class ShootCommand : ICommand
 
     private static readonly Vector3 ProjectileScale = new(0.8f, 0.8f, 1.4f);
 
-    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, TrajectoryConfigsSO trajectoryConfigData, int effectiveAccuracy,
+    public ShootCommand(IInteractableElement caster, List<ITargettable> targets, DamageTypeProjectileConfigSO projectileConfig, int cooldown, int baseDMG, DamageType baseDMGType, TrajectoryConfigsSO trajectoryConfigData,
         SoundEventSO fireSfx = null, SfxCueEventChannel sfxChannel = null, VFXController muzzleVfx = null, VfxCueEventChannel vfxChannel = null)
     {
         _caster = caster;
@@ -33,7 +32,6 @@ public class ShootCommand : ICommand
         _baseDMG = baseDMG;
         _baseDMGType = baseDMGType;
         _trajectoryConfigData = trajectoryConfigData;
-        _effectiveAccuracy = effectiveAccuracy;
         _fireSfx = fireSfx;
         _sfxChannel = sfxChannel;
         _muzzleVfx = muzzleVfx;
@@ -116,14 +114,9 @@ public class ShootCommand : ICommand
 
     private void HandleImpact(GameObject projectile, Projectile projectileComponent, ITargettable target)
     {
+        // Shots always land: there is no hit chance.
         if (target is IHealthOwner healthOwner)
-        {
-            int hitChance = MathUtils.CalculateHitChance(_effectiveAccuracy, target.EffectiveEvasion);
-            bool isHit = UnityEngine.Random.Range(0, 100) < hitChance;
-
-            DamageType dmgType = ResolveDMGType();
-            healthOwner.Health.TakeDamage(new DamagePayload(_baseDMG, dmgType) { IsMiss = !isHit });
-        }
+            healthOwner.Health.TakeDamage(new DamagePayload(_baseDMG, ResolveDMGType()));
         projectileComponent?.PlayImpactEffect();
         GameObject.Destroy(projectile);
     }

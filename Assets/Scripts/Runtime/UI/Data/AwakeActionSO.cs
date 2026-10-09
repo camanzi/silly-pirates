@@ -42,6 +42,12 @@ public class AwakeActionSO : InteractionActionSO
     public override int GetHoverAwakeningPreview(IInteractableElement element, ITurnAgent agent)
     {
         var holder = agent as IAwakeningModifierHolder;
-        return 1 + (holder?.TotalAwakeningBonus ?? 0);
+        int gain = 1 + (holder?.TotalAwakeningBonus ?? 0);
+
+        // Same clamp as AddAwakeningPoints: the preview never shows points that would be discarded.
+        if (element is IAwakable awakable)
+            gain = Mathf.Min(gain, Mathf.Max(0, awakable.MaxAwakeningPoints - awakable.CurrentAwakeningPoints));
+
+        return gain;
     }
 }

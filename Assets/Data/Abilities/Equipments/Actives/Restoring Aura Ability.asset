@@ -21,4 +21,4 @@ MonoBehaviour:
   _cameraCueProfile: {fileID: 0}
   _range: 10
   _cooldown: 7
-  _reviveHpPercentage: 1
+  _reviveHpPercentage: 50

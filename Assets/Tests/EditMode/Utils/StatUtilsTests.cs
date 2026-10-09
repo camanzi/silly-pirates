@@ -17,9 +17,6 @@ namespace SillyPirates.Tests.EditMode.Utils
         private static List<IAgilityModifier> Agility(params IAgilityModifier[] modifiers) =>
             new List<IAgilityModifier>(modifiers);
 
-        private static List<IEvasionModifier> Evasion(params IEvasionModifier[] modifiers) =>
-            new List<IEvasionModifier>(modifiers);
-
         // ---------------------------------------------------------------- EvaluateAgility
 
         [Test]
@@ -119,37 +116,6 @@ namespace SillyPirates.Tests.EditMode.Utils
         {
             Assert.That(StatUtils.EvaluateAgility(10, Agility(new FakeAgilityModifier(percentage: -100f))), Is.EqualTo(1));
             Assert.That(StatUtils.EvaluateAgility(10, Agility(new FakeAgilityModifier(flat: -100))), Is.EqualTo(1));
-        }
-
-        // ---------------------------------------------------------------- EvaluateEvasion
-
-        [Test]
-        public void EvaluateEvasion_NoModifiers_ReturnsBaseEvasion()
-        {
-            Assert.That(StatUtils.EvaluateEvasion(50, Evasion()), Is.EqualTo(50));
-        }
-
-        [Test]
-        public void EvaluateEvasion_NullModifierList_ReturnsBaseEvasion()
-        {
-            Assert.That(StatUtils.EvaluateEvasion(50, null), Is.EqualTo(50));
-        }
-
-        [Test]
-        public void EvaluateEvasion_MultipleModifiers_AddsEveryBonus()
-        {
-            int result = StatUtils.EvaluateEvasion(50, Evasion(new FakeEvasionModifier(10), new FakeEvasionModifier(15)));
-
-            Assert.That(result, Is.EqualTo(75));
-        }
-
-        /// <summary>Unlike agility there is no floor here: evasion is allowed to go negative.</summary>
-        [Test]
-        public void EvaluateEvasion_NegativeBonusBelowZero_IsNotClamped()
-        {
-            int result = StatUtils.EvaluateEvasion(10, Evasion(new FakeEvasionModifier(-30)));
-
-            Assert.That(result, Is.EqualTo(-20));
         }
 
         // ---------------------------------------------------------------- BaseAV

@@ -20,8 +20,6 @@ public class TurnAgentDataSO : ScriptableObject
     [Tooltip("Number of consecutive actions this agent takes per turn cycle")]
     [SerializeField] private int _actionsPerTurn = 1;
 
-    [SerializeField] private int _baseEvasion = 50;
-
     [Tooltip("When on, the first Action Value assigned in the turn queue on join (spawn) varies " +
              "pseudo-randomly around the base value, to give the turn order some variety. " +
              "From the second turn onwards the AV always returns to the base value.")]
@@ -35,7 +33,6 @@ public class TurnAgentDataSO : ScriptableObject
     public int InteractionRange => _interactionRange;
     public float MaxHp => _maxHp;
     public int ActionsPerTurn => _actionsPerTurn;
-    public int BaseEvasion => _baseEvasion;
     // internal setter (test seam): see MaxActionPointsPerTurn above.
     public bool RandomizeInitialAV { get => _randomizeInitialAV; internal set => _randomizeInitialAV = value; }
 }

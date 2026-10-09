@@ -286,7 +286,6 @@ MonoBehaviour:
   _equipmentType: 0
   _statsConfig: {fileID: 11400000, guid: 87e68b33db5a712449ae69b6019d2aeb, type: 2}
   _toAwakePoints: 2
-  _maxExtraAwakeningPoints: 0
   _onCommandExecuted:
     m_PersistentCalls:
       m_Calls:

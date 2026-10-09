@@ -46,7 +46,7 @@ public class SlimyCellDataSO : ScriptableObject, ICellCostModifier, ICombatSessi
 
     private void OnTurnEnded(ITurnAgent agent)
     {
-        if (!agent.CompareTag("Player")) return;
+        if (!TurnAgentRoles.IsCrewMember(agent)) return;
         _toRemove.Clear();
         var keys = new List<Vector3Int>(_cellCountdowns.Keys);
         foreach (var cell in keys)

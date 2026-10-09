@@ -9,6 +9,7 @@ TagManager:
   - FloorMap
   - PreviewMap
   - PersistentEffectsMap
+  - Ship
   layers:
   - Default
   - TransparentFX

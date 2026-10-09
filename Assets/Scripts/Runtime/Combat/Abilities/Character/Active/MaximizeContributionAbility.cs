@@ -32,13 +32,9 @@ public class MaximizeContributionAbility : AbilityBase
         Vector3Int hoveredCell = targetingData.cellPosition;
 
         IAwakable candidate = targetingData.selectedTarget as IAwakable;
-        bool eligible = mcCache.ValidCells.Contains(hoveredCell)
-            && candidate != null
-            && candidate.IsAwake
-            && !candidate.IsOnCooldown
-            && candidate.CurrentAwakeningPoints < candidate.OvercapLimit;
+        bool eligible = mcCache.ValidCells.Contains(hoveredCell) && IsAwakenable(candidate);
 
-        int pointsToAdd = eligible ? candidate.OvercapLimit - candidate.CurrentAwakeningPoints : 0;
+        int pointsToAdd = eligible ? PointsToAwaken(candidate) : 0;
 
         IAwakable newHovered = eligible ? candidate : null;
         if (!ReferenceEquals(newHovered, mcCache.LastHoveredTarget))
@@ -81,11 +77,17 @@ public class MaximizeContributionAbility : AbilityBase
 
         if (!mcCache.ValidCells.Contains(targetCell)) return false;
 
-        if (targetingData.Value.selectedTarget is not IAwakable a) return false;
-        if (!a.IsAwake || a.IsOnCooldown || a.CurrentAwakeningPoints >= a.OvercapLimit) return false;
-
-        return true;
+        return IsAwakenable(targetingData.Value.selectedTarget as IAwakable);
     }
+
+    /// <summary>
+    /// Maximize Contribution is an instant awakening: it only applies to equipment that is still asleep and
+    /// not cooling down. An awake equipment is already at its maximum, there is nothing left to add.
+    /// </summary>
+    private static bool IsAwakenable(IAwakable a)
+        => a != null && !a.IsAwake && !a.IsOnCooldown && a.CurrentAwakeningPoints < a.MaxAwakeningPoints;
+
+    private static int PointsToAwaken(IAwakable a) => a.MaxAwakeningPoints - a.CurrentAwakeningPoints;
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {

@@ -237,20 +237,6 @@ public class InteractionMenuController : WorldSpaceContainer
                 toAdd.Add(action);
         }
 
-        foreach (InteractionActionSO newAction in toAdd.ToList())
-        {
-            if (newAction is not IInPlaceSwappable swappable) continue;
-            if (!toRemove.Contains(swappable.BaseAction)) continue;
-
-            InteractionButton btn = _activeButtons[swappable.BaseAction];
-            _activeButtons.Remove(swappable.BaseAction);
-            _activeButtons[newAction] = btn;
-            btn.UpdateData(newAction);
-
-            toRemove.Remove(swappable.BaseAction);
-            toAdd.Remove(newAction);
-        }
-
         foreach (InteractionActionSO action in toRemove)
         {
             InteractionButton btn = _activeButtons[action];

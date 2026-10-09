@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Instantly awakens a sleeping equipment: fills its points up to <see cref="IAwakable.MaxAwakeningPoints"/>.
+/// </summary>
 public class MaximizeContributionCommand : ICommand
 {
     private readonly IInteractableElement _caster;
@@ -21,7 +24,7 @@ public class MaximizeContributionCommand : ICommand
             turnAgent.RemainingActionPoints -= _apCost;
 
         _pointsBeforeAdd = _target.CurrentAwakeningPoints;
-        _target.AddAwakeningPoints(_target.OvercapLimit - _target.CurrentAwakeningPoints);
+        _target.AddAwakeningPoints(_target.MaxAwakeningPoints - _target.CurrentAwakeningPoints);
 
         await Awaitable.NextFrameAsync();
     }
@@ -31,8 +34,8 @@ public class MaximizeContributionCommand : ICommand
         if (_caster is ITurnAgent turnAgent)
             turnAgent.RemainingActionPoints += _apCost;
 
-        // Removing the points brings the overcap back to its previous value: the passive is updated
-        // (or removed) by ShipEquipment.RefreshOvercapPassive.
+        // Taking the added points back drops the equipment below the threshold, and RemoveAwakeningPoints
+        // puts it back to sleep.
         int delta = _target.CurrentAwakeningPoints - _pointsBeforeAdd;
         if (delta > 0)
             _target.RemoveAwakeningPoints(delta);

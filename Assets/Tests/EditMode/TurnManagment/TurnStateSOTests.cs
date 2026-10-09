@@ -181,6 +181,84 @@ namespace SillyPirates.Tests.EditMode.TurnManagment
             Assert.That(_turnState.CurrentActionIndex, Is.EqualTo(0));
         }
 
+        // ---------------------------------------------------------------- the ship's turn
+        //
+        // Spec (TurnStateSO + TurnAgentRoles): the ship holds a turn of its own, gives the player no agency,
+        // and is treated as an enemy turn by the HUD and the camera pan.
+
+        [Test]
+        public void IsShipTurn_FreshInstance_IsFalse()
+        {
+            Assert.That(_turnState.IsShipTurn, Is.False);
+        }
+
+        [Test]
+        public void SetActiveCharacter_ShipTaggedAgent_SetsIsShipTurnTrue()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Ship" });
+
+            Assert.That(_turnState.IsShipTurn, Is.True);
+        }
+
+        [Test]
+        public void SetActiveCharacter_ShipTaggedAgent_SetsIsPlayerTurnFalse()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Ship" });
+
+            Assert.That(_turnState.IsPlayerTurn, Is.False);
+        }
+
+        [Test]
+        public void SetActiveCharacter_ShipTaggedAgent_SetsIsEnemyTurnTrue()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Ship" });
+
+            Assert.That(_turnState.IsEnemyTurn, Is.True);
+        }
+
+        [TestCase("Player")]
+        [TestCase("Untagged")]
+        public void SetActiveCharacter_NonShipAgent_SetsIsShipTurnFalse(string tag)
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = tag });
+
+            Assert.That(_turnState.IsShipTurn, Is.False);
+        }
+
+        /// <summary>The flag is recomputed on every activation, so it cannot leak into the next agent's turn.</summary>
+        [Test]
+        public void SetActiveCharacter_CrewAfterShip_ClearsIsShipTurn()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Ship" });
+
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Player" });
+
+            Assert.That(_turnState.IsShipTurn, Is.False);
+        }
+
+        /// <summary>One behaviour: Clear() leaves no turn flag set after the ship's turn.</summary>
+        [Test]
+        public void Clear_AfterShipTurn_ResetsShipPlayerAndEnemyFlags()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Ship" });
+
+            _turnState.Clear();
+
+            Assert.That(_turnState.IsShipTurn, Is.False);
+            Assert.That(_turnState.IsPlayerTurn, Is.False);
+            Assert.That(_turnState.IsEnemyTurn, Is.False);
+        }
+
+        [Test]
+        public void ResetForNewCombat_AfterShipTurn_ResetsIsShipTurn()
+        {
+            _turnState.SetActiveCharacter(new FakeTurnAgent { Tag = "Ship" });
+
+            _turnState.ResetForNewCombat();
+
+            Assert.That(_turnState.IsShipTurn, Is.False);
+        }
+
         [Test]
         public void ResetForNewCombat_AfterSetActiveCharacter_ResetsAgentFlagAndActionIndex()
         {

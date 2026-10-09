@@ -58,7 +58,7 @@ public class EquipmentMovementBoostPassiveSO : PassiveAbilitySO, IMovementModifi
 
     private void OnTurnChanged(ITurnAgent agent, PassiveAbilityController controller)
     {
-        if (agent.CompareTag("Player") && agent is GridCharacter)
+        if (TurnAgentRoles.IsCrewMember(agent) && agent is GridCharacter)
         {
             if (!_awakenedThisTurn && _stacks > 0) _stacks = 0;
             _awakenedThisTurn = false;

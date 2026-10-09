@@ -28,7 +28,7 @@ public class HoverHealthBarController : MonoBehaviour
         InitUI();
 
         var agent = element as ITurnAgent;
-        if (agent?.Health == null || agent.CompareTag("Player"))
+        if (agent?.Health == null || TurnAgentRoles.HasPlayerAgency(agent))
         {
             Hide();
             return;

@@ -1,16 +1,16 @@
 
 using System;
 
-public interface IAwakable 
+public interface IAwakable
 {
+    /// <summary>The points needed to awaken the equipment. Points never go beyond this value.</summary>
     public int MaxAwakeningPoints { get; }
-    public int OvercapLimit { get; }
     public int CurrentAwakeningPoints { get; }
-    public int AwakeningPoints { get; set; }
     public bool IsAwake { get; }
     public bool IsOnCooldown { get; }
     public int Cooldown { get; set; }
-    
+
+    /// <summary>Adds points, clamped to <see cref="MaxAwakeningPoints"/>.</summary>
     public void AddAwakeningPoints(int count);
     public void RemoveAwakeningPoints(int count);
     public void ConsumeAllAwakeningPoints();

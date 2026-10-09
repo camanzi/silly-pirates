@@ -208,8 +208,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPartBehavior
   _selectionContextSO: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
-  _overrideEvasion: 0
-  _baseEvasion: 0
 --- !u!114 &8274756126709130278
 MonoBehaviour:
   m_ObjectHideFlags: 0

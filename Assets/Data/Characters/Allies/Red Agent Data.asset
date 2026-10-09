@@ -18,4 +18,3 @@ MonoBehaviour:
   _maxMovementPoints: 6
   _interactionRange: 1
   _actionsPerTurn: 1
-  _baseEvasion: 50

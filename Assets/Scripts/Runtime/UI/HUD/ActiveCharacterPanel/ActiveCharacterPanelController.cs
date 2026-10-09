@@ -43,7 +43,7 @@ public class ActiveCharacterPanelController : MonoBehaviour
     {
         UnsubscribeFromAgent();
 
-        if (agent == null || !agent.CompareTag("Player"))
+        if (!TurnAgentRoles.HasPlayerAgency(agent))
         {
             _hpTween.Stop();
             _root.style.display = DisplayStyle.None;

@@ -20,14 +20,4 @@ namespace SillyPirates.Tests.EditMode
 
         public float GetPercentageAgilityBonus() => _percentage;
     }
-
-    /// <summary>A canned IEvasionModifier, for the same reason as <see cref="FakeAgilityModifier"/>.</summary>
-    internal sealed class FakeEvasionModifier : IEvasionModifier
-    {
-        private readonly int _bonus;
-
-        internal FakeEvasionModifier(int bonus) => _bonus = bonus;
-
-        public int GetEvasionBonus() => _bonus;
-    }
 }

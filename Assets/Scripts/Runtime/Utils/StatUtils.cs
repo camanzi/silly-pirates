@@ -4,9 +4,9 @@ using UnityEngine;
 /// <summary>
 /// The arithmetic behind a character's modified stats, and the Action Value it produces.
 ///
-/// It lives here because GridCharacter and HostileCharacter fold their modifiers identically but do not share
-/// a base class, so the formulas used to exist as four copies that could drift apart silently — plus a fifth
-/// copy of the AV division inside TurnOrderDataSO. Everything is pure: no component, no scene, no allocation.
+/// It lives here because every turn agent (GridCharacter, HostileCharacter, ShipTurnAgent) folds its modifiers
+/// identically but they do not share a base class, so the formulas used to exist as several copies that could
+/// drift apart silently — plus another copy of the AV division inside TurnOrderDataSO. Everything is pure: no component, no scene, no allocation.
 /// </summary>
 public static class StatUtils
 {
@@ -38,23 +38,6 @@ public static class StatUtils
 
         float modified = (baseAgility + totalFlat) * (1f + totalPercentage / 100f);
         return Mathf.Max(1, Mathf.RoundToInt(modified));
-    }
-
-    /// <summary>
-    /// base + the sum of every bonus. Unlike agility there is no percentage term and no floor: evasion is
-    /// consumed by MathUtils.CalculateHitChance, which already guards its own inputs.
-    /// </summary>
-    public static int EvaluateEvasion(int baseEvasion, IReadOnlyList<IEvasionModifier> modifiers)
-    {
-        int total = 0;
-
-        if (modifiers != null)
-        {
-            for (int i = 0; i < modifiers.Count; i++)
-                total += modifiers[i].GetEvasionBonus();
-        }
-
-        return baseEvasion + total;
     }
 
     /// <summary>

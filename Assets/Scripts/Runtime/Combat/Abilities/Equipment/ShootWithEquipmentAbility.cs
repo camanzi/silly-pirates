@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Shoot With Equipment Ability", menuName = "Abilities/Equipment/Shoot With Equipment Ability")]
-public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbility, IOffensiveAbility
+public class ShootWithEquipmentAbility : AbilityBase, IMultiTargetAbility, IOffensiveAbility
 {
     [Header("Cannon ability configs")]
     [SerializeField] private int _maxTargets = 1;
@@ -31,10 +31,8 @@ public class ShootWithEquipmentAbility : OffensiveAbilityBase, IMultiTargetAbili
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
     {
-        int effectiveAccuracy = (caster as IAccuracyOwner)?.EffectiveAccuracy ?? 50;
-
         return new ShootCommand(caster, _selectionCtx.CurrentTargets, _projectileConfig, _cooldown,
-                                _baseDMG, _baseDMGType, trajectoryConfigData, effectiveAccuracy,
+                                _baseDMG, _baseDMGType, trajectoryConfigData,
                                 _fireSfx, _sfxChannel, _muzzleVfx, _vfxChannel);
     }
 

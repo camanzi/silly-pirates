@@ -32,7 +32,7 @@ public class ActionPointController : MonoBehaviour
 
     public void HandleAgentActivated(ITurnAgent agent)
     {
-        if (!agent.CompareTag("Player")) 
+        if (!TurnAgentRoles.HasPlayerAgency(agent))
         {
             ClearActionPoints();
             return;

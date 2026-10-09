@@ -36,7 +36,7 @@ public class CrewOverviewController : MonoBehaviour
 
     public void HandleAgentJoined(ITurnAgent agent)
     {
-        if (!agent.CompareTag("Player")) return;
+        if (!TurnAgentRoles.IsCrewMember(agent)) return;
         if (_activeIndicators.Exists(i => i.LinkedAgent == agent)) return;
 
         var newIndicator = new CrewMemberIndicator();

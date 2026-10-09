@@ -8,7 +8,8 @@ public class RestoringAuraAbility : AbilityBase, IDefensiveAbility
     [Header("Restoring Aura Configs")]
     [SerializeField] private int _range = 10;
     [SerializeField] private int _cooldown = 3;
-    [SerializeField] [Range(0f, 100f)] private float _reviveHpPercentage = 1f;
+    [Tooltip("Percentage of the target's max HP restored by the revive")]
+    [SerializeField] [Range(0f, 100f)] private float _reviveHpPercentage = 50f;
 
     private class RestoringAuraCache
     {
@@ -67,15 +68,7 @@ public class RestoringAuraAbility : AbilityBase, IDefensiveAbility
 
         if (targetingData.Value.selectedTarget is not GridCharacter target) return null;
 
-        float overcapBonus = 0f;
-        if (caster is IAwakable awakable)
-        {
-            int extraPoints = Mathf.Max(0, awakable.CurrentAwakeningPoints - awakable.MaxAwakeningPoints);
-            overcapBonus = MathUtils.CalculateOvercapBonus(extraPoints);
-        }
-
-        float effectiveHpPercentage = (_reviveHpPercentage + overcapBonus) / 100f;
-        return new RestoringAuraCommand(caster, target, effectiveHpPercentage, _cooldown);
+        return new RestoringAuraCommand(caster, target, _reviveHpPercentage / 100f, _cooldown);
     }
 
     private bool HasDeadAllyAt(Vector3Int cell)

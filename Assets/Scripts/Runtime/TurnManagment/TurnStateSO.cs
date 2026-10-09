@@ -10,18 +10,28 @@ public class TurnStateSO : ScriptableObject, ICombatSessionResettable
     public TurnAgentEventChannel OnAgentActivated { get => _onAgentActivated; internal set => _onAgentActivated = value; }
 
     public ITurnAgent ActiveAgent => _activeAgent;
-    public bool IsPlayerTurn => _isPlayerTurn;
 
     /// <summary>
-    /// True while a non-player agent holds the turn. Deliberately not the same as !IsPlayerTurn: that one is
-    /// also true with no turn running at all — _isPlayerTurn starts false and Clear() puts it back — so a
-    /// caller gating on it would treat the moments before the first turn, and after a return to the menu, as
+    /// True while the player has agency over the active turn (<see cref="TurnAgentRoles.HasPlayerAgency"/>):
+    /// today, a crew member's turn. The ship's turn is NOT a player turn.
+    /// </summary>
+    public bool IsPlayerTurn => _isPlayerTurn;
+
+    /// <summary>True while the ship holds the turn. It is automatic, so it is also an <see cref="IsEnemyTurn"/>.</summary>
+    public bool IsShipTurn => _isShipTurn;
+
+    /// <summary>
+    /// True while an agent the player has no agency over holds the turn: an enemy, and for now the ship too
+    /// (the camera pan and the HUD treat both the same way). Deliberately not the same as !IsPlayerTurn: that
+    /// one is also true with no turn running at all — _isPlayerTurn starts false and Clear() puts it back — so
+    /// a caller gating on it would treat the moments before the first turn, and after a return to the menu, as
     /// an enemy's turn.
     /// </summary>
     public bool IsEnemyTurn => _activeAgent != null && !_isPlayerTurn;
     private ITurnAgent _activeAgent;
     private AwaitableCompletionSource _turnTaskSource;
     private bool _isPlayerTurn = false;
+    private bool _isShipTurn = false;
     private int _currentActionIndex;
 
     public int CurrentActionIndex => _currentActionIndex;
@@ -32,7 +42,8 @@ public class TurnStateSO : ScriptableObject, ICombatSessionResettable
         _currentActionIndex = actionIndex;
         _turnTaskSource = new AwaitableCompletionSource();
 
-        _isPlayerTurn = _activeAgent.CompareTag("Player");
+        _isPlayerTurn = TurnAgentRoles.HasPlayerAgency(_activeAgent);
+        _isShipTurn = TurnAgentRoles.IsShip(_activeAgent);
     }
 
     public void NotifyAgentActivated() => _onAgentActivated?.RaiseEvent(_activeAgent);
@@ -61,6 +72,7 @@ public class TurnStateSO : ScriptableObject, ICombatSessionResettable
         _activeAgent = null;
         _turnTaskSource = null;
         _isPlayerTurn = false;
+        _isShipTurn = false;
         _currentActionIndex = 0;
     }
 

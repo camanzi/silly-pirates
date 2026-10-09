@@ -45,7 +45,7 @@ public class PathOfStarDataSO : ScriptableObject, ICellCostModifier, ICombatSess
 
     private void OnTurnEnded(ITurnAgent agent)
     {
-        if (!agent.CompareTag("Player")) return;
+        if (!TurnAgentRoles.IsCrewMember(agent)) return;
         _toRemove.Clear();
         var cellKeys = new List<Vector3Int>(_cellCountdowns.Keys);
         foreach (var cell in cellKeys)

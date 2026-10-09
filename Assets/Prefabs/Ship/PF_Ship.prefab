@@ -1601,9 +1601,10 @@ GameObject:
   - component: {fileID: 6877799202832247022}
   - component: {fileID: 700315522822921877}
   - component: {fileID: 1253841308806257557}
+  - component: {fileID: 4826193057712340921}
   m_Layer: 0
   m_Name: PF_Ship
-  m_TagString: Untagged
+  m_TagString: Ship
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1752,6 +1753,27 @@ MonoBehaviour:
   _entryOffset: {x: -100, y: 0, z: 0}
   _duration: 3.5
   _ease: 15
+--- !u!114 &4826193057712340921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5928166714952300585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c2cc9c621dad64ea0ff8c5b07065cb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: SillyPirates.Runtime::ShipTurnAgent
+  _agentData: {fileID: 11400000, guid: 3f9a6c2e8b1d4e7a9c05d2b4e6f81a37, type: 2}
+  _renderingAgentData: {fileID: 11400000, guid: 8d2e4b7a1c9f4a63b0e5f7d2c1a49b58, type: 2}
+  _displayName: Ship
+  _onAgentJoin: {fileID: 11400000, guid: ab8b5d4dcec51664e953949e601f679c, type: 2}
+  _onAgentLeave: {fileID: 11400000, guid: 4c6b429f294d38043a95fa576ef2b83c, type: 2}
+  _onAgilityChangedChannel: {fileID: 11400000, guid: 63c2b4e4503f0c04083fedc24ccd57b5, type: 2}
+  _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
+  _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
+  _turnHoldSeconds: 0.75
 --- !u!1 &6777778296154917764
 GameObject:
   m_ObjectHideFlags: 0

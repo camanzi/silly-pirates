@@ -77,17 +77,6 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
         }
     }
 
-    public int EffectiveEvasion
-    {
-        get
-        {
-            if (_passiveAbilityController != null) _passiveAbilityController.GetModifiers(_evasionModifiers);
-            else _evasionModifiers.Clear();
-
-            return StatUtils.EvaluateEvasion(AgentData.BaseEvasion, _evasionModifiers);
-        }
-    }
-
     public HealthController Health => _healthController;
 
     public int TurnCount { get; private set; }
@@ -105,7 +94,6 @@ public class HostileCharacter : MonoBehaviour, ISelectable, IInteractableElement
     private CharacterLifecycleAnimator _lifecycleAnimator;
     private Collider[] _colliders;
     private readonly List<IAgilityModifier> _agilityModifiers = new();
-    private readonly List<IEvasionModifier> _evasionModifiers = new();
     private readonly List<IOnTurnStart> _turnStartHandlers = new();
     private SpawnPoint _spawnPoint;
 

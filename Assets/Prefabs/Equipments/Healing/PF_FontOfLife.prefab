@@ -417,7 +417,6 @@ MonoBehaviour:
   _equipmentType: 2
   _statsConfig: {fileID: 0}
   _toAwakePoints: 10
-  _maxExtraAwakeningPoints: 10
   _onCommandExecuted:
     m_PersistentCalls:
       m_Calls: []
