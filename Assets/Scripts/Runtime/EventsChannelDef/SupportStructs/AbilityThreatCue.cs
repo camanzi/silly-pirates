@@ -2,8 +2,13 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Announces that an ability is about to be executed against some targets, and that the execution is
-/// over. Raised at the two (and only two) places where a command is queued and executed: ExecutionStateSO
-/// for the player, EnemyTurnDriver for the enemies.
+/// over. Raised at the three places where a command is queued and executed: ExecutionStateSO for the
+/// player, EnemyTurnDriver for the enemies, ShipBroadsideController for the ship's Broadside.
+///
+/// The Broadside is the one case where several Begin cues precede a single End: it raises one Begin per
+/// shot (each with its own ability, caster, targets and element, so every reactor only answers the shot
+/// aimed at it), then one End once all the shots have landed. The global close still holds because the
+/// broadside is a single execution — no other execution can overlap it.
 ///
 /// It is what lets the targets react BEFORE the impact — the damage lands late inside the command, after
 /// the projectile's flight — something a HealthBehaviorSO, which only sees the hit once it has arrived,

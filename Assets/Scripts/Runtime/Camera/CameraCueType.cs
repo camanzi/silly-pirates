@@ -7,5 +7,7 @@ public enum CameraCueType
     FrameCasterAndArea,
     FocusArea,
     FocusTarget,
-    FocusCasterThenArea
+    FocusCasterThenArea,
+    // Appended last on purpose: the values above are stored as ints in ability and profile assets.
+    FrameAll
 }

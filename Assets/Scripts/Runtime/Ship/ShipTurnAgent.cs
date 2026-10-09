@@ -6,9 +6,11 @@ using UnityEngine;
 /// <summary>
 /// Makes the ship a turn agent: it joins the turn queue and gets a turn of its own.
 ///
-/// For now the turn is empty and automatic: it starts, holds for a moment so the camera can settle on the ship,
-/// and ends by itself. The player has no agency during it (see <see cref="TurnAgentRoles.HasPlayerAgency"/>), so
-/// the HUD and the camera treat it like an enemy turn.
+/// The turn is automatic: it starts, holds for a moment so the camera can settle on the ship, fires the
+/// Broadside (every awakened offensive equipment, see <see cref="ShipBroadsideController"/>) and ends by
+/// itself. With nothing armed the broadside is a no-op and the turn is just the hold. The player has no
+/// agency during it (see <see cref="TurnAgentRoles.HasPlayerAgency"/>), so the HUD and the camera treat it
+/// like an enemy turn.
 ///
 /// The ship is deliberately not an <see cref="IHealthOwner"/> nor an <see cref="ITargettable"/>: the enemy AI
 /// skips it, and it does not count towards the combat outcome (TurnOrderQueries ignores agents with no health).
@@ -67,9 +69,13 @@ public class ShipTurnAgent : MonoBehaviour, ITurnAgent
     private readonly List<IAgilityModifier> _agilityModifiers = new();
     private int _lastKnownEffectiveAgility;
 
+    // Optional: without it the ship's turn stays empty.
+    private ShipBroadsideController _broadside;
+
     private void Awake()
     {
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
+        _broadside = GetComponent<ShipBroadsideController>();
     }
 
     private void OnEnable()
@@ -102,28 +108,38 @@ public class ShipTurnAgent : MonoBehaviour, ITurnAgent
     {
         this.HandleStartingTurn();
         this.EmitProximityCheck(ProximityPayload.Empty);
-        _ = RunTurnAsync(destroyCancellationToken);
+        _ = RunTurnAsync(destroyCancellationToken, runBroadside: true);
     }
 
-    public void OnContinuingTurn() => _ = RunTurnAsync(destroyCancellationToken);
+    // Further actions of the same turn never fire again: the broadside belongs to the start of the turn.
+    public void OnContinuingTurn() => _ = RunTurnAsync(destroyCancellationToken, runBroadside: false);
 
     public void OnEndingTurn() { }
 
     /// <summary>
-    /// The empty turn. Never ends synchronously: TurnController raises NotifyAgentActivated right after
-    /// OnStartingTurn returns, and a turn already over by then would confuse every listener of that event.
-    /// SignalTurnEnd sits in a finally, like in EnemyTurnDriver, so the turn always ends.
+    /// Never ends synchronously: TurnController raises NotifyAgentActivated right after OnStartingTurn
+    /// returns, and a turn already over by then would confuse every listener of that event — the hold comes
+    /// first for this reason too. SignalTurnEnd sits in a finally, like in EnemyTurnDriver, so the turn always
+    /// ends, even when the broadside throws.
     /// </summary>
-    private async Awaitable RunTurnAsync(CancellationToken token)
+    private async Awaitable RunTurnAsync(CancellationToken token, bool runBroadside)
     {
         try
         {
             await Awaitable.WaitForSecondsAsync(_turnHoldSeconds, token);
+
+            if (runBroadside && _broadside != null)
+                await _broadside.ExecuteBroadsideAsync(token);
         }
         catch (OperationCanceledException)
         {
             // Destroyed mid-turn (scene unloaded): the turn loop is being cancelled too.
             return;
+        }
+        catch (Exception e)
+        {
+            // The turn is fire-and-forget: without this a broadside failure would vanish silently.
+            Debug.LogException(e, this);
         }
         finally
         {

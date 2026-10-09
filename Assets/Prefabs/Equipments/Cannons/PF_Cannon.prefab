@@ -142,7 +142,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5587952578991430984}
-        m_TargetAssemblyTypeName: ShootingEquipment, SillyPirates.Runtime
+        m_TargetAssemblyTypeName: OffensiveEquipment, SillyPirates.Runtime
         m_MethodName: OnSelectionCtxChange
         m_Mode: 1
         m_Arguments:
@@ -259,6 +259,8 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   _muzzleAnchor: {fileID: 0}
+  _broadsideRoster: {fileID: 11400000, guid: b7a1c3d5e9f24a6b8c0d1e2f3a4b5c6d, type: 2}
+  _targetSelector: {fileID: 11400000, guid: c8b2d4e6f0a35b7c9d1e2f3a4b5c6d7e, type: 2}
 --- !u!114 &3088319308627148957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,7 +278,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5587952578991430984}
-        m_TargetAssemblyTypeName: ShootingEquipment, SillyPirates.Runtime
+        m_TargetAssemblyTypeName: OffensiveEquipment, SillyPirates.Runtime
         m_MethodName: CheckProximity
         m_Mode: 0
         m_Arguments:
@@ -304,7 +306,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5587952578991430984}
-        m_TargetAssemblyTypeName: ShootingEquipment, SillyPirates.Runtime
+        m_TargetAssemblyTypeName: OffensiveEquipment, SillyPirates.Runtime
         m_MethodName: OnTurnChange
         m_Mode: 0
         m_Arguments:

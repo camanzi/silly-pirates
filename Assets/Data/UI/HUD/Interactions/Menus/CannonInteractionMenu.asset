@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e8a38256fc62ea4994c76b69ecfb1d8, type: 3}
   m_Name: CannonInteractionMenu
   m_EditorClassIdentifier: Assembly-CSharp::InteractionSetSO
-  _mainAction: {fileID: 11400000, guid: 83afa6a004c9394449a9033b522ff6a1, type: 2}
+  _mainAction: {fileID: 11400000, guid: 2a522ce3fa70abf4c981fa1ae1511768, type: 2}
   _cooldownIcon: {fileID: 21300000, guid: a3e696fd2ca12b94cba78a6864693a9f, type: 3}
   _availableActions:
   - {fileID: 11400000, guid: 245070555524e8941b8cab7b7a438712, type: 2}

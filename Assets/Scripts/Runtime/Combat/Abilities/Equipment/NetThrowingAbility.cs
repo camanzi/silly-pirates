@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Net Throwing Ability", menuName = "Abilities/Equipment/Net Throwing Ability")]
-public class NetThrowingAbility : AbilityBase, IMultiTargetAbility, IOffensiveAbility
+public class NetThrowingAbility : AbilityBase, IMultiTargetAbility, IOffensiveAbility, IBroadsideAbility
 {
     [Header("Net Throwing configs")]
     [SerializeField] private int _maxTargets = 1;
@@ -27,8 +27,14 @@ public class NetThrowingAbility : AbilityBase, IMultiTargetAbility, IOffensiveAb
     }
 
     public override ICommand CreateCommand(IInteractableElement caster, TargetingData? targetingData, ref object cache)
+        => BuildCommand(caster, _selectionCtx.CurrentTargets);
+
+    public ICommand CreateBroadsideCommand(IInteractableElement caster, List<ITargettable> targets)
+        => BuildCommand(caster, targets);
+
+    private NetThrowCommand BuildCommand(IInteractableElement caster, List<ITargettable> targets)
     {
-        return new NetThrowCommand(caster, _selectionCtx.CurrentTargets, _projectilePrefab, _cooldown, _slowPassiveSO, trajectoryConfigData, _muzzleVfx, _vfxChannel);
+        return new NetThrowCommand(caster, targets, _projectilePrefab, _cooldown, _slowPassiveSO, trajectoryConfigData, _muzzleVfx, _vfxChannel);
     }
 
     public override AbilityPreviewData GetPreviewData(IInteractableElement caster, TargetingData targetingData, ref object cache)

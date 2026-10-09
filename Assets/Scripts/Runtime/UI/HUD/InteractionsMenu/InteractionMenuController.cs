@@ -296,6 +296,7 @@ public class InteractionMenuController : WorldSpaceContainer
         _statusElement.SetData(
             _interactionSet.MainAction,
             _interactionSet.CooldownIcon,
+            _interactionSet.DormantIcon,
             _bindedMenuElement,
             _currentTurnState?.ActiveAgent,
             _bindedMenuElement as IAwakable,

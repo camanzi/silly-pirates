@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f03152fcfb4bcf1479dc4473dace3173, type: 3}
+  m_Name: BroadsideCameraCueProfile
+  m_EditorClassIdentifier: SillyPirates.Runtime::CameraCueProfileSO
+  _framingSize: 0.85
+  _memberRadius: 3
+  _preShotHold: 0.4
+  _postShotHold: 0.8
+  _orbitSpeed: 0
+  _orbitMaxDegrees: 10
+  _orbitEase: 1
+  _useCueHeading: 1
+  _yawOffset: 145
+  _pitch: 30
+  _mirrorTowardGroup: 1

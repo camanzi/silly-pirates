@@ -40,6 +40,10 @@ public class CameraDirector : MonoBehaviour
     private Tween _orbitTween;
     private Quaternion _baseCameraRotation;
 
+    // The angle the current cue is shot from: the authored _baseCameraRotation, unless the profile aims the
+    // shot along the cue's ShotHeading. Recomputed at every cue, so a heading shot never leaks into the next.
+    private Quaternion _cueBaseRotation;
+
     // Pool of ground anchors, grown on demand so a cue can frame several areas at once
     // (one member per affected point) rather than a single centroid.
     private readonly List<Transform> _groundAnchors = new();
@@ -122,6 +126,7 @@ public class CameraDirector : MonoBehaviour
         // one, because no cue can start before the rig has registered itself.
         _groupFraming = camera.GetComponent<CinemachineGroupFraming>();
         _baseCameraRotation = camera.transform.rotation;
+        _cueBaseRotation = _baseCameraRotation;
     }
 
     private void HandleTargetGroupChanged(CinemachineTargetGroup targetGroup) => _targetGroup = targetGroup;
@@ -163,6 +168,7 @@ public class CameraDirector : MonoBehaviour
         // Back-to-back cues (intro beats) re-enter here without an intervening release, so the previous
         // sweep must die and the yaw be re-seeded BEFORE the reframe — the jump then hides inside the
         // repositioning caused by the group being cleared and repopulated.
+        _cueBaseRotation = ComputeCueBaseRotation(context.Cue, context.Profile);
         SeedOrbitStart(context.Profile);
 
         _activeProfile = context.Profile;
@@ -181,8 +187,9 @@ public class CameraDirector : MonoBehaviour
 
     /// <summary>
     /// Kills any running sweep and parks the vcam at the orbit's starting yaw (-half the sweep), so the
-    /// shot blends in already rotated and the drift crosses the authored angle instead of leaving it.
-    /// Cues without an orbit are parked back on the authored angle.
+    /// shot blends in already rotated and the drift crosses the cue's base angle instead of leaving it.
+    /// Cues without an orbit are parked on the cue's base angle (the authored one unless the profile aims
+    /// along the cue's heading).
     /// </summary>
     private void SeedOrbitStart(CameraCueProfileSO profile)
     {
@@ -217,7 +224,98 @@ public class CameraDirector : MonoBehaviour
         => Mathf.Sign(profile.OrbitSpeed) * profile.OrbitMaxDegrees * 0.5f;
 
     private Quaternion OrbitRotation(float degrees)
-        => Quaternion.AngleAxis(degrees, Vector3.up) * _baseCameraRotation;
+        => Quaternion.AngleAxis(degrees, Vector3.up) * _cueBaseRotation;
+
+    /// <summary>
+    /// The authored angle, unless the profile asks to shoot relative to the cue's heading and the cue has
+    /// one: then the view is turned <see cref="CameraCueProfileSO.YawOffset"/> degrees from the heading and
+    /// tilted by <see cref="CameraCueProfileSO.Pitch"/>. With <see cref="CameraCueProfileSO.MirrorTowardGroup"/>
+    /// the offset's sign is chosen so the view looks toward the side the targets are on.
+    /// </summary>
+    private Quaternion ComputeCueBaseRotation(AbilityExecutionCue cue, CameraCueProfileSO profile)
+    {
+        if (profile == null || !profile.UseCueHeading || !cue.ShotHeading.HasValue) return _baseCameraRotation;
+
+        Vector3 heading = cue.ShotHeading.Value;
+        heading.y = 0f;
+        if (heading.sqrMagnitude < 0.0001f) return _baseCameraRotation;
+        heading.Normalize();
+
+        float offset = profile.YawOffset;
+        if (profile.MirrorTowardGroup && TryGetTargetSide(cue, heading, out float side))
+            offset = Mathf.Abs(offset) * side;
+
+        float headingYaw = Mathf.Atan2(heading.x, heading.z) * Mathf.Rad2Deg;
+        return Quaternion.Euler(profile.Pitch, headingYaw + offset, 0f);
+    }
+
+    /// <summary>
+    /// Which side of the heading the targets sit on, seen from the cue's origin (caster and affected points,
+    /// or TargetPoint): +1 = clockwise from above, i.e. the side a positive yaw turns toward. False when
+    /// there are no targets or no origin to measure from, or when the targets sit right on the heading line.
+    /// </summary>
+    private static bool TryGetTargetSide(AbilityExecutionCue cue, Vector3 heading, out float side)
+    {
+        side = 1f;
+
+        if (!TryGetTargetsCentroid(cue, out Vector3 targets)) return false;
+        if (!TryGetOriginCentroid(cue, out Vector3 origin)) return false;
+
+        float cross = Vector3.Cross(heading, targets - origin).y;
+        if (Mathf.Abs(cross) < 0.01f) return false;
+
+        side = Mathf.Sign(cross);
+        return true;
+    }
+
+    private static bool TryGetTargetsCentroid(AbilityExecutionCue cue, out Vector3 centroid)
+    {
+        centroid = Vector3.zero;
+        int count = 0;
+        if (cue.Targets != null)
+        {
+            for (int i = 0; i < cue.Targets.Count; i++)
+            {
+                ITargettable target = cue.Targets[i];
+                if (target == null || target.Transform == null) continue;
+                centroid += target.Transform.position;
+                count++;
+            }
+        }
+
+        if (count == 0) return false;
+        centroid /= count;
+        return true;
+    }
+
+    private static bool TryGetOriginCentroid(AbilityExecutionCue cue, out Vector3 centroid)
+    {
+        centroid = Vector3.zero;
+        int count = 0;
+
+        if (cue.Caster != null && cue.Caster.Transform != null)
+        {
+            centroid += cue.Caster.Transform.position;
+            count++;
+        }
+        if (cue.AffectedCells != null)
+        {
+            for (int i = 0; i < cue.AffectedCells.Count; i++)
+            {
+                centroid += cue.AffectedCells[i];
+                count++;
+            }
+        }
+        if (count == 0 && cue.TargetPoint.HasValue)
+        {
+            centroid = cue.TargetPoint.Value;
+            count = 1;
+        }
+
+        if (count == 0) return false;
+        centroid /= count;
+        return true;
+    }
 
     private void OnFocusEnded()
     {
@@ -235,8 +333,11 @@ public class CameraDirector : MonoBehaviour
         // A new cue may have started during the hold — don't steal its camera
         if (_isCueActive) return;
 
-        // Never hand the vcam back to the player rotated
-        StopOrbit();
+        // Only the drift stops here: the rotation is left where the shot ended. Snapping it back to the
+        // authored angle in the same frame the vcam is disabled would make the blend-out start from a
+        // different angle than the one on screen (a visible jump with a heading shot ~145 degrees away).
+        // The next cue re-seeds the rotation anyway (SeedOrbitStart), so nothing accumulates.
+        _orbitTween.Stop();
         // The rig may have gone away during the hold (a scene unload): StopOrbit tolerates that already,
         // this does not.
         if (_actionCamera != null) _actionCamera.enabled = false;

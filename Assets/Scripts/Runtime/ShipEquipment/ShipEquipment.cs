@@ -58,6 +58,9 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
 
     public AbilityController ActiveAbilityController => _abilityController;
 
+    /// <summary>Resolved in Awake, so it is already available to subclasses in OnEnable.</summary>
+    protected EquipmentStateMachine StateMachine => _stateMachine;
+
     protected override void Awake()
     {
         base.Awake();

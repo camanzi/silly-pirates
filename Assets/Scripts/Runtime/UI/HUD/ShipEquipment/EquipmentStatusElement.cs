@@ -20,6 +20,7 @@ public partial class EquipmentStatusElement : VisualElement
     private VisualElement _radialMaskElement;
     private InteractionActionSO _data;
     private Sprite _cooldownIcon;
+    private Sprite _dormantIcon;
     private IInteractableElement _bindedElement;
     private ITurnAgent _interactingAgent;
     private IAwakable _awakable;
@@ -55,13 +56,14 @@ public partial class EquipmentStatusElement : VisualElement
         RegisterCallback<PointerDownEvent>(OnPointerClick);
     }
 
-    public void SetData(InteractionActionSO mainAction, Sprite cooldownIcon,
+    public void SetData(InteractionActionSO mainAction, Sprite cooldownIcon, Sprite dormantIcon,
                         IInteractableElement bindedElement, ITurnAgent agent,
                         IAwakable awakable, Action onClickAction,
                         AbilityCostEventChannel hoverChannel = null)
     {
         _data = mainAction;
         _cooldownIcon = cooldownIcon;
+        _dormantIcon = dormantIcon;
         _bindedElement = bindedElement;
         _interactingAgent = agent;
         _awakable = awakable;
@@ -97,7 +99,8 @@ public partial class EquipmentStatusElement : VisualElement
 
         _prevCooldown = 0;
 
-        Sprite icon = _data?.Icon;
+        // Not awake yet: the dormant icon, when the set provides one. Awake: the main action's icon.
+        Sprite icon = !_awakable.IsAwake && _dormantIcon != null ? _dormantIcon : _data?.Icon;
         if (icon != null)
             _iconElement.style.backgroundImage = new StyleBackground(icon);
 

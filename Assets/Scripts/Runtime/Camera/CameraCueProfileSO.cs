@@ -33,6 +33,25 @@ public class CameraCueProfileSO : ScriptableObject
     [Tooltip("Orbit curve. Linear = constant speed, OutSine = soft arrival at the clamp")]
     [SerializeField] private Ease _orbitEase = Ease.Linear;
 
+    [Header("Shot Angle")]
+    [Tooltip("Aim the shot relative to the cue's ShotHeading (e.g. the ship's bow) instead of the action " +
+             "camera's authored angle. Ignored when the cue carries no heading")]
+    [SerializeField] private bool _useCueHeading;
+
+    [Tooltip("Degrees the view direction is turned away from the heading, around the vertical axis. " +
+             "0 = looking along the heading (from behind the stern), 180 = looking back from ahead of the " +
+             "bow, ~145 = three-quarter view from the bow")]
+    [Range(-180f, 180f)]
+    [SerializeField] private float _yawOffset = 145f;
+
+    [Tooltip("Downward tilt of the shot in degrees (the authored action camera uses 45)")]
+    [Range(5f, 89f)]
+    [SerializeField] private float _pitch = 30f;
+
+    [Tooltip("Flip the yaw offset's sign so the view looks toward the side where the targets are: the " +
+             "camera sits on the far side and the subject at the heading's origin stays in the foreground")]
+    [SerializeField] private bool _mirrorTowardGroup = true;
+
     public float FramingSize => _framingSize;
     public float MemberRadius => _memberRadius;
     public float PreShotHold => _preShotHold;
@@ -41,4 +60,8 @@ public class CameraCueProfileSO : ScriptableObject
     public float OrbitMaxDegrees => _orbitMaxDegrees;
     public Ease OrbitEase => _orbitEase;
     public bool HasOrbit => Mathf.Abs(_orbitSpeed) > 0.01f;
+    public bool UseCueHeading => _useCueHeading;
+    public float YawOffset => _yawOffset;
+    public float Pitch => _pitch;
+    public bool MirrorTowardGroup => _mirrorTowardGroup;
 }

@@ -13,6 +13,12 @@ public struct AbilityExecutionCue
     public CameraCueType? CueTypeOverride;
     public CameraCueProfileSO ProfileOverride;
 
+    /// <summary>
+    /// Optional world-space reference direction (only its horizontal part is used) for profiles that aim
+    /// the shot relative to the subject, e.g. the ship's bow. Null = the action camera's authored angle.
+    /// </summary>
+    public Vector3? ShotHeading;
+
     public AbilityExecutionCue(AbilityBase ability, IInteractableElement caster, IReadOnlyList<ITargettable> targets, IReadOnlyList<Vector3> affectedCells, Vector3? targetPoint)
     {
         Ability = ability;
@@ -22,5 +28,6 @@ public struct AbilityExecutionCue
         TargetPoint = targetPoint;
         CueTypeOverride = null;
         ProfileOverride = null;
+        ShotHeading = null;
     }
 }

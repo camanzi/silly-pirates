@@ -1474,6 +1474,68 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 50, y: 0.1, z: 25}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &4719283746501928371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4719283746501928372}
+  m_Layer: 0
+  m_Name: BowAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4719283746501928372
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4719283746501928371}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 29.44, y: 0.95, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3150874238114497636}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4719283746501928373
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4719283746501928374}
+  m_Layer: 0
+  m_Name: SternAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4719283746501928374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4719283746501928373}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -41.79, y: 3.39, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3150874238114497636}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5276120158075702014
 GameObject:
   m_ObjectHideFlags: 0
@@ -1602,6 +1664,7 @@ GameObject:
   - component: {fileID: 700315522822921877}
   - component: {fileID: 1253841308806257557}
   - component: {fileID: 4826193057712340921}
+  - component: {fileID: 7319024856193047712}
   m_Layer: 0
   m_Name: PF_Ship
   m_TagString: Ship
@@ -1626,6 +1689,8 @@ Transform:
   - {fileID: 6961389206989976350}
   - {fileID: 834601339252987050}
   - {fileID: 2804897808163957411}
+  - {fileID: 4719283746501928372}
+  - {fileID: 4719283746501928374}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1450389051071591541
@@ -1763,7 +1828,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5c2cc9c621dad64ea0ff8c5b07065cb, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: SillyPirates.Runtime::ShipTurnAgent
   _agentData: {fileID: 11400000, guid: 3f9a6c2e8b1d4e7a9c05d2b4e6f81a37, type: 2}
   _renderingAgentData: {fileID: 11400000, guid: 8d2e4b7a1c9f4a63b0e5f7d2c1a49b58, type: 2}
@@ -1774,6 +1839,27 @@ MonoBehaviour:
   _currentTurnState: {fileID: 11400000, guid: ed1afc2e6b73d3544ba1ce69e4ee4e98, type: 2}
   _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
   _turnHoldSeconds: 0.75
+--- !u!114 &7319024856193047712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5928166714952300585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 042b8dcbccb87de4fba4fa4c4fdca34a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SillyPirates.Runtime::ShipBroadsideController
+  _roster: {fileID: 11400000, guid: b7a1c3d5e9f24a6b8c0d1e2f3a4b5c6d, type: 2}
+  _commandQueue: {fileID: 11400000, guid: 2bb0156ed80382545b45f1646e47397c, type: 2}
+  _staggerSeconds: 0.25
+  _cameraDirectorState: {fileID: 11400000, guid: f444b41fb65a05744991c01ad7516548, type: 2}
+  _cameraCueChannel: {fileID: 11400000, guid: 70a4814f32d6b3743aa813657fe1df03, type: 2}
+  _broadsideCueProfile: {fileID: 11400000, guid: 286c9ce3d1743304aba863386745ad07, type: 2}
+  _bowAnchor: {fileID: 4719283746501928372}
+  _sternAnchor: {fileID: 4719283746501928374}
+  _threatChannel: {fileID: 11400000, guid: d4b88e968a27a5c4a9f4cfd8bde49337, type: 2}
 --- !u!1 &6777778296154917764
 GameObject:
   m_ObjectHideFlags: 0
