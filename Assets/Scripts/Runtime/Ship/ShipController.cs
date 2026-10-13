@@ -26,6 +26,9 @@ public class ShipController : MonoBehaviour
 
     private Dictionary<string, (TilemapTarget target, List<Vector3Int> cells)> _activeLayers = new();
 
+    /// <summary>The walkable floor of the ship. Resolved in Awake: null before then.</summary>
+    public Tilemap FloorMap => _floorMap;
+
     private void Awake()
     {
         _shipGrid = GetComponentInChildren<Grid>();

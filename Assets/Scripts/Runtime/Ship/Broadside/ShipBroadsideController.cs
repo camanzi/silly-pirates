@@ -4,7 +4,12 @@ using UnityEngine;
 
 /// <summary>
 /// Fires the Broadside: every offensive equipment armed in the <see cref="BroadsideRosterSO"/> shoots
-/// during the ship's turn, quasi-simultaneously, in awakening order.
+/// during the ship's turn, in waves defined by the <see cref="BroadsideZoneTile"/> it stands on.
+///
+/// Firing order: all the equipment on priority-1 tiles fire together, and the next wave starts only once the
+/// previous one has fully landed (one <see cref="BroadsideCommand"/> per wave, processed in sequence by the
+/// command queue). Inside a wave the shots are simultaneous and keep the awakening order. An equipment that
+/// does not stand on a zone tile is skipped with a warning and stays armed.
 ///
 /// The targets were picked by each equipment when it awakened; here they are re-validated (dead or no
 /// longer legal targets are dropped) and the missing slots refilled by asking that equipment's selector
@@ -19,10 +24,6 @@ public class ShipBroadsideController : MonoBehaviour
     [Header("Data")]
     [SerializeField] private BroadsideRosterSO _roster;
     [SerializeField] private CommandQueueSO _commandQueue;
-
-    [Header("Timing")]
-    [Tooltip("Delay between the start of one shot and the next, in awakening order")]
-    [SerializeField] [Min(0f)] private float _staggerSeconds = 0.25f;
 
     [Header("Camera Direction")]
     [SerializeField] private CameraDirectorStateSO _cameraDirectorState;
@@ -41,20 +42,25 @@ public class ShipBroadsideController : MonoBehaviour
 
     private readonly List<BroadsideEntry> _snapshot = new();
     private readonly List<ITargettable> _refillBuffer = new();
+    private readonly List<List<PlannedShot>> _waves = new();
 
     private readonly struct PlannedShot
     {
         public readonly OffensiveEquipment Equipment;
         public readonly AbilityBase Ability;
         public readonly List<ITargettable> Targets;
+        public readonly int Priority;
 
-        public PlannedShot(OffensiveEquipment equipment, AbilityBase ability, List<ITargettable> targets)
+        public PlannedShot(OffensiveEquipment equipment, AbilityBase ability, List<ITargettable> targets, int priority)
         {
             Equipment = equipment;
             Ability = ability;
             Targets = targets;
+            Priority = priority;
         }
     }
+
+    private static readonly System.Func<PlannedShot, int> PriorityOf = shot => shot.Priority;
 
     public bool HasArmedEquipment => _roster != null && _roster.Entries.Count > 0;
 
@@ -92,15 +98,24 @@ public class ShipBroadsideController : MonoBehaviour
 
             token.ThrowIfCancellationRequested();
 
-            var shots = new List<BroadsideCommand.Shot>(planned.Count);
-            for (int i = 0; i < planned.Count; i++)
+            // One command per wave: the queue runs them in sequence, so a wave starts only once the previous
+            // one has fully landed. Inside a wave every shot starts at once.
+            BroadsideFiringOrder.BuildWaves(planned, PriorityOf, _waves);
+            for (int w = 0; w < _waves.Count; w++)
             {
-                var ability = (IBroadsideAbility)planned[i].Ability;
-                ICommand command = ability.CreateBroadsideCommand(planned[i].Equipment, planned[i].Targets);
-                shots.Add(new BroadsideCommand.Shot(command, i * _staggerSeconds));
-            }
+                List<PlannedShot> wave = _waves[w];
+                var shots = new List<BroadsideCommand.Shot>(wave.Count);
+                for (int i = 0; i < wave.Count; i++)
+                {
+                    var ability = (IBroadsideAbility)wave[i].Ability;
+                    ICommand command = ability.CreateBroadsideCommand(wave[i].Equipment, wave[i].Targets);
+                    shots.Add(new BroadsideCommand.Shot(command, 0f));
+                }
 
-            _commandQueue.AddCommand(new BroadsideCommand(shots, token));
+                _commandQueue.AddCommand(new BroadsideCommand(shots, token));
+            }
+            _waves.Clear();
+
             await _commandQueue.ProcessQueueAsync();
         }
         finally
@@ -129,13 +144,36 @@ public class ShipBroadsideController : MonoBehaviour
                 continue;
             }
 
+            if (!TryGetFiringPriority(equipment, out int priority)) continue;
+
             List<ITargettable> targets = ResolveTargets(equipment, ability, entry.Targets);
             if (targets.Count == 0) continue;
 
-            planned.Add(new PlannedShot(equipment, ability, targets));
+            planned.Add(new PlannedShot(equipment, ability, targets, priority));
         }
 
         return planned;
+    }
+
+    /// <summary>
+    /// The firing priority of the <see cref="BroadsideZoneTile"/> under the equipment. False (with a warning)
+    /// when the equipment has no floor tilemap or does not stand on a zone tile: it is skipped and stays armed.
+    /// </summary>
+    private static bool TryGetFiringPriority(OffensiveEquipment equipment, out int priority)
+    {
+        priority = 0;
+        var tilemap = equipment.activeTilemap;
+        BroadsideZoneTile zone = tilemap != null ? tilemap.GetTile<BroadsideZoneTile>(equipment.gridPosition) : null;
+        if (zone == null)
+        {
+            Debug.LogWarning($"[{nameof(ShipBroadsideController)}] '{equipment.name}' at cell {equipment.gridPosition} " +
+                             $"does not stand on a {nameof(BroadsideZoneTile)}" +
+                             (tilemap == null ? " (no floor tilemap)" : "") + ": skipped, it stays armed.", equipment);
+            return false;
+        }
+
+        priority = zone.FiringPriority;
+        return true;
     }
 
     /// <summary>
