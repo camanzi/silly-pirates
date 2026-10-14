@@ -4,6 +4,13 @@ using UnityEngine.Tilemaps;
 
 public static class GridUtils
 {
+    /// <summary>
+    /// True when <paramref name="cell"/> holds a <see cref="TerrainTile"/> marked walkable. An empty cell, or a
+    /// tile that is not a TerrainTile, is not walkable.
+    /// </summary>
+    public static bool IsWalkable(Tilemap tilemap, Vector3Int cell)
+        => tilemap.GetTile<TerrainTile>(cell) is { isWalkable: true };
+
     /**
      * Find the inner area based on the cellBounds
      * 

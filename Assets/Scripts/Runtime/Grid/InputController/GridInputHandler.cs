@@ -135,7 +135,10 @@ public class GridInputHandler : MonoBehaviour
         {
             // The authoritative source: it is the very cell the element registers itself with in
             // GridStateDataSO (GridElement.InitializePosition), so targeting and occupancy cannot
-            // diverge.
+            // diverge. A multi-cell element always snaps to its anchor (the first of its OccupiedCells),
+            // whichever of its cells is under the pointer: the hovered cell stays stable while moving across
+            // the element (no hover flicker), and abilities that care about the whole footprint read it from
+            // the target itself.
             cellPos = gridElement.gridPosition;
         }
         else

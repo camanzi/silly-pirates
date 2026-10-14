@@ -251,12 +251,7 @@ public static class PathFindingUtils
         return (Mathf.Abs(ac.x - bc.x) + Mathf.Abs(ac.y - bc.y) + Mathf.Abs(ac.z - bc.z)) / 2 * 10;
     }
 
-    private static Vector3Int OffsetToCube(Vector3Int hex)
-    {
-        int q = hex.x - (hex.y - (hex.y & 1)) / 2;
-        int r = hex.y;
-        return new Vector3Int(q, r, -q - r);
-    }
+    private static Vector3Int OffsetToCube(Vector3Int hex) => HexCoordinates.OffsetToCube(hex);
 
     private static List<Vector3> RetracePath(Dictionary<Vector3, AStarNode> allNodes, Vector3Int start, Vector3Int end, bool includeStartingPosition)
     {

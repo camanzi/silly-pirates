@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 697114ac8b492f04a85a19eabb834d9b, type: 3}
   m_Name: Ship Turn Data
   m_EditorClassIdentifier: SillyPirates.Runtime::TurnAgentDataSO
-  _initialAgility: 100
+  _initialAgility: 25
   _maxActionPointsPerTurn: 0
   _maxHp: 0
   _maxMovementPoints: 0

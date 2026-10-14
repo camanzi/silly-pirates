@@ -85,15 +85,19 @@ public class RestoringAuraAbility : AbilityBase, IDefensiveAbility
     {
         if (cache is RestoringAuraCache) return;
 
-        Vector3Int casterPos = caster.gridPosition;
         Tilemap tilemap = caster.activeTilemap;
+
+        // The range is measured from every cell of the caster's footprint (the union of the circles around
+        // each cell). For a Single footprint this is exactly the circle around gridPosition.
+        IReadOnlyList<Vector3Int> sources = caster.OccupiedCells.Count > 0
+            ? caster.OccupiedCells
+            : new[] { caster.gridPosition };
+        var cellsInRange = new HashSet<Vector3Int>();
+        HexFootprint.CollectCellsInRange(sources, _range, cellsInRange);
+
         var validCells = new HashSet<Vector3Int>();
-
-        IAreaShape circle = ShapeFactory.GetShape(ShapeType.Circle);
-        foreach (Vector3 cellV3 in circle.GetCells(casterPos, _range, casterPos))
+        foreach (Vector3Int cell in cellsInRange)
         {
-            Vector3Int cell = Vector3Int.FloorToInt(cellV3);
-
             if (tilemap != null)
             {
                 TerrainTile tile = tilemap.GetTile<TerrainTile>(cell);

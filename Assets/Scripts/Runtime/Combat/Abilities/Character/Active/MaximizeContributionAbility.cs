@@ -32,7 +32,7 @@ public class MaximizeContributionAbility : AbilityBase
         Vector3Int hoveredCell = targetingData.cellPosition;
 
         IAwakable candidate = targetingData.selectedTarget as IAwakable;
-        bool eligible = mcCache.ValidCells.Contains(hoveredCell) && IsAwakenable(candidate);
+        bool eligible = IsInRange(mcCache, hoveredCell, targetingData.selectedTarget) && IsAwakenable(candidate);
 
         int pointsToAdd = eligible ? PointsToAwaken(candidate) : 0;
 
@@ -50,7 +50,19 @@ public class MaximizeContributionAbility : AbilityBase
 
         var affectedCells = new List<Vector3>();
         if (eligible)
-            affectedCells.Add((Vector3)hoveredCell);
+        {
+            // Highlight the whole footprint, not just the anchor the input snapped to.
+            if (targetingData.selectedTarget is GridElement targetElement && targetElement.OccupiedCells.Count > 0)
+            {
+                IReadOnlyList<Vector3Int> cells = targetElement.OccupiedCells;
+                for (int i = 0; i < cells.Count; i++)
+                    affectedCells.Add((Vector3)cells[i]);
+            }
+            else
+            {
+                affectedCells.Add((Vector3)hoveredCell);
+            }
+        }
 
         return new AbilityPreviewData(affectedCells: affectedCells, interactionArea: interactionArea);
     }
@@ -75,9 +87,20 @@ public class MaximizeContributionAbility : AbilityBase
 
         Vector3Int targetCell = targetingData.Value.cellPosition;
 
-        if (!mcCache.ValidCells.Contains(targetCell)) return false;
+        if (!IsInRange(mcCache, targetCell, targetingData.Value.selectedTarget)) return false;
 
         return IsAwakenable(targetingData.Value.selectedTarget as IAwakable);
+    }
+
+    /// <summary>
+    /// A grid target is in range when ANY of its footprint cells is a valid cell, so a multi-cell equipment
+    /// can be reached from next to either end. Anything else falls back to the targeted cell.
+    /// </summary>
+    private static bool IsInRange(MaximizeContributionCache mcCache, Vector3Int targetCell, ITargettable target)
+    {
+        if (target is GridElement element && element.OccupiedCells.Count > 0)
+            return HexFootprint.Intersects(element.OccupiedCells, mcCache.ValidCells);
+        return mcCache.ValidCells.Contains(targetCell);
     }
 
     /// <summary>

@@ -186,6 +186,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8595883062568843031}
   - {fileID: 1810718012008556421}
   - {fileID: 4880626236746559057}
   - {fileID: 5667311005613377722}
@@ -4575,6 +4576,80 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1650171258699165665, guid: 35d21ba057931cd4a941c6303ba8da2f, type: 3}
   m_PrefabInstance: {fileID: 2144399468081341713}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2212694030054695305
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2804897808163957411}
+    m_Modifications:
+    - target: {fileID: 36897590170267448, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.frameRate
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 36897590170267448, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.frameCount
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.88
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.0500002
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8973375932132218810, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_Name
+      value: PF_Character (prototype)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8973375932132218810, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+--- !u!4 &8595883062568843031 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7638007545298146974, guid: ac8c55e926e28e74fba37a313d3742dc, type: 3}
+  m_PrefabInstance: {fileID: 2212694030054695305}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3162473497438892332
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4707,6 +4782,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2804897808163957411}
     m_Modifications:
+    - target: {fileID: 2276149686978261059, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.frameRate
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276149686978261059, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
+      propertyPath: _animations._serializedList.Array.data[1].Value.frameCount
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7174869599670356161, guid: 2a1ce05613b5b754f96b052278d42040, type: 3}
       propertyPath: m_Name
       value: PF_Character (green)

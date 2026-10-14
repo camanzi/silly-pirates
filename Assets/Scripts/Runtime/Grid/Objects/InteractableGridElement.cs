@@ -48,7 +48,8 @@ public class InteractableGridElement : GridElement, ISelectable, IInteractableEl
         int distance = 0;
         if (!payload.Equals(ProximityPayload.Empty))
         {
-            distance = PathFindingUtils.GetNormalizedDistance(gridPosition, payload.ActiveCharacter.gridPosition);
+            // Measured from the closest footprint cell, so a multi-cell element is reachable from any side.
+            distance = DistanceTo(payload.ActiveCharacter.gridPosition);
         }
 
         bool isInside = distance <= payload.Range;

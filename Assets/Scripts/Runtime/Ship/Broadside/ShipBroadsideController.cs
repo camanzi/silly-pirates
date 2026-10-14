@@ -156,8 +156,10 @@ public class ShipBroadsideController : MonoBehaviour
     }
 
     /// <summary>
-    /// The firing priority of the <see cref="BroadsideZoneTile"/> under the equipment. False (with a warning)
-    /// when the equipment has no floor tilemap or does not stand on a zone tile: it is skipped and stays armed.
+    /// The firing priority of the <see cref="BroadsideZoneTile"/> under the equipment's anchor cell
+    /// (<see cref="GridElement.gridPosition"/>): for a multi-cell footprint only the anchor's zone tile counts,
+    /// the other cells are ignored. False (with a warning) when the equipment has no floor tilemap or its
+    /// anchor does not stand on a zone tile: it is skipped and stays armed.
     /// </summary>
     private static bool TryGetFiringPriority(OffensiveEquipment equipment, out int priority)
     {

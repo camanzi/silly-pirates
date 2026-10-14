@@ -265,6 +265,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _gridStateData: {fileID: 11400000, guid: 479519bed777d7e43a7d7779d0d92d2d, type: 2}
+  _footprint:
+    _shape: 0
+    _count: 1
+    _direction: 0
   _selectionContext: {fileID: 11400000, guid: ee6922577520803478805042c29aac31, type: 2}
   _elementClickedChannel: {fileID: 11400000, guid: adcaff47cd319eb41a9408be863c9814, type: 2}
   _proximityChannel: {fileID: 11400000, guid: 76fe551874b2f6c4fbe1e5ec52c77090, type: 2}
@@ -301,7 +305,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _muzzleAnchor: {fileID: 0}
+  _muzzleAnchor: {fileID: 3311076610313425691}
   _broadsideRoster: {fileID: 11400000, guid: b7a1c3d5e9f24a6b8c0d1e2f3a4b5c6d, type: 2}
   _targetSelector: {fileID: 11400000, guid: c8b2d4e6f0a35b7c9d1e2f3a4b5c6d7e, type: 2}
 --- !u!114 &5683350261739841425
