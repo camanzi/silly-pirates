@@ -7,7 +7,7 @@ using UnityEngine;
 /// <see cref="BroadsideTargetSelectorSO"/>, and fires during the ship's turn together with every other armed
 /// equipment (see <see cref="ShipBroadsideController"/>).
 /// </summary>
-public class OffensiveEquipment : ShipEquipment, IDMGTypeOwner
+public class OffensiveEquipment : ShipEquipment, IDMGTypeOwner, IAutoActivatedEquipment
 {
     [Header("Broadside")]
     [Tooltip("Where this equipment arms itself when awakened, to fire during the ship's turn")]

@@ -9,25 +9,42 @@ using UnityEngine.Tilemaps;
 [CanEditMultipleObjects]
 public class ShipEquipmentEditor : Editor
 {
-    private const string FootprintProperty = "_footprint";
     private const float PanelWidth = 200f;
     private const float PanelHeight = 46f;
     private const float MiniMapHeight = 170f;
+    private const float RotationStep = 60f;
 
     private static readonly Color OtherEquipmentColor = new Color(0.85f, 0.85f, 0.85f, 1f);
     private const float OtherFillAlpha = 0.1f;
     private const float OtherOutlineAlpha = 0.4f;
-    private static readonly Color DirectionButtonColor = new Color(1f, 1f, 1f, 0.8f);
+
+    /// <summary>
+    /// Where an element's footprint was last resolved, cached because the collider probe is far too costly to
+    /// repeat on every IMGUI event for every equipment on the deck. Keyed on the element's
+    /// <c>localToWorldMatrix</c> (moving or rotating it, or the ship, recomputes it); anything else (collider
+    /// edits, child transforms, the floor) clears the whole cache through <see cref="ObjectChangeEvents"/>.
+    /// </summary>
+    private sealed class FootprintPreview
+    {
+        public bool IsCurrent;
+        public Matrix4x4 Matrix;
+        public bool Resolved;
+        public GridLayout Layout;
+        public Vector3Int Anchor;
+        public readonly List<Vector3Int> Cells = new List<Vector3Int>(ColliderFootprintProbe.MaxCells);
+    }
+
+    private readonly Dictionary<GridElement, FootprintPreview> _previews = new Dictionary<GridElement, FootprintPreview>();
 
     // The other equipment under the same Grid: drawn faint and fed to the overlap check.
     private readonly List<ShipEquipment> _siblings = new List<ShipEquipment>();
     private readonly HashSet<Vector3Int> _takenByOthers = new HashSet<Vector3Int>();
-    private readonly List<Vector3Int> _cellBuffer = new List<Vector3Int>(HexFootprint.MaxLineCount);
-    private readonly List<FootprintCell> _evaluation = new List<FootprintCell>(HexFootprint.MaxLineCount);
+    private readonly List<FootprintCell> _evaluation = new List<FootprintCell>(ColliderFootprintProbe.MaxCells);
+    private readonly List<FootprintCell> _inspectorEvaluation = new List<FootprintCell>(ColliderFootprintProbe.MaxCells);
 
     // Last scene evaluation of the single selected target, shown by the Inspector mini-map and HelpBox.
-    private readonly List<FootprintCell> _sceneEvaluation = new List<FootprintCell>(HexFootprint.MaxLineCount);
-    private GridFootprint _sceneEvaluationFootprint;
+    private readonly List<FootprintCell> _sceneEvaluation = new List<FootprintCell>(ColliderFootprintProbe.MaxCells);
+    private Vector3Int _sceneEvaluationAnchor;
     private bool _hasSceneEvaluation;
     private int _sceneEvaluationSignature;
 
@@ -53,18 +70,23 @@ public class ShipEquipmentEditor : Editor
         RefreshSiblings();
         EditorApplication.hierarchyChanged += OnHierarchyChanged;
         Undo.undoRedoPerformed += OnUndoRedo;
+        ObjectChangeEvents.changesPublished += OnChangesPublished;
     }
 
     private void OnDisable()
     {
         EditorApplication.hierarchyChanged -= OnHierarchyChanged;
         Undo.undoRedoPerformed -= OnUndoRedo;
+        ObjectChangeEvents.changesPublished -= OnChangesPublished;
     }
 
     public override void OnInspectorGUI()
     {
         if (DrawDefaultInspector())
+        {
+            InvalidatePreviews();
             SceneView.RepaintAll();
+        }
 
         if (!serializedObject.isEditingMultipleObjects)
             DrawFootprintPreview();
@@ -99,21 +121,25 @@ public class ShipEquipmentEditor : Editor
 
     private void DrawFootprintPreview()
     {
-        GridFootprint footprint = ((GridElement)target).Footprint;
-        bool fresh = HasFreshSceneEvaluation(footprint);
+        var element = (GridElement)target;
+        FootprintPreview preview = GetPreview(element);
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Footprint Preview", EditorStyles.boldLabel);
-
         Rect rect = GUILayoutUtility.GetRect(10f, MiniMapHeight, GUILayout.ExpandWidth(true));
-        if (FootprintPreviewGUI.Draw(rect, footprint, fresh ? _sceneEvaluation : null, out HexDirection clicked)
-            && clicked != footprint.Direction)
+
+        if (!preview.Resolved)
         {
-            ApplyFootprint(footprint.WithDirection(clicked), "Set Footprint Direction");
+            FootprintPreviewGUI.Draw(rect, null, default);
+            return;
         }
 
-        if (footprint.Shape != FootprintShape.Single)
-            EditorGUILayout.LabelField("Click a cell around the anchor to set the direction.", EditorStyles.miniLabel);
+        bool fresh = HasFreshSceneEvaluation(preview);
+        // Without a fresh Scene view evaluation the cells are still known, only their status is not.
+        if (!fresh) FootprintPlacement.Evaluate(preview.Cells, null, null, _inspectorEvaluation);
+        FootprintPreviewGUI.Draw(rect, fresh ? _sceneEvaluation : _inspectorEvaluation, preview.Anchor);
+
+        EditorGUILayout.LabelField(CellCountLabel(element.Footprint, preview.Cells.Count), EditorStyles.miniLabel);
 
         if (fresh)
             DrawPlacementProblems();
@@ -144,11 +170,18 @@ public class ShipEquipmentEditor : Editor
         builder.Append('(').Append(cell.x).Append(", ").Append(cell.y).Append(')');
     }
 
-    private bool HasFreshSceneEvaluation(GridFootprint footprint)
-        => _hasSceneEvaluation
-        && _sceneEvaluationFootprint.Shape == footprint.Shape
-        && _sceneEvaluationFootprint.Count == footprint.Count
-        && _sceneEvaluationFootprint.Direction == footprint.Direction;
+    /// <summary>True when the last Scene view evaluation was made for exactly the cells the element covers now.</summary>
+    private bool HasFreshSceneEvaluation(FootprintPreview preview)
+    {
+        if (!_hasSceneEvaluation || _sceneEvaluationAnchor != preview.Anchor) return false;
+        if (_sceneEvaluation.Count != preview.Cells.Count) return false;
+        for (int i = 0; i < _sceneEvaluation.Count; i++)
+            if (_sceneEvaluation[i].Cell != preview.Cells[i]) return false;
+        return true;
+    }
+
+    private static string CellCountLabel(GridFootprint footprint, int count)
+        => $"{footprint.Source}: {count} {(count == 1 ? "cell" : "cells")}";
 
     #endregion
 
@@ -160,38 +193,37 @@ public class ShipEquipmentEditor : Editor
         if (equipment == null) return;
 
         // With several objects selected Unity calls OnSceneGUI once per target: the shared layers (other
-        // equipment) are drawn once, and the interactive handles only exist for a single selection, since
-        // serializedObject would write the same footprint to every target.
+        // equipment) are drawn once, and the interactive handles only exist for a single selection.
         bool isFirstTarget = _selection.Length == 0 || target == _selection[0];
         bool interactive = _selection.Length <= 1;
         bool repaint = Event.current.type == EventType.Repaint;
 
-        if (!equipment.TryResolveFloorPreview(out GridLayout layout, out Vector3Int anchor))
+        FootprintPreview self = GetPreview(equipment);
+        if (!self.Resolved)
         {
             if (interactive) ClearSceneEvaluation();
             return;
         }
 
+        GridLayout layout = self.Layout;
+        Vector3Int anchor = self.Anchor;
         CollectOtherEquipment(equipment, layout, drawFaint: isFirstTarget && repaint);
 
         _floorTilemap = layout as Tilemap;
-        GridFootprint footprint = equipment.Footprint;
-        FootprintPlacement.Evaluate(anchor, footprint, _isWalkable, _isTakenByOther, _evaluation);
-        if (interactive) StoreSceneEvaluation(footprint);
+        FootprintPlacement.Evaluate(self.Cells, _isWalkable, _isTakenByOther, _evaluation);
+        if (interactive) StoreSceneEvaluation(anchor);
 
         HexCellGeometry.GetCornersWorld(layout, anchor, _corners);
         Vector3 anchorCentre = HexCellGeometry.CellCenterWorld(layout, anchor);
-        Vector3 normal = PlaneNormal(_corners);
+        Vector3 normal = HexCellGeometry.PlaneNormalWorld(layout, anchor);
         float cellRadius = Vector3.Distance(anchorCentre, _corners[0]);
 
         if (repaint)
-            DrawFootprint(layout, footprint, anchor, anchorCentre, normal, cellRadius);
+            DrawFootprint(layout, anchorCentre, normal, cellRadius);
 
         if (!interactive) return;
 
-        if (footprint.Shape != FootprintShape.Single)
-            DrawDirectionButtons(layout, anchor, footprint, normal, cellRadius);
-        DrawControlPanel(anchorCentre, footprint);
+        DrawControlPanel(equipment, anchorCentre, normal, self.Cells.Count);
     }
 
     private void CollectOtherEquipment(ShipEquipment self, GridLayout selfLayout, bool drawFaint)
@@ -201,23 +233,22 @@ public class ShipEquipmentEditor : Editor
         {
             ShipEquipment other = _siblings[s];
             if (other == null || other == self || !other.isActiveAndEnabled) continue;
-            if (!other.TryResolveFloorPreview(out GridLayout otherLayout, out Vector3Int otherAnchor)) continue;
+
+            FootprintPreview preview = GetPreview(other);
             // Only equipment standing on the same deck can overlap: cell coordinates of another grid
             // (another ship) mean nothing here.
-            if (otherLayout != selfLayout) continue;
+            if (!preview.Resolved || preview.Layout != selfLayout) continue;
 
-            HexFootprint.Resolve(otherAnchor, other.Footprint, _cellBuffer);
             bool draw = drawFaint && !IsTarget(other);
-            for (int i = 0; i < _cellBuffer.Count; i++)
+            for (int i = 0; i < preview.Cells.Count; i++)
             {
-                _takenByOthers.Add(_cellBuffer[i]);
-                if (draw) DrawCell(otherLayout, _cellBuffer[i], OtherEquipmentColor, OtherFillAlpha, OtherOutlineAlpha);
+                _takenByOthers.Add(preview.Cells[i]);
+                if (draw) DrawCell(preview.Layout, preview.Cells[i], OtherEquipmentColor, OtherFillAlpha, OtherOutlineAlpha);
             }
         }
     }
 
-    private void DrawFootprint(GridLayout layout, GridFootprint footprint, Vector3Int anchor,
-                               Vector3 anchorCentre, Vector3 normal, float cellRadius)
+    private void DrawFootprint(GridLayout layout, Vector3 anchorCentre, Vector3 normal, float cellRadius)
     {
         for (int i = 0; i < _evaluation.Count; i++)
         {
@@ -228,36 +259,13 @@ public class ShipEquipmentEditor : Editor
         // Anchor marker, kept visible even when the anchor cell itself is invalid.
         Handles.color = FootprintPreviewGUI.AnchorColor;
         Handles.DrawSolidDisc(anchorCentre, normal, cellRadius * 0.18f);
-
-        if (!footprint.HasDirection) return;
-
-        Vector3 to = HexCellGeometry.CellCenterWorld(layout, HexCoordinates.Neighbour(anchor, footprint.Direction));
-        Vector3 back = (anchorCentre - to) * 0.3f;
-        Vector3 side = Vector3.Cross(back, normal) * 0.5f;
-        Handles.DrawAAPolyLine(4f, anchorCentre, to);
-        Handles.DrawAAPolyLine(4f, to + back + side, to, to + back - side);
     }
 
-    private void DrawDirectionButtons(GridLayout layout, Vector3Int anchor, GridFootprint footprint,
-                                      Vector3 normal, float cellRadius)
+    private void DrawControlPanel(ShipEquipment equipment, Vector3 anchorCentre, Vector3 normal, int cellCount)
     {
-        Quaternion rotation = Quaternion.LookRotation(normal);
-        float size = cellRadius * 0.3f;
-
-        for (int i = 0; i < HexCoordinates.DirectionCount; i++)
-        {
-            var direction = (HexDirection)i;
-            Vector3 position = HexCellGeometry.CellCenterWorld(layout, HexCoordinates.Neighbour(anchor, direction));
-            Handles.color = direction == footprint.Direction ? FootprintPreviewGUI.AnchorColor : DirectionButtonColor;
-            if (Handles.Button(position, rotation, size, size, Handles.CircleHandleCap) && direction != footprint.Direction)
-                ApplyFootprint(footprint.WithDirection(direction), "Set Footprint Direction");
-        }
-    }
-
-    private void DrawControlPanel(Vector3 anchorCentre, GridFootprint footprint)
-    {
-        int max = HexFootprint.ClampCount(footprint.Shape, int.MaxValue);
-        bool resizable = max > 1;
+        Transform transform = equipment.transform;
+        Vector3 pivotOffset = InPlaneOffset(transform.position, anchorCentre, normal);
+        bool centred = pivotOffset.sqrMagnitude < 1e-8f;
 
         Handles.BeginGUI();
         Vector2 guiPoint = HandleUtility.WorldToGUIPoint(anchorCentre);
@@ -265,30 +273,32 @@ public class ShipEquipmentEditor : Editor
         GUI.Box(box, GUIContent.none, EditorStyles.helpBox);
 
         var label = new Rect(box.x + 4f, box.y + 3f, box.width - 8f, 16f);
-        GUI.Label(label, $"{footprint.Shape}: {footprint.Count}/{max} cells", EditorStyles.miniBoldLabel);
+        GUI.Label(label, CellCountLabel(equipment.Footprint, cellCount), EditorStyles.miniBoldLabel);
 
-        float buttonWidth = (box.width - 8f - 6f) / 4f;
-        var button = new Rect(box.x + 4f, box.y + 23f, buttonWidth, 18f);
+        float rotateWidth = (box.width - 8f - 6f) * 0.25f;
+        var button = new Rect(box.x + 4f, box.y + 23f, rotateWidth, 18f);
 
-        using (new EditorGUI.DisabledScope(!resizable || footprint.Count <= 1))
+        // Rotating the transform rotates the colliders, and with them a Collider footprint. Around the anchor
+        // cell centre rather than the pivot, so the anchor stays put; "counter-clockwise" as seen from above.
+        if (GUI.Button(button, new GUIContent("CCW", "Rotate 60 degrees counter-clockwise (seen from above) " +
+                                                     "around the anchor cell centre"), EditorStyles.miniButtonLeft))
+            RotateAroundAnchor(transform, anchorCentre, normal, -RotationStep);
+        button.x += rotateWidth;
+        if (GUI.Button(button, new GUIContent("CW", "Rotate 60 degrees clockwise (seen from above) " +
+                                                    "around the anchor cell centre"), EditorStyles.miniButtonRight))
+            RotateAroundAnchor(transform, anchorCentre, normal, RotationStep);
+        button.x += rotateWidth + 6f;
+        button.width = box.xMax - 4f - button.x;
+
+        using (new EditorGUI.DisabledScope(centred))
         {
-            if (GUI.Button(button, new GUIContent("-", "Remove a cell"), EditorStyles.miniButtonLeft))
-                ApplyFootprint(footprint.WithCount(footprint.Count - 1), "Change Footprint Count");
-        }
-        button.x += buttonWidth;
-        using (new EditorGUI.DisabledScope(!resizable || footprint.Count >= max))
-        {
-            if (GUI.Button(button, new GUIContent("+", "Add a cell"), EditorStyles.miniButtonRight))
-                ApplyFootprint(footprint.WithCount(footprint.Count + 1), "Change Footprint Count");
-        }
-        button.x += buttonWidth + 6f;
-        using (new EditorGUI.DisabledScope(!footprint.HasDirection))
-        {
-            if (GUI.Button(button, new GUIContent("CCW", "Rotate 60 degrees counter-clockwise"), EditorStyles.miniButtonLeft))
-                ApplyFootprint(footprint.Rotated(1), "Rotate Footprint");
-            button.x += buttonWidth;
-            if (GUI.Button(button, new GUIContent("CW", "Rotate 60 degrees clockwise"), EditorStyles.miniButtonRight))
-                ApplyFootprint(footprint.Rotated(-1), "Rotate Footprint");
+            if (GUI.Button(button, new GUIContent("Snap Pivot", "Move the pivot onto the anchor cell centre " +
+                                                               "(its height above the deck is kept)"), EditorStyles.miniButton))
+            {
+                Undo.RecordObject(transform, "Snap Pivot To Cell Centre");
+                transform.position -= pivotOffset;
+                AfterTransformEdit();
+            }
         }
 
         // A click on the panel background (or a disabled button) must not reach the scene and change the selection.
@@ -296,6 +306,28 @@ public class ShipEquipmentEditor : Editor
         if (evt.type == EventType.MouseDown && box.Contains(evt.mousePosition))
             evt.Use();
         Handles.EndGUI();
+    }
+
+    private void RotateAroundAnchor(Transform transform, Vector3 anchorCentre, Vector3 normal, float degrees)
+    {
+        // Recorded on the transform, so on a prefab instance the change lands as a regular override.
+        Undo.RecordObject(transform, "Rotate Equipment");
+        transform.RotateAround(anchorCentre, normal, degrees);
+        AfterTransformEdit();
+    }
+
+    private void AfterTransformEdit()
+    {
+        InvalidatePreviews();
+        SceneView.RepaintAll();
+        Repaint();
+    }
+
+    /// <summary>The component of <c>point - planePoint</c> lying in the grid plane.</summary>
+    private static Vector3 InPlaneOffset(Vector3 point, Vector3 planePoint, Vector3 normal)
+    {
+        Vector3 offset = point - planePoint;
+        return offset - normal * Vector3.Dot(offset, normal);
     }
 
     private void DrawCell(GridLayout layout, Vector3Int cell, Color color, float fillAlpha, float outlineAlpha)
@@ -310,12 +342,6 @@ public class ShipEquipmentEditor : Editor
         Handles.DrawAAPolyLine(2f, _outline);
     }
 
-    private static Vector3 PlaneNormal(Vector3[] corners)
-    {
-        Vector3 normal = Vector3.Cross(corners[1] - corners[0], corners[2] - corners[0]);
-        return normal.sqrMagnitude > 0f ? normal.normalized : Vector3.up;
-    }
-
     private bool IsTarget(Object candidate)
     {
         for (int i = 0; i < _selection.Length; i++)
@@ -327,30 +353,32 @@ public class ShipEquipmentEditor : Editor
 
     #region State
 
-    /// <summary>
-    /// Writes the footprint through a SerializedObject, so the change is undoable and recorded as a prefab
-    /// override on instances. Only called with a single target.
-    /// A temporary SerializedObject on <c>target</c> is used instead of the editor's own: this also runs from
-    /// OnSceneGUI, where Unity forbids touching <c>serializedObject</c>. The Inspector picks the change up on
-    /// its next serializedObject.Update().
-    /// </summary>
-    private void ApplyFootprint(GridFootprint footprint, string undoName)
+    /// <summary>The cached footprint of <paramref name="element"/>, recomputed when its transform changed.</summary>
+    private FootprintPreview GetPreview(GridElement element)
     {
-        using var so = new SerializedObject(target);
-        SerializedProperty property = so.FindProperty(FootprintProperty);
-        if (property == null) return;
+        if (!_previews.TryGetValue(element, out FootprintPreview preview))
+        {
+            preview = new FootprintPreview();
+            _previews.Add(element, preview);
+        }
 
-        property.FindPropertyRelative("_shape").intValue = (int)footprint.Shape;
-        property.FindPropertyRelative("_count").intValue = footprint.Count;
-        property.FindPropertyRelative("_direction").intValue = (int)footprint.Direction;
-        if (so.ApplyModifiedProperties())
-            Undo.SetCurrentGroupName(undoName);
-
-        SceneView.RepaintAll();
-        Repaint();
+        Matrix4x4 matrix = element.transform.localToWorldMatrix;
+        if (!preview.IsCurrent || preview.Matrix != matrix)
+        {
+            preview.Resolved = element.TryResolveFootprintPreview(out preview.Layout, out preview.Anchor, preview.Cells);
+            preview.Matrix = matrix;
+            preview.IsCurrent = true;
+        }
+        return preview;
     }
 
-    private void StoreSceneEvaluation(GridFootprint footprint)
+    private void InvalidatePreviews()
+    {
+        foreach (FootprintPreview preview in _previews.Values)
+            preview.IsCurrent = false;
+    }
+
+    private void StoreSceneEvaluation(Vector3Int anchor)
     {
         int signature = 17;
         for (int i = 0; i < _evaluation.Count; i++)
@@ -358,7 +386,7 @@ public class ShipEquipmentEditor : Editor
 
         _sceneEvaluation.Clear();
         _sceneEvaluation.AddRange(_evaluation);
-        _sceneEvaluationFootprint = footprint;
+        _sceneEvaluationAnchor = anchor;
 
         if (!_hasSceneEvaluation || signature != _sceneEvaluationSignature)
         {
@@ -390,12 +418,23 @@ public class ShipEquipmentEditor : Editor
 
     private void OnHierarchyChanged()
     {
+        // Destroyed elements would otherwise stay in the cache as dead keys.
+        _previews.Clear();
         RefreshSiblings();
         SceneView.RepaintAll();
     }
 
+    private void OnChangesPublished(ref ObjectChangeEventStream stream)
+    {
+        // Collider sizes, child transforms, the floor tiles: none of them moves the element's matrix.
+        InvalidatePreviews();
+        SceneView.RepaintAll();
+        Repaint();
+    }
+
     private void OnUndoRedo()
     {
+        InvalidatePreviews();
         SceneView.RepaintAll();
         Repaint();
     }

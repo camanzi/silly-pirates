@@ -13,9 +13,9 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
     {
         private static Vector3Int Cell(int x, int y, int z = 0) => new Vector3Int(x, y, z);
 
-        // Line 3 East on even row (2,2): (1,2), (2,2), (3,2). Pinned by HexFootprintTests.
+        // A row of three on even row 2, anchor first as GridElement produces it.
         private static readonly Vector3Int Anchor = Cell(2, 2);
-        private static readonly GridFootprint Line3East = new GridFootprint(FootprintShape.Line, 3, HexDirection.East);
+        private static readonly Vector3Int[] Line3East = { Cell(2, 2), Cell(1, 2), Cell(3, 2) };
 
         private static Func<Vector3Int, bool> InSet(params Vector3Int[] cells)
         {
@@ -42,7 +42,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         {
             List<FootprintCell> results = new List<FootprintCell>();
 
-            bool valid = FootprintPlacement.Evaluate(Anchor, Line3East, AllWalkable, NothingTaken, results);
+            bool valid = FootprintPlacement.Evaluate(Line3East, AllWalkable, NothingTaken, results);
 
             Assert.That(valid, Is.True);
         }
@@ -52,7 +52,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         {
             List<FootprintCell> results = new List<FootprintCell>();
 
-            FootprintPlacement.Evaluate(Anchor, Line3East, AllWalkable, NothingTaken, results);
+            FootprintPlacement.Evaluate(Line3East, AllWalkable, NothingTaken, results);
 
             Assert.That(results.ConvertAll(r => r.Status), Has.All.EqualTo(FootprintCellStatus.Valid));
         }
@@ -63,7 +63,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
             List<FootprintCell> results = new List<FootprintCell>();
             Func<Vector3Int, bool> walkable = InSet(Cell(1, 2), Cell(2, 2));
 
-            bool valid = FootprintPlacement.Evaluate(Anchor, Line3East, walkable, NothingTaken, results);
+            bool valid = FootprintPlacement.Evaluate(Line3East, walkable, NothingTaken, results);
 
             Assert.That(valid, Is.False);
         }
@@ -74,7 +74,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
             List<FootprintCell> results = new List<FootprintCell>();
             Func<Vector3Int, bool> walkable = InSet(Cell(1, 2), Cell(2, 2));
 
-            FootprintPlacement.Evaluate(Anchor, Line3East, walkable, NothingTaken, results);
+            FootprintPlacement.Evaluate(Line3East, walkable, NothingTaken, results);
 
             Assert.That(StatusOf(results, Cell(3, 2)), Is.EqualTo(FootprintCellStatus.NotWalkable));
             Assert.That(StatusOf(results, Cell(1, 2)), Is.EqualTo(FootprintCellStatus.Valid));
@@ -86,7 +86,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         {
             List<FootprintCell> results = new List<FootprintCell>();
 
-            bool valid = FootprintPlacement.Evaluate(Anchor, Line3East, AllWalkable, InSet(Cell(1, 2)), results);
+            bool valid = FootprintPlacement.Evaluate(Line3East, AllWalkable, InSet(Cell(1, 2)), results);
 
             Assert.That(valid, Is.False);
         }
@@ -96,7 +96,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         {
             List<FootprintCell> results = new List<FootprintCell>();
 
-            FootprintPlacement.Evaluate(Anchor, Line3East, AllWalkable, InSet(Cell(1, 2)), results);
+            FootprintPlacement.Evaluate(Line3East, AllWalkable, InSet(Cell(1, 2)), results);
 
             Assert.That(StatusOf(results, Cell(1, 2)), Is.EqualTo(FootprintCellStatus.Overlap));
             Assert.That(StatusOf(results, Cell(2, 2)), Is.EqualTo(FootprintCellStatus.Valid));
@@ -110,7 +110,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
             Func<Vector3Int, bool> walkable = InSet(Cell(1, 2), Cell(2, 2));
             Func<Vector3Int, bool> taken = InSet(Cell(3, 2));
 
-            FootprintPlacement.Evaluate(Anchor, Line3East, walkable, taken, results);
+            FootprintPlacement.Evaluate(Line3East, walkable, taken, results);
 
             Assert.That(StatusOf(results, Cell(3, 2)), Is.EqualTo(FootprintCellStatus.NotWalkable));
         }
@@ -122,7 +122,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
             Func<Vector3Int, bool> walkable = InSet(Cell(1, 2), Cell(2, 2));
             Func<Vector3Int, bool> taken = InSet(Cell(1, 2));
 
-            FootprintPlacement.Evaluate(Anchor, Line3East, walkable, taken, results);
+            FootprintPlacement.Evaluate(Line3East, walkable, taken, results);
 
             Assert.That(results, Is.EqualTo(new[]
             {
@@ -145,47 +145,33 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
                 new FootprintCell(Cell(6, 6), FootprintCellStatus.Valid),
             };
 
-            FootprintPlacement.Evaluate(Anchor, GridFootprint.Single, AllWalkable, NothingTaken, results);
+            FootprintPlacement.Evaluate(new[] { Anchor }, AllWalkable, NothingTaken, results);
 
             Assert.That(results.ConvertAll(r => r.Cell), Is.EqualTo(new[] { Anchor }));
         }
 
-        /// <summary>Each case's order must be exactly HexFootprint.Resolve's: index 0 is the anchor.</summary>
-        [TestCase(2, 2, 0, FootprintShape.Single, 1, HexDirection.East)]
-        [TestCase(2, 2, 0, FootprintShape.Line, 4, HexDirection.NorthEast)]
-        [TestCase(5, 1, 3, FootprintShape.Line, 9, HexDirection.SouthWest)]
-        [TestCase(5, 1, 3, FootprintShape.Cluster, 7, HexDirection.West)]
-        [TestCase(-3, -3, -2, FootprintShape.Cluster, 4, HexDirection.SouthEast)]
-        public void Evaluate_AnyFootprint_CellsInTheSameOrderAsResolve(
-            int x, int y, int z, FootprintShape shape, int count, HexDirection direction)
-        {
-            Vector3Int anchor = Cell(x, y, z);
-            GridFootprint footprint = new GridFootprint(shape, count, direction);
-            List<Vector3Int> expected = new List<Vector3Int>();
-            HexFootprint.Resolve(anchor, footprint, expected);
-            List<FootprintCell> results = new List<FootprintCell>();
-
-            FootprintPlacement.Evaluate(anchor, footprint, AllWalkable, NothingTaken, results);
-
-            Assert.That(results.ConvertAll(r => r.Cell), Is.EqualTo(expected));
-        }
-
         [Test]
-        public void Evaluate_AnyFootprint_FirstResultIsTheAnchor()
+        public void Evaluate_AnyCells_KeepsTheInputOrder()
         {
-            Vector3Int anchor = Cell(5, 1, 3);
-            GridFootprint footprint = new GridFootprint(FootprintShape.Cluster, 5, HexDirection.NorthWest);
+            Vector3Int[] cells = { Cell(5, 1, 3), Cell(9, 9, 3), Cell(4, 1, 3), Cell(-3, -3, 3) };
             List<FootprintCell> results = new List<FootprintCell>();
 
-            FootprintPlacement.Evaluate(anchor, footprint, AllWalkable, NothingTaken, results);
+            FootprintPlacement.Evaluate(cells, AllWalkable, NothingTaken, results);
 
-            Assert.That(results[0].Cell, Is.EqualTo(anchor));
+            Assert.That(results.ConvertAll(r => r.Cell), Is.EqualTo(cells));
         }
 
         [Test]
         public void Evaluate_NullResults_ThrowsArgumentNullException()
         {
-            Assert.That(() => FootprintPlacement.Evaluate(Anchor, Line3East, AllWalkable, NothingTaken, null),
+            Assert.That(() => FootprintPlacement.Evaluate(Line3East, AllWalkable, NothingTaken, null),
+                Throws.TypeOf<ArgumentNullException>());
+        }
+
+        [Test]
+        public void Evaluate_NullCells_ThrowsArgumentNullException()
+        {
+            Assert.That(() => FootprintPlacement.Evaluate(null, AllWalkable, NothingTaken, new List<FootprintCell>()),
                 Throws.TypeOf<ArgumentNullException>());
         }
 
@@ -196,7 +182,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         {
             List<FootprintCell> results = new List<FootprintCell>();
 
-            bool valid = FootprintPlacement.Evaluate(Anchor, Line3East, null, NothingTaken, results);
+            bool valid = FootprintPlacement.Evaluate(Line3East, null, NothingTaken, results);
 
             Assert.That(valid, Is.True);
             Assert.That(results.ConvertAll(r => r.Status), Has.All.EqualTo(FootprintCellStatus.Valid));
@@ -207,7 +193,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         {
             List<FootprintCell> results = new List<FootprintCell>();
 
-            bool valid = FootprintPlacement.Evaluate(Anchor, Line3East, AllWalkable, null, results);
+            bool valid = FootprintPlacement.Evaluate(Line3East, AllWalkable, null, results);
 
             Assert.That(valid, Is.True);
             Assert.That(results.ConvertAll(r => r.Status), Has.All.EqualTo(FootprintCellStatus.Valid));
@@ -218,7 +204,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         {
             List<FootprintCell> results = new List<FootprintCell>();
 
-            bool valid = FootprintPlacement.Evaluate(Anchor, Line3East, null, null, results);
+            bool valid = FootprintPlacement.Evaluate(Line3East, null, null, results);
 
             Assert.That(valid, Is.True);
             Assert.That(results, Has.Count.EqualTo(3));
@@ -229,7 +215,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         {
             List<FootprintCell> results = new List<FootprintCell>();
 
-            FootprintPlacement.Evaluate(Anchor, Line3East, null, InSet(Cell(3, 2)), results);
+            FootprintPlacement.Evaluate(Line3East, null, InSet(Cell(3, 2)), results);
 
             Assert.That(StatusOf(results, Cell(3, 2)), Is.EqualTo(FootprintCellStatus.Overlap));
         }

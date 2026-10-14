@@ -16,6 +16,8 @@ public class ActivateAbilityActionSO : InteractionActionSO
     public override bool CanExecute(IInteractableElement element, ITurnAgent interactingAgent)
     {
         if (element is not IAwakable awakable) return false;
+        // Acts by itself once awake: the crew only awakens it, even if its interaction set offers this action.
+        if (element is IAutoActivatedEquipment) return false;
 
         return awakable.IsAwake;
     }

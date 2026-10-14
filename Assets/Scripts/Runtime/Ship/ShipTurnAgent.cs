@@ -29,6 +29,10 @@ public class ShipTurnAgent : MonoBehaviour, ITurnAgent
     [SerializeField] private AgentAVDeltaEventChannel _onAgilityChangedChannel;
     [SerializeField] private TurnStateSO _currentTurnState;
 
+    [Header("Equipment")]
+    [Tooltip("The awake equipment tied to the ship's turn: its agility modifiers count towards the ship's agility, and it is told when the ship has acted")]
+    [SerializeField] private ShipTurnRosterSO _shipTurnRoster;
+
     [Header("Proximity Logic")]
     [Tooltip("Raised empty at the start of the ship's turn, so the equipment menus of the previous crew member close")]
     [SerializeField] private InteractableProximityEventChannel _proximityChannel;
@@ -58,13 +62,16 @@ public class ShipTurnAgent : MonoBehaviour, ITurnAgent
         {
             if (_passiveAbilityController != null) _passiveAbilityController.GetModifiers(_agilityModifiers);
             else _agilityModifiers.Clear();
+            // Appended after the passives: e.g. every awake AgilityBoosterEquipment.
+            if (_shipTurnRoster != null) _shipTurnRoster.CollectModifiers(_agilityModifiers);
 
             return StatUtils.EvaluateAgility(_agentData != null ? _agentData.InitialAgility : 0, _agilityModifiers);
         }
     }
 
-    // Optional: today the ship has no PassiveAbilityController and its agility is the base one. Before adding
-    // one, check that the controller does not assume a GridCharacter owner.
+    // Optional: today the ship has no PassiveAbilityController, its agility modifiers come from the awake
+    // equipment in _shipTurnRoster. Before adding one, check that the controller does not assume a
+    // GridCharacter owner.
     private PassiveAbilityController _passiveAbilityController;
     private readonly List<IAgilityModifier> _agilityModifiers = new();
     private int _lastKnownEffectiveAgility;
@@ -81,17 +88,19 @@ public class ShipTurnAgent : MonoBehaviour, ITurnAgent
     private void OnEnable()
     {
         OnCombatJoin();
-        if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged += HandlePassivesChanged;
+        if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged += HandleAgilityModifiersChanged;
+        if (_shipTurnRoster != null) _shipTurnRoster.OnRosterChanged += HandleAgilityModifiersChanged;
     }
 
     private void OnDisable()
     {
-        if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged -= HandlePassivesChanged;
+        if (_passiveAbilityController != null) _passiveAbilityController.OnPassivesChanged -= HandleAgilityModifiersChanged;
+        if (_shipTurnRoster != null) _shipTurnRoster.OnRosterChanged -= HandleAgilityModifiersChanged;
     }
 
     private void Start() => _lastKnownEffectiveAgility = EffectiveAgility;
 
-    private void HandlePassivesChanged()
+    private void HandleAgilityModifiersChanged()
     {
         int newAgility = EffectiveAgility;
         if (newAgility == _lastKnownEffectiveAgility) return;
@@ -114,7 +123,16 @@ public class ShipTurnAgent : MonoBehaviour, ITurnAgent
     // Further actions of the same turn never fire again: the broadside belongs to the start of the turn.
     public void OnContinuingTurn() => _ = RunTurnAsync(destroyCancellationToken, runBroadside: false);
 
-    public void OnEndingTurn() { }
+    /// <summary>
+    /// Tells the equipment tied to the ship's turn that the ship has acted. This relies on the order of
+    /// TurnController: OnEndingTurn runs before CompleteActiveTurn. An agility booster going on cooldown here
+    /// raises an AV delta that AdjustAgentAV ignores (the active agent's AV is 0), and CompleteActiveTurn then
+    /// computes the ship's next AV without the bonus: it only sped up the turn that just ended.
+    /// </summary>
+    public void OnEndingTurn()
+    {
+        if (_shipTurnRoster != null) _shipTurnRoster.NotifyShipTurnEnded();
+    }
 
     /// <summary>
     /// Never ends synchronously: TurnController raises NotifyAgentActivated right after OnStartingTurn

@@ -10,7 +10,7 @@ public class GridElement : MonoBehaviour
     [SerializeField] private GridStateDataSO _gridStateData;
 
     [Header("Footprint")]
-    [Tooltip("The cells this element covers. The pivot sits on the anchor cell (the centre of the shape). " +
+    [Tooltip("The cells this element covers. The anchor is the cell under the pivot and is always covered. " +
              "Movable characters must stay Single: movement is single-cell.")]
     [SerializeField] private GridFootprint _footprint = GridFootprint.Single;
 
@@ -41,9 +41,17 @@ public class GridElement : MonoBehaviour
 
     private Vector3Int _gridPosition;
 
-    // The cells actually registered, kept so unregistering never depends on resolving the footprint again:
-    // editing the footprint in Play would otherwise leave stale occupants behind.
+    // The cells actually registered, kept so unregistering never depends on computing the footprint again:
+    // editing the footprint or moving the colliders in Play would otherwise leave stale occupants behind.
     private readonly List<Vector3Int> _occupiedCells = new List<Vector3Int>();
+
+    // The footprint as cube offsets from the anchor (index 0 is the zero offset), computed once by
+    // InitializePosition / RefreshFootprint. Stored relative so that the gridPosition setter can move the
+    // element without probing the colliders again. Empty means anchor only.
+    private readonly List<Vector3Int> _footprintOffsets = new List<Vector3Int>();
+
+    // Scratch buffer for the collider probe. Main-thread only, like the rest of the grid code.
+    private static readonly List<Vector3Int> ProbeBuffer = new List<Vector3Int>(ColliderFootprintProbe.MaxCells);
 
     protected virtual void Awake() { }
 
@@ -77,16 +85,60 @@ public class GridElement : MonoBehaviour
     }
 
     /// <summary>
-    /// Where this element would sit on the grid right now, without registering anything: the layout to
-    /// read cells from and the anchor cell under the pivot. Meant for previews (the editor overlay, a future
+    /// Computes the footprint again from the current colliders and re-registers it on the current
+    /// <see cref="gridPosition"/>. The footprint is only computed when the element finds its floor
+    /// (<see cref="OnEnable"/>): call this after rotating the element, or enabling/disabling/resizing its
+    /// colliders, at runtime. The anchor is kept, so rotate around the anchor cell. No-op before the element
+    /// has found its floor.
+    /// </summary>
+    public void RefreshFootprint()
+    {
+        if (_floorTilemap == null) return;
+
+        ComputeFootprintOffsets(_floorTilemap, _gridPosition);
+        UnregisterAll();
+        RegisterAt(_gridPosition);
+        WarnAboutUnwalkableCells();
+    }
+
+    /// <summary>
+    /// The footprint this element would have right now, without registering anything: the layout to read cells
+    /// from, the anchor cell under the pivot, and the covered cells (index 0 is the anchor). Always computed
+    /// live from the current transform and colliders, so it follows a rotation before any
+    /// <see cref="RefreshFootprint"/>. The single entry point for previews (the editor overlay, a future
     /// layout tool), which run before or outside <see cref="OnEnable"/>.
-    /// <para>In Play, once the floor is found, it returns the registered tilemap and <see cref="gridPosition"/>.
+    /// <para>In Play, once the floor is found, it uses the registered tilemap and <see cref="gridPosition"/>.
     /// Otherwise it raycasts like the runtime lookup and, when that misses (e.g. Prefab Mode, where the floor
     /// collider lives in another physics scene), falls back to the first floor-layer tilemap under the same
     /// root. The root is searched rather than the parents because the grid is not necessarily an ancestor:
     /// on the ship it is a sibling (PF_Ship/ShipGrid next to PF_Ship/Equipments).</para>
     /// </summary>
-    public bool TryResolveFloorPreview(out GridLayout layout, out Vector3Int anchor)
+    /// <returns>False when no floor can be resolved: <paramref name="cells"/> is then left empty.</returns>
+    public bool TryResolveFootprintPreview(out GridLayout layout, out Vector3Int anchor, List<Vector3Int> cells)
+    {
+        cells.Clear();
+        if (!TryResolveAnchorPreview(out layout, out anchor)) return false;
+
+        ComputeFootprintCells(layout, anchor, cells);
+        return true;
+    }
+
+    /// <summary>
+    /// Test hook: replaces the footprint with <paramref name="cubeOffsets"/> (cube offsets from the anchor, as
+    /// produced by <see cref="HexFootprint.ToOffsets"/>), as if the probe had computed them. Like a probe, it
+    /// does not touch the cells already registered: they change on the next <see cref="gridPosition"/> set.
+    /// </summary>
+    internal void SetFootprintOffsets(IReadOnlyList<Vector3Int> cubeOffsets)
+    {
+        _footprintOffsets.Clear();
+        _footprintOffsets.Add(Vector3Int.zero);
+        if (cubeOffsets == null) return;
+
+        for (int i = 0; i < cubeOffsets.Count; i++)
+            if (!_footprintOffsets.Contains(cubeOffsets[i])) _footprintOffsets.Add(cubeOffsets[i]);
+    }
+
+    private bool TryResolveAnchorPreview(out GridLayout layout, out Vector3Int anchor)
     {
         if (Application.isPlaying && _floorTilemap != null)
         {
@@ -94,6 +146,9 @@ public class GridElement : MonoBehaviour
             anchor = _gridPosition;
             return true;
         }
+
+        // Outside Play nothing syncs the transforms the user just moved (Auto Sync Transforms is off).
+        if (!Application.isPlaying) Physics.SyncTransforms();
 
         if (TryFindFloor(out Tilemap tilemap, out anchor))
         {
@@ -122,6 +177,31 @@ public class GridElement : MonoBehaviour
         return true;
     }
 
+    /// <summary>Clears <paramref name="cells"/> and fills it with the footprint on <paramref name="anchor"/>, anchor first.</summary>
+    private void ComputeFootprintCells(GridLayout layout, Vector3Int anchor, List<Vector3Int> cells)
+    {
+        if (_footprint.Source == FootprintSource.Collider)
+        {
+            if (!ColliderFootprintProbe.Probe(transform, layout, anchor, cells))
+            {
+                Debug.LogWarning(
+                    $"[{nameof(GridElement)}] '{name}': footprint source is Collider but no active non-trigger " +
+                    "collider was found under it. Only the anchor cell is covered.", this);
+            }
+            return;
+        }
+
+        cells.Clear();
+        cells.Add(anchor);
+    }
+
+    private void ComputeFootprintOffsets(GridLayout layout, Vector3Int anchor)
+    {
+        ComputeFootprintCells(layout, anchor, ProbeBuffer);
+        HexFootprint.ToOffsets(anchor, ProbeBuffer, _footprintOffsets);
+        ProbeBuffer.Clear();
+    }
+
     private void UnregisterAll()
     {
         if (_gridStateData != null)
@@ -134,7 +214,7 @@ public class GridElement : MonoBehaviour
 
     private void RegisterAt(Vector3Int anchor)
     {
-        HexFootprint.Resolve(anchor, _footprint, _occupiedCells);
+        HexFootprint.Translate(anchor, _footprintOffsets, _occupiedCells);
         for (int i = 0; i < _occupiedCells.Count; i++)
             _gridStateData.RegisterOccupancy(_occupiedCells[i], this);
     }
@@ -144,6 +224,7 @@ public class GridElement : MonoBehaviour
         if (TryFindFloor(out Tilemap tilemap, out Vector3Int pos))
         {
             _floorTilemap = tilemap;
+            ComputeFootprintOffsets(tilemap, pos);
             // Set directly to avoid triggering OnGridPositionChanged before the scene is ready
             UnregisterAll();
             _gridPosition = pos;
@@ -186,19 +267,17 @@ public class GridElement : MonoBehaviour
             if (GridUtils.IsWalkable(_floorTilemap, _occupiedCells[i])) continue;
             Debug.LogWarning(
                 $"[{nameof(GridElement)}] '{name}': footprint cell {_occupiedCells[i]} is not walkable. " +
-                "Check the footprint shape/direction or the element's placement.", this);
+                "Check the element's colliders, rotation or placement.", this);
         }
     }
 
     protected virtual void OnValidate()
     {
-        _footprint = _footprint.Clamped();
-
-        if (this is IMovable && _footprint.Shape != FootprintShape.Single)
+        if (this is IMovable && _footprint.Source != FootprintSource.Single)
         {
             Debug.LogWarning(
-                $"[{nameof(GridElement)}] '{name}' is movable but its footprint is {_footprint.Shape}: movement " +
-                "is single-cell, only the anchor would move correctly.", this);
+                $"[{nameof(GridElement)}] '{name}' is movable but its footprint source is {_footprint.Source}: " +
+                "movement is single-cell and does not follow rotation, only the anchor would move correctly.", this);
         }
     }
 }

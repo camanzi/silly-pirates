@@ -14,6 +14,9 @@ public static class HexCellGeometry
 
     private static readonly float Sqrt3 = Mathf.Sqrt(3f);
 
+    // Scratch buffer for PlaneNormalWorld. Main-thread only, like the rest of the grid code.
+    private static readonly Vector3[] NormalCorners = new Vector3[CornerCount];
+
     /// <summary>
     /// World-space centre of <paramref name="cell"/>. <see cref="GridLayout"/> has no GetCellCenterWorld (only
     /// <see cref="Grid"/> and Tilemap do): this is the same computation.
@@ -43,6 +46,24 @@ public static class HexCellGeometry
             corners[i] = centre + (prevNeighbour + neighbour) / 3f;
             prevNeighbour = neighbour;
         }
+    }
+
+    /// <summary>
+    /// Unit normal of the grid plane at <paramref name="cell"/>, pointing to where the elements stand: the
+    /// direction of increasing cell Z, or world up when the layout has no cell height. "Counter-clockwise" in
+    /// the editor tools means counter-clockwise when looking down this normal.
+    /// </summary>
+    public static Vector3 PlaneNormalWorld(GridLayout layout, Vector3Int cell)
+    {
+        if (layout == null) throw new ArgumentNullException(nameof(layout));
+
+        GetCornersWorld(layout, cell, NormalCorners);
+        Vector3 normal = Vector3.Cross(NormalCorners[1] - NormalCorners[0], NormalCorners[2] - NormalCorners[0]);
+        normal = normal.sqrMagnitude > 0f ? normal.normalized : Vector3.up;
+
+        Vector3 up = CellCenterWorld(layout, cell + Vector3Int.forward) - CellCenterWorld(layout, cell);
+        if (up.sqrMagnitude < 1e-6f) up = Vector3.up;
+        return Vector3.Dot(normal, up) < 0f ? -normal : normal;
     }
 
     /// <summary>

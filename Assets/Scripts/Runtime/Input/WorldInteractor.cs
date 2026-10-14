@@ -93,7 +93,10 @@ public class WorldInteractor : MonoBehaviour
         
         if (Physics.Raycast(ray, out RaycastHit hit, _maxDistance, _interactableLayer))
         {
-            IClickable interactable = hit.collider.GetComponent<IClickable>();
+            // In the parents, not on the collider: an element may be made of several child colliders (see
+            // ElementColliders) and must still read as one object. The nearest owner wins, so the collider of
+            // an equipment resolves to the equipment, never to the ship it is mounted on.
+            IClickable interactable = hit.collider.GetComponentInParent<IClickable>();
 
             if (interactable != _currentHovered)
             {

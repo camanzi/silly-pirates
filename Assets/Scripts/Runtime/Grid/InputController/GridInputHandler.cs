@@ -120,8 +120,11 @@ public class GridInputHandler : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
             Vector3 finalWorldPos = hit.point;
-            if (hit.collider.TryGetComponent(out ITargettable target))
-                finalWorldPos = hit.collider.transform.position;
+            // Same owner resolution as WorldInteractor: the hit may be one of several child colliders of the
+            // target, so the position comes from the target itself, not from the child that was hit.
+            ITargettable target = hit.collider.GetComponentInParent<ITargettable>();
+            if (target != null)
+                finalWorldPos = target.Transform.position;
 
             return BuildTargetingData(finalWorldPos, target);
         }

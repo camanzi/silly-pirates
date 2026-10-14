@@ -16,6 +16,10 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
     [Header("Awakable Configs")]
     [SerializeField] private int _toAwakePoints;
 
+    [Header("Ship Turn")]
+    [Tooltip("Where the equipment registers while awake. Only used when the equipment is an IShipTurnParticipant")]
+    [SerializeField] private ShipTurnRosterSO _shipTurnRoster;
+
     [Header("Feedback Events")]
     [SerializeField] private UnityEvent _onCommandExecuted;
     public UnityEvent OnCommandExecuted => _onCommandExecuted;
@@ -71,6 +75,35 @@ public abstract class ShipEquipment : InteractableGridElement, IAwakable, IEquip
         _stateMachine = GetComponent<EquipmentStateMachine>();
         _passiveAbilityController = GetComponent<PassiveAbilityController>();
         _abilityController = GetComponent<AbilityController>();
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        if (this is not IShipTurnParticipant participant) return;
+
+        if (_stateMachine != null) _stateMachine.OnActiveChanged += HandleShipTurnActiveChanged;
+        // Re-enabled while still awake: register again, the roster lost it in OnDisable.
+        if (IsAwake && _shipTurnRoster != null) _shipTurnRoster.Register(participant);
+    }
+
+    protected override void OnDisable()
+    {
+        if (this is IShipTurnParticipant participant)
+        {
+            if (_stateMachine != null) _stateMachine.OnActiveChanged -= HandleShipTurnActiveChanged;
+            if (_shipTurnRoster != null) _shipTurnRoster.Unregister(participant);
+        }
+        base.OnDisable();
+    }
+
+    // Awake → in the roster; any way out of the active state (cooldown, an undone awakening) → out of it.
+    private void HandleShipTurnActiveChanged(bool isActive)
+    {
+        if (_shipTurnRoster == null) return;
+        var participant = (IShipTurnParticipant)this;
+        if (isActive) _shipTurnRoster.Register(participant);
+        else _shipTurnRoster.Unregister(participant);
     }
 
     /// <summary>

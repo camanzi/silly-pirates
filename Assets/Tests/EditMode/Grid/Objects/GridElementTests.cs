@@ -21,24 +21,19 @@ namespace SillyPirates.Tests.EditMode.Grid.Objects
         [SetUp]
         public void SetUp() => _gridState = NewSO<GridStateDataSO>();
 
-        private T NewElement<T>(GridFootprint footprint) where T : GridElement
+        private T NewElement<T>(Vector3Int[] cubeOffsets) where T : GridElement
         {
             T element = NewInactiveGameObject(typeof(T).Name).AddComponent<T>();
             SerializedObject so = new SerializedObject(element);
             so.FindProperty("_gridStateData").objectReferenceValue = _gridState;
             so.ApplyModifiedPropertiesWithoutUndo();
-            SetFootprint(element, footprint);
+            SetFootprint(element, cubeOffsets);
             return element;
         }
 
-        private static void SetFootprint(GridElement element, GridFootprint footprint)
-        {
-            SerializedObject so = new SerializedObject(element);
-            so.FindProperty("_footprint._shape").intValue = (int)footprint.Shape;
-            so.FindProperty("_footprint._count").intValue = footprint.Count;
-            so.FindProperty("_footprint._direction").intValue = (int)footprint.Direction;
-            so.ApplyModifiedPropertiesWithoutUndo();
-        }
+        /// <summary>Stands in for the collider probe: the footprint as cube offsets from the anchor.</summary>
+        private static void SetFootprint(GridElement element, Vector3Int[] cubeOffsets)
+            => element.SetFootprintOffsets(cubeOffsets);
 
         /// <summary>
         /// Runs the real GridElement.OnDisable. EditMode sends no lifecycle messages to a MonoBehaviour without
@@ -54,28 +49,39 @@ namespace SillyPirates.Tests.EditMode.Grid.Objects
             onDisable.Invoke(element, null);
         }
 
-        private static GridFootprint Line3East => new GridFootprint(FootprintShape.Line, 3, HexDirection.East);
-
-        private static List<Vector3Int> Resolve(Vector3Int anchor, GridFootprint footprint)
+        // Cube offsets: the anchor, its East neighbour, its West neighbour.
+        private static readonly Vector3Int[] Line3East =
         {
-            List<Vector3Int> cells = new List<Vector3Int>();
-            HexFootprint.Resolve(anchor, footprint, cells);
-            return cells;
-        }
+            Vector3Int.zero, new Vector3Int(1, 0, -1), new Vector3Int(-1, 0, 1),
+        };
+
+        private static readonly Vector3Int[] Single = { Vector3Int.zero };
 
         [Test]
-        public void AddComponent_DefaultFootprint_IsSingleOfOneCell()
+        public void AddComponent_DefaultFootprint_IsSingle()
         {
             GridElement element = NewInactiveGameObject("element").AddComponent<GridElement>();
 
-            Assert.That(element.Footprint.Shape, Is.EqualTo(FootprintShape.Single));
-            Assert.That(element.Footprint.Count, Is.EqualTo(1));
+            Assert.That(element.Footprint.Source, Is.EqualTo(FootprintSource.Single));
+        }
+
+        [Test]
+        public void SetGridPosition_NoFootprintSet_RegistersOnlyTheAnchor()
+        {
+            GridElement element = NewInactiveGameObject("element").AddComponent<GridElement>();
+            SerializedObject so = new SerializedObject(element);
+            so.FindProperty("_gridStateData").objectReferenceValue = _gridState;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            element.gridPosition = Cell(2, 2);
+
+            Assert.That(element.OccupiedCells, Is.EqualTo(new[] { Cell(2, 2) }));
         }
 
         [Test]
         public void SetGridPosition_SingleFootprint_RegistersOnlyTheAnchor()
         {
-            GridElement element = NewElement<GridElement>(GridFootprint.Single);
+            GridElement element = NewElement<GridElement>(Single);
 
             element.gridPosition = Cell(2, 2);
 
@@ -84,13 +90,13 @@ namespace SillyPirates.Tests.EditMode.Grid.Objects
         }
 
         [Test]
-        public void SetGridPosition_LineFootprint_OccupiedCellsEqualResolve()
+        public void SetGridPosition_LineFootprint_OccupiedCellsAreAnchorFirstThenOffsetsInOrder()
         {
             GridElement element = NewElement<GridElement>(Line3East);
 
             element.gridPosition = Cell(2, 2);
 
-            Assert.That(element.OccupiedCells, Is.EqualTo(Resolve(Cell(2, 2), Line3East)));
+            Assert.That(element.OccupiedCells, Is.EqualTo(new[] { Cell(2, 2), Cell(3, 2), Cell(1, 2) }));
         }
 
         [Test]
@@ -107,12 +113,20 @@ namespace SillyPirates.Tests.EditMode.Grid.Objects
         [Test]
         public void SetGridPosition_ClusterFootprint_RegistersEveryResolvedCell()
         {
-            GridFootprint cluster = new GridFootprint(FootprintShape.Cluster, 7, HexDirection.East);
+            Vector3Int[] cluster =
+            {
+                Vector3Int.zero,
+                new Vector3Int(1, 0, -1), new Vector3Int(0, 1, -1), new Vector3Int(-1, 1, 0),
+                new Vector3Int(-1, 0, 1), new Vector3Int(0, -1, 1), new Vector3Int(1, -1, 0),
+            };
             GridElement element = NewElement<GridElement>(cluster);
 
             element.gridPosition = Cell(3, 3);
 
-            foreach (Vector3Int cell in Resolve(Cell(3, 3), cluster))
+            List<Vector3Int> expected = PathFindingUtils.GetNeighbors(Cell(3, 3));
+            expected.Add(Cell(3, 3));
+            Assert.That(element.OccupiedCells, Is.EquivalentTo(expected));
+            foreach (Vector3Int cell in expected)
                 Assert.That(_gridState.IsOccupied(cell, element), Is.True, $"cell {cell}");
         }
 
@@ -172,7 +186,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Objects
         public void OnDisable_OtherOccupantOnASharedCell_LeavesThatOccupantRegistered()
         {
             GridElement element = NewElement<GridElement>(Line3East);
-            GridElement other = NewElement<GridElement>(GridFootprint.Single);
+            GridElement other = NewElement<GridElement>(Single);
             element.gridPosition = Cell(2, 2);
             other.gridPosition = Cell(3, 2);
 
@@ -183,7 +197,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Objects
         }
 
         /// <summary>
-        /// Unregistering must use the cells actually registered, not a fresh Resolve of the current footprint:
+        /// Unregistering must use the cells actually registered, not a fresh computation of the current footprint:
         /// shrinking Line 3 to Single would otherwise leave (1,2) and (3,2) occupied forever.
         /// </summary>
         [Test]
@@ -191,7 +205,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Objects
         {
             GridElement element = NewElement<GridElement>(Line3East);
             element.gridPosition = Cell(2, 2);
-            SetFootprint(element, GridFootprint.Single);
+            SetFootprint(element, Single);
 
             InvokeOnDisable(element);
 
@@ -204,7 +218,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Objects
         {
             GridElement element = NewElement<GridElement>(Line3East);
             element.gridPosition = Cell(2, 2);
-            SetFootprint(element, GridFootprint.Single);
+            SetFootprint(element, Single);
 
             element.gridPosition = Cell(2, 6);
 

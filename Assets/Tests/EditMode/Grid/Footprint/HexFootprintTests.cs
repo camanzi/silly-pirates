@@ -5,375 +5,287 @@ using UnityEngine;
 namespace SillyPirates.Tests.EditMode.Grid.Footprint
 {
     /// <summary>
-    /// Footprint geometry. Exact expectations are derived from the odd-r neighbour tables (the same ones
-    /// hard-coded in PathFindingUtils), written out below as a direction-indexed table so the expected cells
-    /// do not go through HexCoordinates, which is what Resolve itself uses.
+    /// Footprint geometry on sets of cells. The footprints used as data are written out as literal cells
+    /// (odd-r layout), so the expectations do not go through HexCoordinates.
     /// </summary>
     public class HexFootprintTests
     {
         private static Vector3Int Cell(int x, int y, int z = 0) => new Vector3Int(x, y, z);
 
-        // Offset step per HexDirection (East, NorthEast, NorthWest, West, SouthWest, SouthEast), odd-r layout.
-        private static readonly Vector3Int[] EvenRowSteps =
-        {
-            Cell(1, 0), Cell(0, 1), Cell(-1, 1), Cell(-1, 0), Cell(-1, -1), Cell(0, -1),
-        };
+        // A straight row of three on even row 2.
+        private static readonly Vector3Int[] RowAt2_2 = { Cell(1, 2), Cell(2, 2), Cell(3, 2) };
 
-        private static readonly Vector3Int[] OddRowSteps =
-        {
-            Cell(1, 0), Cell(1, 1), Cell(0, 1), Cell(-1, 0), Cell(0, -1), Cell(1, -1),
-        };
+        // A North-East diagonal of three through odd row (2,3): SouthWest is (2,2), NorthEast is (3,4).
+        private static readonly Vector3Int[] DiagonalAt2_3 = { Cell(2, 3), Cell(2, 2), Cell(3, 4) };
 
-        private static Vector3Int Step(Vector3Int from, HexDirection direction)
+        // (2,2) plus its West, SouthWest and SouthEast neighbours (even row).
+        private static readonly Vector3Int[] WedgeAt2_2 = { Cell(2, 2), Cell(1, 2), Cell(1, 1), Cell(2, 1) };
+
+        // Cube direction vectors, written out (not read from HexCoordinates) so the expectations stand alone.
+        private static readonly Vector3Int CubeEast = new Vector3Int(1, 0, -1);
+        private static readonly Vector3Int CubeNorthEast = new Vector3Int(0, 1, -1);
+        private static readonly Vector3Int CubeNorthWest = new Vector3Int(-1, 1, 0);
+        private static readonly Vector3Int CubeWest = new Vector3Int(-1, 0, 1);
+        private static readonly Vector3Int CubeSouthWest = new Vector3Int(0, -1, 1);
+        private static readonly Vector3Int CubeSouthEast = new Vector3Int(1, -1, 0);
+
+        /// <summary>
+        /// The six odd-r neighbours of an anchor in E, NE, NW, W, SW, SE order. Even rows: diagonals go to x-1
+        /// and x; odd rows: to x and x+1 (odd rows are shifted right).
+        /// </summary>
+        private static Vector3Int[] NeighboursOf(Vector3Int anchor)
         {
-            Vector3Int[] table = (from.y & 1) != 0 ? OddRowSteps : EvenRowSteps;
-            return from + table[(int)direction];
+            int x = anchor.x, y = anchor.y, z = anchor.z;
+            int left = (y & 1) == 0 ? x - 1 : x;
+            int right = left + 1;
+            return new[]
+            {
+                new Vector3Int(x + 1, y, z),
+                new Vector3Int(right, y + 1, z),
+                new Vector3Int(left, y + 1, z),
+                new Vector3Int(x - 1, y, z),
+                new Vector3Int(left, y - 1, z),
+                new Vector3Int(right, y - 1, z),
+            };
         }
 
-        private static HexDirection Opposite(HexDirection direction) => (HexDirection)(((int)direction + 3) % 6);
-
-        // Non-zero z on purpose: the layer must survive the cube round trip.
-        private static readonly Vector3Int[] Anchors =
+        private static readonly Vector3Int[] SixDirections =
         {
-            Cell(2, 4, 3),   // even row
-            Cell(5, 1, 3),   // odd row
-            Cell(-3, -3, -2) // negative odd row
+            CubeEast, CubeNorthEast, CubeNorthWest, CubeWest, CubeSouthWest, CubeSouthEast,
         };
 
-        private static readonly FootprintShape[] Shapes =
-        {
-            FootprintShape.Single, FootprintShape.Line, FootprintShape.Cluster,
-        };
+        // ---------------------------------------------------------------- ToOffsets
 
-        private struct Case
-        {
-            public Vector3Int Anchor;
-            public FootprintShape Shape;
-            public int Count;
-            public HexDirection Direction;
-
-            public override string ToString() => $"{Shape} N={Count} {Direction} at {Anchor}";
-        }
-
-        private static int MaxCount(FootprintShape shape) => shape switch
-        {
-            FootprintShape.Line => HexFootprint.MaxLineCount,
-            FootprintShape.Cluster => HexFootprint.MaxClusterCount,
-            _ => 1,
-        };
-
-        private static IEnumerable<Case> AllValidCases()
-        {
-            foreach (FootprintShape shape in Shapes)
-                for (int n = 1; n <= MaxCount(shape); n++)
-                    for (int d = 0; d < 6; d++)
-                        foreach (Vector3Int anchor in Anchors)
-                            yield return new Case { Anchor = anchor, Shape = shape, Count = n, Direction = (HexDirection)d };
-        }
-
-        private static List<Vector3Int> Resolve(Vector3Int anchor, FootprintShape shape, int count, HexDirection direction)
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        [TestCase(0, -1)]
+        [TestCase(-3, -2)]
+        public void ToOffsets_AnchorOnly_ReturnsTheZeroOffset(int x, int y)
         {
             List<Vector3Int> results = new List<Vector3Int>();
-            HexFootprint.Resolve(anchor, shape, count, direction, results);
-            return results;
+
+            HexFootprint.ToOffsets(Cell(x, y), new[] { Cell(x, y) }, results);
+
+            Assert.That(results, Is.EqualTo(new[] { Vector3Int.zero }));
         }
 
-        private static List<Vector3Int> Resolve(Case c) => Resolve(c.Anchor, c.Shape, c.Count, c.Direction);
-
-        // ---------------------------------------------------------------- invariants
-
-        [Test]
-        public void Resolve_EveryValidCase_FirstCellIsTheAnchor()
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        [TestCase(0, -1)]
+        [TestCase(-3, -2)]
+        public void ToOffsets_SixNeighbours_MapToTheSixCubeDirections(int x, int y)
         {
-            foreach (Case c in AllValidCases())
-                Assert.That(Resolve(c)[0], Is.EqualTo(c.Anchor), c.ToString());
-        }
+            Vector3Int anchor = Cell(x, y);
+            List<Vector3Int> cells = new List<Vector3Int> { anchor };
+            cells.AddRange(NeighboursOf(anchor));
+            List<Vector3Int> results = new List<Vector3Int>();
 
-        [Test]
-        public void Resolve_EveryValidCase_HasNoDuplicates()
-        {
-            foreach (Case c in AllValidCases())
-                Assert.That(Resolve(c), Is.Unique, c.ToString());
-        }
+            HexFootprint.ToOffsets(anchor, cells, results);
 
-        [Test]
-        public void Resolve_EveryValidCase_CountEqualsClampCount()
-        {
-            foreach (Case c in AllValidCases())
-                Assert.That(Resolve(c), Has.Count.EqualTo(HexFootprint.ClampCount(c.Shape, c.Count)), c.ToString());
+            List<Vector3Int> expected = new List<Vector3Int> { Vector3Int.zero };
+            expected.AddRange(SixDirections);
+            Assert.That(results, Is.EqualTo(expected));
         }
 
         [Test]
-        public void Resolve_EveryValidCase_CellsAreConnected()
+        public void ToOffsets_CellsWithoutTheAnchor_StillPutsTheZeroOffsetFirst()
         {
-            foreach (Case c in AllValidCases())
-            {
-                List<Vector3Int> cells = Resolve(c);
-                HashSet<Vector3Int> members = new HashSet<Vector3Int>(cells);
-                HashSet<Vector3Int> reached = new HashSet<Vector3Int> { cells[0] };
-                Queue<Vector3Int> queue = new Queue<Vector3Int>();
-                queue.Enqueue(cells[0]);
+            List<Vector3Int> results = new List<Vector3Int>();
 
-                while (queue.Count > 0)
-                    foreach (Vector3Int nb in PathFindingUtils.GetNeighbors(queue.Dequeue()))
-                        if (members.Contains(nb) && reached.Add(nb))
-                            queue.Enqueue(nb);
+            HexFootprint.ToOffsets(Cell(2, 2), new[] { Cell(3, 2), Cell(1, 2) }, results);
 
-                Assert.That(reached, Has.Count.EqualTo(members.Count), c.ToString());
-            }
+            Assert.That(results, Is.EqualTo(new[] { Vector3Int.zero, CubeEast, CubeWest }));
         }
 
         [Test]
-        public void Resolve_EveryValidCase_EveryCellKeepsAnchorZ()
+        public void ToOffsets_AnchorNotFirstInCells_ZeroOffsetIsFirstAndNotRepeated()
         {
-            foreach (Case c in AllValidCases())
-                foreach (Vector3Int cell in Resolve(c))
-                    Assert.That(cell.z, Is.EqualTo(c.Anchor.z), $"{c}: cell {cell}");
-        }
+            List<Vector3Int> results = new List<Vector3Int>();
 
-        // ---------------------------------------------------------------- Single
+            HexFootprint.ToOffsets(Cell(2, 2), new[] { Cell(3, 2), Cell(2, 2), Cell(1, 2) }, results);
 
-        [Test]
-        public void Resolve_Single_IgnoresCountAndDirection()
-        {
-            Vector3Int anchor = Cell(2, 4, 3);
-
-            foreach (int n in new[] { -1, 0, 1, 3, 9, 50 })
-                for (int d = 0; d < 6; d++)
-                    Assert.That(Resolve(anchor, FootprintShape.Single, n, (HexDirection)d),
-                        Is.EqualTo(new[] { anchor }), $"N={n} {(HexDirection)d}");
-        }
-
-        // ---------------------------------------------------------------- Line, exact cases
-
-        [Test]
-        public void Resolve_Line3EastAtEvenRow_ReturnsTheRowCentredOnTheAnchor()
-        {
-            List<Vector3Int> cells = Resolve(Cell(2, 2), FootprintShape.Line, 3, HexDirection.East);
-
-            Assert.That(cells, Is.EquivalentTo(new[] { Cell(1, 2), Cell(2, 2), Cell(3, 2) }));
-        }
-
-        /// <summary>From even row (2,2): NorthEast is (2,3), SouthWest is (1,1).</summary>
-        [Test]
-        public void Resolve_Line3NorthEastAtEvenRow_ReturnsTheDiagonalCentredOnTheAnchor()
-        {
-            List<Vector3Int> cells = Resolve(Cell(2, 2), FootprintShape.Line, 3, HexDirection.NorthEast);
-
-            Assert.That(cells, Is.EquivalentTo(new[] { Cell(1, 1), Cell(2, 2), Cell(2, 3) }));
-        }
-
-        /// <summary>From odd row (2,3): NorthEast is (3,4), SouthWest is (2,2).</summary>
-        [Test]
-        public void Resolve_Line3NorthEastAtOddRow_ReturnsTheDiagonalCentredOnTheAnchor()
-        {
-            List<Vector3Int> cells = Resolve(Cell(2, 3), FootprintShape.Line, 3, HexDirection.NorthEast);
-
-            Assert.That(cells, Is.EquivalentTo(new[] { Cell(2, 2), Cell(2, 3), Cell(3, 4) }));
+            Assert.That(results, Is.EqualTo(new[] { Vector3Int.zero, CubeEast, CubeWest }));
         }
 
         [Test]
-        public void Resolve_Line2_ReturnsAnchorAndItsNeighbourInTheDirection()
+        public void ToOffsets_DuplicateCells_AreKeptOnce()
         {
-            foreach (Vector3Int anchor in Anchors)
-                for (int d = 0; d < 6; d++)
-                {
-                    HexDirection direction = (HexDirection)d;
+            List<Vector3Int> results = new List<Vector3Int>();
 
-                    List<Vector3Int> cells = Resolve(anchor, FootprintShape.Line, 2, direction);
+            HexFootprint.ToOffsets(Cell(2, 2), new[] { Cell(3, 2), Cell(3, 2), Cell(2, 2), Cell(3, 2) }, results);
 
-                    Assert.That(cells, Is.EquivalentTo(new[] { anchor, Step(anchor, direction) }),
-                        $"{direction} at {anchor}");
-                }
+            Assert.That(results, Is.EqualTo(new[] { Vector3Int.zero, CubeEast }));
         }
 
         [Test]
-        public void Resolve_Line4_HasOneCellBehindAndTwoAhead()
+        public void ToOffsets_NullCells_ReturnsTheZeroOffsetOnly()
         {
-            foreach (Vector3Int anchor in Anchors)
-                for (int d = 0; d < 6; d++)
-                {
-                    HexDirection direction = (HexDirection)d;
-                    Vector3Int ahead1 = Step(anchor, direction);
-                    Vector3Int[] expected =
-                    {
-                        Step(anchor, Opposite(direction)), anchor, ahead1, Step(ahead1, direction),
-                    };
+            List<Vector3Int> results = new List<Vector3Int>();
 
-                    List<Vector3Int> cells = Resolve(anchor, FootprintShape.Line, 4, direction);
+            HexFootprint.ToOffsets(Cell(2, 2), null, results);
 
-                    Assert.That(cells, Is.EquivalentTo(expected), $"{direction} at {anchor}");
-                }
+            Assert.That(results, Is.EqualTo(new[] { Vector3Int.zero }));
         }
 
         [Test]
-        public void Resolve_Line4NorthEastAtEvenRow_ReturnsExpectedCells()
+        public void ToOffsets_NonEmptyResults_ClearsThemFirst()
         {
-            List<Vector3Int> cells = Resolve(Cell(2, 2), FootprintShape.Line, 4, HexDirection.NorthEast);
+            List<Vector3Int> results = new List<Vector3Int> { Cell(7, 7), Cell(8, 8) };
 
-            Assert.That(cells, Is.EquivalentTo(new[] { Cell(1, 1), Cell(2, 2), Cell(2, 3), Cell(3, 4) }));
+            HexFootprint.ToOffsets(Cell(2, 2), new[] { Cell(3, 2) }, results);
+
+            Assert.That(results, Is.EqualTo(new[] { Vector3Int.zero, CubeEast }));
+        }
+
+        /// <summary>The layer (offset Z) does not leak into the cube offset: Translate re-applies the anchor's.</summary>
+        [Test]
+        public void ToOffsets_CellOnAnotherLayer_GivesTheSameOffsetAsOnTheAnchorLayer()
+        {
+            List<Vector3Int> results = new List<Vector3Int>();
+
+            HexFootprint.ToOffsets(Cell(2, 2, 0), new[] { Cell(3, 2, 5) }, results);
+
+            Assert.That(results, Is.EqualTo(new[] { Vector3Int.zero, CubeEast }));
+        }
+
+        // ---------------------------------------------------------------- Translate
+
+        [Test]
+        public void Translate_NullOffsets_ReturnsTheAnchorOnly()
+        {
+            List<Vector3Int> results = new List<Vector3Int>();
+
+            HexFootprint.Translate(Cell(4, 1, 2), null, results);
+
+            Assert.That(results, Is.EqualTo(new[] { Cell(4, 1, 2) }));
         }
 
         [Test]
-        public void Resolve_LineOddCount_OppositeDirectionsGiveTheSameCells()
+        public void Translate_EmptyOffsets_ReturnsTheAnchorOnly()
         {
-            foreach (Vector3Int anchor in Anchors)
-                for (int n = 1; n <= HexFootprint.MaxLineCount; n += 2)
-                    for (int d = 0; d < 3; d++)
-                    {
-                        List<Vector3Int> forward = Resolve(anchor, FootprintShape.Line, n, (HexDirection)d);
-                        List<Vector3Int> backward = Resolve(anchor, FootprintShape.Line, n, (HexDirection)(d + 3));
+            List<Vector3Int> results = new List<Vector3Int>();
 
-                        Assert.That(backward, Is.EquivalentTo(forward), $"N={n} {(HexDirection)d} at {anchor}");
-                    }
+            HexFootprint.Translate(Cell(4, 1), new List<Vector3Int>(), results);
+
+            Assert.That(results, Is.EqualTo(new[] { Cell(4, 1) }));
         }
 
         [Test]
-        public void Resolve_LineEvenCount_OppositeDirectionsGiveDifferentCells()
+        public void Translate_ZeroOffsetsAnywhere_AreSkippedAndTheAnchorAppearsOnce()
         {
-            foreach (Vector3Int anchor in Anchors)
-                for (int n = 2; n <= HexFootprint.MaxLineCount; n += 2)
-                    for (int d = 0; d < 3; d++)
-                    {
-                        List<Vector3Int> forward = Resolve(anchor, FootprintShape.Line, n, (HexDirection)d);
-                        List<Vector3Int> backward = Resolve(anchor, FootprintShape.Line, n, (HexDirection)(d + 3));
+            List<Vector3Int> results = new List<Vector3Int>();
 
-                        Assert.That(backward, Is.Not.EquivalentTo(forward), $"N={n} {(HexDirection)d} at {anchor}");
-                    }
+            HexFootprint.Translate(Cell(2, 2), new[] { CubeEast, Vector3Int.zero, CubeWest, Vector3Int.zero }, results);
+
+            Assert.That(results, Is.EqualTo(new[] { Cell(2, 2), Cell(3, 2), Cell(1, 2) }));
         }
 
         [Test]
-        public void Resolve_LineAnyCount_EveryCellWithinHalfCountOfTheAnchor()
+        public void Translate_NonEmptyResults_ClearsThemFirst()
         {
-            foreach (Vector3Int anchor in Anchors)
-                for (int n = 1; n <= HexFootprint.MaxLineCount; n++)
-                    for (int d = 0; d < 6; d++)
-                        foreach (Vector3Int cell in Resolve(anchor, FootprintShape.Line, n, (HexDirection)d))
-                            Assert.That(PathFindingUtils.GetNormalizedDistance(anchor, cell), Is.LessThanOrEqualTo(n / 2),
-                                $"N={n} {(HexDirection)d} at {anchor}: cell {cell}");
-        }
+            List<Vector3Int> results = new List<Vector3Int> { Cell(7, 7), Cell(8, 8) };
 
-        // ---------------------------------------------------------------- Cluster
-
-        [Test]
-        public void Resolve_Cluster7_EqualsAnchorPlusAllNeighbours()
-        {
-            foreach (Vector3Int anchor in Anchors)
-                for (int d = 0; d < 6; d++)
-                {
-                    List<Vector3Int> expected = PathFindingUtils.GetNeighbors(anchor);
-                    expected.Add(anchor);
-
-                    List<Vector3Int> cells = Resolve(anchor, FootprintShape.Cluster, 7, (HexDirection)d);
-
-                    Assert.That(cells, Is.EquivalentTo(expected), $"{(HexDirection)d} at {anchor}");
-                }
-        }
-
-        [Test]
-        public void Resolve_Cluster3East_ReturnsAnchorEastAndNorthEast()
-        {
-            foreach (Vector3Int anchor in Anchors)
-            {
-                Vector3Int[] expected =
-                {
-                    anchor, Step(anchor, HexDirection.East), Step(anchor, HexDirection.NorthEast),
-                };
-
-                List<Vector3Int> cells = Resolve(anchor, FootprintShape.Cluster, 3, HexDirection.East);
-
-                Assert.That(cells, Is.EquivalentTo(expected), $"at {anchor}");
-            }
-        }
-
-        // ---------------------------------------------------------------- rotation
-
-        /// <summary>Resolve(direction k) must be Resolve(East) turned k steps counter-clockwise around the anchor.</summary>
-        [TestCase(FootprintShape.Line)]
-        [TestCase(FootprintShape.Cluster)]
-        public void Resolve_DirectionK_EqualsEastRotatedKStepsAroundTheAnchor(FootprintShape shape)
-        {
-            foreach (Vector3Int anchor in Anchors)
-                for (int n = 1; n <= MaxCount(shape); n++)
-                {
-                    Vector3Int anchorCube = HexCoordinates.OffsetToCube(anchor);
-                    List<Vector3Int> east = Resolve(anchor, shape, n, HexDirection.East);
-
-                    for (int k = 0; k < 6; k++)
-                    {
-                        List<Vector3Int> expected = new List<Vector3Int>();
-                        foreach (Vector3Int cell in east)
-                        {
-                            Vector3Int rotated = anchorCube +
-                                HexCoordinates.RotateCube(HexCoordinates.OffsetToCube(cell) - anchorCube, k);
-                            Vector3Int back = HexCoordinates.CubeToOffset(rotated);
-                            back.z = anchor.z;
-                            expected.Add(back);
-                        }
-
-                        List<Vector3Int> actual = Resolve(anchor, shape, n, (HexDirection)k);
-
-                        Assert.That(actual, Is.EquivalentTo(expected), $"{shape} N={n} k={k} at {anchor}");
-                    }
-                }
-        }
-
-        // ---------------------------------------------------------------- clamping
-
-        [TestCase(FootprintShape.Single, 5, 1)]
-        [TestCase(FootprintShape.Line, 0, 1)]
-        [TestCase(FootprintShape.Line, -3, 1)]
-        [TestCase(FootprintShape.Line, 50, 9)]
-        [TestCase(FootprintShape.Line, 9, 9)]
-        [TestCase(FootprintShape.Cluster, 0, 1)]
-        [TestCase(FootprintShape.Cluster, -3, 1)]
-        [TestCase(FootprintShape.Cluster, 8, 7)]
-        [TestCase(FootprintShape.Cluster, 7, 7)]
-        public void ClampCount_OutOfOrInRange_ReturnsLegalCount(FootprintShape shape, int count, int expected)
-        {
-            Assert.That(HexFootprint.ClampCount(shape, count), Is.EqualTo(expected));
-        }
-
-        [TestCase(FootprintShape.Line, 0, 1)]
-        [TestCase(FootprintShape.Line, -3, 1)]
-        [TestCase(FootprintShape.Line, 50, 9)]
-        [TestCase(FootprintShape.Cluster, 0, 1)]
-        [TestCase(FootprintShape.Cluster, -3, 1)]
-        [TestCase(FootprintShape.Cluster, 8, 7)]
-        public void Resolve_OutOfRangeCount_ResolvesTheClampedNumberOfCells(FootprintShape shape, int count, int expected)
-        {
-            List<Vector3Int> cells = Resolve(Cell(2, 2), shape, count, HexDirection.East);
-
-            Assert.That(cells, Has.Count.EqualTo(expected));
-        }
-
-        [Test]
-        public void GridFootprint_Count_ReturnsClampedValue()
-        {
-            GridFootprint footprint = new GridFootprint(FootprintShape.Cluster, 8, HexDirection.East);
-
-            Assert.That(footprint.Count, Is.EqualTo(7));
-        }
-
-        [Test]
-        public void Resolve_GridFootprintOverload_MatchesExplicitOverload()
-        {
-            GridFootprint footprint = new GridFootprint(FootprintShape.Line, 4, HexDirection.SouthWest);
-            List<Vector3Int> viaStruct = new List<Vector3Int>();
-
-            HexFootprint.Resolve(Cell(5, 1, 3), footprint, viaStruct);
-
-            Assert.That(viaStruct, Is.EqualTo(Resolve(Cell(5, 1, 3), FootprintShape.Line, 4, HexDirection.SouthWest)));
-        }
-
-        [Test]
-        public void Resolve_NonEmptyResultsList_ClearsItFirst()
-        {
-            List<Vector3Int> results = new List<Vector3Int> { Cell(9, 9), Cell(8, 8), Cell(7, 7) };
-
-            HexFootprint.Resolve(Cell(2, 2), FootprintShape.Single, 1, HexDirection.East, results);
+            HexFootprint.Translate(Cell(2, 2), new[] { Vector3Int.zero }, results);
 
             Assert.That(results, Is.EqualTo(new[] { Cell(2, 2) }));
+        }
+
+        [Test]
+        public void Translate_AnchorOnALayer_EveryCellKeepsTheAnchorLayer()
+        {
+            List<Vector3Int> results = new List<Vector3Int>();
+
+            HexFootprint.Translate(Cell(2, 3, 4), SixDirections, results);
+
+            Assert.That(results.ConvertAll(c => c.z), Has.All.EqualTo(4));
+        }
+
+        /// <summary>The same cube offsets land on the correct odd-r neighbours whatever the anchor row parity.</summary>
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        [TestCase(0, -1)]
+        [TestCase(-3, -2)]
+        public void Translate_SixCubeDirections_LandOnTheSixOddRNeighbours(int x, int y)
+        {
+            Vector3Int anchor = Cell(x, y);
+            List<Vector3Int> results = new List<Vector3Int>();
+
+            HexFootprint.Translate(anchor, SixDirections, results);
+
+            List<Vector3Int> expected = new List<Vector3Int> { anchor };
+            expected.AddRange(NeighboursOf(anchor));
+            Assert.That(results, Is.EqualTo(expected));
+        }
+
+        /// <summary>
+        /// A NE-SW diagonal moved from an even row to an odd row: in offset space the diagonal cells shift by a
+        /// different x on each parity, so a naive offset-space translation would bend the line.
+        /// </summary>
+        [Test]
+        public void Translate_DiagonalFromEvenToOddRow_KeepsTheDiagonalShape()
+        {
+            Vector3Int[] diagonalAt2_2 = { Cell(2, 2), Cell(2, 3), Cell(1, 1) };
+            List<Vector3Int> offsets = new List<Vector3Int>();
+            List<Vector3Int> results = new List<Vector3Int>();
+            HexFootprint.ToOffsets(Cell(2, 2), diagonalAt2_2, offsets);
+
+            HexFootprint.Translate(Cell(2, 3), offsets, results);
+
+            // From odd row (2,3): NorthEast is (3,4), SouthWest is (2,2).
+            Assert.That(results, Is.EqualTo(new[] { Cell(2, 3), Cell(3, 4), Cell(2, 2) }));
+        }
+
+        [Test]
+        public void Translate_DiagonalFromOddToEvenRow_KeepsTheDiagonalShape()
+        {
+            List<Vector3Int> offsets = new List<Vector3Int>();
+            List<Vector3Int> results = new List<Vector3Int>();
+            HexFootprint.ToOffsets(Cell(2, 3), DiagonalAt2_3, offsets);
+
+            HexFootprint.Translate(Cell(5, 6), offsets, results);
+
+            // DiagonalAt2_3 is anchor, SouthWest, NorthEast. From even row (5,6): SW is (4,5), NE is (5,7).
+            Assert.That(results, Is.EqualTo(new[] { Cell(5, 6), Cell(4, 5), Cell(5, 7) }));
+        }
+
+        // ---------------------------------------------------------------- ToOffsets + Translate round trip
+
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        [TestCase(0, -1)]
+        [TestCase(-3, -2)]
+        public void ToOffsetsThenTranslate_SameAnchor_ReturnsTheOriginalCells(int x, int y)
+        {
+            Vector3Int anchor = Cell(x, y, 1);
+            // Anchor first, a ring neighbour, a disconnected cell two rows up and a cell on a row of each parity.
+            List<Vector3Int> cells = new List<Vector3Int>
+            {
+                anchor, NeighboursOf(anchor)[1], Cell(x + 3, y + 2, 1), Cell(x - 2, y - 1, 1), Cell(x, y - 3, 1),
+            };
+            List<Vector3Int> offsets = new List<Vector3Int>();
+            List<Vector3Int> results = new List<Vector3Int>();
+
+            HexFootprint.ToOffsets(anchor, cells, offsets);
+            HexFootprint.Translate(anchor, offsets, results);
+
+            Assert.That(results, Is.EqualTo(cells));
+        }
+
+        /// <summary>Offsets read back from a footprint placed on an even-row and on an odd-row anchor.</summary>
+        [TestCase(7, 4)]
+        [TestCase(7, 5)]
+        [TestCase(-4, 0)]
+        [TestCase(1, -7)]
+        public void TranslateThenToOffsets_AnyAnchor_ReturnsTheSameOffsets(int x, int y)
+        {
+            Vector3Int[] offsets = { Vector3Int.zero, CubeNorthEast, CubeSouthWest * 2, new Vector3Int(2, -3, 1) };
+            List<Vector3Int> cells = new List<Vector3Int>();
+            List<Vector3Int> offsetsBack = new List<Vector3Int>();
+
+            HexFootprint.Translate(Cell(x, y), offsets, cells);
+            HexFootprint.ToOffsets(Cell(x, y), cells, offsetsBack);
+
+            Assert.That(offsetsBack, Is.EqualTo(offsets));
         }
 
         // ---------------------------------------------------------------- DistanceTo
@@ -401,9 +313,7 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         [Test]
         public void DistanceTo_TargetInsideFootprint_ReturnsZero()
         {
-            List<Vector3Int> cells = Resolve(Cell(2, 2), FootprintShape.Line, 3, HexDirection.East);
-
-            int distance = HexFootprint.DistanceTo(cells, Cell(3, 2));
+            int distance = HexFootprint.DistanceTo(RowAt2_2, Cell(3, 2));
 
             Assert.That(distance, Is.EqualTo(0));
         }
@@ -421,19 +331,17 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         [Test]
         public void Intersects_OneSharedCell_ReturnsTrue()
         {
-            Vector3Int[] cells = { Cell(1, 2), Cell(2, 2), Cell(3, 2) };
             HashSet<Vector3Int> set = new HashSet<Vector3Int> { Cell(9, 9), Cell(3, 2) };
 
-            Assert.That(HexFootprint.Intersects(cells, set), Is.True);
+            Assert.That(HexFootprint.Intersects(RowAt2_2, set), Is.True);
         }
 
         [Test]
         public void Intersects_DisjointSets_ReturnsFalse()
         {
-            Vector3Int[] cells = { Cell(1, 2), Cell(2, 2), Cell(3, 2) };
             HashSet<Vector3Int> set = new HashSet<Vector3Int> { Cell(4, 2), Cell(2, 3) };
 
-            Assert.That(HexFootprint.Intersects(cells, set), Is.False);
+            Assert.That(HexFootprint.Intersects(RowAt2_2, set), Is.False);
         }
 
         [Test]
@@ -473,14 +381,13 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         [TestCase(2)]
         public void CollectCellsInRange_MultipleCells_EqualsUnionOfCircles(int range)
         {
-            List<Vector3Int> cells = Resolve(Cell(2, 3), FootprintShape.Line, 3, HexDirection.NorthEast);
             HashSet<Vector3Int> expected = new HashSet<Vector3Int>();
             CircleShape circle = new CircleShape();
-            foreach (Vector3Int cell in cells)
+            foreach (Vector3Int cell in DiagonalAt2_3)
                 expected.UnionWith(PathAssert.ToCells(circle.GetCells(cell, range, cell)));
             HashSet<Vector3Int> results = new HashSet<Vector3Int>();
 
-            HexFootprint.CollectCellsInRange(cells, range, results);
+            HexFootprint.CollectCellsInRange(DiagonalAt2_3, range, results);
 
             Assert.That(results, Is.EquivalentTo(expected));
         }
@@ -488,12 +395,11 @@ namespace SillyPirates.Tests.EditMode.Grid.Footprint
         [Test]
         public void CollectCellsInRange_RangeZero_ReturnsTheFootprintItself()
         {
-            List<Vector3Int> cells = Resolve(Cell(2, 2), FootprintShape.Cluster, 4, HexDirection.West);
             HashSet<Vector3Int> results = new HashSet<Vector3Int>();
 
-            HexFootprint.CollectCellsInRange(cells, 0, results);
+            HexFootprint.CollectCellsInRange(WedgeAt2_2, 0, results);
 
-            Assert.That(results, Is.EquivalentTo(cells));
+            Assert.That(results, Is.EquivalentTo(WedgeAt2_2));
         }
 
         [Test]

@@ -2,73 +2,50 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Pure footprint geometry: turns a <see cref="GridFootprint"/> into concrete offset cells and answers
-/// distance/overlap questions about a set of cells. No Unity objects involved, so it is EditMode-testable.
+/// Pure footprint geometry: moves a footprint between absolute offset cells and anchor-relative cube offsets,
+/// and answers distance/overlap questions about a set of cells. No Unity objects involved, so it is
+/// EditMode-testable.
 /// </summary>
 public static class HexFootprint
 {
-    public const int MaxLineCount = 9;
-    public const int MaxClusterCount = 7;
-
     /// <summary>
-    /// The legal number of cells for <paramref name="shape"/>: Single is always 1, Line 1..9, Cluster 1..7.
-    /// Zero or negative counts (e.g. a prefab saved before the field existed) become 1.
+    /// Clears <paramref name="results"/> and fills it with the cube-coordinate offsets of
+    /// <paramref name="cells"/> from <paramref name="anchor"/>. Guarantees: <c>results[0]</c> is the zero offset
+    /// (the anchor) whether or not <paramref name="cells"/> contains it, and no duplicates. Offset Z (the layer)
+    /// is dropped: <see cref="Translate"/> puts every cell back on the new anchor's layer.
     /// </summary>
-    public static int ClampCount(FootprintShape shape, int count)
+    public static void ToOffsets(Vector3Int anchor, IReadOnlyList<Vector3Int> cells, List<Vector3Int> results)
     {
-        switch (shape)
+        results.Clear();
+        results.Add(Vector3Int.zero);
+        if (cells == null) return;
+
+        Vector3Int anchorCube = HexCoordinates.OffsetToCube(anchor);
+        for (int i = 0; i < cells.Count; i++)
         {
-            case FootprintShape.Line: return Mathf.Clamp(count, 1, MaxLineCount);
-            case FootprintShape.Cluster: return Mathf.Clamp(count, 1, MaxClusterCount);
-            default: return 1;
+            Vector3Int offset = HexCoordinates.OffsetToCube(cells[i]) - anchorCube;
+            if (!results.Contains(offset)) results.Add(offset);
         }
     }
 
-    public static void Resolve(Vector3Int anchor, GridFootprint footprint, List<Vector3Int> results)
-        => Resolve(anchor, footprint.Shape, footprint.Count, footprint.Direction, results);
-
     /// <summary>
-    /// Clears <paramref name="results"/> and fills it with the cells covered by the footprint.
-    /// Guarantees: <c>results[0] == anchor</c>, no duplicates, the cells are connected, and every cell keeps
-    /// <c>anchor.z</c>. Unknown shapes resolve as Single.
+    /// Clears <paramref name="results"/> and fills it with the cells of a footprint placed on
+    /// <paramref name="anchor"/>, from the cube offsets produced by <see cref="ToOffsets"/>. Guarantees:
+    /// <c>results[0] == anchor</c> even with null or empty offsets, the order of the offsets is kept, zero
+    /// offsets are skipped, and every cell keeps <c>anchor.z</c>. Translating in cube space (not offset space)
+    /// keeps the shape intact when the anchor moves to a row of the other parity.
     /// </summary>
-    public static void Resolve(Vector3Int anchor, FootprintShape shape, int count, HexDirection direction,
-                               List<Vector3Int> results)
+    public static void Translate(Vector3Int anchor, IReadOnlyList<Vector3Int> cubeOffsets, List<Vector3Int> results)
     {
         results.Clear();
         results.Add(anchor);
-
-        int n = ClampCount(shape, count);
-        if (n <= 1) return;
+        if (cubeOffsets == null) return;
 
         Vector3Int anchorCube = HexCoordinates.OffsetToCube(anchor);
-
-        switch (shape)
+        for (int i = 0; i < cubeOffsets.Count; i++)
         {
-            case FootprintShape.Line:
-            {
-                // Centred on the anchor; with an even count the extra cell goes toward the direction.
-                Vector3Int step = HexCoordinates.DirectionToCube(direction);
-                int from = -(n - 1) / 2;
-                int to = n / 2;
-                for (int k = from; k <= to; k++)
-                {
-                    if (k == 0) continue;
-                    results.Add(CubeToCell(anchorCube + step * k, anchor.z));
-                }
-                break;
-            }
-            case FootprintShape.Cluster:
-            {
-                // The hub plus its neighbours, counter-clockwise starting from the direction:
-                // 3 is a triangle, 7 the full hex.
-                for (int i = 0; i < n - 1; i++)
-                {
-                    Vector3Int dir = HexCoordinates.DirectionToCube((HexDirection)((int)direction + i));
-                    results.Add(CubeToCell(anchorCube + dir, anchor.z));
-                }
-                break;
-            }
+            if (cubeOffsets[i] == Vector3Int.zero) continue;
+            results.Add(CubeToCell(anchorCube + cubeOffsets[i], anchor.z));
         }
     }
 
