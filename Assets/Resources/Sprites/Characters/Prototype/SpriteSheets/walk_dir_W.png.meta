@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 150
+  spritePixelsToUnits: 215
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,10 +100,10 @@ TextureImporter:
       name: walk_dir_W_0
       rect:
         serializedVersion: 2
-        x: 203
-        y: 3
-        width: 296
-        height: 622
+        x: 204
+        y: 4
+        width: 294
+        height: 620
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: afb63047635a57a4e9c687b5dc2b0134
-      internalID: 1915671279
+      spriteID: 8855454a49a4d06478edefd0c342a15e
+      internalID: 30879219
       vertices: []
       indices: 
       edges: []
@@ -122,10 +122,10 @@ TextureImporter:
       name: walk_dir_W_1
       rect:
         serializedVersion: 2
-        x: 859
-        y: 3
-        width: 276
-        height: 612
+        x: 860
+        y: 4
+        width: 274
+        height: 610
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,8 +134,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4d87bdba13fa6af4fa7e417b81e8d076
-      internalID: -2026743586
+      spriteID: 81d490503a57f934f8b3ce27ee26a5b8
+      internalID: 768025726
       vertices: []
       indices: 
       edges: []
@@ -144,10 +144,10 @@ TextureImporter:
       name: walk_dir_W_2
       rect:
         serializedVersion: 2
-        x: 1535
-        y: 3
-        width: 286
-        height: 622
+        x: 1536
+        y: 4
+        width: 284
+        height: 620
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8103f6df8afabe0479e74c77232dc8d5
-      internalID: -2139077207
+      spriteID: a1f7170abc7e42945b74903ed5b7159f
+      internalID: 1116086637
       vertices: []
       indices: 
       edges: []
@@ -166,10 +166,10 @@ TextureImporter:
       name: walk_dir_W_3
       rect:
         serializedVersion: 2
-        x: 2215
+        x: 2216
         y: 0
-        width: 340
-        height: 682
+        width: 338
+        height: 624
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +178,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fd771ed56b064e742aba34e6ce07be25
-      internalID: 745681739
+      spriteID: a6cab01fb90109c4faf981276cdaff42
+      internalID: -287460668
       vertices: []
       indices: 
       edges: []
@@ -188,10 +188,10 @@ TextureImporter:
       name: walk_dir_W_4
       rect:
         serializedVersion: 2
-        x: 2919
-        y: 3
-        width: 286
-        height: 612
+        x: 2920
+        y: 4
+        width: 284
+        height: 610
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -200,8 +200,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e951b083d85f5d34c81b152ce8302e20
-      internalID: 1758827561
+      spriteID: 5175ecd530cb7204c83399db3d1ab8ff
+      internalID: 1162529661
       vertices: []
       indices: 
       edges: []
@@ -210,10 +210,10 @@ TextureImporter:
       name: walk_dir_W_5
       rect:
         serializedVersion: 2
-        x: 3599
+        x: 3600
         y: 0
-        width: 276
-        height: 682
+        width: 274
+        height: 620
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -222,8 +222,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5e8cfe3a65558e40855147951904266
-      internalID: -299971795
+      spriteID: 18201f1dc1d5e28428b85cc9634cfc46
+      internalID: -625171483
       vertices: []
       indices: 
       edges: []
@@ -232,7 +232,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 311613125e9ace54bb5c8429a583e0a7
+    spriteID: 886a03c1cf1edf74a881ffa6b5c5f917
     internalID: 0
     vertices: []
     indices: 
@@ -244,12 +244,12 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      walk_dir_W_0: 1915671279
-      walk_dir_W_1: -2026743586
-      walk_dir_W_2: -2139077207
-      walk_dir_W_3: 745681739
-      walk_dir_W_4: 1758827561
-      walk_dir_W_5: -299971795
+      walk_dir_W_0: 30879219
+      walk_dir_W_1: 768025726
+      walk_dir_W_2: 1116086637
+      walk_dir_W_3: -287460668
+      walk_dir_W_4: 1162529661
+      walk_dir_W_5: -625171483
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
